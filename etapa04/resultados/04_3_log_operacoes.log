@@ -1,0 +1,53 @@
+2026-09-30 00:17:26,490 INFO rp.banco: backup gravado em C:\Users\maped\OneDrive\Área de Trabalho\Projeto Dashboard Restos a Pagar\backups\20260930-001726_antes-migracao-v2-v3.sqlite
+2026-09-30 00:17:26,497 INFO rp.banco: esquema migrado para v3 (derivação com data de vigência ('como estava em'))
+2026-09-30 00:17:31,977 INFO rp.banco: backup gravado em C:\Users\maped\OneDrive\Área de Trabalho\Projeto Dashboard Restos a Pagar\backups\20260930-001731_antes-importar-etapas-anteriores.sqlite
+2026-09-30 00:17:54,141 INFO rp.coletor: snapshot entidades {} 2eee4bef: completa, 1 resposta(s), coleta 208
+2026-09-30 00:17:55,676 INFO rp.coletor: snapshot exercicios {"entidade": 1} d9355729: completa, 1 resposta(s), coleta 209
+2026-09-30 00:17:57,202 INFO rp.coletor: snapshot exercicios {"entidade": 15} c5bf2094: completa, 1 resposta(s), coleta 210
+2026-09-30 00:17:58,739 INFO rp.coletor: snapshot exercicios {"entidade": 4} 9098e33f: completa, 1 resposta(s), coleta 211
+2026-09-30 00:18:00,477 INFO rp.coletor: snapshot exercicios {"entidade": 5} aecb89a0: completa, 1 resposta(s), coleta 212
+2026-09-30 00:18:02,023 INFO rp.coletor: snapshot exercicios {"entidade": 8} 5715d4af: completa, 1 resposta(s), coleta 213
+2026-09-30 00:18:16,543 INFO rp.coletor: snapshot rp_listagem {"entidade": 1, "exercicio": 2025, "dataInicial": "2025-01-01", "dataFinal": "2025-12-31", "size": 2000} b86ce422: completa, 2 resposta(s), coleta 214
+2026-09-30 00:18:22,123 INFO rp.coletor: snapshot rp_listagem {"entidade": 15, "exercicio": 2025, "dataInicial": "2025-01-01", "dataFinal": "2025-12-31", "size": 2000} f2a5fe8c: completa, 1 resposta(s), coleta 215
+2026-09-30 00:18:23,392 INFO rp.coletor: snapshot rp_listagem {"entidade": 4, "exercicio": 2025, "dataInicial": "2025-01-01", "dataFinal": "2025-12-31", "size": 2000} 6f51170e: completa, 1 resposta(s), coleta 216
+2026-09-30 00:18:24,990 INFO rp.coletor: snapshot rp_listagem {"entidade": 5, "exercicio": 2025, "dataInicial": "2025-01-01", "dataFinal": "2025-12-31", "size": 2000} 4e8dae72: completa, 1 resposta(s), coleta 217
+2026-09-30 00:18:27,339 INFO rp.coletor: snapshot rp_listagem {"entidade": 8, "exercicio": 2025, "dataInicial": "2025-01-01", "dataFinal": "2025-12-31", "size": 2000} db8d3c72: completa, 1 resposta(s), coleta 218
+2026-09-30 00:18:28,537 INFO rp.coletor: snapshot rp_listagem {"entidade": 3, "exercicio": 2025, "dataInicial": "2025-01-01", "dataFinal": "2025-12-31", "size": 2000} 76e61475: completa, 1 resposta(s), coleta 219
+2026-09-30 00:18:29,916 INFO rp.coletor: snapshot rp_listagem {"entidade": 6, "exercicio": 2025, "dataInicial": "2025-01-01", "dataFinal": "2025-12-31", "size": 2000} 17e52f8e: completa, 1 resposta(s), coleta 220
+2026-09-30 00:18:31,228 INFO rp.coletor: snapshot rp_listagem {"entidade": 9, "exercicio": 2025, "dataInicial": "2025-01-01", "dataFinal": "2025-12-31", "size": 2000} e5bacffb: completa, 1 resposta(s), coleta 221
+2026-09-30 00:18:32,407 INFO rp.coletor: snapshot rp_listagem {"entidade": 10, "exercicio": 2025, "dataInicial": "2025-01-01", "dataFinal": "2025-12-31", "size": 2000} a95b703d: completa, 1 resposta(s), coleta 222
+2026-09-30 00:18:33,588 INFO rp.coletor: snapshot rp_listagem {"entidade": 11, "exercicio": 2025, "dataInicial": "2025-01-01", "dataFinal": "2025-12-31", "size": 2000} de66a7bd: completa, 1 resposta(s), coleta 223
+2026-09-30 00:18:51,300 INFO rp.coletor: snapshot rp_listagem {"entidade": 1, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-08-31", "size": 2000} 1c19c02a: completa, 3 resposta(s), coleta 224
+2026-09-30 00:18:56,813 INFO rp.coletor: snapshot rp_listagem {"entidade": 15, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-08-31", "size": 2000} 52881744: completa, 1 resposta(s), coleta 225
+2026-09-30 00:18:58,237 INFO rp.coletor: snapshot rp_listagem {"entidade": 4, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-08-31", "size": 2000} 210d8357: completa, 1 resposta(s), coleta 226
+2026-09-30 00:19:00,004 INFO rp.coletor: snapshot rp_listagem {"entidade": 5, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-08-31", "size": 2000} 7a8db57a: completa, 1 resposta(s), coleta 227
+2026-09-30 00:19:04,439 INFO rp.coletor: snapshot rp_listagem {"entidade": 8, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-08-31", "size": 2000} 84ed627c: completa, 1 resposta(s), coleta 228
+2026-09-30 00:19:05,627 INFO rp.coletor: snapshot rp_listagem {"entidade": 3, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-08-31", "size": 2000} f55ef92f: completa, 1 resposta(s), coleta 229
+2026-09-30 00:19:06,916 INFO rp.coletor: snapshot rp_listagem {"entidade": 6, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-08-31", "size": 2000} 3195c507: completa, 1 resposta(s), coleta 230
+2026-09-30 00:19:08,239 INFO rp.coletor: snapshot rp_listagem {"entidade": 9, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-08-31", "size": 2000} 09756c0a: completa, 1 resposta(s), coleta 231
+2026-09-30 00:19:10,474 INFO rp.coletor: snapshot rp_listagem {"entidade": 10, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-08-31", "size": 2000} f77c8e33: completa, 1 resposta(s), coleta 232
+2026-09-30 00:19:11,615 INFO rp.coletor: snapshot rp_listagem {"entidade": 11, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-08-31", "size": 2000} bcbc5b33: completa, 1 resposta(s), coleta 233
+2026-09-30 00:19:12,636 INFO rp.coletor: snapshot publicacoes {"entidade": 1, "exercicio": 2025} 14e5dceb: completa, 1 resposta(s), coleta 234
+2026-09-30 00:19:17,628 INFO rp.coletor: snapshot rreo_pdf {"id_arquivo": 1707751, "exercicio": 2025, "entidade": 1, "rotulo": "1º Bimestre", "nomeArquivo": "10160564176107216692.pdf", "dataArquivo": "2025-05-27"} e20d0ae2: completa, 1 resposta(s), coleta 235
+2026-09-30 00:19:22,320 INFO rp.coletor: snapshot rreo_pdf {"id_arquivo": 1707754, "exercicio": 2025, "entidade": 1, "rotulo": "1º Bimestre - Consolidado", "nomeArquivo": "10747898654189318724.pdf", "dataArquivo": "2025-05-27"} 9b0c7d24: completa, 1 resposta(s), coleta 236
+2026-09-30 00:19:27,025 INFO rp.coletor: snapshot rreo_pdf {"id_arquivo": 1811471, "exercicio": 2025, "entidade": 1, "rotulo": "2º Bimestre", "nomeArquivo": "550658176314718692.pdf", "dataArquivo": "2025-05-27"} 03bb8362: completa, 1 resposta(s), coleta 237
+2026-09-30 00:19:31,929 INFO rp.coletor: snapshot rreo_pdf {"id_arquivo": 1811472, "exercicio": 2025, "entidade": 1, "rotulo": "2º Bimestre - Consolidado", "nomeArquivo": "3749541648825217805.pdf", "dataArquivo": "2025-05-27"} 543e0e03: completa, 1 resposta(s), coleta 238
+2026-09-30 00:19:36,889 INFO rp.coletor: snapshot rreo_pdf {"id_arquivo": 1910686, "exercicio": 2025, "entidade": 1, "rotulo": "3º Bimestre - Consolidado", "nomeArquivo": "29775093782396216514.pdf", "dataArquivo": "2025-07-29"} ac618fdc: completa, 1 resposta(s), coleta 239
+2026-09-30 00:19:41,696 INFO rp.coletor: snapshot rreo_pdf {"id_arquivo": 2010385, "exercicio": 2025, "entidade": 1, "rotulo": "4º Bimestre", "nomeArquivo": "3674879251645617721.pdf", "dataArquivo": "2025-09-26"} ccfe4fb5: completa, 1 resposta(s), coleta 240
+2026-09-30 00:19:46,344 INFO rp.coletor: snapshot rreo_pdf {"id_arquivo": 2010386, "exercicio": 2025, "entidade": 1, "rotulo": "4º Bimestre - Consolidado", "nomeArquivo": "35953006134794320080.pdf", "dataArquivo": "2025-09-26"} bb4599f6: completa, 1 resposta(s), coleta 241
+2026-09-30 00:19:51,140 INFO rp.coletor: snapshot rreo_pdf {"id_arquivo": 2111533, "exercicio": 2025, "entidade": 1, "rotulo": "5º Bimestre - Consolidado", "nomeArquivo": "35552687266205219851.pdf", "dataArquivo": "2025-11-27"} 259d399c: completa, 1 resposta(s), coleta 242
+2026-09-30 00:19:55,305 INFO rp.coletor: snapshot publicacoes {"entidade": 1, "exercicio": 2026} 8b5a3140: completa, 1 resposta(s), coleta 243
+2026-09-30 00:20:00,074 INFO rp.coletor: snapshot rreo_pdf {"id_arquivo": 2293725, "exercicio": 2026, "entidade": 1, "rotulo": "1º Bimestre - Consolidado", "nomeArquivo": "36028631674430616608.pdf", "dataArquivo": "2026-03-27"} 2a2e913b: completa, 1 resposta(s), coleta 244
+2026-09-30 00:20:14,914 INFO rp.normalizar: normalização 3: {'respostas': 276, 'ignoradas_sem_pagina': 0, 'rp_registro': 99183, 'movimentacao_lancamento': 2019, 'rreo_valor': 987, 'problemas': []}
+2026-09-30 00:20:22,451 INFO rp.derivar: derivação 3 sobre normalização 3 (vigência atual): hash b565669b5b4d8630
+2026-09-30 00:20:46,116 INFO rp.derivar: derivação 4 sobre normalização 3 (vigência 2026-09-29T23:59:59-03:00): hash b8a0b2ed2328bf09
+2026-09-30 00:22:54,597 INFO rp.normalizar: normalização 4: {'respostas': 276, 'ignoradas_sem_pagina': 0, 'rp_registro': 99183, 'movimentacao_lancamento': 2019, 'rreo_valor': 987, 'problemas': []}
+2026-09-30 00:23:02,078 INFO rp.derivar: derivação 5 sobre normalização 4 (vigência atual): hash b565669b5b4d8630
+2026-09-30 00:23:07,758 INFO rp.derivar: derivação 6 sobre normalização 4 (vigência 2026-09-29T23:59:59-03:00): hash b8a0b2ed2328bf09
+2026-09-30 00:23:26,150 INFO rp.banco: backup gravado em C:\Users\maped\OneDrive\Área de Trabalho\Projeto Dashboard Restos a Pagar\backups\20260930-002325_antes-apagar-derivacao-1.sqlite
+2026-09-30 00:23:27,531 INFO rp.banco: backup gravado em C:\Users\maped\OneDrive\Área de Trabalho\Projeto Dashboard Restos a Pagar\backups\20260930-002327_antes-apagar-derivacao-2.sqlite
+2026-09-30 00:23:29,870 INFO rp.banco: backup gravado em C:\Users\maped\OneDrive\Área de Trabalho\Projeto Dashboard Restos a Pagar\backups\20260930-002328_antes-apagar-derivacao-3.sqlite
+2026-09-30 00:23:33,454 INFO rp.banco: backup gravado em C:\Users\maped\OneDrive\Área de Trabalho\Projeto Dashboard Restos a Pagar\backups\20260930-002331_antes-apagar-derivacao-4.sqlite
+2026-09-30 00:23:36,147 INFO rp.banco: backup gravado em C:\Users\maped\OneDrive\Área de Trabalho\Projeto Dashboard Restos a Pagar\backups\20260930-002334_antes-apagar-normalizacao-1.sqlite
+2026-09-30 00:23:38,411 INFO rp.banco: backup gravado em C:\Users\maped\OneDrive\Área de Trabalho\Projeto Dashboard Restos a Pagar\backups\20260930-002337_antes-apagar-normalizacao-2.sqlite
+2026-09-30 00:23:39,740 INFO rp.banco: backup gravado em C:\Users\maped\OneDrive\Área de Trabalho\Projeto Dashboard Restos a Pagar\backups\20260930-002339_antes-apagar-normalizacao-3.sqlite

@@ -1,0 +1,96 @@
+
+1) Universo
+   B,D,E,F,A tem as mesmas chaves? True
+   C == X (mesmo dataInicial)? True
+   C contido em A? True
+   saíram ao mudar dataInicial para 01/02: 1154
+
+2) Campos que variam só com dataFinal (mesmo dataInicial=01/01): B x D x E x F x A
+   proc                 varia em 0 registros
+   aproc                varia em 0 registros
+   canceladoProc        varia em 0 registros
+   pagoProc             varia em 306 registros
+   pagoProcEstornado    varia em 2 registros
+   canceladoAProc       varia em 273 registros
+   pagoAProc            varia em 1312 registros
+   pagoAProcEstornado   varia em 50 registros
+   liquidado            varia em 1120 registros
+   retencao             varia em 684 registros
+
+3) Aditividade dos fluxos: X[D] == X[B] + X[C]  (C=0 para quem não está em C)
+  [OK ] canceladoProc: vale em 4557/4557
+  [OK ] pagoProc: vale em 4557/4557
+  [OK ] pagoProcEstornado: vale em 4557/4557
+  [OK ] canceladoAProc: vale em 4557/4557
+  [OK ] pagoAProc: vale em 4557/4557
+  [FALHA] pagoAProcEstornado: vale em 4546/4557  ex.: [(2025, 20738), (2025, 20744), (2025, 20747), (2025, 20752)]
+  [OK ] liquidado: vale em 4557/4557
+  [OK ] retencao: vale em 4557/4557
+
+4) Estoque no início do período (dataInicial=01/02) a partir de janeiro
+  [FALHA] proc[C] == proc[B] - pagoProc[B]: vale em 3120/3403  ex.: [(2022, 23729), (2024, 15377), (2024, 19533), (2024, 19535)]
+  [FALHA] proc[C] == proc[B] - pagoProc[B] + pagoProcEstornado[B]: vale em 3120/3403  ex.: [(2022, 23729), (2024, 15377), (2024, 19533), (2024, 19535)]
+  [FALHA] proc[C] == proc[B] - pagoProc[B] - canceladoProc[B]: vale em 3120/3403  ex.: [(2022, 23729), (2024, 15377), (2024, 19533), (2024, 19535)]
+  [FALHA] aproc[C] == aproc[B]: vale em 2939/3403  ex.: [(2017, 7724), (2022, 23729), (2024, 12188), (2024, 15377)]
+  [FALHA] aproc[C] == aproc[B] - pagoAProc[B] - canceladoAProc[B]: vale em 3120/3403  ex.: [(2022, 23729), (2024, 15377), (2024, 19533), (2024, 19535)]
+  [OK ] aproc[C] == aproc[B] - liquidado[B] - canceladoAProc[B]: vale em 3403/3403
+  [OK ] proc[C]+aproc[C] == proc[B]+aproc[B] - pagoProc[B] - pagoAProc[B] - canceladoAProc[B]: vale em 3403/3403
+
+5) Quem saiu do universo em 01/02 zerou o saldo em janeiro?
+  [OK ] proc[B]+aproc[B] - pagoProc[B] - pagoAProc[B] - canceladoAProc[B] == 0: vale em 1154/1154
+
+6) Totais dos fluxos por período (todos os registros)
+=== C0 caso 11963/2016 (Etapa 01): 11963/2016
+      OK em todos os períodos e campos
+=== B0 caso 5659/2025 (Etapa 01): 5659/2025
+      OK em todos os períodos e campos
+=== A  processado sem pagamento: 2398/2012
+      OK em todos os períodos e campos
+=== B1 processado pago integralmente: 22455/2022
+      OK em todos os períodos e campos
+=== B2 processado pago parcialmente: 5658/2025
+      OK em todos os períodos e campos
+=== C  processado com cancelamento: 15577/2023
+      OK em todos os períodos e campos
+=== D1 processado com pagamento estornado: 1874/2025
+      OK em todos os períodos e campos
+=== D2 processado com estorno de liquidação sem cancelamento: 15193/2025
+      OK em todos os períodos e campos
+=== E  não processado sem liquidação: 14285/2017
+      OK em todos os períodos e campos
+=== F  não processado parcialmente liquidado: 7724/2017
+      OK em todos os períodos e campos
+=== G  não processado liquidado e pago: 23729/2022
+      OK em todos os períodos e campos
+=== G2 não processado liquidado, pago em parte: 12057/2024
+      OK em todos os períodos e campos
+=== G3 não processado com pagamento estornado: 17442/2024
+      OK em todos os períodos e campos
+=== H1 nas duas abas: 933/2021
+      OK em todos os períodos e campos
+=== H2 nas duas abas, com pagamento dos dois tipos: 23186/2023
+      OK em todos os períodos e campos
+=== I1 não processado cancelado em parte e liquidado: 11921/2024
+      OK em todos os períodos e campos
+=== I2 pagoProc sem proc (valor em aba NaoProc): 2410946/2025
+      A 2026-01-01..2026-12-31 pagoProc: API=49.50 modelo=0.00
+      A 2026-01-01..2026-12-31 pagoProcEstornado: API=49.50 modelo=0.00
+      A 2026-01-01..2026-12-31 pagoAProc: API=0.00 modelo=49.50
+      A 2026-01-01..2026-12-31 pagoAProcEstornado: API=0.00 modelo=49.50
+      F 2026-01-01..2026-08-31 pagoProc: API=49.50 modelo=0.00
+      F 2026-01-01..2026-08-31 pagoProcEstornado: API=49.50 modelo=0.00
+      F 2026-01-01..2026-08-31 pagoAProc: API=0.00 modelo=49.50
+      F 2026-01-01..2026-08-31 pagoAProcEstornado: API=0.00 modelo=49.50
+      X 2026-02-01..2026-12-31 pagoProc: API=49.50 modelo=0.00
+      X 2026-02-01..2026-12-31 pagoProcEstornado: API=49.50 modelo=0.00
+      X 2026-02-01..2026-12-31 pagoAProc: API=0.00 modelo=49.50
+      X 2026-02-01..2026-12-31 pagoAProcEstornado: API=0.00 modelo=49.50
+      divergências: {'pagoProc': 3, 'pagoProcEstornado': 3, 'pagoAProc': 3, 'pagoAProcEstornado': 3}
+=== I3 retenção: 5176/2023
+      OK em todos os períodos e campos
+=== I4 pagoAProcEstornado não aditivo #1: 20738/2025
+      OK em todos os períodos e campos
+=== I4 pagoAProcEstornado não aditivo #2: 20744/2025
+      OK em todos os períodos e campos
+
+Divergências por campo (somando casos x períodos): {'pagoProc': 3, 'pagoProcEstornado': 3, 'pagoAProc': 3, 'pagoAProcEstornado': 3}

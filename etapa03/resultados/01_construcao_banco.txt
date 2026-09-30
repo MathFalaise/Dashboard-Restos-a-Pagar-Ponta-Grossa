@@ -1,0 +1,13 @@
+carga bruta: {'rp_listagem (manifesto)': 41, 'rp_listagem (recoleta)': 1, 'movimentacao': 140, 'rreo_pdf': 11, 'catalogos': 2}
+  coleta                         197
+  resposta_bruta                 224
+  rp_registro                  82988
+  movimentacao_lancamento       2004
+  rreo_valor                     517
+  rp_derivado                  82988
+  anomalia                     10837
+  espelhamento_par               751
+  visao_valor                   1020
+  conciliacao_rreo               216
+  verificacao                     34
+normalização 1, derivação 1, 6.2s, banco 98.2 MB

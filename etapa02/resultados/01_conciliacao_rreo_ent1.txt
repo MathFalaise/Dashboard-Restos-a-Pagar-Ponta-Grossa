@@ -1,0 +1,39 @@
+
+### RREO 2025 6º bim (emitido 30/01/2026)  (API ent=1 ex=2025 2025-01-01..2025-12-31)
+   (a) RREO     2.661.515,65 | API     2.663.345,15 | dif      1.829,50    | soma proc, aba Processados, anoempenho < ex-1
+   (b) RREO    24.993.694,85 | API    24.993.694,85 | dif          0,00 OK | soma proc, aba Processados, anoempenho = ex-1
+   (c) RREO    26.203.738,11 | API    26.203.276,11 | dif       -462,00    | soma pagoProc, aba Processados
+   (d) RREO        51.906,63 | API        53.736,13 | dif      1.829,50    | soma canceladoAProc dos registros so-Processados (aproc=0)
+   (f) RREO    15.861.840,64 | API    15.868.421,14 | dif      6.580,50    | soma aproc, aba NaoProcessados, anoempenho < ex-1
+   (g) RREO   159.165.530,25 | API   160.082.822,87 | dif    917.292,62    | soma aproc, aba NaoProcessados, anoempenho = ex-1
+   (h) RREO   136.380.158,67 | API   136.380.158,67 | dif          0,00 OK | soma liquidado, aba NaoProcessados
+   (i) RREO   136.288.900,26 | API   136.288.900,26 | dif          0,00 OK | soma pagoAProc, aba NaoProcessados
+   (j) RREO    20.763.209,97 | API    20.761.380,47 | dif     -1.829,50    | soma canceladoAProc, aba NaoProcessados
+   (e) RREO     1.399.565,76 | API (a+b)-(c+d)     1.400.027,76 | dif 462,00
+   (k) RREO    17.975.260,66 | API (f+g)-(i+j)    18.900.963,28 | dif 925.702,62
+
+### RREO 2026 3º bim (emitido 29/07/2026)  (API ent=1 ex=2026 2026-01-01..2026-06-30)
+   (a) RREO     1.490.824,17 | API     1.490.824,17 | dif          0,00 OK | soma proc, aba Processados, anoempenho < ex-1
+   (b) RREO    27.386.680,16 | API    27.386.680,16 | dif          0,00 OK | soma proc, aba Processados, anoempenho = ex-1
+   (c) RREO    24.506.510,29 | API    24.506.510,29 | dif          0,00 OK | soma pagoProc, aba Processados
+   (d) RREO        78.361,84 | API        78.361,84 | dif          0,00 OK | soma canceladoAProc dos registros so-Processados (aproc=0)
+   (f) RREO    18.809.704,87 | API    18.809.704,87 | dif          0,00 OK | soma aproc, aba NaoProcessados, anoempenho < ex-1
+   (g) RREO   118.302.373,90 | API   118.302.373,90 | dif          0,00 OK | soma aproc, aba NaoProcessados, anoempenho = ex-1
+   (h) RREO    80.097.138,94 | API    79.880.225,70 | dif   -216.913,24    | soma liquidado, aba NaoProcessados
+   (i) RREO    77.764.383,26 | API    77.655.270,83 | dif   -109.112,43    | soma pagoAProc, aba NaoProcessados
+   (j) RREO     4.183.870,38 | API     4.183.870,38 | dif          0,00 OK | soma canceladoAProc, aba NaoProcessados
+   (e) RREO     4.292.632,20 | API (a+b)-(c+d)     4.292.632,20 | dif 0,00
+   (k) RREO    55.163.825,13 | API (f+g)-(i+j)    55.272.937,56 | dif 109.112,43
+
+### RREO 2026 4º bim (emitido 29/09/2026 12h33)  (API ent=1 ex=2026 2026-01-01..2026-08-31)
+   (a) RREO     1.490.824,17 | API     1.490.824,17 | dif          0,00 OK | soma proc, aba Processados, anoempenho < ex-1
+   (b) RREO    27.386.680,16 | API    27.386.680,16 | dif          0,00 OK | soma proc, aba Processados, anoempenho = ex-1
+   (c) RREO    25.557.330,59 | API    25.557.330,59 | dif          0,00 OK | soma pagoProc, aba Processados
+   (d) RREO        78.570,99 | API        78.570,99 | dif          0,00 OK | soma canceladoAProc dos registros so-Processados (aproc=0)
+   (f) RREO    18.809.704,87 | API    18.809.704,87 | dif          0,00 OK | soma aproc, aba NaoProcessados, anoempenho < ex-1
+   (g) RREO   118.302.373,90 | API   118.302.373,90 | dif          0,00 OK | soma aproc, aba NaoProcessados, anoempenho = ex-1
+   (h) RREO    85.599.108,05 | API    85.253.628,49 | dif   -345.479,56    | soma liquidado, aba NaoProcessados
+   (i) RREO    83.893.145,91 | API    83.655.417,66 | dif   -237.728,25    | soma pagoAProc, aba NaoProcessados
+   (j) RREO     8.015.744,44 | API     8.015.744,44 | dif          0,00 OK | soma canceladoAProc, aba NaoProcessados
+   (e) RREO     3.241.602,75 | API (a+b)-(c+d)     3.241.602,75 | dif 0,00
+   (k) RREO    45.203.188,42 | API (f+g)-(i+j)    45.440.916,67 | dif 237.728,25

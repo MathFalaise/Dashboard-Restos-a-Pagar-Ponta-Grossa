@@ -1,0 +1,971 @@
+{
+ "lote": "M",
+ "titulo": "Movimentação dos registros localizados nas conciliações (datas dos lançamentos)",
+ "inicio": "2026-09-30T01:27:43",
+ "gates": {
+  "G1 coleta completa": {
+   "ok": true,
+   "detalhe": {
+    "completa": 7
+   }
+  },
+  "G2 integridade armazém×banco (após coleta)": {
+   "ok": true,
+   "detalhe": []
+  },
+  "G3 fidelidade (registros = bruto; sem chave desconhecida; chaves-base presentes)": {
+   "ok": true,
+   "detalhe": {
+    "esperado": 0,
+    "obtido": 0,
+    "com_chaves_extras": 0,
+    "chaves_base_faltando": []
+   }
+  },
+  "G4 continuidade fechamento→abertura": {
+   "ok": true,
+   "detalhe": "100 pares entidade×ano, 0 falhas"
+  },
+  "G5 regressão temporal ('como estava em 29/09' inalterado)": {
+   "ok": true,
+   "detalhe": {
+    "referencia": "b8a0b2ed2328bf09",
+    "obtido": "b8a0b2ed2328bf09"
+   }
+  },
+  "G6 sem efeito colateral em cortes não tocados pelo lote": {
+   "ok": true,
+   "detalhe": {
+    "alteradas_fora_do_lote": 0,
+    "sumidas": 0
+   }
+  },
+  "G7 testes (produção + investigação)": {
+   "ok": true,
+   "detalhe": "76 passed in 88.34s (0:01:28) | 26 passed in 18.45s"
+  },
+  "G2b integridade armazém×banco (após processamento)": {
+   "ok": true,
+   "detalhe": ""
+  },
+  "G8 sem anomalia estrutural": {
+   "ok": true,
+   "detalhe": {}
+  },
+  "G2c integridade após limpeza": {
+   "ok": true,
+   "detalhe": ""
+  }
+ },
+ "parou_em": null,
+ "backup": "C:\\Users\\maped\\RestosAPagar_local\\backups_operacionais\\20260930-012743_antes-lote-M.sqlite",
+ "cortes_planejados": [],
+ "requisicoes": 7,
+ "fora_do_catalogo": [],
+ "snapshots": [
+  {
+   "uid": "48dffcba67fe41888db9adc2c6d59e12",
+   "tipo": "movimentacao",
+   "parametros": {
+    "anoempenho": 2023,
+    "empenho": 9459,
+    "entidade": 1,
+    "size": 500
+   },
+   "coletada_em": "2026-09-30T01:27:44-03:00",
+   "status": "completa",
+   "sha256": [
+    "67e2746d9241fbe3c131d2439afc66c1eb80c3bb3d847022fa37da8321bf4698"
+   ],
+   "bytes": 1834,
+   "bytes_comprimidos": 436,
+   "recoleta_de": null
+  },
+  {
+   "uid": "9b889eb7fbf54bb39c20b9c5a09ba3a9",
+   "tipo": "movimentacao",
+   "parametros": {
+    "anoempenho": 2011,
+    "empenho": 21040,
+    "entidade": 1,
+    "size": 500
+   },
+   "coletada_em": "2026-09-30T01:27:48-03:00",
+   "status": "completa",
+   "sha256": [
+    "5fd6f5d6c82a28f8759cad02810c1f5b59e8649b5faa6459007e6878051c04b8"
+   ],
+   "bytes": 11480,
+   "bytes_comprimidos": 1267,
+   "recoleta_de": null
+  },
+  {
+   "uid": "9c82b2969d1d4de78fcc202fe2e144c0",
+   "tipo": "movimentacao",
+   "parametros": {
+    "anoempenho": 2023,
+    "empenho": 2401751,
+    "entidade": 1,
+    "size": 500
+   },
+   "coletada_em": "2026-09-30T01:27:49-03:00",
+   "status": "completa",
+   "sha256": [
+    "318c1fd75cf6326cabb8ab78c1523e00b9cdc116949396df8c2e781e229414fb"
+   ],
+   "bytes": 482,
+   "bytes_comprimidos": 254,
+   "recoleta_de": null
+  },
+  {
+   "uid": "0f455a972846475d8ef689c0324a509a",
+   "tipo": "movimentacao",
+   "parametros": {
+    "anoempenho": 2023,
+    "empenho": 1751,
+    "entidade": 15,
+    "size": 500
+   },
+   "coletada_em": "2026-09-30T01:27:51-03:00",
+   "status": "completa",
+   "sha256": [
+    "9ba88694950c2f579c3e648d82baa32f0849abfcb5d3b4539af064786709f609"
+   ],
+   "bytes": 70306,
+   "bytes_comprimidos": 4781,
+   "recoleta_de": null
+  },
+  {
+   "uid": "9c924ee45ab1432ba12a069ca298ebc6",
+   "tipo": "movimentacao",
+   "parametros": {
+    "anoempenho": 2023,
+    "empenho": 22383,
+    "entidade": 1,
+    "size": 500
+   },
+   "coletada_em": "2026-09-30T01:27:53-03:00",
+   "status": "completa",
+   "sha256": [
+    "573a513f78834a63ce9631afda2b015012328ff00e92366cdb64a1dd604d38c0"
+   ],
+   "bytes": 1508,
+   "bytes_comprimidos": 387,
+   "recoleta_de": null
+  },
+  {
+   "uid": "f7c7869d9b6f4bea90545598b3b4c7e7",
+   "tipo": "movimentacao",
+   "parametros": {
+    "anoempenho": 2019,
+    "empenho": 1684,
+    "entidade": 6,
+    "size": 500
+   },
+   "coletada_em": "2026-09-30T01:27:54-03:00",
+   "status": "completa",
+   "sha256": [
+    "dbe92f06bb853efec7d1b7048373b0f26f3e1fbdd15bbda2d462cf21589110a6"
+   ],
+   "bytes": 2342,
+   "bytes_comprimidos": 503,
+   "recoleta_de": null
+  },
+  {
+   "uid": "c891bfdcbb5442729294b25f58c48670",
+   "tipo": "movimentacao",
+   "parametros": {
+    "anoempenho": 2025,
+    "empenho": 1485,
+    "entidade": 5,
+    "size": 500
+   },
+   "coletada_em": "2026-09-30T01:27:56-03:00",
+   "status": "completa",
+   "sha256": [
+    "485d41f0b2441ffcbe8bb634ab4e0c26b63239371144efa1d3a6f54d6a8db507"
+   ],
+   "bytes": 2589,
+   "bytes_comprimidos": 520,
+   "recoleta_de": null
+  }
+ ],
+ "bytes_brutos": 90541,
+ "bytes_comprimidos": 8148,
+ "normalizacao": {
+  "id": 12,
+  "respostas": 536,
+  "ignoradas_sem_pagina": 0,
+  "rp_registro": 228873,
+  "movimentacao_lancamento": 2352,
+  "rreo_valor": 1529,
+  "problemas": [
+   {
+    "coleta_id": 403,
+    "extrator": "rp-rreo-coordenadas/1",
+    "erro": "LayoutDesconhecido: período não encontrado no RREO (coleta 403)"
+   },
+   {
+    "coleta_id": 426,
+    "extrator": "rp-rreo-coordenadas/1",
+    "erro": "LayoutDesconhecido: colunas não encontradas no RREO: {'h', 'j', 'k', 'e', 'd', 'f', 'g', 'L', 'i', 'c'}"
+   },
+   {
+    "coleta_id": 431,
+    "extrator": "rp-rreo-coordenadas/1",
+    "erro": "LayoutDesconhecido: período não encontrado no RREO (coleta 431)"
+   }
+  ]
+ },
+ "registros_do_lote": 0,
+ "derivacoes": {
+  "atual": {
+   "id": 21,
+   "hash": "2f6b4e295ce795934f7051fba31d9d3c1b5bc42c8858d4622a3e89ec88e3f2a5"
+  },
+  "como_estava_29_09": {
+   "id": 22,
+   "hash": "b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68"
+  }
+ },
+ "continuidade": [
+  {
+   "entidade": 1,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 6740,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 7711,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 5962,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 5906,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 5098,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 2737,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 3097,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 4235,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 4651,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 3990,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 45,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 44,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 44,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 33,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 28,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 26,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 27,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 32,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 23,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 13,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 15,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 32,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 4,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 8,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 14,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 8,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 4,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 135,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 31,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 96,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 321,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 379,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 440,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 473,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 593,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 414,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 360,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 273,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 243,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 252,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 265,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 445,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 395,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 30,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 2,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 20,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 25,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 19,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 13,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 4,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 10,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 1,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 8,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 201,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 243,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 229,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 212,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 256,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 49,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 33,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 58,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 12,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 285,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 327,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 193,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 32,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 1656,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 750,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 766,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 847,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 1353,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 1516,
+   "falhas": 0
+  }
+ ],
+ "visoes": {
+  "comuns": 7500,
+  "novas": 0,
+  "sumidas": 0,
+  "alteradas_em_cortes_do_lote": 0
+ },
+ "testes": {
+  "producao": {
+   "ok": true,
+   "resumo": "76 passed in 88.34s (0:01:28)",
+   "segundos": 89
+  },
+  "investigacao": {
+   "ok": true,
+   "resumo": "26 passed in 18.45s",
+   "segundos": 19
+  }
+ },
+ "anomalias_do_lote": {},
+ "perfil_por_exercicio": {},
+ "pares": [],
+ "conciliacao": [],
+ "rreo_sem_extracao": [
+  {
+   "rreo_snapshot": "d369f5b945054a96ba9acd1966f659a1"
+  },
+  {
+   "rreo_snapshot": "722468ea426746d19ff55275aa270fa1"
+  },
+  {
+   "rreo_snapshot": "36f1ef8e4bbc480987a7c7a07c4c5260"
+  }
+ ],
+ "compactacao": [
+  229625856,
+  120520704
+ ],
+ "fim": "2026-09-30T01:31:18"
+}

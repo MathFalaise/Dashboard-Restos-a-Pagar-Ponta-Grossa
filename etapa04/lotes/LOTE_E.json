@@ -1,0 +1,1258 @@
+{
+ "lote": "E",
+ "titulo": "2018–2019",
+ "inicio": "2026-09-30T01:09:00",
+ "gates": {
+  "G1 coleta completa": {
+   "ok": true,
+   "detalhe": {
+    "completa": 22,
+    "fora_do_catalogo (não exigido)": 1
+   }
+  },
+  "G2 integridade armazém×banco (após coleta)": {
+   "ok": true,
+   "detalhe": []
+  },
+  "G3 fidelidade (registros = bruto; sem chave desconhecida; chaves-base presentes)": {
+   "ok": true,
+   "detalhe": {
+    "esperado": 13630,
+    "obtido": 13630,
+    "com_chaves_extras": 0,
+    "chaves_base_faltando": []
+   }
+  },
+  "G4 continuidade fechamento→abertura": {
+   "ok": true,
+   "detalhe": "80 pares entidade×ano, 0 falhas"
+  },
+  "G5 regressão temporal ('como estava em 29/09' inalterado)": {
+   "ok": true,
+   "detalhe": {
+    "referencia": "b8a0b2ed2328bf09",
+    "obtido": "b8a0b2ed2328bf09"
+   }
+  },
+  "G6 sem efeito colateral em cortes não tocados pelo lote": {
+   "ok": true,
+   "detalhe": {
+    "alteradas_fora_do_lote": 0,
+    "sumidas": 0
+   }
+  },
+  "G7 testes (produção + investigação)": {
+   "ok": true,
+   "detalhe": "75 passed in 83.28s (0:01:23) | 26 passed in 18.23s"
+  },
+  "G2b integridade armazém×banco (após processamento)": {
+   "ok": true,
+   "detalhe": ""
+  },
+  "G8 sem anomalia estrutural": {
+   "ok": true,
+   "detalhe": {}
+  },
+  "G2c integridade após limpeza": {
+   "ok": true,
+   "detalhe": ""
+  }
+ },
+ "parou_em": null,
+ "backup": "C:\\Users\\maped\\RestosAPagar_local\\backups_operacionais\\20260930-010900_antes-lote-E.sqlite",
+ "cortes_planejados": [
+  [
+   1,
+   2018,
+   "2018-12-31"
+  ],
+  [
+   15,
+   2018,
+   "2018-12-31"
+  ],
+  [
+   4,
+   2018,
+   "2018-12-31"
+  ],
+  [
+   5,
+   2018,
+   "2018-12-31"
+  ],
+  [
+   8,
+   2018,
+   "2018-12-31"
+  ],
+  [
+   3,
+   2018,
+   "2018-12-31"
+  ],
+  [
+   6,
+   2018,
+   "2018-12-31"
+  ],
+  [
+   9,
+   2018,
+   "2018-12-31"
+  ],
+  [
+   10,
+   2018,
+   "2018-12-31"
+  ],
+  [
+   11,
+   2018,
+   "2018-12-31"
+  ],
+  [
+   1,
+   2019,
+   "2019-12-31"
+  ],
+  [
+   15,
+   2019,
+   "2019-12-31"
+  ],
+  [
+   4,
+   2019,
+   "2019-12-31"
+  ],
+  [
+   5,
+   2019,
+   "2019-12-31"
+  ],
+  [
+   8,
+   2019,
+   "2019-12-31"
+  ],
+  [
+   3,
+   2019,
+   "2019-12-31"
+  ],
+  [
+   6,
+   2019,
+   "2019-12-31"
+  ],
+  [
+   9,
+   2019,
+   "2019-12-31"
+  ],
+  [
+   10,
+   2019,
+   "2019-12-31"
+  ],
+  [
+   11,
+   2019,
+   "2019-12-31"
+  ]
+ ],
+ "requisicoes": 27,
+ "fora_do_catalogo": [
+  {
+   "entidade": 15,
+   "exercicio": 2018,
+   "status": "completa",
+   "registros": 0
+  }
+ ],
+ "snapshots": [
+  {
+   "uid": "9284d9cec98e43bc9fea3f406596d2ff",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2018-12-31",
+    "dataInicial": "2018-01-01",
+    "entidade": 1,
+    "exercicio": 2018,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:01-03:00",
+   "status": "completa",
+   "sha256": [
+    "42683667b70bcf04cc648b3742522ed246e2cd5d0c19986d86de4979ea63a5a6",
+    "76c667d37f5cb0451cfb56ed9d8f9c549d490fa59718d01b9cbe3c59c9b694fe",
+    "cc2219a72f4e564d5086545535becc1598a81e5b32d14a7e3e51b4e27ef1e105"
+   ],
+   "bytes": 4187049,
+   "bytes_comprimidos": 367130,
+   "recoleta_de": null
+  },
+  {
+   "uid": "cdabfced2f094d17a9655f2693fb60cc",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2018-12-31",
+    "dataInicial": "2018-01-01",
+    "entidade": 15,
+    "exercicio": 2018,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:13-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": null
+  },
+  {
+   "uid": "c6820cca9d304bd1941bfef51fb52027",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2018-12-31",
+    "dataInicial": "2018-01-01",
+    "entidade": 4,
+    "exercicio": 2018,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:15-03:00",
+   "status": "completa",
+   "sha256": [
+    "b6e9de9200b21cdbefa0bc4a970058715ff126d0905e94a471a794cb0ec165a2"
+   ],
+   "bytes": 9595,
+   "bytes_comprimidos": 1456,
+   "recoleta_de": null
+  },
+  {
+   "uid": "f5585bfa04534ffa826ca8b5f0d6dad4",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2018-12-31",
+    "dataInicial": "2018-01-01",
+    "entidade": 5,
+    "exercicio": 2018,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:17-03:00",
+   "status": "completa",
+   "sha256": [
+    "1559402e2150f4bd44289e15fa939ba6b06a5f4a5e004113895ded29c2522498"
+   ],
+   "bytes": 73127,
+   "bytes_comprimidos": 6426,
+   "recoleta_de": null
+  },
+  {
+   "uid": "9f3f36c166ef499c98538e639d120d57",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2018-12-31",
+    "dataInicial": "2018-01-01",
+    "entidade": 8,
+    "exercicio": 2018,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:19-03:00",
+   "status": "completa",
+   "sha256": [
+    "38b7063fbea8f0a7d8dcba4febee00694733317127422653badcb0cf8fe49ba4"
+   ],
+   "bytes": 15378,
+   "bytes_comprimidos": 1786,
+   "recoleta_de": null
+  },
+  {
+   "uid": "13fb741120604e4697a1a922e0581ef3",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2018-12-31",
+    "dataInicial": "2018-01-01",
+    "entidade": 3,
+    "exercicio": 2018,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:21-03:00",
+   "status": "completa",
+   "sha256": [
+    "0d645d6733fd3502af3601b36acd0463bd92282e0095e9fe2cc8b9fd73b56c9a"
+   ],
+   "bytes": 31439,
+   "bytes_comprimidos": 2993,
+   "recoleta_de": null
+  },
+  {
+   "uid": "114c2115fdd445f6af06e21713bf909d",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2018-12-31",
+    "dataInicial": "2018-01-01",
+    "entidade": 6,
+    "exercicio": 2018,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:23-03:00",
+   "status": "completa",
+   "sha256": [
+    "d778e6588b2f2fdd88e6792353da53b8e5cb8469bf89e18fc3e073fce9b33e7c"
+   ],
+   "bytes": 187573,
+   "bytes_comprimidos": 12412,
+   "recoleta_de": null
+  },
+  {
+   "uid": "bea8a090f0fd4781aa2284f3556fbd94",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2018-12-31",
+    "dataInicial": "2018-01-01",
+    "entidade": 9,
+    "exercicio": 2018,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:25-03:00",
+   "status": "completa",
+   "sha256": [
+    "0810d9cce657a0a72af2823f4094b5fc6fc6343955c52645ff988df499217db4"
+   ],
+   "bytes": 161890,
+   "bytes_comprimidos": 12920,
+   "recoleta_de": null
+  },
+  {
+   "uid": "a5896d39a45e45ac9086fd79fa045014",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2018-12-31",
+    "dataInicial": "2018-01-01",
+    "entidade": 10,
+    "exercicio": 2018,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:27-03:00",
+   "status": "completa",
+   "sha256": [
+    "477bae9e1496c594c8ba7cba9c4e4dc998880af14f49ff4e2603625d9e6147b4"
+   ],
+   "bytes": 9073,
+   "bytes_comprimidos": 1395,
+   "recoleta_de": null
+  },
+  {
+   "uid": "517064052f05409aaa57e8ac01b00b39",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2018-12-31",
+    "dataInicial": "2018-01-01",
+    "entidade": 11,
+    "exercicio": 2018,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:28-03:00",
+   "status": "completa",
+   "sha256": [
+    "3c07fc4cca69e8f5f3b502fc390b14bda73fc95812d9b5eedb4d2978ba2100cc"
+   ],
+   "bytes": 137377,
+   "bytes_comprimidos": 10524,
+   "recoleta_de": null
+  },
+  {
+   "uid": "bdc10a6a27954a8f9c0d9afea1d5915e",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2019-12-31",
+    "dataInicial": "2019-01-01",
+    "entidade": 1,
+    "exercicio": 2019,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:30-03:00",
+   "status": "completa",
+   "sha256": [
+    "def85256d96875e1f16e4111aa29dc4e5c2ecb87b8efe039dfa50a997653b24b",
+    "bf61dc24b8b2e1565f4c696f954a710ea773cecef01d83ca6afb4215b6ac06ee",
+    "2fe280894e9d447d68e002e3be593f6c6db717c3d84a721b7b672a63e4dddedb"
+   ],
+   "bytes": 4199852,
+   "bytes_comprimidos": 369690,
+   "recoleta_de": null
+  },
+  {
+   "uid": "9514f66669cf49bba534ef48f74204e4",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2019-12-31",
+    "dataInicial": "2019-01-01",
+    "entidade": 15,
+    "exercicio": 2019,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:42-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": null
+  },
+  {
+   "uid": "2d00d5b98c2d4137bfdd5608fa422048",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2019-12-31",
+    "dataInicial": "2019-01-01",
+    "entidade": 4,
+    "exercicio": 2019,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:44-03:00",
+   "status": "completa",
+   "sha256": [
+    "936e33e5bc25f70d87e3718e1f18cd51ff2b7b3c1dc8b9398a2b1d7b3fa62ecb"
+   ],
+   "bytes": 11085,
+   "bytes_comprimidos": 1686,
+   "recoleta_de": null
+  },
+  {
+   "uid": "05433000ffce423e84eeb37147bb9b48",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2019-12-31",
+    "dataInicial": "2019-01-01",
+    "entidade": 5,
+    "exercicio": 2019,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:46-03:00",
+   "status": "completa",
+   "sha256": [
+    "419d8673554f867083c426c023b2c252b4e89d6b17adc90be9e9ace4131ba144"
+   ],
+   "bytes": 237679,
+   "bytes_comprimidos": 18560,
+   "recoleta_de": null
+  },
+  {
+   "uid": "3cd68ac684f242fc93186be45b7a0642",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2019-12-31",
+    "dataInicial": "2019-01-01",
+    "entidade": 8,
+    "exercicio": 2019,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:48-03:00",
+   "status": "completa",
+   "sha256": [
+    "4f1dd436cdc5d113eabd1da73948b2a229e14f1f6fe630f4dd59dae8bd220106"
+   ],
+   "bytes": 18831,
+   "bytes_comprimidos": 2209,
+   "recoleta_de": null
+  },
+  {
+   "uid": "65fc145fa4e04f90911f0272a8d49a65",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2019-12-31",
+    "dataInicial": "2019-01-01",
+    "entidade": 3,
+    "exercicio": 2019,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:50-03:00",
+   "status": "completa",
+   "sha256": [
+    "9401e27d59a40890334b5054300020efc95c97d6903c151b33683cff5f7295b6"
+   ],
+   "bytes": 24139,
+   "bytes_comprimidos": 2174,
+   "recoleta_de": null
+  },
+  {
+   "uid": "66e252a00e31458eab3c78a875984606",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2019-12-31",
+    "dataInicial": "2019-01-01",
+    "entidade": 6,
+    "exercicio": 2019,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:52-03:00",
+   "status": "completa",
+   "sha256": [
+    "10f341ed88c13c3fc83e182bc27b9304bb17ee84329608df107013fe2e1824ff"
+   ],
+   "bytes": 197828,
+   "bytes_comprimidos": 13007,
+   "recoleta_de": null
+  },
+  {
+   "uid": "3ce398f887954e708d8a52c6c9ff05bf",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2019-12-31",
+    "dataInicial": "2019-01-01",
+    "entidade": 9,
+    "exercicio": 2019,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:54-03:00",
+   "status": "completa",
+   "sha256": [
+    "7083d7d9e90a954eeb7700d3b7a85b6218582320c8df73b235373c5f64238a35"
+   ],
+   "bytes": 151020,
+   "bytes_comprimidos": 12499,
+   "recoleta_de": null
+  },
+  {
+   "uid": "f6676255265747edb3a2715b56e6194a",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2019-12-31",
+    "dataInicial": "2019-01-01",
+    "entidade": 10,
+    "exercicio": 2019,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:56-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": null
+  },
+  {
+   "uid": "e0c1bcbc20504e88a6203cad6dde6b8f",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2019-12-31",
+    "dataInicial": "2019-01-01",
+    "entidade": 11,
+    "exercicio": 2019,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:09:57-03:00",
+   "status": "completa",
+   "sha256": [
+    "d7fbb0a4d1b80d0ecc91c003e6fe70731b55aacc2df7872962cd24a7450cbaa9"
+   ],
+   "bytes": 23434,
+   "bytes_comprimidos": 2403,
+   "recoleta_de": null
+  },
+  {
+   "uid": "eb37995772c44a33b41b091b17dfa1dd",
+   "tipo": "publicacoes",
+   "parametros": {
+    "entidade": 1,
+    "exercicio": 2018
+   },
+   "coletada_em": "2026-09-30T01:09:59-03:00",
+   "status": "completa",
+   "sha256": [
+    "867bff057412177bed6e90aa4ccd915d9b27d573ed1c14084f6087df32558875"
+   ],
+   "bytes": 16330,
+   "bytes_comprimidos": 2478,
+   "recoleta_de": null
+  },
+  {
+   "uid": "d369f5b945054a96ba9acd1966f659a1",
+   "tipo": "rreo_pdf",
+   "parametros": {
+    "dataArquivo": "2019-04-12",
+    "entidade": 1,
+    "exercicio": 2018,
+    "id_arquivo": 34898,
+    "nomeArquivo": "ANEXO VII RREO.pdf",
+    "rotulo": "6º Bimestre"
+   },
+   "coletada_em": "2026-09-30T01:10:01-03:00",
+   "status": "completa",
+   "sha256": [
+    "9b4c9f947df13ac1060d064cedf0f4a6fe2a87a8f511c412e5c00c6ccb083af8"
+   ],
+   "bytes": 55364,
+   "bytes_comprimidos": 30189,
+   "recoleta_de": null
+  },
+  {
+   "uid": "c79398da1ef44ac6a390c01397761dc1",
+   "tipo": "publicacoes",
+   "parametros": {
+    "entidade": 1,
+    "exercicio": 2019
+   },
+   "coletada_em": "2026-09-30T01:10:06-03:00",
+   "status": "completa",
+   "sha256": [
+    "9068e2021953394af10bbdfde683d0ad9a374bec4448d3e36e95d3527069f7f4"
+   ],
+   "bytes": 14244,
+   "bytes_comprimidos": 1842,
+   "recoleta_de": null
+  }
+ ],
+ "bytes_brutos": 9763006,
+ "bytes_comprimidos": 874190,
+ "normalizacao": {
+  "id": 9,
+  "respostas": 451,
+  "ignoradas_sem_pagina": 0,
+  "rp_registro": 165457,
+  "movimentacao_lancamento": 2019,
+  "rreo_valor": 1457,
+  "problemas": [
+   {
+    "coleta_id": 403,
+    "extrator": "rp-rreo-coordenadas/1",
+    "erro": "LayoutDesconhecido: período não encontrado no RREO (coleta 403)"
+   }
+  ]
+ },
+ "registros_do_lote": 13630,
+ "derivacoes": {
+  "atual": {
+   "id": 15,
+   "hash": "0b866acf4bdc75b7979475a24808ce6df6dc5356bdb48a664e908d1f00e7a721"
+  },
+  "como_estava_29_09": {
+   "id": 16,
+   "hash": "b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68"
+  }
+ },
+ "continuidade": [
+  {
+   "entidade": 1,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 5962,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 5906,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 5098,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 2737,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 3097,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 4235,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 4651,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 3990,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 44,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 33,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 28,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 26,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 27,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 13,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 15,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 32,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 4,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 8,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 14,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 8,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 4,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 96,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 321,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 379,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 440,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 473,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 593,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 414,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 360,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 252,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 265,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 445,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 395,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 20,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 25,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 19,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 13,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 4,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 10,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 1,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 8,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 229,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 212,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 256,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 49,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 12,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 193,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 32,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 1656,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 750,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 766,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 847,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 1353,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 1516,
+   "falhas": 0
+  }
+ ],
+ "visoes": {
+  "comuns": 5940,
+  "novas": 780,
+  "sumidas": 0,
+  "alteradas_em_cortes_do_lote": 0
+ },
+ "testes": {
+  "producao": {
+   "ok": true,
+   "resumo": "75 passed in 83.28s (0:01:23)",
+   "segundos": 84
+  },
+  "investigacao": {
+   "ok": true,
+   "resumo": "26 passed in 18.23s",
+   "segundos": 19
+  }
+ },
+ "anomalias_do_lote": {
+  "LIQ-NEG": 571,
+  "PAGOPROC-SEM-PROC": 1
+ },
+ "perfil_por_exercicio": {
+  "2018": {
+   "registros": 6821,
+   "programatica_27_dig": 167,
+   "sem_programatica_detalhada": 1274,
+   "fonte_4_dig": 3328,
+   "fonte_3_dig": 2601,
+   "programatica_28_dig": 6654,
+   "fonte_1_dig": 672,
+   "fonte_2_dig": 220
+  },
+  "2019": {
+   "registros": 6809,
+   "programatica_27_dig": 167,
+   "sem_programatica_detalhada": 987,
+   "fonte_4_dig": 3675,
+   "fonte_3_dig": 2342,
+   "programatica_28_dig": 6642,
+   "fonte_1_dig": 522,
+   "fonte_2_dig": 270
+  }
+ },
+ "pares": [],
+ "conciliacao": [],
+ "rreo_sem_extracao": [
+  {
+   "rreo_snapshot": "d369f5b945054a96ba9acd1966f659a1"
+  }
+ ],
+ "compactacao": [
+  166383616,
+  91316224
+ ],
+ "fim": "2026-09-30T01:13:02"
+}

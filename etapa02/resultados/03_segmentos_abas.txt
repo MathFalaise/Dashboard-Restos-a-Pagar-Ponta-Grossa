@@ -1,0 +1,38 @@
+== ent=1 ex=2026 2026-01-01..2026-08-31: P=1663 N=3091 S=4557
+   so P=1466 so N=2894 ambos=197 | uniao=4557 | S - uniao=0 | uniao - S=0
+   campos que diferem entre a aba e SemTipo para o mesmo empenho: nenhum
+   so P   condicoes: {('proc>0', 'aproc=0'): 1466}
+   so N   condicoes: {('proc=0', 'aproc>0'): 2894}
+   ambos  condicoes: {('proc>0', 'aproc>0'): 197}
+
+   campo                            so P             so N            ambos          SemTipo
+   proc                    21.675.080,16             0,00     7.202.424,17    28.877.504,33
+   aproc                            0,00   124.014.554,87    13.097.523,90   137.112.078,77
+   canceladoProc                    0,00             0,00             0,00             0,00
+   pagoProc                18.531.405,62            49,50     7.025.924,97    25.557.380,09
+   pagoProcEstornado           15.900,00            49,50       156.803,88       172.753,38
+   canceladoAProc              78.570,99     6.831.824,74     1.183.919,70     8.094.315,43
+   pagoAProc                        0,00    75.512.413,19     8.143.004,47    83.655.417,66
+   pagoAProcEstornado               0,00     1.347.024,70       589.252,31     1.936.277,01
+   liquidado                 -102.737,59    76.533.849,13     8.719.779,36    85.150.890,90
+   retencao                         0,00     3.470.988,86       266.544,17     3.737.533,03
+   registros com valor negativo por campo (SemTipo): {'liquidado': 5}
+== ent=1 ex=2025 2025-01-01..2025-12-31: P=699 N=3364 S=3990
+   so P=626 so N=3291 ambos=73 | uniao=3990 | S - uniao=0 | uniao - S=0
+   campos que diferem entre a aba e SemTipo para o mesmo empenho: nenhum
+   so P   condicoes: {('proc>0', 'aproc=0'): 626}
+   so N   condicoes: {('proc=0', 'aproc>0'): 3291}
+   ambos  condicoes: {('proc>0', 'aproc>0'): 73}
+
+   campo                            so P             so N            ambos          SemTipo
+   proc                    21.275.292,66             0,00     6.381.747,34    27.657.040,00
+   aproc                            0,00   168.486.828,36     7.464.415,65   175.951.244,01
+   canceladoProc                    0,00             0,00             0,00             0,00
+   pagoProc                19.953.438,09             0,00     6.249.838,02    26.203.276,11
+   pagoProcEstornado          161.568,29             0,00             0,00       161.568,29
+   canceladoAProc              53.736,13    19.227.877,45     1.533.503,02    20.815.116,60
+   pagoAProc                      462,00   130.506.929,26     5.781.971,00   136.289.362,26
+   pagoAProcEstornado               0,00     3.620.435,61        12.028,75     3.632.464,36
+   liquidado                  -53.736,13   130.597.932,24     5.782.226,43   136.326.422,54
+   retencao                         5,54     4.244.881,18       240.051,02     4.484.937,74
+   registros com valor negativo por campo (SemTipo): {'liquidado': 13}
