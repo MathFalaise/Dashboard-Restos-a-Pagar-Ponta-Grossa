@@ -8,7 +8,7 @@ e da especificacao OpenAPI guardada no bruto; nada aqui afirma algo que o projet
 ELOTECH = {
     "id": "elotech",
     "papel": "fonte operacional primária",
-    "rotulo": "Portal da Transparência de Ponta Grossa — API Elotech (Oxy Transparência)",
+    "rotulo": "Portal da Transparência de Ponta Grossa — API do sistema Elotech/Oxy Transparência",
     "descricao": ("Registros granulares de Restos a Pagar por empenho, coletados da API do Portal da Transparência "
                   "de Ponta Grossa (servicos.pontagrossa.pr.gov.br/portaltransparencia-api) e guardados em snapshots "
                   "imutáveis antes de qualquer tratamento."),
@@ -45,7 +45,7 @@ EXTERNA = {
 FONTES = {f["id"]: f for f in (ELOTECH, RREO, EXTERNA)}
 
 NATUREZAS = {
-    "fonte": "Dado da fonte — valor retornado pela API Elotech para um registro",
+    "da_fonte": "Dado da fonte — valor retornado pela API Elotech para um registro",
     "publicado": "Dado publicado — valor presente no RREO (PDF oficial)",
     "derivado": "Valor derivado — soma ou fórmula documentada pelo projeto sobre dados da API, com regra operacional",
     "analitico": "Valor analítico — resultado de hipótese ou regra experimental; não é dado oficial",

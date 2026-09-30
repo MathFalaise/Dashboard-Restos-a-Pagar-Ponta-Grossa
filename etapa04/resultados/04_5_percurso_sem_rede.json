@@ -1,0 +1,136 @@
+[
+ {
+  "tela": "inicializacao/resumo padrao",
+  "status": 200,
+  "segundos": 0.206,
+  "bytes": 24020,
+  "tem_proveniencia": true,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "resumo Municipio 2025",
+  "status": 200,
+  "segundos": 0.09,
+  "bytes": 27589,
+  "tem_proveniencia": true,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "resumo entidade 1 2024",
+  "status": 200,
+  "segundos": 0.073,
+  "bytes": 19728,
+  "tem_proveniencia": true,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "resumo como estava em 29/09",
+  "status": 200,
+  "segundos": 0.07,
+  "bytes": 19060,
+  "tem_proveniencia": true,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "entidades 2016",
+  "status": 200,
+  "segundos": 0.085,
+  "bytes": 9582,
+  "tem_proveniencia": false,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "empenhos Municipio 2025",
+  "status": 200,
+  "segundos": 0.066,
+  "bytes": 58056,
+  "tem_proveniencia": true,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "empenhos filtrados",
+  "status": 200,
+  "segundos": 0.043,
+  "bytes": 39783,
+  "tem_proveniencia": true,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "empenhos pagina 20",
+  "status": 200,
+  "segundos": 0.058,
+  "bytes": 56760,
+  "tem_proveniencia": true,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "detalhe 5659/2025",
+  "status": 200,
+  "segundos": 0.025,
+  "bytes": 14135,
+  "tem_proveniencia": true,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "detalhe 2401751/2023",
+  "status": 200,
+  "segundos": 0.02,
+  "bytes": 12523,
+  "tem_proveniencia": true,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "retratos (indice)",
+  "status": 200,
+  "segundos": 0.003,
+  "bytes": 5470,
+  "tem_proveniencia": false,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "retratos 1/2025/31-12",
+  "status": 200,
+  "segundos": 0.037,
+  "bytes": 3650,
+  "tem_proveniencia": true,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "reconciliacao (indice + coerencia)",
+  "status": 200,
+  "segundos": 0.429,
+  "bytes": 22243,
+  "tem_proveniencia": false,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "reconciliacao 2024 entidade",
+  "status": 200,
+  "segundos": 0.016,
+  "bytes": 35958,
+  "tem_proveniencia": true,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "pares 2026",
+  "status": 200,
+  "segundos": 0.032,
+  "bytes": 113325,
+  "tem_proveniencia": false,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "metodologia",
+  "status": 200,
+  "segundos": 0.014,
+  "bytes": 13268,
+  "tem_proveniencia": true,
+  "fonte_visivel": true
+ },
+ {
+  "tela": "comparar retratos (link)",
+  "status": 200,
+  "segundos": 0.15,
+  "bytes": 3946
+ }
+]

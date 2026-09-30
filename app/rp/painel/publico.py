@@ -12,6 +12,7 @@ Nao ha dado bancario nos campos coletados.
 import re
 
 CAMPOS_RESTRITOS = ("fornecedor", "nome", "cnpj", "cnpj_nome")
+TIPOS_CREDOR = ("pessoa jurídica", "pessoa física", "não identificado")
 OMITIDO = "[documento omitido]"
 PESSOA_FISICA_OMITIDA = "[nome de pessoa física omitido]"
 

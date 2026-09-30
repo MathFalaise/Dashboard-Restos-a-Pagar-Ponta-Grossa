@@ -51,7 +51,8 @@ API do Portal da Transparência (Elotech/Oxy)
              movimentacao_interpretada (MOV-REF), anomalia, verificacao, visao_valor
              └─ camada de consulta (app/rp/painel) — SOMENTE LEITURA
                 indicadores = somas de campos da API e de S1–S3, só com regras operacionais
-                └─ dashboard (ainda não existe): lê só da camada de consulta
+                └─ interface pública (app/rp/interface, Subetapa 04.5): lê só da camada de consulta;
+                   nunca chama a API; funciona sem internet
 ```
 
 ### 3.2 Fluxo de reconciliação: RREO → diferenças
@@ -84,11 +85,11 @@ Os dois fluxos só se encontram na conciliação. A comparação entre publicaç
 
 | Natureza | Definição | Exemplo |
 |---|---|---|
-| **Dado da fonte** | valor devolvido pela API para um registro | `pagoProc` de 5659/2025 |
-| **Dado publicado** | valor impresso no RREO | coluna (h) do RREO do 4º bimestre de 2026 |
-| **Valor derivado** | soma ou fórmula documentada sobre dados da API, com regra **operacional** | soma de S1 do corte |
-| **Valor analítico** | resultado de regra experimental, não recomendada ou de hipótese | visões CONS-PAR; divisão CANC v1; projeção RREO-COL v1/v2 |
-| **Diferença** | divergência entre duas fontes ou entre dois retratos | API − RREO; L(A) − (a)+(f)(A+1); retrato B − retrato A |
+| **Dado da fonte** (`da_fonte`) | valor devolvido pela API para um registro | `pagoProc` de 5659/2025 |
+| **Dado publicado** (`publicado`) | valor impresso no RREO | coluna (h) do RREO do 4º bimestre de 2026 |
+| **Valor derivado** (`derivado`) | soma ou fórmula documentada sobre dados da API, com regra **operacional** | soma de S1 do corte |
+| **Valor analítico** (`analitico`) | resultado de regra experimental, não recomendada ou de hipótese | visões CONS-PAR; divisão CANC v1; projeção RREO-COL v1/v2 |
+| **Diferença** (`diferenca`) | divergência entre duas fontes ou entre dois retratos | API − RREO; L(A) − (a)+(f)(A+1); retrato B − retrato A |
 
 Valor calculado por regra que não esteja `operacional` sai como analítico, e nunca entra num indicador publicado (`RegraNaoOperacional`).
 
@@ -168,10 +169,11 @@ Valor calculado por regra que não esteja `operacional` sai como analítico, e n
 | `app/rp/painel/fontes.py` | fontes, naturezas, dicionário de campos (nome técnico ↔ amigável) e metodologia |
 | `app/rp/painel/publico.py` | minimização de dados do nível público |
 | `app/rp/painel/explicacoes.py` | explicações documentadas das diferenças (transcrição dos relatórios) |
-| `app/rp/cli.py` | `python -m rp painel <consulta>` (JSON) e `python -m rp registrar-evidencia` |
+| `app/rp/interface/` | interface pública somente leitura (04.5): aplicação WSGI da biblioteca padrão, páginas HTML sem JavaScript |
+| `app/rp/cli.py` | `python -m rp painel <consulta>` (JSON), `python -m rp interface` e `python -m rp registrar-evidencia` |
 
 ## 12. O que não existe, de propósito
 
-- **Não há frontend.** Esta revisão construiu só a infraestrutura de leitura. O dashboard futuro deve usar `rp.painel.Painel` (Python) ou `python -m rp painel ...` (JSON), e nunca chamar a API da Elotech.
+- **Interface (04.5):** HTML gerado no servidor a partir de `rp.painel.Painel`, sem JavaScript e sem recurso externo; nunca chama a API da Elotech. Não há autenticação, usuários, alertas nem publicação na internet (`RELATORIO_04_5.md`).
 - Não há agendamento de coleta.
 - Não há regra criada para "fechar" diferença com o RREO.

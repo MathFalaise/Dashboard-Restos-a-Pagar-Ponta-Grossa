@@ -14,69 +14,15 @@ from decimal import Decimal
 from pathlib import Path
 
 import pytest
-from conftest import RAIZ_PROJETO
+from conftest import RAIZ_PROJETO, registro_sintetico
 
 from rp import banco, consultas, derivar, evidencias, governanca, normalizar, regras
-from rp.armazem import Armazem
-from rp.coletor import EP_ENT, EP_EXE, EP_RP
-from rp.config import carregar
 from rp.painel import Painel, consulta, explicacoes, fontes, publico
-from rp.snapshots import gravar_snapshot
 
-COL = {"nome": "teste", "versao": "1", "sha256_codigo": None}
 RESTRITOS = set(publico.CAMPOS_RESTRITOS)
 
 
-# ------------------------------------------------------------------ mundo SINTETICO
-def _reg(emp, ano=2024, entidade=1, **kw):
-    r = {k: 0 for k in normalizar.DINHEIRO}
-    r.update({"entidade": entidade, "anoempenho": ano, "empenho": emp, "empenhoExercicio": f"{emp}/{ano}",
-              "cnpj": "11.222.333/0001-44", "dataEmissao": f"{ano}-03-01", "nome": "11.222.333/0001-44 - EMPRESA LTDA",
-              "cnpjNome": "11.222.333/0001-44 - EMPRESA LTDA", "fornecedor": 7, "fonteRecurso": 1000, "aproc": 100.0})
-    r.update(kw)
-    return r
-
-
-class Mundo:
-    """Banco e armazem temporarios com catalogos e listagens inventados."""
-
-    def __init__(self, tmp_path):
-        self.cfg = carregar(dados_locais=tmp_path / "l", snapshots=tmp_path / "s", backups=tmp_path / "b")
-        self.con = banco.abrir(self.cfg)
-        self.armazem = Armazem(self.cfg.snapshots)
-
-    def _snap(self, tipo, endpoint, params, corpo, quando):
-        return gravar_snapshot(self.con, self.armazem, tipo=tipo, endpoint=endpoint, parametros=params, coletada_em=quando,
-                               origem_carimbo="relogio_coletor", status="completa", coletor=COL,
-                               respostas=[{"url": "sintetico", "http_status": 200, "corpo": json.dumps(corpo).encode()}])
-
-    def catalogos(self, exercicios, quando="2026-09-29T10:00:00-03:00"):
-        """`exercicios` = {entidade: [exercicios oficiais]}."""
-        self._snap("entidades", EP_ENT, {}, [{"id": e, "nome": f"ENTIDADE {e}", "cnpj": None, "tipo": "A"}
-                                             for e in exercicios], quando)
-        for e, anos in exercicios.items():
-            self._snap("exercicios", f"{EP_EXE}/{e}", {"entidade": e},
-                       [{"id": {"entidade": {"id": e}, "exercicio": x}, "aberto": False, "fechado": True} for x in anos],
-                       quando)
-
-    def listagem(self, entidade, exercicio, data_final, regs, quando):
-        p = {"entidade": entidade, "exercicio": exercicio, "dataInicial": f"{exercicio}-01-01", "dataFinal": data_final,
-             "size": 2000}
-        return self._snap("rp_listagem", EP_RP, p, {"content": regs, "last": True, "totalElements": len(regs)}, quando)
-
-    def processar(self, em=None):
-        nid, _ = normalizar.normalizar(self.con)
-        return nid, derivar.derivar(self.con, nid, em)
-
-    def painel(self, nivel="publico"):
-        return Painel.abrir(self.cfg.banco, nivel)
-
-
-@pytest.fixture
-def mundo(tmp_path):
-    m = Mundo(tmp_path)
-    yield m
-    m.con.close()
+_reg = registro_sintetico
 
 
 def _tudo(p, ex, df, ent=None):
@@ -517,6 +463,6 @@ def test_fontes_declaram_a_hierarquia_elotech_rreo():
     assert "reconciliação" in f["hierarquia"][1]
     assert fontes.RREO["papel"] == "publicação oficial independente / fonte de reconciliação"
     assert "nunca é ajustado" in fontes.METODOLOGIA["tratamento"]
-    assert set(fontes.NATUREZAS) == {"fonte", "publicado", "derivado", "analitico", "diferenca"}
+    assert set(fontes.NATUREZAS) == {"da_fonte", "publicado", "derivado", "analitico", "diferenca"}
     d = Painel.dicionario_campos()["campos"]
     assert d["pago_aproc_c"]["campo_api"] == "pagoAProc" and d["cnpj"]["restrito_no_nivel_publico"]

@@ -4,6 +4,7 @@ Código de **produção**:
 - **04.1:** coletor e camada bruta.
 - **04.2:** processamento, com a normalização (camada 1) e a derivação (camada 2) de todas as regras lado a lado.
 - **Revisão corretiva 01–04.4:** camada de consulta somente leitura para o futuro dashboard (`rp/painel`), governança e parâmetros das regras, evidência externa e registro do método de extração do RREO (esquema v4).
+- **04.5:** interface pública somente leitura (`rp/interface`), sobre a camada `rp/painel`: `python -m rp interface`.
 
 **Fontes** (detalhe em `../etapa04/ARQUITETURA_FONTES.md`):
 - API do Portal da Transparência de Ponta Grossa (Elotech/Oxy Transparência) → fonte primária dos dados operacionais de RP;
@@ -162,9 +163,25 @@ Registrar documento externo (e-SIC, norma, nota técnica): guarda o arquivo com 
 python -m rp registrar-evidencia --tipo e-SIC --descricao "Resposta sobre as cópias 24xxxxx" --arquivo resposta.pdf --origem "e-SIC, protocolo n." --data 2026-10-15
 ```
 
+## Interface pública (somente leitura)
+
+```bash
+python -m rp interface
+```
+
+Abre em `http://127.0.0.1:8050/` (use `--porta` para outra porta e `--banco` para outro arquivo). Só esta máquina acessa, a menos que se passe `--host`; com outro host, a interface avisa que fica acessível pela rede sem autenticação.
+
+- **Fluxo:** API Elotech → coletor → snapshot imutável → normalização → derivação → `rp/painel` → `rp/interface`. A interface nunca chama a API da Elotech: funciona com a internet desligada e com o portal fora do ar. A coleta continua sendo outro processo.
+- **Somente leitura:** cada requisição abre o banco em modo só leitura (URI `mode=ro` + `PRAGMA query_only`); só GET e HEAD; nada de JavaScript, CDN, fonte externa ou imagem externa; cabeçalhos de segurança com CSP restritiva.
+- **Telas:** Resumo (indicadores do corte, entidades abrangidas, retratos e conferência com o RREO), Entidades, Empenhos (filtros e paginação), detalhe de um empenho (valores, classificação, par espelhado, movimentação e origem do dado), Retratos e comparação de retratos, Reconciliação com o RREO (e coerência entre publicações), Metodologia e fontes, e a área técnica de pares espelhados.
+- **Fonte e natureza:** todo valor mostra fonte (API Elotech ou RREO Anexo VII), natureza (`da_fonte`, `publicado`, `derivado`, `analitico`, `diferenca`) e regra; a origem (snapshot, derivação, resposta HTTP, hash do objeto bruto) fica num bloco "Origem do dado".
+- **Retrato:** toda tela de valores diz exercício, corte e data da coleta ("Estado atual da base para o exercício de 2024, corte 31/12/2024, coletado em 30/09/2026"). O campo "Como estava em" mostra o retrato vigente numa data.
+- **Dados pessoais:** listas e totais sem nome, código ou documento do credor (só o tipo); detalhe com nome de pessoa jurídica sem documento; nome de pessoa física omitido; filtro de credor só por CNPJ completo de pessoa jurídica. Não há modo interno na interface.
+- **Regras:** só regra operacional compõe indicador. Visões analíticas (CONS-PAR) não aparecem; regras experimentais ou não recomendadas aparecem rotuladas na reconciliação, na metodologia e como "valor analítico (não oficial)" no detalhe.
+
 ## Camada de consulta do dashboard (somente leitura)
 
-`rp.painel.Painel` abre o banco em modo só leitura e nunca chama a API. Todo valor sai com natureza (fonte, publicado, derivado, analítico, diferença), regras e situação delas, fonte, rótulo de retrato ("Estado atual da base..." ou "Como a base estava em...") e proveniência até o objeto bruto. O nível `publico` (padrão) não traz identificação de credor em listagens; `--nivel interno` só quando pedido.
+`rp.painel.Painel` abre o banco em modo só leitura e nunca chama a API. Todo valor sai com natureza (`da_fonte`, `publicado`, `derivado`, `analitico`, `diferenca`), regras e situação delas, fonte, rótulo de retrato ("Estado atual da base..." ou "Como a base estava em...") e proveniência até o objeto bruto. O nível `publico` (padrão) não traz identificação de credor em listagens; `--nivel interno` só quando pedido.
 
 Consultas (saída JSON): `contexto`, `cortes`, `entidades`, `indicadores`, `evolucao`, `dimensao`, `empenhos`, `empenho`, `fornecedores`, `pares`, `retratos`, `comparar-retratos`, `reconciliacao`, `coerencia`, `analitica`, `regras`, `evidencias`, `fontes`, `metodologia`, `dicionario`.
 
@@ -204,7 +221,7 @@ Situação de governança de cada regra (histórico de decisões e parâmetros):
 python -m rp painel regras
 ```
 
-Testes (nenhum acessa a internet; um deles sobe um servidor HTTP local em 127.0.0.1; `test_casos_reais.py` monta um banco temporário a partir do armazém real `../snapshots`, só com leitura):
+Testes (nenhum acessa a internet; os da interface bloqueiam qualquer conexão para fora e sobem um servidor HTTP em 127.0.0.1; `test_casos_reais.py` e `test_interface_casos_reais.py` montam um banco temporário a partir do armazém real `../snapshots`, só com leitura):
 
 ```bash
 python -m pytest tests
