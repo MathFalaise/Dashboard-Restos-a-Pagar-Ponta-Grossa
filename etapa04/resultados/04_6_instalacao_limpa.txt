@@ -1,0 +1,37 @@
+Instalacao em ambiente limpo (04.6) — 30/09/2026
+Copia: arquivos versionados + novos (git ls-files -co --exclude-standard), sem .git, sem __pycache__, sem o backup de 120,5 MB, em pasta fora do OneDrive.
+Ambiente: python -m venv (Python 3.14.3), sem pacotes; pip install -r app/requirements-dev.txt
+
+Package            Version
+------------------ ---------
+certifi            2026.7.22
+charset-normalizer 3.5.2
+colorama           0.4.6
+idna               3.20
+iniconfig          2.3.0
+packaging          26.3
+pip                25.3
+pluggy             1.6.0
+Pygments           2.21.0
+pymupdf            1.28.2
+pytest             9.1.1
+requests           2.34.2
+urllib3            2.8.0
+
+RP_DADOS_LOCAIS=<pasta temporaria>/dados
+reconstruir: 466 snapshots registrados, problemas: [] (4 s)
+processar: normalizacao 1, derivacao 1, hash_resultado 2f6b4e295ce795934f7051fba31d9d3c1b5bc42c8858d4622a3e89ec88e3f2a5 (16 s)
+processar --normalizacao 1 --em 2026-09-29T23:59:59-03:00: derivacao 2, hash_resultado b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68
+verificar: problemas []
+portoes: apto true
+interface com toda conexao de saida bloqueada (04_6_servidor_sem_rede.py): 22 visitas, tentativas de rede registradas: 0 (e 0 na segunda execucao, usada no teste de responsividade)
+
+Testes no ambiente limpo:
+257 passed in 173.76s (0:02:53)
+exit=0
+26 passed in 20.08s
+exit=0
+
+Nova execucao depois de sincronizar os ultimos ajustes (expansao de ~ em reconstruir, Painel.abrir e portoes):
+257 passed in 152.64s (0:02:32)
+exit=0

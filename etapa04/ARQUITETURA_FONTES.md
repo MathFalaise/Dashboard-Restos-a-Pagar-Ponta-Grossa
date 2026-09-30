@@ -170,10 +170,11 @@ Valor calculado por regra que não esteja `operacional` sai como analítico, e n
 | `app/rp/painel/publico.py` | minimização de dados do nível público |
 | `app/rp/painel/explicacoes.py` | explicações documentadas das diferenças (transcrição dos relatórios) |
 | `app/rp/interface/` | interface pública somente leitura (04.5): aplicação WSGI da biblioteca padrão, páginas HTML sem JavaScript |
-| `app/rp/cli.py` | `python -m rp painel <consulta>` (JSON), `python -m rp interface` e `python -m rp registrar-evidencia` |
+| `app/rp/portoes.py` | portões de uma carga nova (04.6): verificação somente leitura antes de disponibilizar um retrato no painel |
+| `app/rp/cli.py` | `python -m rp painel <consulta>` (JSON), `python -m rp interface`, `python -m rp portoes` e `python -m rp registrar-evidencia` |
 
 ## 12. O que não existe, de propósito
 
-- **Interface (04.5):** HTML gerado no servidor a partir de `rp.painel.Painel`, sem JavaScript e sem recurso externo; nunca chama a API da Elotech. Não há autenticação, usuários, alertas nem publicação na internet (`RELATORIO_04_5.md`).
+- **Interface (04.5):** HTML gerado no servidor a partir de `rp.painel.Painel`, sem JavaScript e sem recurso externo; nunca chama a API da Elotech. Não há autenticação, usuários, alertas nem publicação na internet (`RELATORIO_04_5.md`). Homologada na 04.6 (`RELATORIO_04_6.md`): cada valor exibido conferido contra o JSON bruto da API e contra a camada painel; a interface não soma nem subtrai valores; situação de cada dado explícita; configuração sem caminho da máquina de desenvolvimento.
 - Não há agendamento de coleta.
 - Não há regra criada para "fechar" diferença com o RREO.

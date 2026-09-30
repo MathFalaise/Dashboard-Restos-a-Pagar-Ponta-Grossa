@@ -72,6 +72,16 @@ def regras(lista):
                      for r in lista) or "—"
 
 
+def situacao_regra(codigo_versao, situacao):
+    """'RREO-COL v2' + situacao -> texto com o rotulo explicito: regra experimental = ANALISE EXPERIMENTAL; nao
+    recomendada = analise nao recomendada. So regra operacional sai sem destaque."""
+    if situacao == "experimental":
+        return f'{esc(codigo_versao)} <span class="selo-analise">ANÁLISE EXPERIMENTAL</span>'
+    if situacao == "nao_recomendada":
+        return f'{esc(codigo_versao)} <span class="selo-analise">ANÁLISE — REGRA NÃO RECOMENDADA</span>'
+    return f"{esc(codigo_versao)} ({esc(SITUACAO_REGRA.get(situacao, situacao))})"
+
+
 def selo(fonte, nat, lista_regras=None, calculo=None):
     """Linha 'Fonte - Natureza - Regra' que acompanha todo valor. Sem regra, mostra o calculo (ex.: soma de proc)."""
     partes = [f'<span class="selo-fonte">Fonte: {esc(FONTE_CURTA.get(fonte, fonte))}</span>', f"Natureza: {natureza(nat)}"]
