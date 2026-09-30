@@ -1,0 +1,47 @@
+{
+ "coletada_em": "2026-09-30T01:15:00-03:00",
+ "coletor": {
+  "descricao": "coletor de produção (app/rp)",
+  "nome": "rp-coletor",
+  "sha256_codigo": "eb8d86bbeecbbad1ca7cdddd1b6708dfd107a6c147b1be713c40732f90568f78",
+  "versao": "0.3.0+eb8d86bbeecb"
+ },
+ "endpoint": "/empenhos/restos-a-pagar",
+ "formato": "rp-snapshot/1",
+ "observacao": null,
+ "origem_carimbo": "relogio_coletor",
+ "parametros": {
+  "dataFinal": "2017-12-31",
+  "dataInicial": "2017-01-01",
+  "entidade": 4,
+  "exercicio": 2017,
+  "size": 2000
+ },
+ "respostas": [
+  {
+   "cabecalhos": {
+    "Connection": "keep-alive",
+    "Content-Encoding": "gzip",
+    "Content-Type": "application/json",
+    "Date": "Wed, 30 Sep 2026 04:15:02 GMT",
+    "ETag": "W/\"08aa880c61b061a0c5a650a8ef043a82f\"",
+    "Server": "nginx",
+    "Transfer-Encoding": "chunked",
+    "Vary": "Accept-Encoding, Accept-Encoding, Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "X-debug": "API LOCATION, geral LOCATION"
+   },
+   "http_status": 200,
+   "ordem": 0,
+   "recebida_em": "2026-09-30T01:15:02-03:00",
+   "sha256": "c09def8c18a07b0c8958a2b0b6d4d94561c29fe46ca619f15917953c4cdf1392",
+   "tamanho": 16151,
+   "tentativas": 1,
+   "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/empenhos/restos-a-pagar?entidade=4&exercicio=2017&dataInicial=2017-01-01&dataFinal=2017-12-31&size=2000&page=0"
+  }
+ ],
+ "snapshot_uid": "a61fc059853546619f20b9256b6721fc",
+ "status": "completa",
+ "tipo": "rp_listagem"
+}

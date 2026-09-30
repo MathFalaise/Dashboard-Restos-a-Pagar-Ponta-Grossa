@@ -1,0 +1,43 @@
+{
+ "coletada_em": "2026-09-29T21:35:26-03:00",
+ "coletor": {
+  "descricao": "coletor de produção (app/rp)",
+  "nome": "rp-coletor",
+  "sha256_codigo": "738dd60e07a8545a467d861037bcf32b05f34310e62b6fdfd32782ec1addffb0",
+  "versao": "0.1.0+738dd60e07a8"
+ },
+ "endpoint": "/api/exercicios/entidade/5",
+ "formato": "rp-snapshot/1",
+ "observacao": null,
+ "origem_carimbo": "relogio_coletor",
+ "parametros": {
+  "entidade": 5
+ },
+ "respostas": [
+  {
+   "cabecalhos": {
+    "Connection": "keep-alive",
+    "Content-Encoding": "gzip",
+    "Content-Type": "application/json",
+    "Date": "Wed, 30 Sep 2026 00:35:27 GMT",
+    "ETag": "W/\"0b5740e0049ed13621b9a1a99dd842838\"",
+    "Server": "nginx",
+    "Transfer-Encoding": "chunked",
+    "Vary": "Accept-Encoding, Accept-Encoding, Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "X-debug": "API LOCATION, geral LOCATION"
+   },
+   "http_status": 200,
+   "ordem": 0,
+   "recebida_em": "2026-09-29T21:35:28-03:00",
+   "sha256": "60b250667554d72323ccdd52c9c454d5ae11612f914c854a4e465879ff545d89",
+   "tamanho": 324623,
+   "tentativas": 1,
+   "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/api/exercicios/entidade/5"
+  }
+ ],
+ "snapshot_uid": "dadc680c6cbe444f893a6bf736042072",
+ "status": "completa",
+ "tipo": "exercicios"
+}

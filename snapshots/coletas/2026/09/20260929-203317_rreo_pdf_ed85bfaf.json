@@ -1,0 +1,47 @@
+{
+ "coletada_em": "2026-09-29T20:33:17-03:00",
+ "coletor": {
+  "descricao": "downloads com curl durante a Etapa 02",
+  "nome": "etapa02-curl-manual",
+  "sha256_codigo": null,
+  "versao": "1"
+ },
+ "endpoint": "/api/files/arquivo/2382063",
+ "formato": "rp-snapshot/1",
+ "observacao": null,
+ "origem_carimbo": "cabecalho_http",
+ "parametros": {
+  "dataArquivo": "2026-05-29",
+  "entidade": 1,
+  "exercicio": 2026,
+  "id_arquivo": 2382063,
+  "nomeArquivo": "1479532849435916995.pdf",
+  "rotulo": "2º Bimestre - Consolidado"
+ },
+ "respostas": [
+  {
+   "cabecalhos": {
+    "Connection": "keep-alive",
+    "Content-Disposition": "inline; filename=\"1479532849435916995.pdf\"",
+    "Content-Type": "application/pdf",
+    "Date": "Tue, 29 Sep 2026 23:33:17 GMT",
+    "Server": "nginx",
+    "Transfer-Encoding": "chunked",
+    "Vary": "Access-Control-Request-Headers",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "X-debug": "geral LOCATION"
+   },
+   "http_status": 200,
+   "ordem": 0,
+   "recebida_em": "2026-09-29T20:33:17-03:00",
+   "sha256": "07cfad12283e57f459aa13e633afe892ed757879bf4049854be542e64d769b48",
+   "tamanho": 18435,
+   "tentativas": 1,
+   "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/api/files/arquivo/2382063"
+  }
+ ],
+ "snapshot_uid": "ed85bfafa18555198365d9cf6411bc91",
+ "status": "completa",
+ "tipo": "rreo_pdf"
+}

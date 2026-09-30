@@ -1,0 +1,47 @@
+{
+ "coletada_em": "2026-09-30T00:19:31-03:00",
+ "coletor": {
+  "descricao": "coletor de produção (app/rp)",
+  "nome": "rp-coletor",
+  "sha256_codigo": "b8e08d6236f69f20d2b0abc3c4f7b76a7b34961e8ffd750f607989ed7b0665b6",
+  "versao": "0.3.0+b8e08d6236f6"
+ },
+ "endpoint": "/api/files/arquivo/1910686",
+ "formato": "rp-snapshot/1",
+ "observacao": null,
+ "origem_carimbo": "relogio_coletor",
+ "parametros": {
+  "dataArquivo": "2025-07-29",
+  "entidade": 1,
+  "exercicio": 2025,
+  "id_arquivo": 1910686,
+  "nomeArquivo": "29775093782396216514.pdf",
+  "rotulo": "3º Bimestre - Consolidado"
+ },
+ "respostas": [
+  {
+   "cabecalhos": {
+    "Connection": "keep-alive",
+    "Content-Disposition": "inline; filename=\"29775093782396216514.pdf\"",
+    "Content-Type": "application/pdf",
+    "Date": "Wed, 30 Sep 2026 03:19:36 GMT",
+    "Server": "nginx",
+    "Transfer-Encoding": "chunked",
+    "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "X-debug": "API LOCATION, geral LOCATION"
+   },
+   "http_status": 200,
+   "ordem": 0,
+   "recebida_em": "2026-09-30T00:19:36-03:00",
+   "sha256": "77e3e3d0cadde8f7c8055b39f54c4c4158c973c8b0f1a2a6acd233280b56f68f",
+   "tamanho": 66013,
+   "tentativas": 1,
+   "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/api/files/arquivo/1910686"
+  }
+ ],
+ "snapshot_uid": "ac618fdc44fc4dc99e3ad2c2878ed0f9",
+ "status": "completa",
+ "tipo": "rreo_pdf"
+}

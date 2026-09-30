@@ -1,0 +1,34 @@
+{
+ "coletada_em": "2026-09-29T20:26:48-03:00",
+ "coletor": {
+  "descricao": null,
+  "nome": "etapa02-investigacao/casos.py",
+  "sha256_codigo": "19f61486e341c4b65835200b39c988df9e777aeb170b782eb469fbb4ed6c7b6f",
+  "versao": "1"
+ },
+ "endpoint": "/empenhos/detalhe/movimentacao",
+ "formato": "rp-snapshot/1",
+ "observacao": null,
+ "origem_carimbo": "mtime_arquivo",
+ "parametros": {
+  "anoempenho": 2022,
+  "empenho": 1387,
+  "entidade": 1,
+  "size": 500
+ },
+ "respostas": [
+  {
+   "cabecalhos": {},
+   "http_status": null,
+   "ordem": 0,
+   "recebida_em": "2026-09-29T20:26:48-03:00",
+   "sha256": "f6bad047d2fa7014770efcf4863cd4d1ce2e5776fbc2ea542b54355d5b67a288",
+   "tamanho": 735,
+   "tentativas": 1,
+   "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/empenhos/detalhe/movimentacao?entidade=1&exercicio=2022&empenho=1387&size=500"
+  }
+ ],
+ "snapshot_uid": "9c919d2f65ca5d0ca90a41bba683fa09",
+ "status": "completa",
+ "tipo": "movimentacao"
+}

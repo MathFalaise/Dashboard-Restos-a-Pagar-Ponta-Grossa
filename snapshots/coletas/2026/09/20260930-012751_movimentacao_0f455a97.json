@@ -1,0 +1,46 @@
+{
+ "coletada_em": "2026-09-30T01:27:51-03:00",
+ "coletor": {
+  "descricao": "coletor de produção (app/rp)",
+  "nome": "rp-coletor",
+  "sha256_codigo": "eb8d86bbeecbbad1ca7cdddd1b6708dfd107a6c147b1be713c40732f90568f78",
+  "versao": "0.3.0+eb8d86bbeecb"
+ },
+ "endpoint": "/empenhos/detalhe/movimentacao",
+ "formato": "rp-snapshot/1",
+ "observacao": null,
+ "origem_carimbo": "relogio_coletor",
+ "parametros": {
+  "anoempenho": 2023,
+  "empenho": 1751,
+  "entidade": 15,
+  "size": 500
+ },
+ "respostas": [
+  {
+   "cabecalhos": {
+    "Connection": "keep-alive",
+    "Content-Encoding": "gzip",
+    "Content-Type": "application/json",
+    "Date": "Wed, 30 Sep 2026 04:27:52 GMT",
+    "ETag": "W/\"02fd5e674c5b7d1cc194fe5099b176899\"",
+    "Server": "nginx",
+    "Transfer-Encoding": "chunked",
+    "Vary": "Accept-Encoding, Accept-Encoding, Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "X-debug": "API LOCATION, geral LOCATION"
+   },
+   "http_status": 200,
+   "ordem": 0,
+   "recebida_em": "2026-09-30T01:27:53-03:00",
+   "sha256": "9ba88694950c2f579c3e648d82baa32f0849abfcb5d3b4539af064786709f609",
+   "tamanho": 70306,
+   "tentativas": 1,
+   "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/empenhos/detalhe/movimentacao?entidade=15&exercicio=2023&empenho=1751&size=500&page=0"
+  }
+ ],
+ "snapshot_uid": "0f455a972846475d8ef689c0324a509a",
+ "status": "completa",
+ "tipo": "movimentacao"
+}

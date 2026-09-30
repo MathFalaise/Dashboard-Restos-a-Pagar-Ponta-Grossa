@@ -1,0 +1,32 @@
+{
+ "coletada_em": "2026-09-29T20:08:47-03:00",
+ "coletor": {
+  "descricao": "downloads com curl durante a Etapa 02",
+  "nome": "etapa02-curl-manual",
+  "sha256_codigo": null,
+  "versao": "1"
+ },
+ "endpoint": "/api/publicacoes/1",
+ "formato": "rp-snapshot/1",
+ "observacao": null,
+ "origem_carimbo": "mtime_arquivo",
+ "parametros": {
+  "entidade": 1,
+  "exercicio": 2026
+ },
+ "respostas": [
+  {
+   "cabecalhos": {},
+   "http_status": null,
+   "ordem": 0,
+   "recebida_em": "2026-09-29T20:08:47-03:00",
+   "sha256": "5b3e2ef89ea57e65c182642acbe91062dc76a8e32215020d842a69f24948314a",
+   "tamanho": 24338,
+   "tentativas": 1,
+   "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/api/publicacoes/1?entidade=1&exercicio=2026"
+  }
+ ],
+ "snapshot_uid": "edf2a3252ca6528e9c487b08a605b4b3",
+ "status": "completa",
+ "tipo": "publicacoes"
+}

@@ -1,0 +1,35 @@
+{
+ "coletada_em": "2026-09-29T20:34:28-03:00",
+ "coletor": {
+  "descricao": "investigação da Etapa 02",
+  "nome": "etapa02-investigacao/coletar.py",
+  "sha256_codigo": "aa8680853ec2facdcc4bb3e08bbeb2ec551619c259a6a417cd08eee7b4135bbe",
+  "versao": "1"
+ },
+ "endpoint": "/empenhos/restos-a-pagar",
+ "formato": "rp-snapshot/1",
+ "observacao": null,
+ "origem_carimbo": "manifesto",
+ "parametros": {
+  "dataFinal": "2025-12-31",
+  "dataInicial": "2025-01-01",
+  "entidade": 10,
+  "exercicio": 2025,
+  "size": 2000
+ },
+ "respostas": [
+  {
+   "cabecalhos": {},
+   "http_status": 200,
+   "ordem": 0,
+   "recebida_em": "2026-09-29T20:34:28-03:00",
+   "sha256": "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8",
+   "tamanho": 233,
+   "tentativas": 1,
+   "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/empenhos/restos-a-pagar?entidade=10&exercicio=2025&dataInicial=2025-01-01&dataFinal=2025-12-31&size=2000&page=0"
+  }
+ ],
+ "snapshot_uid": "0afc924589fa564da8fd9135117dea34",
+ "status": "completa",
+ "tipo": "rp_listagem"
+}

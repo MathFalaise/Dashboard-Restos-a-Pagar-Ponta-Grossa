@@ -1,0 +1,47 @@
+{
+ "coletada_em": "2026-09-30T01:10:01-03:00",
+ "coletor": {
+  "descricao": "coletor de produção (app/rp)",
+  "nome": "rp-coletor",
+  "sha256_codigo": "ca6ba280bbe9b8f47ae3dfc3f3cdaae6e7a5a73a656f1f96697b11963b2b7468",
+  "versao": "0.3.0+ca6ba280bbe9"
+ },
+ "endpoint": "/api/files/arquivo/34898",
+ "formato": "rp-snapshot/1",
+ "observacao": null,
+ "origem_carimbo": "relogio_coletor",
+ "parametros": {
+  "dataArquivo": "2019-04-12",
+  "entidade": 1,
+  "exercicio": 2018,
+  "id_arquivo": 34898,
+  "nomeArquivo": "ANEXO VII RREO.pdf",
+  "rotulo": "6º Bimestre"
+ },
+ "respostas": [
+  {
+   "cabecalhos": {
+    "Connection": "keep-alive",
+    "Content-Disposition": "inline; filename=\"ANEXO VII RREO.pdf\"",
+    "Content-Type": "application/pdf",
+    "Date": "Wed, 30 Sep 2026 04:10:05 GMT",
+    "Server": "nginx",
+    "Transfer-Encoding": "chunked",
+    "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "X-debug": "API LOCATION, geral LOCATION"
+   },
+   "http_status": 200,
+   "ordem": 0,
+   "recebida_em": "2026-09-30T01:10:06-03:00",
+   "sha256": "9b4c9f947df13ac1060d064cedf0f4a6fe2a87a8f511c412e5c00c6ccb083af8",
+   "tamanho": 55364,
+   "tentativas": 1,
+   "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/api/files/arquivo/34898"
+  }
+ ],
+ "snapshot_uid": "d369f5b945054a96ba9acd1966f659a1",
+ "status": "completa",
+ "tipo": "rreo_pdf"
+}

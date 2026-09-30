@@ -1,0 +1,15 @@
+HTTP/1.1 200 
+Server: nginx
+Date: Tue, 29 Sep 2026 23:09:17 GMT
+Content-Type: application/pdf
+Transfer-Encoding: chunked
+Connection: keep-alive
+Content-Disposition: inline; filename="9622843452817800.pdf"
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-debug: API LOCATION
+X-debug: geral LOCATION
+

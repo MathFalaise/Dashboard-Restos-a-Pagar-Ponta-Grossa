@@ -1,0 +1,29 @@
+{
+ "coletada_em": "2026-09-29T19:56:08-03:00",
+ "coletor": {
+  "descricao": "downloads com curl durante a Etapa 01",
+  "nome": "etapa01-curl-manual",
+  "sha256_codigo": null,
+  "versao": "1"
+ },
+ "endpoint": "/api/entidades/lista",
+ "formato": "rp-snapshot/1",
+ "observacao": "horário aproximado: mtime da cópia do arquivo",
+ "origem_carimbo": "mtime_arquivo",
+ "parametros": {},
+ "respostas": [
+  {
+   "cabecalhos": {},
+   "http_status": null,
+   "ordem": 0,
+   "recebida_em": "2026-09-29T19:56:08-03:00",
+   "sha256": "5670639c6fbd6c1a52dc939002068ac15accf4302487b187e99d9e22c16f73f3",
+   "tamanho": 182255,
+   "tentativas": 1,
+   "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/api/entidades/lista"
+  }
+ ],
+ "snapshot_uid": "54d381174e375e058c0f04710c3994ef",
+ "status": "completa",
+ "tipo": "entidades"
+}

@@ -1,0 +1,17 @@
+HTTP/1.1 200 
+Server: nginx
+Date: Tue, 29 Sep 2026 22:49:33 GMT
+Content-Type: text/csv
+Transfer-Encoding: chunked
+Connection: keep-alive
+Content-Disposition: attachment; filename="Listagem de Restos a Pagar.csv"
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Cache-Control: private, must-revalidate
+Pragma: private
+X-debug: API LOCATION
+X-debug: geral LOCATION
+
