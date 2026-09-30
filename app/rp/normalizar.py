@@ -6,6 +6,10 @@ Garantias (portao da Etapa 04.2):
   * dinheiro vira centavos; valor com mais de 2 casas decimais e ERRO (nunca arredondado);
   * resposta que nao e uma pagina valida (snapshot com falha) nao gera linhas e e contada;
   * catalogo (entidades/exercicios) com estrutura inesperada nao gera linhas e fica em `problemas`;
+  * cada PDF de RREO deixa uma linha em rreo_extracao (extrator, versao do PyMuPDF/MuPDF, SHA-256, id do arquivo,
+    data da extracao, quantos valores sairam ou o erro): os valores dependem do metodo, entao o metodo fica junto;
+  * a execucao guarda a maior coleta que leu (ultima_coleta_id): snapshot com 0 registros tambem conta como
+    processado, sem depender de ter gerado linhas;
   * a camada 0 e so lida.
 """
 import json
@@ -34,6 +38,8 @@ DINHEIRO = ["proc", "aproc", "canceladoProc", "pagoProc", "pagoProcEstornado", "
 SQL_RP = "INSERT INTO rp_registro VALUES (" + ",".join("?" * 37) + ")"
 SQL_MOV = "INSERT INTO movimentacao_lancamento VALUES (" + ",".join("?" * 18) + ")"
 SQL_RREO = "INSERT OR IGNORE INTO rreo_valor VALUES (?,?,?,?,?,?,?,?,?,?)"
+SQL_EXTRACAO = ("INSERT INTO rreo_extracao (normalizacao_id, resposta_id, coleta_id, extrator_versao, biblioteca, "
+                "biblioteca_versao, sha256_pdf, id_arquivo, rotulo, extraida_em, valores, erro) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)")
 
 _CENTAVO = Decimal("0.01")
 _INT_SEGURO = 10 ** 20   # nesta faixa um inteiro cabe na precisao do Decimal (28 digitos) com 2 casas
@@ -77,11 +83,12 @@ def normalizar(con):
     resumo = {"respostas": 0, "ignoradas_sem_pagina": 0, "rp_registro": 0, "movimentacao_lancamento": 0,
               "rreo_valor": 0, "problemas": []}
     with con:
-        nid = con.execute("INSERT INTO normalizacao_execucao (normalizador_versao, executada_em) VALUES (?,?)",
-                          (VERSAO, agora())).lastrowid
+        ultima = con.execute("SELECT IFNULL(MAX(id), 0) FROM coleta").fetchone()[0]
+        nid = con.execute("INSERT INTO normalizacao_execucao (normalizador_versao, executada_em, ultima_coleta_id) "
+                          "VALUES (?,?,?)", (VERSAO, agora(), ultima)).lastrowid
         itens = con.execute("SELECT r.id, r.coleta_id, c.tipo, r.sha256, c.parametros_json, c.entidade, c.anoempenho, "
-                            "c.empenho FROM resposta_bruta r JOIN coleta c ON c.id = r.coleta_id "
-                            "ORDER BY c.coletada_em, c.snapshot_uid, r.ordem").fetchall()
+                            "c.empenho FROM resposta_bruta r JOIN coleta c ON c.id = r.coleta_id WHERE c.id <= ? "
+                            "ORDER BY c.coletada_em, c.snapshot_uid, r.ordem", (ultima,)).fetchall()
         for rid, cid, tipo, sha, params, ent, ano, emp in itens:
             resumo["respostas"] += 1
             corpo = banco.corpo(con, sha)
@@ -103,12 +110,16 @@ def normalizar(con):
                 if corpo[:4] != b"%PDF":
                     resumo["ignoradas_sem_pagina"] += 1
                     continue
+                meta = json.loads(params)
                 try:
-                    resumo["rreo_valor"] += _rreo(con, nid, cid, json.loads(params), corpo)
+                    n, erro = _rreo(con, nid, cid, meta, corpo), None
+                    resumo["rreo_valor"] += n
                 except Exception as e:  # layout novo nao derruba o processamento; fica registrado
-                    resumo["problemas"].append({"coleta_id": cid, "extrator": EXTRATOR_RREO,
-                                                "erro": f"{type(e).__name__}: {e}"})
+                    n, erro = 0, f"{type(e).__name__}: {e}"
+                    resumo["problemas"].append({"coleta_id": cid, "extrator": EXTRATOR_RREO, "erro": erro})
                     log.warning("RREO da coleta %d não transcrito: %s", cid, e)
+                con.execute(SQL_EXTRACAO, (nid, rid, cid, EXTRATOR_RREO, "PyMuPDF/MuPDF", _versao_biblioteca_pdf(), sha,
+                                           meta.get("id_arquivo"), meta.get("rotulo"), agora(), n, erro))
             elif tipo in ("entidades", "exercicios"):
                 lista = _lista_json(corpo)
                 if lista is None:
@@ -164,6 +175,15 @@ LINHAS = ("RESTOS A PAGAR (EXCETO", "PODER EXECUTIVO", "RESTOS A PAGAR (INTRA", 
 
 class LayoutDesconhecido(ValueError):
     pass
+
+
+def _versao_biblioteca_pdf():
+    """Versao do PyMuPDF e do MuPDF que fizeram a transcricao (os valores dependem delas)."""
+    try:
+        import pymupdf
+    except ImportError:  # versoes antigas so expoem `fitz`
+        import fitz as pymupdf
+    return f"PyMuPDF {getattr(pymupdf, 'VersionBind', '?')} / MuPDF {getattr(pymupdf, 'VersionFitz', '?')}"
 
 
 def _abrir_pdf(corpo):

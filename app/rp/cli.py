@@ -6,16 +6,21 @@ import sys
 from datetime import datetime
 
 from . import BRT, VERSAO, banco
-from .armazem import Armazem, ManifestoInvalido, ObjetoCorrompido
+from .armazem import TIPOS_EVIDENCIA, Armazem, ManifestoInvalido, ObjetoCorrompido
 from .coletor import Coletor, ParametroInvalido
 from .comparador import CorteDiferente
 from .config import ConfiguracaoInvalida, carregar
+from .evidencias import EvidenciaInvalida
 from .execucoes import ExclusaoRecusada
 from .http import Cliente
+from .painel.consulta import ErroDoPainel
 
 ERROS_ESPERADOS = (ParametroInvalido, CorteDiferente, ExclusaoRecusada, ConfiguracaoInvalida, banco.MigracaoPendente,
                    banco.BancoEmPastaSincronizada, ManifestoInvalido, ObjetoCorrompido, FileExistsError,
-                   FileNotFoundError, KeyError)
+                   FileNotFoundError, KeyError, EvidenciaInvalida, ErroDoPainel)
+CONSULTAS_PAINEL = ("contexto", "cortes", "entidades", "indicadores", "evolucao", "dimensao", "empenhos", "empenho",
+                    "fornecedores", "pares", "retratos", "comparar-retratos", "reconciliacao", "coerencia", "analitica",
+                    "regras", "evidencias", "fontes", "metodologia", "dicionario")
 
 
 def _logs(cfg):
@@ -55,7 +60,7 @@ def _main(argv=None):
     p.add_argument("--data-final", required=True)
     p = sub.add_parser("coletar-rreo")
     p.add_argument("--exercicio", type=int, required=True)
-    p.add_argument("--entidade", type=int, default=1)
+    p.add_argument("--entidade", type=int, help="padrao: [rreo] entidade_publicacoes do config.toml")
     p.add_argument("--ids", type=int, nargs="*", help="só estes idArquivo")
     p.add_argument("--sem-pdf", action="store_true")
     p.add_argument("--bimestres", type=int, nargs="*", help="só PDFs destes bimestres (ex.: 6)")
@@ -92,10 +97,38 @@ def _main(argv=None):
     p.add_argument("--entidade", type=int, required=True)
     p.add_argument("--exercicio", type=int, required=True)
     p.add_argument("--data-final", required=True)
+    p = sub.add_parser("registrar-evidencia", help="registra documento externo (e-SIC, norma, nota...) com SHA-256")
+    p.add_argument("--tipo", choices=sorted(TIPOS_EVIDENCIA), required=True)
+    p.add_argument("--descricao", required=True)
+    p.add_argument("--arquivo", required=True)
+    p.add_argument("--origem", required=True, help="quem emitiu ou de onde veio (ex.: e-SIC protocolo n.)")
+    p.add_argument("--data", help="data do documento (AAAA-MM-DD)")
+    p.add_argument("--observacao")
+    p = sub.add_parser("painel", help="camada de consulta do dashboard: somente leitura, saida JSON")
+    p.add_argument("consulta", choices=CONSULTAS_PAINEL)
+    p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
+    p.add_argument("--nivel", choices=["publico", "interno"], default="publico",
+                   help="'interno' inclui identificacao do credor; use so fora de publicacao")
+    p.add_argument("--exercicio", type=int)
+    p.add_argument("--data-final")
+    p.add_argument("--entidade", type=int)
+    p.add_argument("--em", help="'como a base estava em' (AAAA-MM-DD = fim do dia, ou ISO com fuso)")
+    p.add_argument("--dimensao")
+    p.add_argument("--anoempenho", type=int)
+    p.add_argument("--empenho", type=int)
+    p.add_argument("--escopo", choices=["entidade", "consolidado"])
+    p.add_argument("--somente-diferencas", action="store_true")
+    p.add_argument("--limite", type=int, default=100)
+    p.add_argument("--deslocamento", type=int, default=0)
+    p.add_argument("--ordem", choices=["saldo", "empenho"], default="saldo")
+    p.add_argument("--a", help="snapshot_uid anterior (comparar-retratos)")
+    p.add_argument("--b", help="snapshot_uid posterior (comparar-retratos)")
     a = ap.parse_args(argv)
 
     cfg = carregar(a.config)
     _logs(cfg)
+    if a.cmd == "painel":   # antes de banco.abrir: o painel nunca migra nem escreve
+        return _painel(a, cfg)
     armazem = Armazem(cfg.snapshots)
     if a.cmd == "reconstruir":
         con, n = banco.reconstruir(cfg, armazem, a.destino)
@@ -190,6 +223,12 @@ def _main(argv=None):
         r["por_tipo_status"] = con.execute("SELECT tipo, status, COUNT(*) FROM coleta GROUP BY 1,2").fetchall()
         print(json.dumps(r, ensure_ascii=False, indent=1))
         return 0
+    if a.cmd == "registrar-evidencia":
+        from . import evidencias
+        r = evidencias.registrar(con, armazem, tipo=a.tipo, descricao=a.descricao, arquivo=a.arquivo, origem=a.origem,
+                                 data_documento=a.data, observacao=a.observacao)
+        print(json.dumps(r, ensure_ascii=False, indent=1))
+        return 0
 
     coletor = Coletor(cfg, con, armazem, Cliente(cfg))
     if a.cmd == "coletar-catalogos":
@@ -205,3 +244,68 @@ def _main(argv=None):
         r = [coletor.movimentacao(a.entidade, a.anoempenho, a.empenho)]
     print(json.dumps({"snapshots": r, "requisicoes": coletor.cliente.requisicoes}, ensure_ascii=False, indent=1))
     return 0 if all(s["status"] == "completa" for s in r) else 2
+
+
+def _exigir(a, *nomes):
+    faltam = [f"--{n.replace('_', '-')}" for n in nomes if getattr(a, n) is None]
+    if faltam:
+        raise ErroDoPainel(f"a consulta '{a.consulta}' exige {', '.join(faltam)}")
+
+
+def _painel(a, cfg):
+    """Consultas da camada do dashboard (somente leitura; nunca abre o banco para escrita)."""
+    from .painel import Painel
+    with Painel.abrir(a.banco or cfg.banco, a.nivel) as p:
+        c = a.consulta
+        if c == "contexto":
+            r = p.contexto()
+        elif c == "cortes":
+            r = p.cortes(a.em)
+        elif c == "entidades":
+            r = p.entidades(a.exercicio, a.em)
+        elif c == "indicadores":
+            _exigir(a, "exercicio", "data_final")
+            r = p.indicadores(a.exercicio, a.data_final, a.entidade, a.em)
+        elif c == "evolucao":
+            _exigir(a, "exercicio")
+            r = p.evolucao(a.exercicio, a.entidade, a.em)
+        elif c == "dimensao":
+            _exigir(a, "dimensao", "exercicio", "data_final")
+            r = p.por_dimensao(a.dimensao, a.exercicio, a.data_final, a.entidade, a.em)
+        elif c == "empenhos":
+            _exigir(a, "exercicio", "data_final")
+            r = p.empenhos(a.exercicio, a.data_final, a.entidade, a.em, a.limite, a.deslocamento, a.ordem)
+        elif c == "empenho":
+            _exigir(a, "entidade", "anoempenho", "empenho", "exercicio")
+            r = p.detalhe_empenho(a.entidade, a.anoempenho, a.empenho, a.exercicio, a.data_final, a.em)
+        elif c == "fornecedores":
+            _exigir(a, "exercicio", "data_final")
+            r = p.fornecedores(a.exercicio, a.data_final, a.entidade, a.em, a.limite)
+        elif c == "pares":
+            _exigir(a, "exercicio", "data_final")
+            r = p.pares(a.exercicio, a.data_final, a.em)
+        elif c == "retratos":
+            _exigir(a, "entidade", "exercicio", "data_final")
+            r = p.retratos(a.entidade, a.exercicio, a.data_final)
+        elif c == "comparar-retratos":
+            _exigir(a, "a", "b")
+            r = p.comparar_retratos(a.a, a.b)
+        elif c == "reconciliacao":
+            r = p.reconciliacao(a.exercicio, a.data_final, a.escopo, a.somente_diferencas, a.em)
+        elif c == "coerencia":
+            r = p.coerencia_entre_publicacoes()
+        elif c == "analitica":
+            _exigir(a, "exercicio", "data_final")
+            r = p.visao_analitica(a.exercicio, a.data_final, a.em)
+        elif c == "regras":
+            r = p.regras()
+        elif c == "evidencias":
+            r = p.evidencias()
+        elif c == "fontes":
+            r = p.fontes()
+        elif c == "metodologia":
+            r = p.metodologia()
+        else:
+            r = p.dicionario_campos()
+    print(json.dumps(r, ensure_ascii=False, indent=1, default=str))
+    return 0

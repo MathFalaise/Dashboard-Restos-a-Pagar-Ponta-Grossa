@@ -159,12 +159,13 @@ class Coletor:
             feitos.append(s)
         return feitos
 
-    def rreo(self, exercicio, entidade=1, ids=None, baixar_pdfs=True, bimestres=None):
+    def rreo(self, exercicio, entidade=None, ids=None, baixar_pdfs=True, bimestres=None):
         """Listagem de publicacoes da LRF (grupo 1) e PDFs do RREO Anexo VII ainda nao coletados.
         `bimestres` (ex. {6}): so os PDFs desses bimestres (rotulos como "6o Bimestre", "6o BIMESTRE" e
         "6o Bimestre - Consolidado"; no portal o "o" e o indicador ordinal).
         Arquivo cujo idArquivo nao e inteiro positivo e ignorado e vai para o log: nenhum texto vindo da
         resposta entra na URL."""
+        entidade = self.cfg.entidade_rreo if entidade is None else entidade   # config.toml [rreo]
         params = {"entidade": int(entidade), "exercicio": int(exercicio)}
         s, r = self._simples("publicacoes", EP_PUB, params, dict(params), lambda r: isinstance(_json(r.corpo), list))
         feitos = [s]
