@@ -32,7 +32,8 @@ def _listagem(con, armazem, quando, aproc):
 # ------------------------------------------------------------------ migracao
 def test_banco_novo_nasce_na_versao_atual(tmp_path):
     _, con, _ = _loja(tmp_path)
-    assert con.execute("SELECT versao, backup_antes FROM esquema_versao ORDER BY versao").fetchall() == [(2, None), (3, None)]
+    esperado = [(v, None) for v in range(banco.VERSAO_BASE, banco.VERSAO_ESQUEMA + 1)]   # v2 base + todas as migracoes
+    assert con.execute("SELECT versao, backup_antes FROM esquema_versao ORDER BY versao").fetchall() == esperado
 
 
 def test_migracao_v2_para_v3_faz_backup_antes_e_preserva_dados(tmp_path):
@@ -47,7 +48,7 @@ def test_migracao_v2_para_v3_faz_backup_antes_e_preserva_dados(tmp_path):
     c.close()
     con = banco.abrir(cfg, arq)
     (v, backup_antes), = con.execute("SELECT versao, backup_antes FROM esquema_versao WHERE versao=3").fetchall()
-    assert "antes-migracao-v2-v3" in backup_antes and (cfg.backups / backup_antes.split("\\")[-1].split("/")[-1]).exists()
+    assert f"antes-migracao-v2-v{banco.VERSAO_ESQUEMA}" in backup_antes and (cfg.backups / backup_antes.split("\\")[-1].split("/")[-1]).exists()
     assert con.execute("SELECT vigencia_em FROM derivacao_execucao WHERE id=1").fetchone() == (None,)
     antigo = sqlite3.connect(backup_antes)  # o backup e o banco ANTES da mudanca
     assert "vigencia_em" not in [r[1] for r in antigo.execute("PRAGMA table_info(derivacao_execucao)")]

@@ -15,6 +15,8 @@ pela chave de negocio - assim duas ocorrencias da mesma chave nao se confundem.
 """
 from collections import defaultdict
 
+from . import regras
+
 DINHEIRO = ["proc_c", "aproc_c", "cancelado_proc_c", "pago_proc_c", "pago_proc_estornado_c", "cancelado_aproc_c",
             "pago_aproc_c", "pago_aproc_estornado_c", "liquidado_c", "retencao_c"]
 OUTROS = ["empenho_exercicio", "data_emissao", "programatica", "fonte_recurso", "descricao_fonte", "fornecedor", "nome",
@@ -26,7 +28,7 @@ GRUPOS = {"inscricao_processada": ["proc_c"], "inscricao_nao_processada": ["apro
 DERIVADOS = ["categoria", "faixa_processado", "faixa_nao_processado", "s1_saldo_total_c", "s2_a_liquidar_c",
              "s3_liquidado_a_pagar_c", "cancel_processado_c", "cancel_nao_processado_c"]
 CORTE = ["tipo", "entidade", "exercicio", "data_inicial", "data_final", "tipo_pesquisa"]
-COPIA_BASE, ENT_COPIA, ENT_ORIGINAL = 2_400_000, 1, 15
+# A identificacao de copia 24xxxxx usa os parametros da regra PAR-24 v1 (tabela regra_parametro), nao constantes.
 # respostas da coleta como lista: a consulta usa a chave primaria (id da execucao, resposta_id, indice)
 _DA_COLETA = "resposta_id IN (SELECT id FROM resposta_bruta WHERE coleta_id=?) AND coleta_id=?"
 
@@ -77,11 +79,11 @@ def _em_par(con, did, cids):
     return out
 
 
-def _espelhamento(chave, pares):
+def _espelhamento(chave, pares, par):
     e, ano, emp = chave[:3]
     if chave[:3] in pares:
         return "em par espelhado"
-    if e == ENT_COPIA and emp >= COPIA_BASE:
+    if e == par["entidade_copia"] and emp >= par["base_empenho_copia"]:
         return "cópia 24xxxxx (sem par nesta derivação)"
     return None
 
@@ -102,6 +104,7 @@ def comparar(con, ref_a, ref_b, nid=None, did=None):
     rb, dup_b = _registros(con, nid, b["id"])
     da, db = _derivados(con, did, a["id"]), _derivados(con, did, b["id"])
     pares = _em_par(con, did, [a["id"], b["id"]])
+    par = regras.parametros(con, "PAR-24", 1)
 
     novos = sorted(rb.keys() - ra.keys(), key=str)
     removidos = sorted(ra.keys() - rb.keys(), key=str)
@@ -115,7 +118,7 @@ def comparar(con, ref_a, ref_b, nid=None, did=None):
         deriv = [{"campo": c, "antes": dx.get(c), "depois": dy.get(c)} for c in DERIVADOS if dx.get(c) != dy.get(c)]
         if campos or deriv:
             alterados.append({"chave": k, "posicao_antes": x["posicao"], "posicao_depois": y["posicao"],
-                              "campos": campos, "classificacao_e_saldos": deriv, "espelhamento": _espelhamento(k, pares)})
+                              "campos": campos, "classificacao_e_saldos": deriv, "espelhamento": _espelhamento(k, pares, par)})
 
     impacto = {}
     for c in DINHEIRO:
@@ -129,7 +132,7 @@ def comparar(con, ref_a, ref_b, nid=None, did=None):
                   "diferenca": sum(impacto[c]["diferenca"] for c in cs)} for g, cs in GRUPOS.items()}
     s1 = {"antes": sum(v["s1_saldo_total_c"] for v in da.values()), "depois": sum(v["s1_saldo_total_c"] for v in db.values())}
     s1["diferenca"] = s1["depois"] - s1["antes"]
-    registro = lambda regs, k: {"chave": k, "posicao": regs[k]["posicao"], "espelhamento": _espelhamento(k, pares),
+    registro = lambda regs, k: {"chave": k, "posicao": regs[k]["posicao"], "espelhamento": _espelhamento(k, pares, par),
                                 **{c: regs[k][c] for c in DINHEIRO}}
     return {
         "corte": dict(zip(CORTE, a["corte"])),
@@ -140,7 +143,7 @@ def comparar(con, ref_a, ref_b, nid=None, did=None):
         "chaves_duplicadas": {"anterior": dup_a, "posterior": dup_b},
         "contagens": {"novos": len(novos), "removidos": len(removidos), "comuns": len(comuns), "alterados": len(alterados),
                       "alterados_em_espelhamento": sum(1 for x in alterados if x["espelhamento"]),
-                      "novos_ou_removidos_em_espelhamento": sum(1 for k in novos + removidos if _espelhamento(k, pares))},
+                      "novos_ou_removidos_em_espelhamento": sum(1 for k in novos + removidos if _espelhamento(k, pares, par))},
         "novos": [registro(rb, k) for k in novos],
         "removidos": [registro(ra, k) for k in removidos],
         "alterados": alterados,

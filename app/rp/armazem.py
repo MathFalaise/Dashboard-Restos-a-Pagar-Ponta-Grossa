@@ -27,6 +27,9 @@ from pathlib import Path
 from . import sha256, sha256_valido
 
 FORMATO = "rp-snapshot/1"
+FORMATO_EVIDENCIA = "rp-evidencia/1"
+# tipos aceitos pela tabela evidencia_externa -> nome usado no arquivo do manifesto
+TIPOS_EVIDENCIA = {"e-SIC": "esic", "norma": "norma", "nota": "nota", "outro": "outro"}
 LIMITE_OBJETO = 256 * 1024 * 1024      # teto de descompressao quando o tamanho esperado nao e conhecido
 _TIPO = re.compile(r"[a-z_]+")
 _UID = re.compile(r"[0-9a-f]{32}")
@@ -122,6 +125,19 @@ class Armazem:
             raise ManifestoInvalido(f"tipo, snapshot_uid ou coletada_em fora do formato: {tipo!r}, {uid!r}, {quando!r}")
         carimbo = quando[:19].replace("-", "").replace(":", "").replace("T", "-")
         rel = Path("coletas") / quando[:4] / quando[5:7] / f"{carimbo}_{tipo}_{uid[:8]}.json"
+        return self._gravar_json_uma_vez(rel, m)
+
+    def gravar_manifesto_evidencia(self, m):
+        """Manifesto de uma evidencia externa (e-SIC, norma, nota...), em evidencias/AAAA/MM/. Nunca sobrescrito."""
+        tipo, uid, quando = m.get("tipo"), m.get("evidencia_uid"), m.get("registrada_em")
+        if not (tipo in TIPOS_EVIDENCIA and isinstance(uid, str) and _UID.fullmatch(uid)
+                and isinstance(quando, str) and _ISO.match(quando) and sha256_valido(m.get("sha256"))):
+            raise ManifestoInvalido(f"tipo, evidencia_uid, registrada_em ou sha256 fora do formato: {tipo!r}, {uid!r}, {quando!r}")
+        carimbo = quando[:19].replace("-", "").replace(":", "").replace("T", "-")
+        rel = Path("evidencias") / quando[:4] / quando[5:7] / f"{carimbo}_{TIPOS_EVIDENCIA[tipo]}_{uid[:8]}.json"
+        return self._gravar_json_uma_vez(rel, m)
+
+    def _gravar_json_uma_vez(self, rel, m):
         destino = self.raiz / rel
         if destino.exists():
             raise ManifestoJaExiste(str(destino))
@@ -166,9 +182,45 @@ class Armazem:
             raise ManifestoInvalido("; ".join(erros))
         return itens
 
+    def evidencias_e_erros(self):
+        """(itens, erros) dos manifestos de evidencia externa, em ordem de registro."""
+        base = self.raiz / "evidencias"
+        itens, erros = [], []
+        for p in base.rglob("*.json") if base.exists() else []:
+            rel = p.relative_to(self.raiz).as_posix()
+            try:
+                m = json.loads(p.read_text(encoding="utf-8"))
+                chave = (m["registrada_em"], m["evidencia_uid"])
+            except (OSError, ValueError, KeyError, TypeError, RecursionError) as e:
+                erros.append(f"{rel}: manifesto de evidencia ilegivel ({type(e).__name__})")
+                continue
+            itens.append((rel, m, chave))
+        itens.sort(key=lambda x: x[2])
+        return [(rel, m) for rel, m, _ in itens], erros
+
+    def evidencias(self):
+        """(caminho relativo, manifesto) das evidencias externas. Manifesto ilegivel interrompe (ManifestoInvalido)."""
+        itens, erros = self.evidencias_e_erros()
+        if erros:
+            raise ManifestoInvalido("; ".join(erros))
+        return itens
+
     def verificar(self):
         """Problemas encontrados (lista vazia = integro)."""
         itens, problemas = self.manifestos_e_erros()
+        evid, erros_evid = self.evidencias_e_erros()
+        problemas += erros_evid
+        for rel, m in evid:
+            if m.get("formato") != FORMATO_EVIDENCIA:
+                problemas.append(f"{rel}: formato desconhecido {m.get('formato')!r}")
+            try:
+                self.ler_objeto(m["sha256"], m["tamanho"])
+            except FileNotFoundError:
+                problemas.append(f"{rel}: arquivo da evidencia ausente {str(m.get('sha256'))[:12]}")
+            except ObjetoCorrompido as e:
+                problemas.append(f"{rel}: {e}")
+            except (KeyError, TypeError) as e:
+                problemas.append(f"{rel}: evidencia sem sha256/tamanho ({type(e).__name__})")
         for rel, m in itens:
             if m.get("formato") != FORMATO:
                 problemas.append(f"{rel}: formato desconhecido {m.get('formato')!r}")

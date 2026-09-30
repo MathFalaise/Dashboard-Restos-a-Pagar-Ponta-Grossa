@@ -3,12 +3,18 @@
 Código de **produção**:
 - **04.1:** coletor e camada bruta.
 - **04.2:** processamento, com a normalização (camada 1) e a derivação (camada 2) de todas as regras lado a lado.
+- **Revisão corretiva 01–04.4:** camada de consulta somente leitura para o futuro dashboard (`rp/painel`), governança e parâmetros das regras, evidência externa e registro do método de extração do RREO (esquema v4).
+
+**Fontes** (detalhe em `../etapa04/ARQUITETURA_FONTES.md`):
+- API do Portal da Transparência de Ponta Grossa (Elotech/Oxy Transparência) → fonte primária dos dados operacionais de RP;
+- RREO Anexo VII → publicação oficial independente, usada só para reconciliação e auditoria. Uma divergência nunca altera o valor da API.
 
 ## Onde fica cada coisa (`config.toml`)
 
 - **Banco ativo e logs:** `C:\Users\maped\RestosAPagar_local\`, fora do OneDrive.
 - **Snapshots brutos** (`../snapshots`) e **backups** (`../backups`): no projeto. São arquivos gravados uma única vez.
-- Se o banco se perder: `python -m rp reconstruir --destino NOVO.sqlite` refaz tudo a partir de `snapshots/`.
+- Se o banco se perder: `python -m rp reconstruir --destino NOVO.sqlite` refaz tudo a partir de `snapshots/` (depois, `python -m rp processar` recria normalização e derivação com os mesmos hashes).
+- Backup com mais de 100 MB (limite por arquivo do GitHub) fica só na cópia local, listado pelo nome no `.gitignore` e nunca apagado. Hoje: `backups/20260930-145737_antes-migracao-v3-v4.sqlite` (120,5 MB). O repositório não depende dele: o armazém `snapshots/` basta para reconstruir o banco.
 
 ## Proteções
 
@@ -150,7 +156,55 @@ Contagens:
 python -m rp situacao
 ```
 
-Testes (nenhum acessa a internet; um deles sobe um servidor HTTP local em 127.0.0.1):
+Registrar documento externo (e-SIC, norma, nota técnica): guarda o arquivo com SHA-256, grava manifesto imutável em `snapshots/evidencias/` e a linha em `evidencia_externa`:
+
+```bash
+python -m rp registrar-evidencia --tipo e-SIC --descricao "Resposta sobre as cópias 24xxxxx" --arquivo resposta.pdf --origem "e-SIC, protocolo n." --data 2026-10-15
+```
+
+## Camada de consulta do dashboard (somente leitura)
+
+`rp.painel.Painel` abre o banco em modo só leitura e nunca chama a API. Todo valor sai com natureza (fonte, publicado, derivado, analítico, diferença), regras e situação delas, fonte, rótulo de retrato ("Estado atual da base..." ou "Como a base estava em...") e proveniência até o objeto bruto. O nível `publico` (padrão) não traz identificação de credor em listagens; `--nivel interno` só quando pedido.
+
+Consultas (saída JSON): `contexto`, `cortes`, `entidades`, `indicadores`, `evolucao`, `dimensao`, `empenhos`, `empenho`, `fornecedores`, `pares`, `retratos`, `comparar-retratos`, `reconciliacao`, `coerencia`, `analitica`, `regras`, `evidencias`, `fontes`, `metodologia`, `dicionario`.
+
+Indicadores do Município num corte:
+
+```bash
+python -m rp painel indicadores --exercicio 2024 --data-final 2024-12-31
+```
+
+Como a base estava numa data (a reconciliação dessa data exige `processar --em` com a mesma data):
+
+```bash
+python -m rp painel indicadores --exercicio 2025 --data-final 2025-12-31 --entidade 1 --em 2026-09-29
+```
+
+Detalhe de um empenho (padrão: o último corte processado do exercício):
+
+```bash
+python -m rp painel empenho --entidade 1 --anoempenho 2025 --empenho 5659 --exercicio 2026
+```
+
+Área de reconciliação com o RREO (só as diferenças):
+
+```bash
+python -m rp painel reconciliacao --exercicio 2026 --escopo entidade --somente-diferencas
+```
+
+Coerência entre publicações (L de A × (a)+(f) de A+1), com a API ao lado:
+
+```bash
+python -m rp painel coerencia
+```
+
+Situação de governança de cada regra (histórico de decisões e parâmetros):
+
+```bash
+python -m rp painel regras
+```
+
+Testes (nenhum acessa a internet; um deles sobe um servidor HTTP local em 127.0.0.1; `test_casos_reais.py` monta um banco temporário a partir do armazém real `../snapshots`, só com leitura):
 
 ```bash
 python -m pytest tests

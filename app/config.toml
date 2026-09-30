@@ -20,6 +20,10 @@ espera_base_segundos = 5    # espera antes de repetir: base x 2^(tentativa-1); R
 limite_resposta_bytes = 67108864   # 64 MiB: teto do corpo de uma resposta (a maior real tem poucos MB)
 user_agent = "RestosAPagarPG-coletor (pesquisa sobre dados publicos de Restos a Pagar)"
 
+[rreo]
+# Entidade cujas publicacoes da LRF (grupo 1 do portal) trazem o RREO Anexo VII, por entidade e consolidado.
+entidade_publicacoes = 1
+
 [escopo]
 # Entidades da carga (Etapa 04). O coletor aceita qualquer entidade passada explicitamente.
 entidades = [1, 15, 4, 5, 8]
