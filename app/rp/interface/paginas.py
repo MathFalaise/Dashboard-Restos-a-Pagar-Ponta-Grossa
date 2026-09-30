@@ -56,7 +56,7 @@ def documento(titulo, corpo, ctx, ativo):
             '<link rel="stylesheet" href="/estilo.css"></head><body>'
             '<header class="topo"><p class="marca">Restos a Pagar — Ponta Grossa/PR</p>'
             f'<nav aria-label="Seções">{"".join(itens)}</nav></header>'
-            f'<main><p class="fonte-dados"><strong>Fonte dos dados:</strong> {esc(F.ELOTECH["rotulo"])}.</p>'
+            f'<main id="conteudo"><p class="fonte-dados"><strong>Fonte dos dados:</strong> {esc(F.ELOTECH["rotulo"])}.</p>'
             f"{corpo}</main>"
             '<footer class="rodape"><p>Interface somente leitura: mostra o que o projeto coletou e processou, '
             "sem consultar o portal. O RREO aparece só como publicação oficial independente, para conferência.</p>"
@@ -101,6 +101,11 @@ def _selecao(p, q, com_entidade=True):
             "cortes_do_exercicio": do_exercicio, "avisos": avisos}
 
 
+def _quando(sel):
+    """Complemento obrigatorio do titulo: o retrato e o estado atual da base ou 'como estava em' uma data."""
+    return f"como a base estava em {fm.data_br(sel['em'])}" if sel["em"] else "estado atual da base"
+
+
 def _formulario(acao, sel, entidades=None, extra=""):
     cortes = [(c["data_final"], fm.data_br(c["data_final"]) + ("" if c["municipio_disponivel"] else
                                                                " (Município incompleto)"))
@@ -126,15 +131,21 @@ def _retrato(ret):
     coleta, ate = fm.data_br(ret["coletado_de"], True), fm.data_br(ret["coletado_ate"], True)
     if ate != coleta:
         coleta += " a " + ate
+    if ret["tipo"] == "historico":
+        tipo = (f"histórico — como a base estava em {fm.data_br(ret['como_estava_em'], True)}: só snapshots coletados "
+                "até essa data; os posteriores não entram")
+    else:
+        tipo = "atual — o snapshot mais recente de cada entidade para este corte"
+    snaps = ret.get("snapshots") or []
     definicoes = [
+        ("Retrato", esc(tipo)),
         ("Exercício", esc(f"{ex} — ano de execução dos Restos a Pagar: inscritos em 01/01/{ex}, de empenhos de anos "
                           "anteriores")),
         ("Corte", esc(f"{fm.data_br(df)} — data final do retrato: movimentos de 01/01/{ex} até essa data")),
         ("Coleta", esc(f"{coleta} — quando a API foi consultada")),
     ]
-    if ret["tipo"] == "historico":
-        definicoes.append(("Como estava em", esc(fm.data_br(ret["como_estava_em"], True) +
-                                                  " — retrato vigente nessa data; os posteriores não entram")))
+    if snaps:
+        definicoes.append(("Snapshots usados", " ".join(f"<code>{esc(u)}</code>" for u in snaps)))
     nota = ""
     if ret.get("corte_posterior_a_coleta"):
         nota = ('<p class="nota">O corte é posterior à data da coleta: os valores vão só até o dia em que a API foi '
@@ -215,9 +226,14 @@ def resumo(p, q):
         return erro("Sem dados processados", str(e))
     ind = p.indicadores(sel["exercicio"], sel["data_final"], sel["entidade"], sel["em"])
     escopo = f"entidade {sel['entidade']}" if sel["entidade"] is not None else "Município"
-    titulo = f"Restos a Pagar — {escopo}, exercício {sel['exercicio']}, corte {fm.data_br(sel['data_final'])}"
+    titulo = (f"Restos a Pagar — {escopo}, exercício {sel['exercicio']}, corte {fm.data_br(sel['data_final'])} "
+              f"({_quando(sel)})")
     partes = [f"<h1>{esc(titulo)}</h1>", _avisos(sel["avisos"]),
               _formulario("/", sel, _entidades_do_catalogo(p)), _retrato(ind["retrato"])]
+    unicas = [e for e in ind["entidades"] if e["entra_no_total"]]
+    if ind["disponivel"] and unicas and all(e["situacao_do_dado"]["codigo"] == "sem_rp" for e in unicas):
+        partes.append('<p class="aviso" id="sem-rp">Zero de verdade: a API devolveu zero registros de RP para '
+                      "este escopo e corte (entidade existente, sem RP).</p>")
     if not ind["disponivel"]:
         partes.append('<section class="indisponivel" id="indisponivel"><h2>Dados indisponíveis para este recorte</h2>'
                       f'<p>{esc(ind["motivo_indisponivel"])}.</p><p>Nenhum valor é mostrado: ausência de dado não é '
@@ -239,21 +255,20 @@ def _entidades_abrangidas(ind):
     linhas = []
     for e in ind["entidades"]:
         s = e["snapshot"]
-        if e["situacao_no_exercicio"] == "fora do catálogo oficial":
-            entra = "não — não existia no exercício (não é RP zero)"
-        elif s is None:
-            entra = "não — corte não coletado ou não processado"
-        else:
-            entra = "sim" if e["entra_no_total"] else "não"
         fora = e["situacao_no_exercicio"] == "fora do catálogo oficial"
-        linhas.append([esc(e["entidade"]), esc(e["nome"] or ""), esc(e["situacao_no_exercicio"]), esc(entra),
+        situacao = e["situacao_do_dado"]["texto"]
+        if e["retrato_mais_novo_nao_processado"]:
+            situacao += "; há retrato mais novo coletado, ainda não processado"
+        linhas.append([esc(e["entidade"]), esc(e["nome"] or ""), esc(e["situacao_no_exercicio"]),
+                       f'<span id="situacao-{esc(e["entidade"])}">{esc(situacao)}</span>',
+                       "sim" if e["entra_no_total"] else "não",
                        esc(fm.data_br(s["coletada_em"], True)) if s else "—",
                        fm.contagem(s["registros"]) if s and not fora else "—",
                        f"<code>{esc(s['snapshot_uid'])}</code>" if s else "—"])
     return ('<section class="grupo"><h2>Entidades abrangidas</h2>'
             + fm.tabela([("Entidade", None), ("Nome", None), ("Situação no catálogo do exercício", None),
-                         ("Entra no total", None), ("Coletado em", None), ("Registros", None),
-                         ("Snapshot", "retrato usado (origem dos valores)")], linhas)
+                         ("Situação do dado", None), ("Entra no total", None), ("Coletado em", None),
+                         ("Registros", None), ("Snapshot", "retrato usado (origem dos valores)")], linhas)
             + f'<p>{fm.link("/entidades", "Ver valores por entidade")}</p></section>')
 
 
@@ -287,6 +302,7 @@ def _conferencia(ind, sel):
     detalhe = fm.link("/reconciliacao", "Ver a reconciliação coluna a coluna deste documento",
                       exercicio=sel["exercicio"], data_final=sel["data_final"], escopo=c["escopo"])
     return (cab + fm.tabela([("", None), ("Valor", None), ("Fonte", None), ("Natureza", None)], linhas)
+            + f'<p>Situação do dado: {esc(c["situacao_do_dado"]["texto"])}.</p>'
             + f'<p>Situação da diferença: {_explicacoes(c["situacao_da_diferenca"], c["explicacoes"])}</p>'
             + f'<p class="nota">{esc(c["nota"])}</p><p>{detalhe}</p></section>')
 
@@ -298,10 +314,15 @@ def entidades(p, q):
     except SemDados as e:
         return erro("Sem dados processados", str(e))
     r = p.entidades_do_corte(sel["exercicio"], sel["data_final"], sel["em"])
-    titulo = f"Entidades — exercício {sel['exercicio']}, corte {fm.data_br(sel['data_final'])}"
+    titulo = (f"Entidades — exercício {sel['exercicio']}, corte {fm.data_br(sel['data_final'])} "
+              f"({_quando(sel)})")
     linhas = []
     for l in r["linhas"]:
-        base = [esc(l["entidade"]), esc(l["nome"] or ""), esc(sel["exercicio"]), esc(l["situacao_no_exercicio"])]
+        situacao = l["situacao_do_dado"]["texto"]
+        if l["retrato_mais_novo_nao_processado"]:
+            situacao += "; há retrato mais novo coletado, ainda não processado"
+        base = [esc(l["entidade"]), esc(l["nome"] or ""), esc(sel["exercicio"]), esc(l["situacao_no_exercicio"]),
+                f'<span id="situacao-{esc(l["entidade"])}">{esc(situacao)}</span>']
         v = l["valores"]
         if v is None:
             base.append(f'<td colspan="5" class="sem-valor" id="sem-valor-{esc(l["entidade"])}">'
@@ -325,7 +346,7 @@ def entidades(p, q):
             base.append("—")
         linhas.append(base)
     tabela = fm.tabela([("Entidade", None), ("Nome", None), ("Exercício", None), ("Situação no catálogo", None),
-                        ("Processado (inscrito)", "proc na abertura"), ("Não processado (inscrito)", "aproc na abertura"),
+                        ("Situação do dado", None), ("Processado (inscrito)", "proc na abertura"), ("Não processado (inscrito)", "aproc na abertura"),
                         ("Total inscrito", "proc + aproc"), ("Saldo no corte (S1)", "S1 v1"),
                         ("Empenhos", "registros no snapshot"), ("Retratos", "coletas deste corte"),
                         ("Origem", "snapshot e derivação dos valores da linha")], linhas)
@@ -342,7 +363,8 @@ def entidades(p, q):
 def _filtros_empenho(q):
     return {"categoria": q.escolha("categoria", CATEGORIAS), "fonte_recurso": q.inteiro("fonte_recurso", 0, 10 ** 9),
             "programatica": q.texto("programatica", 28), "tipo_credor": q.escolha("tipo_credor", publico.TIPOS_CREDOR),
-            "cnpj": q.texto("cnpj", 18)}
+            "cnpj": q.texto("cnpj", 18), "anoempenho": q.inteiro("anoempenho", 1900, 2999),
+            "empenho": q.inteiro("empenho", 0, 10 ** 9)}
 
 
 def empenhos(p, q):
@@ -356,14 +378,19 @@ def empenhos(p, q):
     r = p.empenhos(sel["exercicio"], sel["data_final"], sel["entidade"], sel["em"], TAMANHO_PAGINA,
                    (pagina - 1) * TAMANHO_PAGINA, ordem, **filtros)
     escopo = f"entidade {sel['entidade']}" if sel["entidade"] is not None else "Município"
-    titulo = f"Empenhos — {escopo}, exercício {sel['exercicio']}, corte {fm.data_br(sel['data_final'])}"
+    titulo = (f"Empenhos — {escopo}, exercício {sel['exercicio']}, corte {fm.data_br(sel['data_final'])} "
+              f"({_quando(sel)})")
     fontes_rec = []
     if r["disponivel"]:
         fontes_rec = [(l["fonte_recurso"], l["descricao_fonte"] or l["fonte_recurso"])
                       for l in p.por_dimensao("fonte_recurso", sel["exercicio"], sel["data_final"], sel["entidade"],
                                               sel["em"])["linhas"]]
         fontes_rec.sort(key=lambda x: (x[0] is None, x[0]))
-    extra = (f'<label>Categoria <select name="categoria"><option value="">todas</option>'
+    extra = (f'<label>Ano do empenho <input name="anoempenho" inputmode="numeric" maxlength="4" '
+             f'value="{esc(filtros["anoempenho"] or "")}" placeholder="ex.: 2025"></label>'
+             f'<label>Número do empenho <input name="empenho" inputmode="numeric" maxlength="10" '
+             f'value="{esc(filtros["empenho"] if filtros["empenho"] is not None else "")}" placeholder="ex.: 5659"></label>'
+             f'<label>Categoria <select name="categoria"><option value="">todas</option>'
              f'{fm.opcoes([(c, NOME_CATEGORIA[c]) for c in CATEGORIAS], filtros["categoria"] or "")}</select></label>'
              f'<label>Fonte de recurso <select name="fonte_recurso"><option value="">todas</option>'
              f'{fm.opcoes(fontes_rec, filtros["fonte_recurso"] if filtros["fonte_recurso"] is not None else "")}</select></label>'
@@ -381,8 +408,15 @@ def empenhos(p, q):
                      "<p>Nenhum valor é mostrado: ausência de dado não é zero.</p></section>")
         return titulo, "".join(corpo)
     corpo.append(_retrato(r["retrato"]))
-    t = r["totais"]["valores"]
     filtros_txt = ", ".join(f"{k} = {v}" for k, v in r["filtros"].items()) or "nenhum"
+    if r["sem_resultado"]:
+        corpo.append('<section class="grupo sem-resultado" id="sem-resultado"><h2>Nenhum resultado encontrado</h2>'
+                     f'<p>{esc(r["mensagem_sem_resultado"])}.</p><p>Filtros aplicados: {esc(filtros_txt)}.</p>'
+                     f'<p>Empenhos encontrados: {fm.contagem(r["total"], "tot-registros")}.</p>'
+                     "<p>Nenhum valor é mostrado: conjunto vazio não é valor zero.</p>"
+                     + _origem_conjunto(r["proveniencia"], "Snapshots consultados") + "</section>")
+        return titulo, "".join(corpo)
+    t = r["totais"]["valores"]
     corpo.append('<section class="grupo"><h2>Conjunto selecionado</h2>'
                  f'<p>Filtros aplicados: {esc(filtros_txt)}. Filtro só escolhe registros; não altera nenhum valor.</p>'
                  + fm.selo("elotech", "derivado", r["totais"]["regras"], "somas dos campos da API nos registros filtrados")
@@ -406,7 +440,7 @@ def empenhos(p, q):
                        esc(reg["tipo_credor"]), esc(fm.data_br(reg["data_emissao"])), f'<code>{esc(reg["programatica"] or "")}</code>',
                        esc(reg["fonte_recurso"]), fm.valor(reg["proc_c"]), fm.valor(reg["aproc_c"]),
                        fm.valor(reg["pago_proc_c"]), fm.valor(reg["pago_aproc_c"]), fm.valor(reg["liquidado_c"]),
-                       fm.valor(reg["cancelado_aproc_c"] + reg["cancelado_proc_c"]), fm.valor(reg["s1_saldo_total_c"]),
+                       fm.valor(reg["cancelamentos_c"]), fm.valor(reg["s1_saldo_total_c"]),
                        esc(NOME_CATEGORIA.get(reg["categoria"], reg["categoria"]))])
     cab = [("Entidade", "entidade"), ("Ano", "anoempenho"), ("Empenho", "empenho — abre o detalhe"),
            ("Credor", "só o tipo; nome e documento não aparecem na lista"), ("Emissão", "dataEmissao"),
@@ -447,6 +481,8 @@ def empenho(p, q):
     em = q.data("em")
     d = p.detalhe_empenho(entidade, ano, numero, exercicio, q.data("data_final"), em)
     titulo = f"Empenho {numero}/{ano} — entidade {entidade}, exercício {exercicio}"
+    if d.get("data_final"):
+        titulo += f", corte {fm.data_br(d['data_final'])} ({_quando({'em': em})})"
     if not d["encontrado"]:
         return titulo, (f"<h1>{esc(titulo)}</h1>" + _retrato(d.get("retrato")) +
                         f'<section class="indisponivel" id="indisponivel"><p>{esc(d["motivo_indisponivel"])}.</p></section>')
@@ -479,7 +515,7 @@ def _detalhe_ocorrencia(o):
         x = c[col]
         valores.append([esc(x["rotulo"]), f"<code>{esc(x['campo_api'])}</code>", fm.valor(x["valor"], f"campo-{col}"),
                         fm.natureza(x["natureza"]), esc(x["significado"]), esc(x["status_semantica"])])
-    classificacao = []
+    classificacao, analise = [], []
     for col, x in dv.items():
         if col.endswith("_c"):
             v = fm.valor(x["valor"], f"derivado-{col}")
@@ -487,9 +523,10 @@ def _detalhe_ocorrencia(o):
             v = esc(NOME_CATEGORIA.get(x["valor"], x["valor"]))
         else:
             v = esc(x["valor"] if x["valor"] is not None else "—")
-        classificacao.append([esc(x["rotulo"]), v, esc(x["formula"]),
-                              esc(f"{x['regra']} ({fm.SITUACAO_REGRA.get(x['situacao_da_regra'], x['situacao_da_regra'])})"),
-                              fm.natureza(x["natureza"])])
+        (classificacao if x["natureza"] == "derivado" else analise).append(
+            [esc(x["rotulo"]), v, esc(x["formula"]),
+             esc(f"{x['regra']} ({fm.SITUACAO_REGRA.get(x['situacao_da_regra'], x['situacao_da_regra'])})"),
+             fm.natureza(x["natureza"])])
     outros = fm.lista_definicoes([(c[k]["rotulo"] + f" ({c[k]['campo_api']})", esc(c[k]["valor"] if c[k]["valor"] is not None else "não veio na API"))
                                   for k in ("orgao", "unidade", "funcao", "sub_funcao", "programa", "projeto", "elemento",
                                             "desdobra_desp", "sub_desdobramento")])
@@ -497,12 +534,16 @@ def _detalhe_ocorrencia(o):
               '<section class="grupo"><h2>Valores (API Elotech)</h2>', fm.selo("elotech", "da_fonte"),
               fm.tabela([("Campo", None), ("Nome na API", None), ("Valor", None), ("Natureza", None),
                          ("Significado (Etapa 02)", None), ("Status", None)], valores), "</section>",
-              '<section class="grupo"><h2>Classificação e saldos (derivados)</h2>',
-              '<p class="nota">Derivado por regra operacional = valor derivado. Regra experimental ou não recomendada = '
-              "valor analítico, não oficial.</p>",
+              '<section class="grupo"><h2>Classificação e saldos (valores derivados, regra operacional)</h2>',
               fm.tabela([("Item", None), ("Valor", None), ("Fórmula", None), ("Regra (situação)", None),
-                         ("Natureza", None)], classificacao), "</section>",
-              f'<section class="grupo"><h2>Classificação orçamentária</h2>{outros}</section>']
+                         ("Natureza", None)], classificacao), "</section>"]
+    if analise:
+        partes += ['<section class="grupo analise" id="analise-experimental"><h2>ANÁLISE EXPERIMENTAL (não oficial)</h2>',
+                   '<p class="nota">Calculado por regra experimental ou não recomendada. Não é dado da fonte, não é '
+                   "valor publicado e não entra em nenhum indicador.</p>",
+                   fm.tabela([("Item", None), ("Valor", None), ("Fórmula", None), ("Regra (situação)", None),
+                              ("Natureza", None)], analise), "</section>"]
+    partes.append(f'<section class="grupo"><h2>Classificação orçamentária</h2>{outros}</section>')
     if o["par_espelhado"]:
         partes.append(_par(o["par_espelhado"]))
     partes.append(_origem_registro(o["proveniencia"]))
@@ -663,7 +704,7 @@ def _reconciliacao_documento(p, q, exercicio, df, escopo, em, cab):
     versao = q.escolha("regra", ("RREO-COL v1", "RREO-COL v2"))
     r = p.reconciliacao(exercicio, df, escopo, somente, em)
     linhas_r = [x for x in r["linhas"] if versao is None or x["regra_agregacao"]["regra"] == versao]
-    titulo = f"Reconciliação — {escopo}, {exercicio}, corte {fm.data_br(df)}"
+    titulo = f"Reconciliação — {escopo}, exercício {exercicio}, corte {fm.data_br(df)}"
     if not linhas_r:
         return titulo, (f"<h1>{esc(titulo)}</h1>{cab}<p>Sem RREO transcrito para este corte e escopo"
                         + (" (ou sem diferença)" if somente else "") + ".</p>")
@@ -671,8 +712,8 @@ def _reconciliacao_documento(p, q, exercicio, df, escopo, em, cab):
     linhas = []
     for x in linhas_r:
         ident = f"rec-{x['regra_agregacao']['regra'].split()[-1]}-{x['coluna']}"      # ex.: rec-v2-h
-        linhas.append([esc(x["coluna"]),
-                       esc(f"{x['regra_agregacao']['regra']} ({fm.SITUACAO_REGRA.get(x['regra_agregacao']['situacao'])})"),
+        linhas.append([f'<strong>{esc(x["coluna"])}</strong> <small>{esc(F.COLUNAS_RREO.get(x["coluna"], ""))}</small>',
+                       fm.situacao_regra(x["regra_agregacao"]["regra"], x["regra_agregacao"]["situacao"]),
                        fm.valor(x["api_c"], ident + "-api") + " " + fm.natureza(x["api_natureza"]),
                        fm.valor(x["rreo_c"], ident + "-rreo") + " " + fm.natureza(x["rreo_natureza"]),
                        fm.valor(x["diferenca_c"], ident + "-dif"),
@@ -692,8 +733,10 @@ def _reconciliacao_documento(p, q, exercicio, df, escopo, em, cab):
                                                              " — Município"))),
                                     ("Snapshots da API", " ".join(f"<code>{esc(u)}</code>" for u in primeiro["snapshots_api"]))])
              + _pdf(primeiro["pdf"], primeiro["extracao"]) + filtro
-             + fm.tabela([("Coluna", None), ("Regra de agregação", None), ("API Elotech", None), ("RREO", None),
-                          ("Diferença (API − RREO)", None), ("Situação e explicação", None)], linhas, "tabela reconciliacao")
+             + fm.tabela([("Coluna do RREO", None), ("Regra de agregação", None),
+                          ("API Elotech projetada na coluna (análise)", "registros da API agregados pela regra ao lado"),
+                          ("RREO (valor publicado)", None), ("Diferença (API − RREO)", None),
+                          ("Situação e explicação", None)], linhas, "tabela reconciliacao")
              + f'<p>{fm.link("/reconciliacao", "« todos os documentos", em=em)}</p>')
     return titulo, corpo
 
@@ -765,29 +808,43 @@ def pares(p, q):
 def metodologia(p, q):
     m = p.metodologia()
     f = p.fontes()
-    regras = [[esc(r["codigo"]), esc(r["versao"]), esc(fm.SITUACAO_REGRA.get(r["situacao"], r["situacao"])),
+    regras = [[esc(r["codigo"]), esc(r["versao"]), fm.situacao_regra(f"{r['codigo']} v{r['versao']}", r["situacao"]),
                "sim" if r["compoe_indicador_publicado"] else "não", esc(r["status_evidencia"]), esc(r["definicao"])]
               for r in p.regras()]
     campos = [[esc(rot), f"<code>{esc(api)}</code>", esc(sig), esc(st),
                "não (restrito)" if col in publico.CAMPOS_RESTRITOS else "sim"]
               for col, (api, rot, sig, st) in F.CAMPOS.items()]
     naturezas = fm.lista_definicoes([(k, esc(v)) for k, v in f["naturezas"].items()])
+    situacoes = fm.lista_definicoes([(k, esc(v)) for k, v in m["situacoes_do_dado"].items()])
+    datas = ", ".join(fm.data_br(d, True) for d in m["datas_como_estava_em_com_derivacao"]) or "nenhuma"
     corpo = ("<h1>Metodologia e fontes</h1>"
-             "<h2>Fontes</h2><ul>" + "".join(f"<li>{esc(h)}</li>" for h in f["hierarquia"]) + "</ul>"
-             + fm.lista_definicoes([("Dados operacionais", esc(m["dados_operacionais"])),
-                                    ("Publicações de referência", esc(m["publicacoes_de_referencia"])),
-                                    ("Tratamento", esc(m["tratamento"])),
-                                    ("Importante", esc(m["importante"]))])
-             + "<h2>Exercício, corte e coleta</h2><ul>"
-               "<li><strong>Exercício</strong>: ano de execução dos Restos a Pagar (inscritos em 01/01, de empenhos de "
-               "anos anteriores).</li><li><strong>Corte</strong>: data final do retrato (movimentos de 01/01 até ela)."
-               "</li><li><strong>Coleta</strong>: data em que a API foi consultada. Um exercício antigo mostra o "
-               "estado da base na data da coleta.</li></ul>"
+             "<h2>Fonte principal</h2>"
+             f"<p>{esc(m['dados_operacionais'])}</p>"
+             "<h2>Fonte de reconciliação</h2>"
+             f"<p>{esc(m['publicacoes_de_referencia'])} O RREO nunca substitui um valor da API: a diferença entre os "
+             "dois aparece como diferença, com a situação da explicação (sem diferença, explicada, parcialmente "
+             "explicada ou não determinada).</p>"
+             "<h2>Hierarquia das fontes</h2><ul>" + "".join(f"<li>{esc(h)}</li>" for h in f["hierarquia"]) + "</ul>"
+             "<h2>Snapshots</h2>"
+             f"<p>{esc(m['snapshots'])}</p>"
+             "<h2>Processamento e derivação</h2>"
+             f"<p>{esc(m['processamento'])}</p><p>{esc(m['tratamento'])}</p>"
+             "<h2>Retrato atual e retrato histórico</h2>"
+             f"<p>{esc(m['retrato_atual_e_historico'])}</p>"
+             "<ul><li><strong>Exercício</strong>: ano de execução dos Restos a Pagar (inscritos em 01/01, de empenhos de "
+             "anos anteriores).</li><li><strong>Corte</strong>: data final do retrato (movimentos de 01/01 até ela)."
+             "</li><li><strong>Coleta</strong>: data em que a API foi consultada.</li></ul>"
+             f"<p>{esc(m['importante'])}</p>"
+             f"<p>Datas 'como estava em' com derivação própria (reconciliação histórica): {esc(datas)}.</p>"
+             "<h2>Situação dos dados</h2><p>Só 'dado existente' e 'entidade existente, sem RP' têm valor; nas demais "
+             "situações a interface mostra o motivo, nunca R$ 0,00.</p>" + situacoes
              + "<h2>Natureza de cada valor</h2>" + naturezas
              + "<h2>Regras e situação</h2><p>Só regra operacional que compõe indicador entra nos indicadores. "
-               "Regras experimentais ou não recomendadas aparecem apenas aqui e, rotuladas, na reconciliação.</p>"
+               "Regras experimentais ou não recomendadas aparecem apenas aqui e, rotuladas como análise, na "
+               "reconciliação e no detalhe do empenho.</p>"
              + fm.tabela([("Regra", None), ("Versão", None), ("Situação", None), ("Compõe indicador", None),
                           ("Evidência", None), ("Definição", None)], regras)
+             + "<h2>Limitações</h2><ul>" + "".join(f"<li>{esc(x)}</li>" for x in m["limitacoes"]) + "</ul>"
              + "<h2>Dados pessoais</h2><p>Listas e totais não mostram nome, código nem documento do credor. O detalhe "
                "de um empenho mostra o nome de pessoa jurídica sem documento; o nome de pessoa física não é exibido. "
                "Não há dado bancário nos dados coletados. A interface não tem modo interno.</p>"

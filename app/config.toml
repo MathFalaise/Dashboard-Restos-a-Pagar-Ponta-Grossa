@@ -4,7 +4,8 @@
 [caminhos]
 # Banco ATIVO e logs: pasta local FORA do OneDrive (SQLite em pasta sincronizada pode corromper).
 # O programa recusa abrir o banco ativo dentro de uma pasta do OneDrive.
-dados_locais = "C:/Users/maped/RestosAPagar_local"
+# "~" = pasta do usuario em qualquer sistema. Outra pasta: variavel de ambiente RP_DADOS_LOCAIS.
+dados_locais = "~/RestosAPagar_local"
 # Bruto imutavel (objetos + manifestos) e copias do banco: arquivos gravados uma unica vez.
 # Ficam no projeto, no OneDrive, e a sincronizacao serve de copia fora da maquina.
 snapshots = "../snapshots"

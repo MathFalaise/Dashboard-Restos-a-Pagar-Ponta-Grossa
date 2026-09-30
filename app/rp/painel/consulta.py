@@ -35,6 +35,21 @@ MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "a
 LIMITE_LISTA = 500
 CATEGORIAS = ("processado", "nao_processado", "ambos", "sem_saldo_abertura")
 ORDEM_COLUNAS = "abcdefghijkL"          # ordem das colunas no Anexo VII do RREO
+# Situacao do dado de uma entidade num corte. So 'com_dados' e 'sem_rp' tem valor; 'sem_rp' e o unico zero de
+# verdade (a entidade existia e a API devolveu zero registros). Os demais nunca viram R$ 0,00.
+SITUACOES_DO_DADO = {
+    "com_dados": "dado existente",
+    "sem_rp": "entidade existente, sem RP neste corte (zero registros na API)",
+    "inexistente": "entidade inexistente no exercício (fora do catálogo oficial; não é RP zero)",
+    "sem_coleta": "corte não coletado",
+    "nao_processado": "corte coletado, mas ainda não processado",
+    "incompleto": "dado indisponível: só há coleta incompleta ou com falha deste corte",
+    "divergente": "dado com diferença em relação ao RREO (a diferença é mostrada; o valor da API não muda)",
+}
+
+# Expressao unica do cancelamento de um registro: usada no indicador, no agrupamento e na coluna da lista (a
+# interface nao soma campos por conta propria).
+EXPR_CANCELAMENTOS = "r.cancelado_aproc_c + r.cancelado_proc_c"
 
 # Indicadores do corte: todos calculados sobre os registros da API (rp_registro) e os derivados por registro
 # (rp_derivado). `rreo` = colunas do RREO com que o indicador e comparado na reconciliacao (nunca substituido).
@@ -59,7 +74,7 @@ SOMAS = [
          formula="soma dos estornos brutos; já descontados de pagoProc e pagoAProc"),
     dict(id="liquidacoes", rotulo="Liquidações no período (líquidas de estornos)", sql="SUM(r.liquidado_c)",
          colunas=["liquidado_c"], regras=[], formula="soma de liquidado", rreo=["h"]),
-    dict(id="cancelamentos", rotulo="Cancelamentos no período", sql="SUM(r.cancelado_aproc_c + r.cancelado_proc_c)",
+    dict(id="cancelamentos", rotulo="Cancelamentos no período", sql=f"SUM({EXPR_CANCELAMENTOS})",
          colunas=["cancelado_aproc_c", "cancelado_proc_c"], regras=[],
          formula="soma de canceladoAProc + canceladoProc (este sempre 0 nos dados observados)", rreo=["d", "j"]),
     dict(id="retencoes", rotulo="Retenções no período (já contidas em pagoAProc)", sql="SUM(r.retencao_c)",
@@ -157,7 +172,7 @@ class Painel:
     @classmethod
     def abrir(cls, caminho, nivel="publico"):
         """Conexao SOMENTE LEITURA ao banco (o painel nunca escreve). Exige esquema v4 ou mais novo."""
-        p = Path(caminho)
+        p = Path(caminho).expanduser()
         if not p.is_file():
             raise FileNotFoundError(f"banco nao encontrado: {p}")
         con = sqlite3.connect(f"{p.resolve().as_uri()}?mode=ro", uri=True)
@@ -281,6 +296,20 @@ class Painel:
                          "o que é diferente de ter RP zero: ela não entra no total do Município.")}
 
     # ------------------------------------------------------------------ corte
+    def _estado_sem_snapshot(self, ctx, e, exercicio, di, data_final, em):
+        """Por que uma entidade nao tem snapshot processado no corte: nunca coletado, coletado e ainda nao
+        processado, ou so coletas incompletas/com falha. Olha todas as coletas do corte ate `em` (inclusive as
+        posteriores a normalizacao em uso)."""
+        filtro_em, p_em = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        linhas = self.con.execute(
+            "SELECT id, status FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND entidade=? AND "
+            "exercicio=? AND data_inicial=? AND data_final=?" + filtro_em, (e, exercicio, di, data_final, *p_em)).fetchall()
+        if any(st == "completa" and cid > ctx["limite_coleta"] for cid, st in linhas):
+            return "nao_processado"
+        if any(st != "completa" for _, st in linhas):
+            return "incompleto"
+        return "sem_coleta"
+
     def _corte(self, ctx, exercicio, data_final, entidade, em, vig=None, cat=None):
         di = f"{exercicio}-01-01"
         vig = self._vigentes(ctx, em) if vig is None else vig
@@ -297,7 +326,11 @@ class Painel:
                     "retratos_do_corte": self.con.execute(
                         "SELECT COUNT(*) FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND entidade=? AND "
                         "exercicio=? AND data_inicial=? AND data_final=? AND id <= ?" + filtro_em,
-                        (e, exercicio, di, data_final, ctx["limite_coleta"], *p_em)).fetchone()[0]}
+                        (e, exercicio, di, data_final, ctx["limite_coleta"], *p_em)).fetchone()[0],
+                    "retrato_mais_novo_nao_processado": bool(self.con.execute(
+                        "SELECT 1 FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND status='completa' "
+                        "AND entidade=? AND exercicio=? AND data_inicial=? AND data_final=? AND id > ?" + filtro_em,
+                        (e, exercicio, di, data_final, ctx["limite_coleta"], *p_em)).fetchone())}
             if cid is not None:
                 uid, quando = self.con.execute("SELECT snapshot_uid, coletada_em FROM coleta WHERE id=?", (cid,)).fetchone()
                 n = self.con.execute("SELECT COUNT(*) FROM rp_registro WHERE normalizacao_id=? AND coleta_id=?",
@@ -305,32 +338,41 @@ class Painel:
                 item["snapshot"] = {"snapshot_uid": uid, "coletada_em": quando, "registros": n}
             if status == "fora do catálogo oficial":
                 fora.append(e)
+                estado = "inexistente"
                 if item["snapshot"] and item["snapshot"]["registros"]:
                     avisos.append(f"entidade {e} fora do catálogo oficial de {exercicio} com registros no snapshot: "
                                   "não somados ao Município")
             elif cid is None:
                 faltam.append(e)
+                estado = self._estado_sem_snapshot(ctx, e, exercicio, di, data_final, em)
             else:
                 somar.append(cid)
                 item["entra_no_total"] = True
+                estado = "sem_rp" if item["snapshot"]["registros"] == 0 else "com_dados"
+            item["situacao_do_dado"] = {"codigo": estado, "texto": SITUACOES_DO_DADO[estado]}
             itens.append(item)
         if entidade is not None and fora:
             motivo = "entidade fora do catálogo oficial do exercício: não existia; não é RP zero"
         elif faltam:
-            motivo = f"corte não coletado (ou ainda não processado) para a(s) entidade(s) {faltam}"
+            por_estado = {}
+            for i in itens:
+                if i["entidade"] in faltam:
+                    por_estado.setdefault(i["situacao_do_dado"]["codigo"], []).append(i["entidade"])
+            motivo = "; ".join(f"{SITUACOES_DO_DADO[k]} para a(s) entidade(s) {v}" for k, v in por_estado.items())
         elif not somar:
             motivo = "nenhuma entidade do catálogo oficial com snapshot neste corte"
         else:
             motivo = None
         coletadas = [i["snapshot"]["coletada_em"] for i in itens if i["entra_no_total"]]
+        uids = [i["snapshot"]["snapshot_uid"] for i in itens if i["entra_no_total"]]
         return {"exercicio": exercicio, "data_inicial": di, "data_final": data_final, "entidade": entidade, "em": em,
                 "entidades": itens, "fora_do_catalogo": fora, "faltam": faltam, "somar": somar, "avisos": avisos,
                 "disponivel": motivo is None, "motivo": motivo,
-                "retrato": self._retrato(exercicio, data_final, coletadas, em)}
+                "retrato": self._retrato(exercicio, data_final, coletadas, em, uids)}
 
     @staticmethod
-    def _retrato(exercicio, data_final, coletadas, em):
-        """Rotulo obrigatorio de todo valor: retrato atual ou 'como a base estava em'."""
+    def _retrato(exercicio, data_final, coletadas, em, snapshots=None):
+        """Rotulo obrigatorio de todo valor: retrato atual ou 'como a base estava em', com os snapshots usados."""
         if not coletadas:
             return None
         ini, fim = min(coletadas), max(coletadas)
@@ -339,7 +381,7 @@ class Painel:
         base = f"exercício de {exercicio}, corte {_data_br(data_final)}, {quando}"
         texto = f"Como a base estava em {_instante_br(em)}: {base}" if em else f"Estado atual da base para o {base}"
         return {"tipo": "historico" if em else "atual", "texto": texto, "exercicio": exercicio, "data_final": data_final,
-                "coletado_de": ini, "coletado_ate": fim, "como_estava_em": em,
+                "coletado_de": ini, "coletado_ate": fim, "como_estava_em": em, "snapshots": snapshots or [],
                 "corte_posterior_a_coleta": data_final > ini[:10],   # ex.: corte 31/12 coletado em setembro
                 "nota": fontes.METODOLOGIA["importante"]}
 
@@ -487,6 +529,8 @@ class Painel:
                 "rreo": {"rotulo": "Coluna L do RREO Anexo VII (saldo de RP)", "valor_c": x["rreo_c"],
                          "natureza": "publicado", "fonte": fontes.RREO["rotulo"], "pdf": x["pdf"], "extracao": x["extracao"]},
                 "diferenca_c": dif, "diferenca_natureza": "diferenca", "situacao_da_diferenca": situacao,
+                "situacao_do_dado": ({"codigo": "divergente", "texto": SITUACOES_DO_DADO["divergente"]} if dif else
+                                     {"codigo": "com_dados", "texto": "dado existente, igual ao RREO"}),
                 "explicacoes": [{k: e[k] for k in explicacoes.CAMPOS_SAIDA} for e in achadas],
                 "nota": ("Fonte primária: API Elotech. Fonte de reconciliação: RREO Anexo VII. A diferença é mostrada; "
                          "o saldo da API nunca é trocado pelo valor do RREO.")}
@@ -524,7 +568,7 @@ class Painel:
         linhas = []
         for row in self.con.execute(
                 f"SELECT {grupo}, COUNT(*), SUM(r.proc_c + r.aproc_c), SUM(r.pago_proc_c + r.pago_aproc_c), "
-                f"SUM(r.liquidado_c), SUM(r.cancelado_aproc_c + r.cancelado_proc_c), SUM(d.s1_saldo_total_c) "
+                f"SUM(r.liquidado_c), SUM({EXPR_CANCELAMENTOS}), SUM(d.s1_saldo_total_c) "
                 f"FROM rp_registro r JOIN rp_derivado d ON d.derivacao_id=? AND d.resposta_id=r.resposta_id "
                 f"AND d.indice=r.indice WHERE r.normalizacao_id=? AND {filtro} GROUP BY {grupo} "
                 f"ORDER BY SUM(d.s1_saldo_total_c) DESC, {grupo}",
@@ -547,6 +591,7 @@ class Painel:
         restritos = list(publico.CAMPOS_RESTRITOS) if self.nivel == "interno" else []
         filtro, p = self._de_coletas(coletas)
         colunas = ([f"r.{c}" for c in CAMPOS_REGISTRO + DINHEIRO] + [f"d.{c}" for c in DERIVADOS] +
+                   [f"({EXPR_CANCELAMENTOS})"] +
                    ["r.cnpj", "r.nome", "r.resposta_id", "r.indice", "c.snapshot_uid", "rb.ordem", "rb.sha256", "rb.url"] +
                    [f"r.{c}" for c in restritos])
         sql = (f"SELECT {', '.join(colunas)} FROM rp_registro r "
@@ -557,7 +602,7 @@ class Painel:
         if limite is not None:
             sql += " LIMIT ? OFFSET ?"
             args += [limite, deslocamento]
-        nomes = (CAMPOS_REGISTRO + DINHEIRO + DERIVADOS +
+        nomes = (CAMPOS_REGISTRO + DINHEIRO + DERIVADOS + ["cancelamentos_c"] +
                  ["_cnpj", "_nome", "_resposta_id", "_indice", "_snapshot_uid", "_ordem", "_sha256", "_url"] + restritos)
         for row in self.con.execute(sql, args):
             reg = dict(zip(nomes, row))
@@ -570,10 +615,18 @@ class Painel:
             yield reg, prov, nome, cnpj
 
     @staticmethod
-    def _filtros_empenho(categoria=None, fonte_recurso=None, programatica=None, tipo_credor=None, cnpj=None):
+    def _filtros_empenho(categoria=None, fonte_recurso=None, programatica=None, tipo_credor=None, cnpj=None,
+                         anoempenho=None, empenho=None):
         """SQL (sempre parametrizado) dos filtros da listagem de empenhos. Filtro so escolhe registros; nunca muda valor.
-        cnpj: so CNPJ completo (14 digitos) de pessoa juridica; CPF nunca e aceito como filtro."""
+        cnpj: so CNPJ completo (14 digitos) de pessoa juridica; CPF nunca e aceito como filtro.
+        anoempenho / empenho: busca de um empenho pelo ano e/ou numero (igualdade exata)."""
         sql, params, eco = "", [], {}
+        for nome, valor in (("anoempenho", anoempenho), ("empenho", empenho)):
+            if valor is not None:
+                if isinstance(valor, bool) or not isinstance(valor, int) or valor < 0:
+                    raise ErroDoPainel(f"{nome} precisa ser um inteiro nao negativo")
+                sql, eco[nome] = sql + f" AND r.{nome} = ?", valor
+                params.append(valor)
         if categoria is not None:
             if categoria not in CATEGORIAS:
                 raise ErroDoPainel(f"categoria precisa ser uma de {CATEGORIAS}")
@@ -604,11 +657,14 @@ class Painel:
         return sql, tuple(params), eco
 
     def empenhos(self, exercicio, data_final, entidade=None, em=None, limite=100, deslocamento=0, ordem="saldo",
-                 categoria=None, fonte_recurso=None, programatica=None, tipo_credor=None, cnpj=None):
+                 categoria=None, fonte_recurso=None, programatica=None, tipo_credor=None, cnpj=None, anoempenho=None,
+                 empenho=None):
         """Lista paginada de registros do corte, com filtros opcionais, e os totais do conjunto filtrado.
-        No nivel publico, sem nenhuma identificacao do credor (so o tipo)."""
+        No nivel publico, sem nenhuma identificacao do credor (so o tipo).
+        Conjunto vazio: `sem_resultado` e totais None (nunca R$ 0,00), com a mensagem do motivo."""
         limite, deslocamento = max(1, min(int(limite), LIMITE_LISTA)), max(0, int(deslocamento))
-        filtro, params, eco = self._filtros_empenho(categoria, fonte_recurso, programatica, tipo_credor, cnpj)
+        filtro, params, eco = self._filtros_empenho(categoria, fonte_recurso, programatica, tipo_credor, cnpj,
+                                                    anoempenho, empenho)
         ctx, em = self.contexto(), instante(em)
         corte = self._corte(ctx, exercicio, data_final, entidade, em)
         if not corte["disponivel"]:
@@ -617,15 +673,30 @@ class Painel:
                 self._registros(ctx, corte["somar"], filtro, params, limite=limite, deslocamento=deslocamento, ordem=ordem)]
         totais = self._somas(ctx, corte["somar"], filtro, params) if filtro else self._somas(ctx, corte["somar"])
         regs_ind = self._regras_publicaveis(REGRAS_DO_INDICADOR)
+        vazio = totais["registros"] == 0
+        if not vazio:
+            mensagem = None
+        elif eco:
+            mensagem = "nenhum registro do corte atende aos filtros aplicados"
+        else:
+            mensagem = "nenhum registro de RP neste corte: a API devolveu zero registros para as entidades do escopo"
         return {"disponivel": True, "retrato": corte["retrato"], "fonte": fontes.ELOTECH["rotulo"], "nivel": self.nivel,
                 "filtros": eco, "entidades": corte["entidades"],
-                "naturezas": {**{c: "da_fonte" for c in CAMPOS_REGISTRO + DINHEIRO}, **{c: "derivado" for c in DERIVADOS}},
-                "total": totais["registros"],
+                "naturezas": {**{c: "da_fonte" for c in CAMPOS_REGISTRO + DINHEIRO}, **self._naturezas_derivados(),
+                              "cancelamentos_c": "derivado"},
+                "total": totais["registros"], "sem_resultado": vazio, "mensagem_sem_resultado": mensagem,
                 "totais": {"natureza": "derivado", "regras": [r for r in regs_ind if r["codigo"] in ("S1", "CAT")],
-                           "valores": {k: v for k, v in totais.items() if k != "registros"}},
+                           "valores": None if vazio else {k: v for k, v in totais.items() if k != "registros"}},
                 "limite": limite, "deslocamento": deslocamento, "registros": regs,
                 "proveniencia": self._proveniencia(ctx, corte["somar"], "registros dos snapshots do corte; filtro so "
                                                                         "escolhe linhas")}
+
+    def _naturezas_derivados(self):
+        """Natureza de cada derivado por registro: 'derivado' se a regra compoe indicador publicado, senao 'analitico'
+        (ex.: CANC v1, nao recomendada)."""
+        governo = governanca.situacao_atual(self.con)
+        return {c: ("derivado" if governo.get(regra, {}).get("compoe_indicador_publicado") else "analitico")
+                for c, (_, _, regra) in fontes.DERIVADOS.items()}
 
     def detalhe_empenho(self, entidade, anoempenho, empenho, exercicio, data_final=None, em=None):
         """Detalhe de UM empenho num corte (padrao: o ultimo corte processado do exercicio para a entidade):
@@ -828,10 +899,12 @@ class Painel:
         for item in corte["entidades"]:
             linha = {k: item[k] for k in ("entidade", "nome", "situacao_no_exercicio", "snapshot", "entra_no_total",
                                           "retratos_do_corte")}
+            linha["situacao_do_dado"] = item["situacao_do_dado"]
+            linha["retrato_mais_novo_nao_processado"] = item["retrato_mais_novo_nao_processado"]
             if item["situacao_no_exercicio"] == "fora do catálogo oficial":
                 linha.update(situacao_do_valor="não existia no exercício (fora do catálogo oficial)", valores=None)
             elif item["snapshot"] is None:
-                linha.update(situacao_do_valor="corte não coletado ou não processado", valores=None)
+                linha.update(situacao_do_valor=item["situacao_do_dado"]["texto"], valores=None)
             else:
                 cid = self.con.execute("SELECT id FROM coleta WHERE snapshot_uid=?",
                                        (item["snapshot"]["snapshot_uid"],)).fetchone()[0]
@@ -1124,9 +1197,12 @@ class Painel:
                                "RREO Anexo VII -> publicação oficial independente / fonte de reconciliação",
                                "e-SIC, normas e notas técnicas -> fonte externa (evidência registrada)"]}
 
-    @staticmethod
-    def metodologia():
-        return fontes.METODOLOGIA
+    def metodologia(self):
+        """Textos de metodologia e as datas 'como estava em' com derivacao propria (reconciliacao historica)."""
+        datas = [v for (v,) in self.con.execute("SELECT DISTINCT vigencia_em FROM derivacao_execucao WHERE vigencia_em "
+                                                "IS NOT NULL ORDER BY vigencia_em")]
+        return {**fontes.METODOLOGIA, "datas_como_estava_em_com_derivacao": datas,
+                "situacoes_do_dado": SITUACOES_DO_DADO}
 
     @staticmethod
     def dicionario_campos():

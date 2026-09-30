@@ -144,7 +144,9 @@ class Aplicacao:
         return self._responder(start_response, metodo, "200 OK", "text/html; charset=utf-8", html.encode("utf-8"))
 
     def _pagina(self, start_response, metodo, status, titulo, mensagem, extra=()):
-        corpo = (f'<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>{paginas.esc(titulo)}</title>'
+        corpo = (f'<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">'
+                 '<meta name="viewport" content="width=device-width, initial-scale=1">'
+                 f'<title>{paginas.esc(titulo)}</title>'
                  f'<link rel="stylesheet" href="/estilo.css"></head><body><main><h1>{paginas.esc(titulo)}</h1>'
                  f'<p class="aviso">{paginas.esc(mensagem)}</p><p><a href="/">Voltar ao resumo</a></p></main></body></html>')
         return self._responder(start_response, metodo, status, "text/html; charset=utf-8", corpo.encode("utf-8"), extra)

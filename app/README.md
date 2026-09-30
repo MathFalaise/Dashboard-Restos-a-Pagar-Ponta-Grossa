@@ -5,6 +5,7 @@ Código de **produção**:
 - **04.2:** processamento, com a normalização (camada 1) e a derivação (camada 2) de todas as regras lado a lado.
 - **Revisão corretiva 01–04.4:** camada de consulta somente leitura para o futuro dashboard (`rp/painel`), governança e parâmetros das regras, evidência externa e registro do método de extração do RREO (esquema v4).
 - **04.5:** interface pública somente leitura (`rp/interface`), sobre a camada `rp/painel`: `python -m rp interface`.
+- **04.6:** homologação da interface: situação de cada dado, busca por empenho, resultado vazio sem R$ 0,00, análise experimental rotulada, configuração portátil, portões de uma carga nova (`python -m rp portoes`) e procedimento de instalação e atualização.
 
 **Fontes** (detalhe em `../etapa04/ARQUITETURA_FONTES.md`):
 - API do Portal da Transparência de Ponta Grossa (Elotech/Oxy Transparência) → fonte primária dos dados operacionais de RP;
@@ -12,10 +13,69 @@ Código de **produção**:
 
 ## Onde fica cada coisa (`config.toml`)
 
-- **Banco ativo e logs:** `C:\Users\maped\RestosAPagar_local\`, fora do OneDrive.
+- **Banco ativo e logs:** `~/RestosAPagar_local/` (pasta do usuário, em qualquer sistema), fora do OneDrive. Outra pasta: variável de ambiente `RP_DADOS_LOCAIS` (caminho relativo = a partir de `app/`). O banco fica em `<pasta>/banco/restos_a_pagar.sqlite` e os logs em `<pasta>/logs/`.
+- **Outro arquivo de configuração:** variável `RP_CONFIG` ou `python -m rp --config ARQUIVO ...`.
 - **Snapshots brutos** (`../snapshots`) e **backups** (`../backups`): no projeto. São arquivos gravados uma única vez.
 - Se o banco se perder: `python -m rp reconstruir --destino NOVO.sqlite` refaz tudo a partir de `snapshots/` (depois, `python -m rp processar` recria normalização e derivação com os mesmos hashes).
 - Backup com mais de 100 MB (limite por arquivo do GitHub) fica só na cópia local, listado pelo nome no `.gitignore` e nunca apagado. Hoje: `backups/20260930-145737_antes-migracao-v3-v4.sqlite` (120,5 MB). O repositório não depende dele: o armazém `snapshots/` basta para reconstruir o banco.
+
+## Instalação em outra máquina
+
+Testado num ambiente Python novo, sem pacotes, a partir de uma cópia do repositório fora do OneDrive (relatório da 04.6, seção 15). Nenhum caminho da máquina de desenvolvimento é necessário.
+
+1. Python 3.11 ou mais novo (desenvolvido e testado só em 3.14.3). Dentro de `app/`, crie o ambiente e instale as dependências fixadas (`requirements.txt` = execução; `requirements-dev.txt` = execução + `pytest`; a interface sozinha usa só a biblioteca padrão; em Linux/macOS o executável é `.venv/bin/python`):
+
+```bash
+python -m venv .venv
+```
+
+```bash
+.venv/Scripts/python -m pip install -r requirements-dev.txt
+```
+
+2. Reconstrua o banco a partir do armazém `../snapshots` no caminho do banco ativo, `<pasta local>/banco/restos_a_pagar.sqlite` (o comando nunca sobrescreve um arquivo existente):
+
+```bash
+python -m rp reconstruir --destino ~/RestosAPagar_local/banco/restos_a_pagar.sqlite
+```
+
+3. Processe (normalização + derivação, cerca de 20 s) e, para a reconciliação "como estava em" 29/09/2026, a derivação dessa data:
+
+```bash
+python -m rp processar
+```
+
+```bash
+python -m rp processar --normalizacao 1 --em 2026-09-29T23:59:59-03:00
+```
+
+4. Confira: `python -m rp verificar` (sem problemas), `python -m rp portoes` (apto) e `python -m pytest tests`. Os hashes de resultado devem ser os do projeto (`2f6b4e29…` e `b8a0b2ed…`).
+
+5. Abra a interface com `python -m rp interface` e acesse `http://127.0.0.1:8050/`.
+
+## Atualização dos dados
+
+Sempre COLETAR → VALIDAR → PROCESSAR → TESTAR → VERIFICAR → DISPONIBILIZAR. Nunca coletar por cima do banco e publicar: a coleta nova vira um snapshot a mais, e o retrato anterior continua no armazém e no banco.
+
+1. **Referência do bruto**, antes de coletar (o arquivo nunca é sobrescrito): `python -m rp portoes --gravar-referencia ../etapa04/resultados/referencia_AAAAMMDD.json`
+2. **Backup:** `python -m rp backup --motivo antes-carga-AAAAMMDD`
+3. **Coletar:** `coletar-catalogos`, `coletar-listagem` de cada entidade e corte, `coletar-rreo` (e `coletar-movimentacao` quando necessário). Coleta que termina `incompleta` ou `falhou` fica registrada, mas não vira retrato válido.
+4. **Validar:** `python -m rp verificar`, e `comparar-snapshots` / `comparar` para ver o que mudou em relação ao retrato anterior.
+5. **Processar:** `python -m rp processar` (e `--em` para as datas históricas que se queira reconciliar).
+6. **Testar:** `python -m pytest tests` e, em `../etapa03/validacao`, os 26 testes da investigação.
+7. **Verificar os portões:** `python -m rp portoes --referencia ../etapa04/resultados/referencia_AAAAMMDD.json`. Só com `"apto": true` e os testes passando a carga é disponibilizada.
+8. **Disponibilizar:** reiniciar `python -m rp interface`. A interface lê a derivação atual mais recente; nenhum snapshot é substituído.
+
+Portões verificados por `portoes` (somente leitura):
+- integridade do SQLite;
+- armazém × banco (`verificar`);
+- snapshot mais recente de cada corte completo;
+- normalização em dia (nenhum snapshot sem processar);
+- derivação atual sobre a normalização mais recente, cobrindo todo registro;
+- proveniência (todo registro → resposta HTTP → objeto bruto);
+- linhas do bruto anteriores à carga idênticas às da referência.
+
+Os testes são conferidos por quem disponibiliza. Se um portão falhar, o retrato novo não é disponibilizado como válido (código de saída 1).
 
 ## Proteções
 
@@ -173,11 +233,12 @@ Abre em `http://127.0.0.1:8050/` (use `--porta` para outra porta e `--banco` par
 
 - **Fluxo:** API Elotech → coletor → snapshot imutável → normalização → derivação → `rp/painel` → `rp/interface`. A interface nunca chama a API da Elotech: funciona com a internet desligada e com o portal fora do ar. A coleta continua sendo outro processo.
 - **Somente leitura:** cada requisição abre o banco em modo só leitura (URI `mode=ro` + `PRAGMA query_only`); só GET e HEAD; nada de JavaScript, CDN, fonte externa ou imagem externa; cabeçalhos de segurança com CSP restritiva.
-- **Telas:** Resumo (indicadores do corte, entidades abrangidas, retratos e conferência com o RREO), Entidades, Empenhos (filtros e paginação), detalhe de um empenho (valores, classificação, par espelhado, movimentação e origem do dado), Retratos e comparação de retratos, Reconciliação com o RREO (e coerência entre publicações), Metodologia e fontes, e a área técnica de pares espelhados.
+- **Telas:** Resumo (indicadores do corte, entidades abrangidas, retratos e conferência com o RREO), Entidades, Empenhos (filtros, busca por ano e número do empenho e paginação), detalhe de um empenho (valores, classificação, par espelhado, movimentação e origem do dado), Retratos e comparação de retratos, Reconciliação com o RREO (e coerência entre publicações), Metodologia e fontes, e a área técnica de pares espelhados.
 - **Fonte e natureza:** todo valor mostra fonte (API Elotech ou RREO Anexo VII), natureza (`da_fonte`, `publicado`, `derivado`, `analitico`, `diferenca`) e regra; a origem (snapshot, derivação, resposta HTTP, hash do objeto bruto) fica num bloco "Origem do dado".
-- **Retrato:** toda tela de valores diz exercício, corte e data da coleta ("Estado atual da base para o exercício de 2024, corte 31/12/2024, coletado em 30/09/2026"). O campo "Como estava em" mostra o retrato vigente numa data.
+- **Retrato:** toda tela de valores diz exercício, corte, data da coleta, tipo de retrato (atual ou "como estava em") e snapshots usados ("Estado atual da base para o exercício de 2024, corte 31/12/2024, coletado em 30/09/2026"). O campo "Como estava em" mostra o retrato vigente numa data.
+- **Situação do dado:** dado existente; entidade existente sem RP (o único zero); entidade inexistente no exercício; corte não coletado; corte coletado, mas ainda não processado; dado indisponível (só coleta incompleta ou com falha); diferença em relação ao RREO. Só as duas primeiras têm valor. Filtro sem registro mostra "Nenhum resultado encontrado", nunca R$ 0,00.
 - **Dados pessoais:** listas e totais sem nome, código ou documento do credor (só o tipo); detalhe com nome de pessoa jurídica sem documento; nome de pessoa física omitido; filtro de credor só por CNPJ completo de pessoa jurídica. Não há modo interno na interface.
-- **Regras:** só regra operacional compõe indicador. Visões analíticas (CONS-PAR) não aparecem; regras experimentais ou não recomendadas aparecem rotuladas na reconciliação, na metodologia e como "valor analítico (não oficial)" no detalhe.
+- **Regras:** só regra operacional compõe indicador. Visões analíticas (CONS-PAR) não aparecem. Regras experimentais ou não recomendadas aparecem só rotuladas como ANÁLISE EXPERIMENTAL (ou análise de regra não recomendada): na reconciliação, na metodologia e numa seção própria do detalhe.
 
 ## Camada de consulta do dashboard (somente leitura)
 
@@ -221,10 +282,10 @@ Situação de governança de cada regra (histórico de decisões e parâmetros):
 python -m rp painel regras
 ```
 
-Testes (nenhum acessa a internet; os da interface bloqueiam qualquer conexão para fora e sobem um servidor HTTP em 127.0.0.1; `test_casos_reais.py` e `test_interface_casos_reais.py` montam um banco temporário a partir do armazém real `../snapshots`, só com leitura):
+Testes (nenhum acessa a internet; os da interface bloqueiam qualquer conexão para fora e sobem um servidor HTTP em 127.0.0.1; `test_casos_reais.py`, `test_interface_casos_reais.py` e `test_homologacao_real.py` montam um banco temporário a partir do armazém real `../snapshots`, só com leitura; `test_homologacao_real.py` recalcula os indicadores direto do JSON bruto da API):
 
 ```bash
 python -m pytest tests
 ```
 
-Dependências: Python 3.11+ (desenvolvido e testado em 3.14), `requests` e `pymupdf` (este só para transcrever o PDF do RREO), nas versões fixadas em `requirements.txt`: a transcrição do RREO depende das coordenadas de texto que o PyMuPDF devolve.
+Dependências: Python 3.11+ (desenvolvido e testado em 3.14.3), `requests` e `pymupdf` (este só para transcrever o PDF do RREO), nas versões fixadas em `requirements.txt`: a transcrição do RREO depende das coordenadas de texto que o PyMuPDF devolve. Para os testes, `pytest` (`requirements-dev.txt`). A interface e a camada painel não importam nenhum pacote de terceiros.
