@@ -1,18 +1,5 @@
-# Dados brutos com dados pessoais (nomes e CNPJ/CPF de fornecedores - LGPD).
-# Ficam so na maquina (e no OneDrive); nunca neste repositorio publico.
-snapshots/
-backups/
-etapa01/amostras_brutas/
-etapa02/dados_brutos/
-
-# Bancos SQLite (copias completas do banco, com os mesmos dados pessoais)
-*.sqlite
-*.sqlite-journal
-*.sqlite-wal
-*.sqlite-shm
-*.db
-
-# Python
+# Caches do Python. Dados brutos, armazem de snapshots e backups SQLite sao versionados
+# (decisao do responsavel pelo projeto em 30/09/2026: sao dados publicos do portal).
 __pycache__/
 *.py[cod]
 .pytest_cache/
