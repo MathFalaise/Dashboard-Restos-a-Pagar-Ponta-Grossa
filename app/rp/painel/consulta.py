@@ -5,7 +5,7 @@ Fluxo:  API Elotech -> coleta -> snapshot imutavel -> normalizacao -> derivacao 
     sendo do coletor; nenhuma tela depende do portal estar no ar.
   * Indicador principal = registros da API Elotech (somas de campos e formulas S1-S3). O RREO so aparece na
     reconciliacao, lado a lado; uma divergencia nunca altera o valor da API.
-  * Todo valor sai com: natureza (fonte, publicado, derivado, analitico, diferenca), regras usadas com a
+  * Todo valor sai com: natureza (da_fonte, publicado, derivado, analitico, diferenca), regras usadas com a
     situacao de governanca, fonte declarada, rotulo de retrato e proveniencia (derivacao -> normalizacao ->
     snapshot -> resposta HTTP -> objeto bruto -> endpoint).
   * Regra que nao esteja 'operacional' com compoe_indicador_publicado = 1 nunca entra num indicador publicado
@@ -18,6 +18,7 @@ Fluxo:  API Elotech -> coleta -> snapshot imutavel -> normalizacao -> derivacao 
   * Nivel 'publico' (padrao) nunca devolve identificacao de credor em listas nem agregados (ver publico.py).
 """
 import json
+import re
 import sqlite3
 from datetime import datetime
 from pathlib import Path
@@ -32,6 +33,8 @@ NIVEIS = ("publico", "interno")
 MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro",
          "novembro", "dezembro"]
 LIMITE_LISTA = 500
+CATEGORIAS = ("processado", "nao_processado", "ambos", "sem_saldo_abertura")
+ORDEM_COLUNAS = "abcdefghijkL"          # ordem das colunas no Anexo VII do RREO
 
 # Indicadores do corte: todos calculados sobre os registros da API (rp_registro) e os derivados por registro
 # (rp_derivado). `rreo` = colunas do RREO com que o indicador e comparado na reconciliacao (nunca substituido).
@@ -148,6 +151,8 @@ class Painel:
         if nivel not in NIVEIS:
             raise NivelInvalido(f"nivel precisa ser um de {NIVEIS}: {nivel!r}")
         self.con, self.nivel = con, nivel
+        # tipo de credor calculado no SQL pela mesma funcao da camada publica (registrar funcao nao escreve no banco)
+        con.create_function("tipo_credor", 1, publico.tipo_credor, deterministic=True)
 
     @classmethod
     def abrir(cls, caminho, nivel="publico"):
@@ -283,11 +288,16 @@ class Painel:
         com_snapshot = {e for (e, ex, d0, df) in vig if ex == exercicio and d0 == di and df == data_final}
         universo = [entidade] if entidade is not None else sorted(set(cat["entidades"]) | com_snapshot)
         itens, somar, faltam, fora, avisos = [], [], [], [], []
+        filtro_em, p_em = (" AND coletada_em <= ?", (em,)) if em else ("", ())
         for e in universo:
             status = self._status_no_exercicio(cat, e, exercicio)
             cid = vig.get((e, exercicio, di, data_final))
             item = {"entidade": e, "nome": cat["entidades"].get(e, {}).get("nome"), "situacao_no_exercicio": status,
-                    "snapshot": None, "entra_no_total": False}
+                    "snapshot": None, "entra_no_total": False,
+                    "retratos_do_corte": self.con.execute(
+                        "SELECT COUNT(*) FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND entidade=? AND "
+                        "exercicio=? AND data_inicial=? AND data_final=? AND id <= ?" + filtro_em,
+                        (e, exercicio, di, data_final, ctx["limite_coleta"], *p_em)).fetchone()[0]}
             if cid is not None:
                 uid, quando = self.con.execute("SELECT snapshot_uid, coletada_em FROM coleta WHERE id=?", (cid,)).fetchone()
                 n = self.con.execute("SELECT COUNT(*) FROM rp_registro WHERE normalizacao_id=? AND coleta_id=?",
@@ -394,13 +404,17 @@ class Painel:
         return (f"r.resposta_id IN (SELECT id FROM resposta_bruta WHERE coleta_id IN ({ph})) AND r.coleta_id IN ({ph})",
                 (*coletas, *coletas))
 
-    def _somas(self, ctx, coletas):
+    def _somas(self, ctx, coletas, filtro_extra="", params_extra=()):
+        """Somas de SOMAS sobre os registros das coletas (com filtro opcional). Sem filtro, confere que a derivacao
+        cobre todo registro do corte: se nao cobrir, nao ha total (erro, nunca um total menor)."""
         filtro, p = self._de_coletas(coletas)
         linha = self.con.execute(
             f"SELECT {', '.join(s['sql'] for s in SOMAS)} FROM rp_registro r JOIN rp_derivado d ON d.derivacao_id=? "
-            f"AND d.resposta_id=r.resposta_id AND d.indice=r.indice WHERE r.normalizacao_id=? AND {filtro}",
-            (ctx["derivacao"]["id"], ctx["normalizacao"]["id"], *p)).fetchone()
+            f"AND d.resposta_id=r.resposta_id AND d.indice=r.indice WHERE r.normalizacao_id=? AND {filtro}{filtro_extra}",
+            (ctx["derivacao"]["id"], ctx["normalizacao"]["id"], *p, *params_extra)).fetchone()
         valores = {s["id"]: (v or 0) for s, v in zip(SOMAS, linha)}
+        if filtro_extra:
+            return valores
         n = self.con.execute(f"SELECT COUNT(*) FROM rp_registro r WHERE r.normalizacao_id=? AND {filtro}",
                              (ctx["normalizacao"]["id"], *p)).fetchone()[0]
         if n != valores["registros"]:   # a derivacao cobre todo registro processado; se nao cobrir, nao ha total
@@ -452,8 +466,30 @@ class Painel:
                 "escopo": f"entidade {entidade}" if entidade is not None else "Município (entidades do catálogo oficial do exercício)",
                 "disponivel": corte["disponivel"], "motivo_indisponivel": corte["motivo"], "retrato": corte["retrato"],
                 "fonte": fontes.ELOTECH["rotulo"], "entidades": corte["entidades"], "valores": valores,
-                "categorias": categorias, "reconciliacao": rec.get("resumo"), "avisos": avisos,
+                "categorias": categorias, "reconciliacao": rec.get("resumo"),
+                "conferencia_rreo": self._conferencia_saldo(somas, rec, exercicio, data_final) if corte["disponivel"] else None,
+                "avisos": avisos,
                 "proveniencia": self._proveniencia(ctx, corte["somar"], "somas sobre rp_registro + rp_derivado")}
+
+    @staticmethod
+    def _conferencia_saldo(somas, rec, exercicio, data_final):
+        """Saldo S1 da API (indicador, regra operacional) ao lado da coluna L do RREO do mesmo corte: comparacao,
+        nunca substituicao. Nao usa RREO-COL: o saldo e o da formula S1 e o L e o impresso no PDF."""
+        linhas = [x for x in rec.get("linhas", []) if x["coluna"] == "L"]
+        if not linhas:
+            return None
+        x = linhas[0]              # o L do RREO e o mesmo nas linhas de RREO-COL v1 e v2 (mesmo PDF)
+        dif = somas["saldo_total"] - x["rreo_c"]
+        achadas, situacao = explicacoes.explicar(exercicio, data_final, x["escopo"], "L", None) if dif else ([], "sem diferença")
+        return {"escopo": x["escopo"], "periodo": x["periodo"],
+                "api": {"rotulo": "Saldo de RP no corte (S1)", "valor_c": somas["saldo_total"], "natureza": "derivado",
+                        "fonte": fontes.ELOTECH["rotulo"], "regra": "S1 v1"},
+                "rreo": {"rotulo": "Coluna L do RREO Anexo VII (saldo de RP)", "valor_c": x["rreo_c"],
+                         "natureza": "publicado", "fonte": fontes.RREO["rotulo"], "pdf": x["pdf"], "extracao": x["extracao"]},
+                "diferenca_c": dif, "diferenca_natureza": "diferenca", "situacao_da_diferenca": situacao,
+                "explicacoes": [{k: e[k] for k in explicacoes.CAMPOS_SAIDA} for e in achadas],
+                "nota": ("Fonte primária: API Elotech. Fonte de reconciliação: RREO Anexo VII. A diferença é mostrada; "
+                         "o saldo da API nunca é trocado pelo valor do RREO.")}
 
     def evolucao(self, exercicio, entidade=None, em=None):
         """Indicadores de todos os cortes processados do exercicio (evolucao dentro do ano)."""
@@ -533,19 +569,63 @@ class Painel:
             reg["tipo_credor"] = publico.tipo_credor(cnpj)
             yield reg, prov, nome, cnpj
 
-    def empenhos(self, exercicio, data_final, entidade=None, em=None, limite=100, deslocamento=0, ordem="saldo"):
-        """Lista paginada de registros do corte. No nivel publico, sem nenhuma identificacao do credor."""
+    @staticmethod
+    def _filtros_empenho(categoria=None, fonte_recurso=None, programatica=None, tipo_credor=None, cnpj=None):
+        """SQL (sempre parametrizado) dos filtros da listagem de empenhos. Filtro so escolhe registros; nunca muda valor.
+        cnpj: so CNPJ completo (14 digitos) de pessoa juridica; CPF nunca e aceito como filtro."""
+        sql, params, eco = "", [], {}
+        if categoria is not None:
+            if categoria not in CATEGORIAS:
+                raise ErroDoPainel(f"categoria precisa ser uma de {CATEGORIAS}")
+            sql, eco["categoria"] = sql + " AND d.categoria = ?", categoria
+            params.append(categoria)
+        if fonte_recurso is not None:
+            if isinstance(fonte_recurso, bool) or not isinstance(fonte_recurso, int):
+                raise ErroDoPainel("fonte de recurso precisa ser o codigo inteiro")
+            sql, eco["fonte_recurso"] = sql + " AND r.fonte_recurso = ?", fonte_recurso
+            params.append(fonte_recurso)
+        if programatica:
+            if not re.fullmatch(r"\d{1,28}", str(programatica)):
+                raise ErroDoPainel("programacao orcamentaria: informe de 1 a 28 digitos (inicio do codigo)")
+            sql, eco["programatica_comeca_com"] = sql + " AND substr(r.programatica, 1, ?) = ?", programatica
+            params += [len(programatica), programatica]
+        if tipo_credor is not None:
+            if tipo_credor not in publico.TIPOS_CREDOR:
+                raise ErroDoPainel(f"tipo de credor precisa ser um de {publico.TIPOS_CREDOR}")
+            sql, eco["tipo_credor"] = sql + " AND tipo_credor(r.cnpj) = ?", tipo_credor
+            params.append(tipo_credor)
+        if cnpj:
+            d = re.sub(r"\D", "", str(cnpj))
+            if len(d) != 14:
+                raise ErroDoPainel("filtro de credor aceita so CNPJ completo (14 digitos) de pessoa juridica")
+            formatado = f"{d[:2]}.{d[2:5]}.{d[5:8]}/{d[8:12]}-{d[12:]}"
+            sql, eco["cnpj"] = sql + " AND r.cnpj = ?", formatado
+            params.append(formatado)
+        return sql, tuple(params), eco
+
+    def empenhos(self, exercicio, data_final, entidade=None, em=None, limite=100, deslocamento=0, ordem="saldo",
+                 categoria=None, fonte_recurso=None, programatica=None, tipo_credor=None, cnpj=None):
+        """Lista paginada de registros do corte, com filtros opcionais, e os totais do conjunto filtrado.
+        No nivel publico, sem nenhuma identificacao do credor (so o tipo)."""
         limite, deslocamento = max(1, min(int(limite), LIMITE_LISTA)), max(0, int(deslocamento))
+        filtro, params, eco = self._filtros_empenho(categoria, fonte_recurso, programatica, tipo_credor, cnpj)
         ctx, em = self.contexto(), instante(em)
         corte = self._corte(ctx, exercicio, data_final, entidade, em)
         if not corte["disponivel"]:
-            return {"disponivel": False, "motivo_indisponivel": corte["motivo"], "registros": []}
+            return {"disponivel": False, "motivo_indisponivel": corte["motivo"], "filtros": eco, "registros": []}
         regs = [{**reg, "proveniencia": prov} for reg, prov, _, _ in
-                self._registros(ctx, corte["somar"], limite=limite, deslocamento=deslocamento, ordem=ordem)]
+                self._registros(ctx, corte["somar"], filtro, params, limite=limite, deslocamento=deslocamento, ordem=ordem)]
+        totais = self._somas(ctx, corte["somar"], filtro, params) if filtro else self._somas(ctx, corte["somar"])
+        regs_ind = self._regras_publicaveis(REGRAS_DO_INDICADOR)
         return {"disponivel": True, "retrato": corte["retrato"], "fonte": fontes.ELOTECH["rotulo"], "nivel": self.nivel,
-                "naturezas": {**{c: "fonte" for c in CAMPOS_REGISTRO + DINHEIRO}, **{c: "derivado" for c in DERIVADOS}},
-                "total": self._somas(ctx, corte["somar"])["registros"], "limite": limite, "deslocamento": deslocamento,
-                "registros": regs}
+                "filtros": eco, "entidades": corte["entidades"],
+                "naturezas": {**{c: "da_fonte" for c in CAMPOS_REGISTRO + DINHEIRO}, **{c: "derivado" for c in DERIVADOS}},
+                "total": totais["registros"],
+                "totais": {"natureza": "derivado", "regras": [r for r in regs_ind if r["codigo"] in ("S1", "CAT")],
+                           "valores": {k: v for k, v in totais.items() if k != "registros"}},
+                "limite": limite, "deslocamento": deslocamento, "registros": regs,
+                "proveniencia": self._proveniencia(ctx, corte["somar"], "registros dos snapshots do corte; filtro so "
+                                                                        "escolhe linhas")}
 
     def detalhe_empenho(self, entidade, anoempenho, empenho, exercicio, data_final=None, em=None):
         """Detalhe de UM empenho num corte (padrao: o ultimo corte processado do exercicio para a entidade):
@@ -570,7 +650,7 @@ class Painel:
         saida = []
         for reg, prov, nome, cnpj in ocorrencias:
             campos = {c: {"campo_api": fontes.CAMPOS[c][0], "rotulo": fontes.CAMPOS[c][1], "valor": reg[c],
-                          "natureza": "fonte", "significado": fontes.CAMPOS[c][2], "status_semantica": fontes.CAMPOS[c][3]}
+                          "natureza": "da_fonte", "significado": fontes.CAMPOS[c][2], "status_semantica": fontes.CAMPOS[c][3]}
                       for c in CAMPOS_REGISTRO + DINHEIRO}
             derivados = {}
             for c in DERIVADOS:
@@ -619,7 +699,7 @@ class Painel:
                              (entidade, anoempenho, empenho, ctx["limite_coleta"], *p)).fetchone()
         if not c:
             return {"coletada": False, "nota": "movimentação deste empenho não coletada"}
-        lanc = [{"data": d, "tipo_lancamento": t, "descricao": desc, "valor_c": v, "natureza": "fonte",
+        lanc = [{"data": d, "tipo_lancamento": t, "descricao": desc, "valor_c": v, "natureza": "da_fonte",
                  "efeito": ef, "valor_com_sinal_c": vs,
                  "liquidacao_referida": f"{ln}/{le}" if ln is not None and le is not None else None,
                  "interpretacao": "derivado (MOV-REF v1: nos lançamentos 40/41 a liquidação está nos rótulos de pagamento)"}
@@ -654,9 +734,15 @@ class Painel:
             for k, v in (("relacao", p["relacao_inscricao"]), ("lado_com_execucao", p["lado_com_execucao"]),
                          ("anoempenho", p["a"]["anoempenho"])):
                 resumo[k][v] = resumo[k].get(v, 0) + 1
+        coletas = sorted({c for (c,) in self.con.execute(
+            "SELECT coleta_a_id FROM espelhamento_par WHERE derivacao_id=? AND exercicio=? AND data_final=? UNION "
+            "SELECT coleta_b_id FROM espelhamento_par WHERE derivacao_id=? AND exercicio=? AND data_final=?",
+            (did, exercicio, data_final, did, exercicio, data_final))})
         return {"exercicio": exercicio, "data_final": data_final, "como_estava_em": em, "regra": "PAR-24 v1",
                 "situacao_da_regra": governo.get("situacao"), "parametros_da_regra": par, "natureza": "derivado",
                 "resumo": resumo, "pares": pares,
+                "proveniencia": {**self._proveniencia(ctx, coletas, "tabela espelhamento_par da derivacao"),
+                                 "derivacao_usada": did},
                 "nota": ("Os dois lados de cada par continuam separados no bruto, na normalização e nos indicadores "
                          "(a API devolve os dois). A natureza das cópias (duplicidade ou transferência) não está "
                          "determinada; a consolidação só existe como visão analítica experimental (CONS-PAR).")}
@@ -683,26 +769,85 @@ class Painel:
 
     # ------------------------------------------------------------------ retratos
     def retratos(self, entidade, exercicio, data_final):
-        """Todos os retratos (snapshots) de um corte: cada coleta e um retrato independente; nenhum substitui outro."""
+        """Todos os retratos (snapshots) de um corte: cada coleta e um retrato independente; nenhum substitui outro.
+        Para cada retrato completo e processado: registros, inscricao, saldo S1 e a diferenca para o retrato
+        anterior comparavel (tambem completo e processado)."""
         ctx = self.contexto()
         di = f"{exercicio}-01-01"
         vig = self._vigentes(ctx, None).get((entidade, exercicio, di, data_final))
-        saida = []
+        regs = [r for r in self._regras_publicaveis(REGRAS_DO_INDICADOR) if r["codigo"] == "S1"]
+        saida, anterior = [], None
         for cid, uid, quando, origem, status, obs in self.con.execute(
                 "SELECT id, snapshot_uid, coletada_em, origem_carimbo, status, observacao FROM coleta WHERE "
                 "tipo='rp_listagem' AND tipo_pesquisa IS NULL AND entidade=? AND exercicio=? AND data_inicial=? AND "
                 "data_final=? ORDER BY coletada_em, snapshot_uid", (entidade, exercicio, di, data_final)):
-            n = self.con.execute("SELECT COUNT(*) FROM rp_registro WHERE normalizacao_id=? AND coleta_id=?",
-                                 (ctx["normalizacao"]["id"], cid)).fetchone()[0]
-            saida.append({"snapshot_uid": uid, "coletada_em": quando, "origem_carimbo": origem, "status": status,
-                          "processado": cid <= ctx["limite_coleta"], "registros": n, "vigente": cid == vig,
-                          "observacao": obs,
-                          "objetos": [h for (h,) in self.con.execute(
-                              "SELECT sha256 FROM resposta_bruta WHERE coleta_id=? ORDER BY ordem", (cid,))],
-                          "retrato": self._retrato(exercicio, data_final, [quando], None)["texto"]})
+            processado = cid <= ctx["limite_coleta"]
+            objetos = [h for (h,) in self.con.execute("SELECT sha256 FROM resposta_bruta WHERE coleta_id=? ORDER BY ordem",
+                                                      (cid,))]
+            item = {"snapshot_uid": uid, "coletada_em": quando, "origem_carimbo": origem, "status": status,
+                    "processado": processado, "vigente": cid == vig, "observacao": obs, "objetos": objetos,
+                    "retrato": self._retrato(exercicio, data_final, [quando], None)["texto"],
+                    "registros": None, "valores": None, "diferenca_para_o_anterior": None}
+            if processado and status == "completa":
+                s = self._somas(ctx, [cid])
+                item["registros"] = s["registros"]
+                item["valores"] = {"natureza": "derivado", "regras": regs,
+                                   "inscricao_total_c": s["inscricao_total"], "saldo_total_c": s["saldo_total"]}
+                if anterior is not None:
+                    item["diferenca_para_o_anterior"] = {
+                        "natureza": "diferenca", "anterior": anterior["snapshot_uid"],
+                        "registros": s["registros"] - anterior["registros"],
+                        "inscricao_total_c": s["inscricao_total"] - anterior["valores"]["inscricao_total_c"],
+                        "saldo_total_c": s["saldo_total"] - anterior["valores"]["saldo_total_c"],
+                        "bytes_identicos": objetos == anterior["objetos"]}
+                anterior = item
+            saida.append(item)
         return {"entidade": entidade, "exercicio": exercicio, "data_final": data_final, "retratos": saida,
+                "fonte": fontes.ELOTECH["rotulo"],
                 "nota": ("O mesmo corte coletado em momentos diferentes são retratos diferentes; o anterior nunca é "
                          "substituído. O vigente é o mais recente completo.")}
+
+    def retratos_multiplos(self):
+        """Cortes (entidade, exercicio, data final) com mais de um retrato de listagem processado."""
+        ctx = self.contexto()
+        return [{"entidade": e, "exercicio": ex, "data_final": df, "retratos": n}
+                for e, ex, df, n in self.con.execute(
+                    "SELECT entidade, exercicio, data_final, COUNT(*) FROM coleta WHERE tipo='rp_listagem' AND "
+                    "tipo_pesquisa IS NULL AND id <= ? AND data_inicial = exercicio || '-01-01' "
+                    "GROUP BY entidade, exercicio, data_final HAVING COUNT(*) > 1 ORDER BY exercicio, data_final, entidade",
+                    (ctx["limite_coleta"],))]
+
+    def entidades_do_corte(self, exercicio, data_final, em=None):
+        """Visao por entidade de um corte. Distingue: entidade existente com RP (valores), entidade existente sem RP
+        (zero de verdade), entidade fora do catalogo oficial do exercicio (nao existia: sem valor, nunca zero) e
+        entidade sem snapshot (nao coletado: sem valor)."""
+        ctx, em = self.contexto(), instante(em)
+        corte = self._corte(ctx, exercicio, data_final, None, em)
+        regs = self._regras_publicaveis(REGRAS_DO_INDICADOR)
+        linhas = []
+        for item in corte["entidades"]:
+            linha = {k: item[k] for k in ("entidade", "nome", "situacao_no_exercicio", "snapshot", "entra_no_total",
+                                          "retratos_do_corte")}
+            if item["situacao_no_exercicio"] == "fora do catálogo oficial":
+                linha.update(situacao_do_valor="não existia no exercício (fora do catálogo oficial)", valores=None)
+            elif item["snapshot"] is None:
+                linha.update(situacao_do_valor="corte não coletado ou não processado", valores=None)
+            else:
+                cid = self.con.execute("SELECT id FROM coleta WHERE snapshot_uid=?",
+                                       (item["snapshot"]["snapshot_uid"],)).fetchone()[0]
+                s = self._somas(ctx, [cid])
+                regs_s1 = [r for r in regs if r["codigo"] == "S1"]
+                linha.update(situacao_do_valor=("existente, sem RP neste corte" if s["registros"] == 0
+                                                else "valores do snapshot"),
+                             valores={"natureza": "derivado", "regras": regs_s1, **s},
+                             proveniencia=self._prov_curta(ctx, [item["snapshot"]["snapshot_uid"]],
+                                                           "somas dos campos da API da entidade", regs_s1))
+            linhas.append(linha)
+        return {"exercicio": exercicio, "data_final": data_final, "como_estava_em": em, "retrato": corte["retrato"],
+                "municipio_disponivel": corte["disponivel"], "motivo_indisponivel": corte["motivo"],
+                "fonte": fontes.ELOTECH["rotulo"], "linhas": linhas,
+                "nota": ("Entidade fora do catálogo oficial do exercício não existia naquele ano: aparece sem valor, "
+                         "nunca como zero. Entidade existente sem RP aparece com zero.")}
 
     def comparar_retratos(self, snapshot_a, snapshot_b):
         """Comparacao de dois retratos do mesmo corte (comparador somente leitura)."""
@@ -778,6 +923,8 @@ class Painel:
                 "explicacoes": [{k: e[k] for k in explicacoes.CAMPOS_SAIDA} for e in achadas],
                 "nota": "A diferença é registro; o valor da API nunca é alterado para coincidir com o RREO."}
             saida.append(vistos[chave])
+        saida.sort(key=lambda x: (x["exercicio"], x["data_final"], x["escopo"], x["regra_agregacao"]["regra"],
+                                  ORDEM_COLUNAS.index(x["coluna"])))
         return saida
 
     def _extracao(self, nid, rreo_coleta_id):
@@ -833,6 +980,24 @@ class Painel:
                 "nota": ("O lado API é a projeção dos registros nas colunas do RREO pela regra indicada; enquanto "
                          "nenhuma versão de RREO-COL for operacional, essa projeção é valor analítico. O indicador "
                          "principal (somas dos campos da API) não depende dela.")}
+
+    def documentos_rreo(self, em=None):
+        """Indice dos RREOs conciliados: um item por documento (PDF) e escopo, com quantas colunas diferem em cada
+        regra de agregacao. O detalhe coluna a coluna fica em `reconciliacao`."""
+        r = self.reconciliacao(em=em)
+        docs = {}
+        for x in r["linhas"]:
+            k = (x["exercicio"], x["data_final"], x["escopo"], x["pdf"]["snapshot_uid"])
+            d = docs.setdefault(k, {"exercicio": x["exercicio"], "data_final": x["data_final"], "periodo": x["periodo"],
+                                    "escopo": x["escopo"], "entidade": x["entidade"], "pdf": x["pdf"],
+                                    "extracao": x["extracao"], "colunas_com_diferenca": {}, "colunas_comparadas": {}})
+            regra = x["regra_agregacao"]["regra"]
+            d["colunas_comparadas"][regra] = d["colunas_comparadas"].get(regra, 0) + 1
+            d["colunas_com_diferenca"][regra] = d["colunas_com_diferenca"].get(regra, 0) + (x["diferenca_c"] != 0)
+        return {"fonte_primaria": r.get("fonte_primaria"), "fonte_de_reconciliacao": r.get("fonte_de_reconciliacao"),
+                "como_estava_em": r.get("como_estava_em"),
+                "documentos": [docs[k] for k in sorted(docs, key=lambda k: (k[0], k[1], k[2]), reverse=True)],
+                "pdfs_sem_valores_transcritos": r.get("pdfs_sem_valores_transcritos", []), "nota": r.get("nota")}
 
     def _api_do_corte(self, ctx, vig, cat, escopo, exercicio, data_final, ent_rreo):
         """Soma de S1 e (a)+(f) (RP de exercicios anteriores pela regra FAIXA) da API no corte, ou None se indisponivel."""

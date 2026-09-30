@@ -123,12 +123,20 @@ def _main(argv=None):
     p.add_argument("--ordem", choices=["saldo", "empenho"], default="saldo")
     p.add_argument("--a", help="snapshot_uid anterior (comparar-retratos)")
     p.add_argument("--b", help="snapshot_uid posterior (comparar-retratos)")
+    p = sub.add_parser("interface", help="interface publica somente leitura (servidor local; nao consulta o portal)")
+    p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
+    p.add_argument("--host", default="127.0.0.1", help="padrao 127.0.0.1 (so esta maquina)")
+    p.add_argument("--porta", type=int, default=8050)
     a = ap.parse_args(argv)
 
     cfg = carregar(a.config)
     _logs(cfg)
     if a.cmd == "painel":   # antes de banco.abrir: o painel nunca migra nem escreve
         return _painel(a, cfg)
+    if a.cmd == "interface":   # idem: a interface so le, pela camada painel
+        from .interface import servir
+        servir(a.banco or cfg.banco, a.host, a.porta)
+        return 0
     armazem = Armazem(cfg.snapshots)
     if a.cmd == "reconstruir":
         con, n = banco.reconstruir(cfg, armazem, a.destino)

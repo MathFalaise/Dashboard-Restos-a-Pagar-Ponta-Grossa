@@ -6,38 +6,14 @@ que nenhum arquivo do armazem muda e que os hashes de resultado sao os registrad
 Valores esperados: etapa02/RELATORIO_ETAPA02.md secao 4, etapa03/RELATORIO_ETAPA03.md, etapa04/RELATORIO_04_3.md,
 etapa04/RELATORIO_04_4.md secoes 7-13 e etapa04/lotes/consistencia_rreo.md.
 """
-import hashlib
 import re
 
-import pytest
-from conftest import RAIZ_PROJETO, montar_producao
+from conftest import ARMAZEM_REAL, RAIZ_PROJETO
 
-from rp import banco, derivar
-from rp.painel import Painel
+from rp import banco
 
-ARMAZEM_REAL = RAIZ_PROJETO / "snapshots"
 HASH_ATUAL = "2f6b4e295ce795934f7051fba31d9d3c1b5bc42c8858d4622a3e89ec88e3f2a5"      # RELATORIO_04_4.md, Lote M
 HASH_EM_2909 = "b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68"
-EM_2909 = "2026-09-29T23:59:59-03:00"
-
-
-def _retrato_do_armazem():
-    """(caminho, tamanho, sha256) de todo arquivo do armazem real."""
-    return sorted((p.relative_to(ARMAZEM_REAL).as_posix(), p.stat().st_size, hashlib.sha256(p.read_bytes()).hexdigest())
-                  for p in ARMAZEM_REAL.rglob("*") if p.is_file())
-
-
-@pytest.fixture(scope="module")
-def real(tmp_path_factory):
-    antes = _retrato_do_armazem()
-    base = tmp_path_factory.mktemp("real")
-    m = montar_producao(base, armazem_de=ARMAZEM_REAL)
-    m["did_2909"] = derivar.derivar(m["con"], m["nid"], EM_2909)
-    m["armazem_antes"], m["armazem_depois"] = antes, _retrato_do_armazem()
-    m["painel"] = Painel.abrir(m["cfg"].banco)
-    yield m
-    m["painel"].fechar()
-    m["con"].close()
 
 
 def test_armazem_real_intacto_e_integro(real):
