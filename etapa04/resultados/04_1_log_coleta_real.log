@@ -1,0 +1,13 @@
+2026-09-29 21:35:20,948 INFO rp.banco: banco criado em C:\Users\maped\RestosAPagar_local\banco\restos_a_pagar.sqlite (esquema v2)
+2026-09-29 21:35:21,954 INFO rp.coletor: snapshot entidades {} 77a8c706: completa, 1 resposta(s), coleta 1
+2026-09-29 21:35:23,484 INFO rp.coletor: snapshot exercicios {"entidade": 1} 50b6a054: completa, 1 resposta(s), coleta 2
+2026-09-29 21:35:25,016 INFO rp.coletor: snapshot exercicios {"entidade": 15} cd99b056: completa, 1 resposta(s), coleta 3
+2026-09-29 21:35:26,552 INFO rp.coletor: snapshot exercicios {"entidade": 4} e117574b: completa, 1 resposta(s), coleta 4
+2026-09-29 21:35:28,160 INFO rp.coletor: snapshot exercicios {"entidade": 5} dadc680c: completa, 1 resposta(s), coleta 5
+2026-09-29 21:35:29,691 INFO rp.coletor: snapshot exercicios {"entidade": 8} b9c5a51a: completa, 1 resposta(s), coleta 6
+2026-09-29 21:35:53,878 INFO rp.coletor: snapshot rp_listagem {"entidade": 1, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-08-31", "size": 2000} b8208f35: completa, 3 resposta(s), coleta 7
+2026-09-29 21:35:54,769 INFO rp.coletor: snapshot publicacoes {"entidade": 1, "exercicio": 2026} 64cfa9cf: completa, 1 resposta(s), coleta 8
+2026-09-29 21:35:59,659 INFO rp.coletor: snapshot rreo_pdf {"id_arquivo": 2560662, "exercicio": 2026, "entidade": 1, "rotulo": "4º Bimestre", "nomeArquivo": "20788571724373418845.pdf", "dataArquivo": "2026-09-29"} 3e6f0e37: completa, 1 resposta(s), coleta 9
+2026-09-29 21:36:00,626 INFO rp.coletor: snapshot movimentacao {"entidade": 1, "anoempenho": 2025, "empenho": 5659, "size": 500} c6b9d070: completa, 1 resposta(s), coleta 10
+2026-09-29 21:36:26,181 INFO rp.banco: banco criado em C:\Users\maped\RestosAPagar_local\banco\tmp\reconstrucao_teste_213625.sqlite (esquema v2)
+2026-09-29 21:36:26,696 INFO rp.banco: backup gravado em C:\Users\maped\OneDrive\Área de Trabalho\Projeto Dashboard Restos a Pagar\backups\20260929-213626_validacao-04-1.sqlite

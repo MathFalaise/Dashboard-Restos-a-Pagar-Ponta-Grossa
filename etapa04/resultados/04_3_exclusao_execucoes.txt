@@ -1,0 +1,33 @@
+== recusas
+$ python -m rp apagar-execucao --tipo derivacao --id 1 --confirmar 7
+  RECUSADO: confirmação (7) não confere com o id (1); nada foi apagado
+$ python -m rp apagar-execucao --tipo normalizacao --id 1 --confirmar 1
+  RECUSADO: normalização 1 ainda tem derivações dependentes [1]: apague-as antes
+$ python -m rp apagar-execucao --tipo derivacao --id 6 --confirmar 6
+  RECUSADO: derivacao 6 é a mais recente (em uso); use --permitir-mais-recente se for isso mesmo
+$ python -m rp apagar-execucao --tipo derivacao --id 99 --confirmar 99
+  RECUSADO: derivacao 99 não existe
+== simulação e exclusões
+$ python -m rp apagar-execucao --tipo derivacao --id 1 --simular
+  SIMULAÇÃO: derivacao 1 {'rp_derivado': 4557, 'movimentacao_interpretada': 15, 'anomalia': 737, 'visao_valor': 30, 'conciliacao_rreo': 24, 'verificacao': 2}
+$ python -m rp apagar-execucao --tipo derivacao --id 1 --confirmar 1
+  APAGADO: derivacao 1 linhas: 5365 | restantes: 0 | camada 0 intacta: True | integridade: ok | backup: 20260930-002325_antes-apagar-derivacao-1.sqlite
+$ python -m rp apagar-execucao --tipo derivacao --id 2 --confirmar 2
+  APAGADO: derivacao 2 linhas: 5365 | restantes: 0 | camada 0 intacta: True | integridade: ok | backup: 20260930-002327_antes-apagar-derivacao-2.sqlite
+$ python -m rp apagar-execucao --tipo derivacao --id 3 --confirmar 3
+  APAGADO: derivacao 3 linhas: 116743 | restantes: 0 | camada 0 intacta: True | integridade: ok | backup: 20260930-002328_antes-apagar-derivacao-3.sqlite
+$ python -m rp apagar-execucao --tipo derivacao --id 4 --confirmar 4
+  APAGADO: derivacao 4 linhas: 103185 | restantes: 0 | camada 0 intacta: True | integridade: ok | backup: 20260930-002331_antes-apagar-derivacao-4.sqlite
+$ python -m rp apagar-execucao --tipo normalizacao --id 1 --confirmar 1
+  APAGADO: normalizacao 1 linhas: 4681 | restantes: 0 | camada 0 intacta: True | integridade: ok | backup: 20260930-002334_antes-apagar-normalizacao-1.sqlite
+$ python -m rp apagar-execucao --tipo normalizacao --id 2 --confirmar 2
+  APAGADO: normalizacao 2 linhas: 4681 | restantes: 0 | camada 0 intacta: True | integridade: ok | backup: 20260930-002337_antes-apagar-normalizacao-2.sqlite
+$ python -m rp apagar-execucao --tipo normalizacao --id 3 --confirmar 3
+  APAGADO: normalizacao 3 linhas: 102334 | restantes: 0 | camada 0 intacta: True | integridade: ok | backup: 20260930-002339_antes-apagar-normalizacao-3.sqlite
+== estado final
+  normalização 4 linhas 102334 derivações [5, 6]
+  derivação 5 vigência atual hash b565669b5b4d8630
+  derivação 6 vigência 2026-09-29T23:59:59-03:00 hash b8a0b2ed2328bf09
+{
+ "problemas": []
+}

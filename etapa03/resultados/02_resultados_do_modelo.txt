@@ -1,0 +1,105 @@
+# Resultados da carga de validação (banco descartável)
+
+## Conciliação RREO × API com RREO-COL v1 — diferença API − RREO (colunas ≠ 0)
+  2025 até 2025-06-30 entidade     {'L': '-3.294.260,68', 'a': '1.829,50', 'c': '-462,00', 'd': '35.529,49', 'e': '-33.237,99', 'f': '6.580,50', 'g': '917.292,62', 'j': '4.184.895,81', 'k': '-3.261.022,69'}
+  2025 até 2025-10-31 entidade     {'L': '926.164,62', 'a': '1.829,50', 'c': '-462,00', 'd': '1.829,50', 'e': '462,00', 'f': '6.580,50', 'g': '917.292,62', 'j': '-1.829,50', 'k': '925.702,62'}
+  2025 até 2025-12-31 consolidado  {'L': '928.718,87', 'a': '1.829,50', 'c': '-462,00', 'd': '1.829,50', 'e': '462,00', 'f': '6.580,50', 'g': '917.292,62', 'i': '-2.554,25', 'j': '-1.829,50', 'k': '928.256,87'}
+  2025 até 2025-12-31 entidade     {'L': '926.164,62', 'a': '1.829,50', 'c': '-462,00', 'd': '1.829,50', 'e': '462,00', 'f': '6.580,50', 'g': '917.292,62', 'j': '-1.829,50', 'k': '925.702,62'}
+  2026 até 2026-02-28 entidade     {'L': '12.367.614,60', 'a': '1.829,50', 'b': '11.158.739,30', 'c': '-262.716,27', 'd': '1.829,50', 'e': '11.421.455,57', 'f': '-1.829,50', 'g': '-3.290.752,98', 'h': '-3.224.757,44', 'i': '-4.236.912,01', 'j': '-1.829,50', 'k': '946.159,03'}
+  2026 até 2026-04-30 consolidado  {'h': '644,16'}
+  2026 até 2026-04-30 entidade     {'h': '644,16'}
+  2026 até 2026-06-30 entidade     {'L': '109.112,43', 'h': '-216.913,24', 'i': '-109.112,43', 'k': '109.112,43'}
+  2026 até 2026-08-31 entidade     {'L': '237.728,25', 'h': '-345.479,56', 'i': '-237.728,25', 'k': '237.728,25'}
+
+## Conciliação RREO × API com RREO-COL v2 — diferença API − RREO (colunas ≠ 0)
+  2025 até 2025-06-30 entidade     {'L': '-3.294.722,68', 'a': '1.829,50', 'd': '35.529,49', 'e': '-33.699,99', 'f': '6.580,50', 'g': '917.292,62', 'j': '4.184.895,81', 'k': '-3.261.022,69'}
+  2025 até 2025-10-31 entidade     {'L': '925.702,62', 'a': '1.829,50', 'd': '1.829,50', 'f': '6.580,50', 'g': '917.292,62', 'j': '-1.829,50', 'k': '925.702,62'}
+  2025 até 2025-12-31 consolidado  {'L': '925.702,62', 'a': '1.829,50', 'd': '1.829,50', 'f': '6.580,50', 'g': '917.292,62', 'j': '-1.829,50', 'k': '925.702,62'}
+  2025 até 2025-12-31 entidade     {'L': '925.702,62', 'a': '1.829,50', 'd': '1.829,50', 'f': '6.580,50', 'g': '917.292,62', 'j': '-1.829,50', 'k': '925.702,62'}
+  2026 até 2026-02-28 entidade     {'L': '12.367.614,60', 'a': '1.829,50', 'b': '11.158.739,30', 'c': '-262.716,27', 'd': '1.829,50', 'e': '11.421.455,57', 'f': '-1.829,50', 'g': '-3.290.752,98', 'h': '-3.224.757,44', 'i': '-4.236.912,01', 'j': '-1.829,50', 'k': '946.159,03'}
+  2026 até 2026-04-30 consolidado  {'h': '644,16'}
+  2026 até 2026-04-30 entidade     {'h': '644,16'}
+  2026 até 2026-06-30 entidade     {'L': '109.112,43', 'h': '-216.913,24', 'i': '-109.112,43', 'k': '109.112,43'}
+  2026 até 2026-08-31 entidade     {'L': '237.678,75', 'h': '-345.479,56', 'i': '-237.678,75', 'k': '237.678,75'}
+
+## Verificações registradas
+  continuidade fechamento→abertura | {"coletas": [11, 42], "de": 2025, "entidade": 1, "para": 2026} | verificados=3990 falhas=0
+  continuidade fechamento→abertura | {"coletas": [30, 31], "de": 2025, "entidade": 3, "para": 2026} | verificados=0 falhas=0
+  continuidade fechamento→abertura | {"coletas": [32, 33], "de": 2025, "entidade": 4, "para": 2026} | verificados=4 falhas=0
+  continuidade fechamento→abertura | {"coletas": [34, 35], "de": 2025, "entidade": 5, "para": 2026} | verificados=360 falhas=0
+  continuidade fechamento→abertura | {"coletas": [36, 37], "de": 2025, "entidade": 6, "para": 2026} | verificados=0 falhas=0
+  continuidade fechamento→abertura | {"coletas": [38, 39], "de": 2025, "entidade": 8, "para": 2026} | verificados=8 falhas=0
+  continuidade fechamento→abertura | {"coletas": [40, 41], "de": 2025, "entidade": 9, "para": 2026} | verificados=0 falhas=0
+  continuidade fechamento→abertura | {"coletas": [1, 2], "de": 2025, "entidade": 10, "para": 2026} | verificados=0 falhas=0
+  continuidade fechamento→abertura | {"coletas": [3, 4], "de": 2025, "entidade": 11, "para": 2026} | verificados=0 falhas=0
+  continuidade fechamento→abertura | {"coletas": [5, 6], "de": 2025, "entidade": 15, "para": 2026} | verificados=1516 falhas=0
+  pareamento de cópias 24xxxxx | {"coletas": [11, 5], "data_final": "2025-12-31", "data_inicial": "2025-01-01", "exercicio": 2025} | verificados=20 falhas=0
+  pareamento de cópias 24xxxxx | {"coletas": [15, 6], "data_final": "2026-04-30", "data_inicial": "2026-01-01", "exercicio": 2026} | verificados=731 falhas=0
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2025-06-30", "escopo": "entidade", "exercicio": 2025, "rreo_col": 1, "rreo_coleta": 185} | verificados=12 falhas=9
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2025-10-31", "escopo": "entidade", "exercicio": 2025, "rreo_col": 1, "rreo_coleta": 186} | verificados=12 falhas=9
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2025-12-31", "escopo": "consolidado", "exercicio": 2025, "rreo_col": 1, "rreo_coleta": 187} | verificados=12 falhas=10
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2025-12-31", "escopo": "entidade", "exercicio": 2025, "rreo_col": 1, "rreo_coleta": 188} | verificados=12 falhas=9
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2026-02-28", "escopo": "entidade", "exercicio": 2026, "rreo_col": 1, "rreo_coleta": 189} | verificados=12 falhas=12
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2026-04-30", "escopo": "consolidado", "exercicio": 2026, "rreo_col": 1, "rreo_coleta": 190} | verificados=12 falhas=1
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2026-04-30", "escopo": "entidade", "exercicio": 2026, "rreo_col": 1, "rreo_coleta": 191} | verificados=12 falhas=1
+  RREO sem snapshot da API no mesmo corte | {"data_final": "2026-06-30", "escopo": "consolidado", "exercicio": 2026, "rreo_col": 1, "rreo_coleta": 192} | verificados=0 falhas=0
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2026-06-30", "escopo": "entidade", "exercicio": 2026, "rreo_col": 1, "rreo_coleta": 193} | verificados=12 falhas=4
+  RREO sem snapshot da API no mesmo corte | {"data_final": "2026-08-31", "escopo": "consolidado", "exercicio": 2026, "rreo_col": 1, "rreo_coleta": 194} | verificados=0 falhas=0
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2026-08-31", "escopo": "entidade", "exercicio": 2026, "rreo_col": 1, "rreo_coleta": 195} | verificados=12 falhas=4
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2025-06-30", "escopo": "entidade", "exercicio": 2025, "rreo_col": 2, "rreo_coleta": 185} | verificados=12 falhas=8
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2025-10-31", "escopo": "entidade", "exercicio": 2025, "rreo_col": 2, "rreo_coleta": 186} | verificados=12 falhas=7
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2025-12-31", "escopo": "consolidado", "exercicio": 2025, "rreo_col": 2, "rreo_coleta": 187} | verificados=12 falhas=7
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2025-12-31", "escopo": "entidade", "exercicio": 2025, "rreo_col": 2, "rreo_coleta": 188} | verificados=12 falhas=7
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2026-02-28", "escopo": "entidade", "exercicio": 2026, "rreo_col": 2, "rreo_coleta": 189} | verificados=12 falhas=12
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2026-04-30", "escopo": "consolidado", "exercicio": 2026, "rreo_col": 2, "rreo_coleta": 190} | verificados=12 falhas=1
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2026-04-30", "escopo": "entidade", "exercicio": 2026, "rreo_col": 2, "rreo_coleta": 191} | verificados=12 falhas=1
+  RREO sem snapshot da API no mesmo corte | {"data_final": "2026-06-30", "escopo": "consolidado", "exercicio": 2026, "rreo_col": 2, "rreo_coleta": 192} | verificados=0 falhas=0
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2026-06-30", "escopo": "entidade", "exercicio": 2026, "rreo_col": 2, "rreo_coleta": 193} | verificados=12 falhas=4
+  RREO sem snapshot da API no mesmo corte | {"data_final": "2026-08-31", "escopo": "consolidado", "exercicio": 2026, "rreo_col": 2, "rreo_coleta": 194} | verificados=0 falhas=0
+  conciliação RREO × API (colunas com diferença) | {"data_final": "2026-08-31", "escopo": "entidade", "exercicio": 2026, "rreo_col": 2, "rreo_coleta": 195} | verificados=12 falhas=4
+
+## Pares espelhados
+  2025 até 2025-12-31 relação=a_e_saldo_final_de_b execução=B pares=9 inscrito A=493.284,72 inscrito B=1.103.073,27
+  2025 até 2025-12-31 relação=igual execução=nenhum pares=11 inscrito A=432.417,90 inscrito B=432.417,90
+  2026 até 2026-04-30 relação=igual execução=A pares=356 inscrito A=23.262.860,00 inscrito B=23.262.860,00
+  2026 até 2026-04-30 relação=igual execução=nenhum pares=375 inscrito A=8.551.045,47 inscrito B=8.551.045,47
+
+## Anomalias (todas as coletas)
+  COPIA-24                     ocorrências= 10714 coletas=23
+  LIQ-NEG                      ocorrências=   100 coletas=18
+  PAGOPROC-SEM-PROC            ocorrências=    14 coletas=7
+  PAR-INSCRICAO-DIVERGENTE     ocorrências=     9 coletas=1
+
+## Visões do Município com RREO-COL v2 (publicado × analítico CONS-PAR v1 × v2) e RREO consolidado
+  2025 até 2025-12-31
+     a   publicado      2.707.117,16 | analítico v1      2.707.117,16 | analítico v2      2.707.117,16 | RREO consolidado      2.705.287,66
+     b   publicado     25.475.873,59 | analítico v1     25.475.873,59 | analítico v2     25.475.873,59 | RREO consolidado     25.475.873,59
+     c   publicado     26.683.083,16 | analítico v1     26.683.083,16 | analítico v2     26.683.083,16 | RREO consolidado     26.683.083,16
+     d   publicado         99.765,83 | analítico v1         99.765,83 | analítico v2         99.765,83 | RREO consolidado         97.936,33
+     f   publicado     16.267.871,83 | analítico v1     16.267.871,83 | analítico v2     16.259.461,83 | RREO consolidado     16.261.291,33
+     g   publicado    206.100.195,15 | analítico v1    205.667.777,25 | analítico v2    205.182.902,53 | RREO consolidado    205.182.902,53
+     h   publicado    170.973.654,85 | analítico v1    170.973.654,85 | analítico v2    170.973.654,85 | RREO consolidado    170.973.654,85
+     i   publicado    170.882.396,44 | analítico v1    170.882.396,44 | analítico v2    170.882.396,44 | RREO consolidado    170.882.396,44
+     j   publicado     31.618.638,02 | analítico v1     31.618.638,02 | analítico v2     31.618.638,02 | RREO consolidado     31.620.467,52
+     e   publicado      1.400.141,76 | analítico v1      1.400.141,76 | analítico v2      1.400.141,76 | RREO consolidado      1.400.141,76
+     k   publicado     19.867.032,52 | analítico v1     19.434.614,62 | analítico v2     18.941.329,90 | RREO consolidado     18.941.329,90
+     L   publicado     21.267.174,28 | analítico v1     20.834.756,38 | analítico v2     20.341.471,66 | RREO consolidado     20.341.471,66
+     S1  publicado     21.267.174,28 | analítico v1     20.834.756,38 | analítico v2     20.341.471,66 | RREO consolidado                 —
+     S2  publicado     19.775.774,11 | analítico v1     19.343.356,21 | analítico v2     18.850.071,49 | RREO consolidado                 —
+     S3  publicado      1.491.400,17 | analítico v1      1.491.400,17 | analítico v2      1.491.400,17 | RREO consolidado                 —
+  2026 até 2026-04-30
+     a   publicado      1.491.400,17 | analítico v1      1.491.400,17 | analítico v2      1.491.400,17 | RREO consolidado      1.491.400,17
+     b   publicado     38.824.329,69 | analítico v1     27.478.501,54 | analítico v2     27.478.501,54 | RREO consolidado     38.824.329,69
+     c   publicado     22.394.222,00 | analítico v1     22.394.222,00 | analítico v2     22.394.222,00 | RREO consolidado     22.394.222,00
+     d   publicado         74.497,32 | analítico v1         74.497,32 | analítico v2         74.497,32 | RREO consolidado         74.497,32
+     f   publicado     19.775.774,11 | analítico v1     18.850.071,49 | analítico v2     18.850.071,49 | RREO consolidado     19.775.774,11
+     g   publicado    145.250.370,54 | analítico v1    125.707.995,84 | analítico v2    125.707.995,84 | RREO consolidado    145.250.370,54
+     h   publicado     77.462.435,18 | analítico v1     77.462.435,18 | analítico v2     77.462.435,18 | RREO consolidado     77.461.791,02
+     i   publicado     75.272.816,37 | analítico v1     75.272.816,37 | analítico v2     75.272.816,37 | RREO consolidado     75.272.816,37
+     j   publicado      3.465.043,15 | analítico v1      3.465.043,15 | analítico v2      3.465.043,15 | RREO consolidado      3.465.043,15
+     e   publicado     17.847.010,54 | analítico v1      6.501.182,39 | analítico v2      6.501.182,39 | RREO consolidado     17.847.010,54
+     k   publicado     86.288.285,13 | analítico v1     65.820.207,81 | analítico v2     65.820.207,81 | RREO consolidado     86.288.285,13
+     L   publicado    104.135.295,67 | analítico v1     72.321.390,20 | analítico v2     72.321.390,20 | RREO consolidado    104.135.295,67
+     S1  publicado    104.135.295,67 | analítico v1     72.321.390,20 | analítico v2     72.321.390,20 | RREO consolidado                 —
+     S2  publicado     84.122.832,92 | analítico v1     63.654.755,60 | analítico v2     63.654.755,60 | RREO consolidado                 —
+     S3  publicado     20.012.462,75 | analítico v1      8.666.634,60 | analítico v2      8.666.634,60 | RREO consolidado                 —

@@ -1,0 +1,18 @@
+# Dados brutos com dados pessoais (nomes e CNPJ/CPF de fornecedores - LGPD).
+# Ficam so na maquina (e no OneDrive); nunca neste repositorio publico.
+snapshots/
+backups/
+etapa01/amostras_brutas/
+etapa02/dados_brutos/
+
+# Bancos SQLite (copias completas do banco, com os mesmos dados pessoais)
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.db
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/

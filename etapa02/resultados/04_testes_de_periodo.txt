@@ -1,0 +1,57 @@
+periodo A ('2026-01-01', '2026-12-31'): 4557 registros
+periodo B ('2026-01-01', '2026-01-31'): 4557 registros
+periodo C ('2026-02-01', '2026-03-31'): 3403 registros
+periodo D ('2026-01-01', '2026-03-31'): 4557 registros
+periodo E ('2026-01-01', '2026-06-30'): 4557 registros
+periodo F ('2026-01-01', '2026-08-31'): 4557 registros
+periodo X ('2026-02-01', '2026-12-31'): 3403 registros
+
+1) Universo
+   B,D,E,F,A tem as mesmas chaves? True
+   C == X (mesmo dataInicial)? True
+   C contido em A? True
+   saíram ao mudar dataInicial para 01/02: 1154
+
+2) Campos que variam só com dataFinal (mesmo dataInicial=01/01): B x D x E x F x A
+   proc                 varia em 0 registros
+   aproc                varia em 0 registros
+   canceladoProc        varia em 0 registros
+   pagoProc             varia em 306 registros
+   pagoProcEstornado    varia em 2 registros
+   canceladoAProc       varia em 273 registros
+   pagoAProc            varia em 1312 registros
+   pagoAProcEstornado   varia em 50 registros
+   liquidado            varia em 1120 registros
+   retencao             varia em 684 registros
+
+3) Aditividade dos fluxos: X[D] == X[B] + X[C]  (C=0 para quem não está em C)
+  [OK ] canceladoProc: vale em 4557/4557
+  [OK ] pagoProc: vale em 4557/4557
+  [OK ] pagoProcEstornado: vale em 4557/4557
+  [OK ] canceladoAProc: vale em 4557/4557
+  [OK ] pagoAProc: vale em 4557/4557
+  [FALHA] pagoAProcEstornado: vale em 4546/4557  ex.: [(2025, 20738), (2025, 20744), (2025, 20747), (2025, 20752)]
+  [OK ] liquidado: vale em 4557/4557
+  [OK ] retencao: vale em 4557/4557
+
+4) Estoque no início do período (dataInicial=01/02) a partir de janeiro
+  [FALHA] proc[C] == proc[B] - pagoProc[B]: vale em 3120/3403  ex.: [(2022, 23729), (2024, 15377), (2024, 19533), (2024, 19535)]
+  [FALHA] proc[C] == proc[B] - pagoProc[B] + pagoProcEstornado[B]: vale em 3120/3403  ex.: [(2022, 23729), (2024, 15377), (2024, 19533), (2024, 19535)]
+  [FALHA] proc[C] == proc[B] - pagoProc[B] - canceladoProc[B]: vale em 3120/3403  ex.: [(2022, 23729), (2024, 15377), (2024, 19533), (2024, 19535)]
+  [FALHA] aproc[C] == aproc[B]: vale em 2939/3403  ex.: [(2017, 7724), (2022, 23729), (2024, 12188), (2024, 15377)]
+  [FALHA] aproc[C] == aproc[B] - pagoAProc[B] - canceladoAProc[B]: vale em 3120/3403  ex.: [(2022, 23729), (2024, 15377), (2024, 19533), (2024, 19535)]
+  [OK ] aproc[C] == aproc[B] - liquidado[B] - canceladoAProc[B]: vale em 3403/3403
+  [OK ] proc[C]+aproc[C] == proc[B]+aproc[B] - pagoProc[B] - pagoAProc[B] - canceladoAProc[B]: vale em 3403/3403
+
+5) Quem saiu do universo em 01/02 zerou o saldo em janeiro?
+  [OK ] proc[B]+aproc[B] - pagoProc[B] - pagoAProc[B] - canceladoAProc[B] == 0: vale em 1154/1154
+
+6) Totais dos fluxos por período (todos os registros)
+   canceladoProc        B=           0,00 C=           0,00 D=           0,00 E=           0,00 F=           0,00 A=           0,00
+   pagoProc             B=   9.053.200,34 C=  12.625.493,02 D=  21.678.693,36 E=  24.506.510,29 F=  25.557.380,09 A=  25.557.380,09
+   pagoProcEstornado    B=      15.900,00 C=     156.803,88 D=     172.703,88 E=     172.703,88 F=     172.753,38 A=     172.753,38
+   canceladoAProc       B=      46.324,18 C=   2.989.821,02 D=   3.036.145,20 E=   4.262.232,22 F=   8.094.315,43 A=   8.146.347,32
+   pagoAProc            B=  26.419.453,20 C=  36.940.432,89 D=  63.359.886,09 E=  77.655.270,83 F=  83.655.417,66 A=  84.758.870,52
+   pagoAProcEstornado   B=     112.345,23 C=   1.386.948,02 D=   1.580.293,25 E=   1.904.874,05 F=   1.936.277,01 A=   1.951.843,09
+   liquidado            B=  36.702.277,22 C=  30.521.660,02 D=  67.223.937,24 E=  79.777.697,26 F=  85.150.890,90 A=  86.868.437,80
+   retencao             B=   2.103.658,03 C=     941.561,04 D=   3.045.219,07 E=   3.589.469,17 F=   3.737.533,03 A=   3.830.236,20

@@ -1,0 +1,4 @@
+população por estrato: {'P_sem_fluxo': 544, 'P_com_fluxo': 922, 'N_com_fluxo': 1882, 'N_sem_fluxo': 1012, 'ambos': 197}
+amostra: 120 empenhos x 7 períodos x 10 campos
+empenhos com alguma divergência, por estrato: nenhum
+divergências por campo: nenhuma

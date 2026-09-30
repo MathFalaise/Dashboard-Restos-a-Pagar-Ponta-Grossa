@@ -1,0 +1,8761 @@
+{
+ "lote": "T",
+ "titulo": "Teste temporal — recoleta, com os MESMOS parâmetros, dos cortes coletados em 29/09",
+ "inicio": "2026-09-30T01:19:55",
+ "gates": {
+  "G1 coleta completa": {
+   "ok": true,
+   "detalhe": {
+    "completa": 22,
+    "fora_do_catalogo (não exigido)": 6
+   }
+  },
+  "G2 integridade armazém×banco (após coleta)": {
+   "ok": true,
+   "detalhe": []
+  },
+  "G3 fidelidade (registros = bruto; sem chave desconhecida; chaves-base presentes)": {
+   "ok": true,
+   "detalhe": {
+    "esperado": 46960,
+    "obtido": 46960,
+    "com_chaves_extras": 0,
+    "chaves_base_faltando": []
+   }
+  },
+  "G4 continuidade fechamento→abertura": {
+   "ok": true,
+   "detalhe": "100 pares entidade×ano, 0 falhas"
+  },
+  "G5 regressão temporal ('como estava em 29/09' inalterado)": {
+   "ok": true,
+   "detalhe": {
+    "referencia": "b8a0b2ed2328bf09",
+    "obtido": "b8a0b2ed2328bf09"
+   }
+  },
+  "G6 sem efeito colateral em cortes não tocados pelo lote": {
+   "ok": true,
+   "detalhe": {
+    "alteradas_fora_do_lote": 0,
+    "sumidas": 0
+   }
+  },
+  "G7 testes (produção + investigação)": {
+   "ok": true,
+   "detalhe": "76 passed in 87.32s (0:01:27) | 26 passed in 17.44s"
+  },
+  "G2b integridade armazém×banco (após processamento)": {
+   "ok": true,
+   "detalhe": ""
+  },
+  "G8 sem anomalia estrutural": {
+   "ok": true,
+   "detalhe": {}
+  },
+  "G2c integridade após limpeza": {
+   "ok": true,
+   "detalhe": ""
+  }
+ },
+ "parou_em": null,
+ "backup": "C:\\Users\\maped\\RestosAPagar_local\\backups_operacionais\\20260930-011955_antes-lote-T.sqlite",
+ "cortes_planejados": [],
+ "requisicoes": 45,
+ "fora_do_catalogo": [
+  {
+   "entidade": 10,
+   "exercicio": 2025,
+   "status": "completa",
+   "registros": 0
+  },
+  {
+   "entidade": 3,
+   "exercicio": 2026,
+   "status": "completa",
+   "registros": 0
+  },
+  {
+   "entidade": 6,
+   "exercicio": 2026,
+   "status": "completa",
+   "registros": 0
+  },
+  {
+   "entidade": 9,
+   "exercicio": 2026,
+   "status": "completa",
+   "registros": 0
+  },
+  {
+   "entidade": 10,
+   "exercicio": 2026,
+   "status": "completa",
+   "registros": 0
+  },
+  {
+   "entidade": 11,
+   "exercicio": 2026,
+   "status": "completa",
+   "registros": 0
+  }
+ ],
+ "snapshots": [
+  {
+   "uid": "832fbe61f1124b4eb5a2f16ab8917691",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2025-06-30",
+    "dataInicial": "2025-01-01",
+    "entidade": 1,
+    "exercicio": 2025,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:19:56-03:00",
+   "status": "completa",
+   "sha256": [
+    "88dbcb23c62c49884ab50b1c76ec797dfdc8478e92e95211268cb7dddf43c9e9",
+    "767c5988ea4cef8869663d704cdb7fbacf9b52b11aabd06606106297e1a72957"
+   ],
+   "bytes": 2905938,
+   "bytes_comprimidos": 256998,
+   "recoleta_de": "f8ac1d8b5ae3532caef018cdfd34485b"
+  },
+  {
+   "uid": "01a3a3f66d2c4cda8b38dabc9f52b6ba",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2025-10-31",
+    "dataInicial": "2025-01-01",
+    "entidade": 1,
+    "exercicio": 2025,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:20:09-03:00",
+   "status": "completa",
+   "sha256": [
+    "688c90a212a9a27ae533cc77add7fd6d80ec4eb4cd5a9c9dc66c9f1a25a4e991",
+    "4d476f35234edf90df11239a42a61125a57fc6ec64f075cb351ed8ada627d7c6"
+   ],
+   "bytes": 2908388,
+   "bytes_comprimidos": 259195,
+   "recoleta_de": "1486479ab1d85d9dba2449cd31cbeb5b"
+  },
+  {
+   "uid": "03a8b62445f74e5f94f3235abfbe825c",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2025-12-31",
+    "dataInicial": "2025-01-01",
+    "entidade": 1,
+    "exercicio": 2025,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:20:20-03:00",
+   "status": "completa",
+   "sha256": [
+    "f1e15ac1743420d38a34f3df71a01fb6ec5794c84bb81006efdd81bc5014c600",
+    "1c69ad4e0602f12ad192057d497c1dab7ce17ccfb53aaeec77cff5ba61f85523"
+   ],
+   "bytes": 2909691,
+   "bytes_comprimidos": 260128,
+   "recoleta_de": "134eea87cc7e5ff5a4e71a9e66bd017f"
+  },
+  {
+   "uid": "db8f88baa0c849cc9dd1456d8d91cb5c",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2025-12-31",
+    "dataInicial": "2025-01-01",
+    "entidade": 3,
+    "exercicio": 2025,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:20:31-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": "93b786187e215424b81630071014f9c4"
+  },
+  {
+   "uid": "2257e1a55fa94d48801c43ed2dbaa239",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2025-12-31",
+    "dataInicial": "2025-01-01",
+    "entidade": 4,
+    "exercicio": 2025,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:20:33-03:00",
+   "status": "completa",
+   "sha256": [
+    "7510f304026de1e72ff68513f11ceb36ab711bdb4c7da5bcf8c00893bfbdbee4"
+   ],
+   "bytes": 3094,
+   "bytes_comprimidos": 778,
+   "recoleta_de": "9fe78d6bb8ac54338ff9a3de718b7f79"
+  },
+  {
+   "uid": "b80233da0bb74dce8a06c7d6a4faaba8",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2025-12-31",
+    "dataInicial": "2025-01-01",
+    "entidade": 5,
+    "exercicio": 2025,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:20:35-03:00",
+   "status": "completa",
+   "sha256": [
+    "cd9dc7366dbe207626c9fac2f78bbe136cce05d0150123250c09061098ce6759"
+   ],
+   "bytes": 266133,
+   "bytes_comprimidos": 22620,
+   "recoleta_de": "9337705ee159574795b93ba1a5aaadb1"
+  },
+  {
+   "uid": "cf4b547ba3854210b0c95dc51e0c3917",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2025-12-31",
+    "dataInicial": "2025-01-01",
+    "entidade": 6,
+    "exercicio": 2025,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:20:37-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": "9645993842ba5391bf3e4427ff3ba931"
+  },
+  {
+   "uid": "7a07ffb1a11646878e85a700725ff613",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2025-12-31",
+    "dataInicial": "2025-01-01",
+    "entidade": 8,
+    "exercicio": 2025,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:20:39-03:00",
+   "status": "completa",
+   "sha256": [
+    "f8696e12989202e3464a0e53811b3de5b5ef9cd3433e031b62d3ac4251db2da0"
+   ],
+   "bytes": 6241,
+   "bytes_comprimidos": 1114,
+   "recoleta_de": "1ca2911861ca5be3b72eac607412dfa0"
+  },
+  {
+   "uid": "daf1e5ec07564d22bd1c83d4e3ee585a",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2025-12-31",
+    "dataInicial": "2025-01-01",
+    "entidade": 9,
+    "exercicio": 2025,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:20:41-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": "510a49eed3245bdea0ef76335adfe892"
+  },
+  {
+   "uid": "7a1db3dfc0e64d88b36727708c0e9e63",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2025-12-31",
+    "dataInicial": "2025-01-01",
+    "entidade": 10,
+    "exercicio": 2025,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:20:43-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": "0afc924589fa564da8fd9135117dea34"
+  },
+  {
+   "uid": "26734419d8dd4c9ea1cb6b7d919403f5",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2025-12-31",
+    "dataInicial": "2025-01-01",
+    "entidade": 11,
+    "exercicio": 2025,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:20:45-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": "c6e106608194547fa5a7dd746d9ea81a"
+  },
+  {
+   "uid": "fc06f3332dc14b7bb8de8aa8edd6539d",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2025-12-31",
+    "dataInicial": "2025-01-01",
+    "entidade": 15,
+    "exercicio": 2025,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:20:47-03:00",
+   "status": "completa",
+   "sha256": [
+    "47c21df65a9b13da49986cceb0f1ed36524a88aefe0387fbfe6f7c67ed22ffe6"
+   ],
+   "bytes": 1131636,
+   "bytes_comprimidos": 72095,
+   "recoleta_de": "69b45ba442675beda70d8378e58467ca"
+  },
+  {
+   "uid": "b2590de2acbd4387b4fca55631bc8e84",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-01-31",
+    "dataInicial": "2026-01-01",
+    "entidade": 1,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:20:50-03:00",
+   "status": "completa",
+   "sha256": [
+    "d7723e0caa63b74afd665c0129f06e4cf8ea5f667a4785ae4039be6792b062a6",
+    "938fd847bc5543bff831b10cdaab942f23ca1b502e7edcd1d332cc30a9e4c095",
+    "e64513ea4b71547c61f3fca77f9e8a199e04b4502b675cdea8c1c8b3bf81d62c"
+   ],
+   "bytes": 3324078,
+   "bytes_comprimidos": 282595,
+   "recoleta_de": "c6428bd73e6559dabeb13799da76207c"
+  },
+  {
+   "uid": "12179f91ede04e49965c5bc63422689f",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-02-28",
+    "dataInicial": "2026-01-01",
+    "entidade": 1,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:21:08-03:00",
+   "status": "completa",
+   "sha256": [
+    "7b7c4c52da013d69ab0d5cf369faadfe142cba40d08a092314f145de67dd61c1",
+    "1d81b9b152562707e32f8a0ae146866c63a15a8f98d2afba7f99b3791e77efaf",
+    "e64513ea4b71547c61f3fca77f9e8a199e04b4502b675cdea8c1c8b3bf81d62c"
+   ],
+   "bytes": 3327567,
+   "bytes_comprimidos": 285655,
+   "recoleta_de": "be2d23c6fef857a2ae9cfb5ad2cb56f2"
+  },
+  {
+   "uid": "96056e85876c413782a94ac4c07cbcc3",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-03-31",
+    "dataInicial": "2026-01-01",
+    "entidade": 1,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:21:25-03:00",
+   "status": "completa",
+   "sha256": [
+    "c6340bec889b6c9b8fdca5c883c0d5f25982862aaa18701f0ff50f04e48a5370",
+    "e1fc857aec6a9c26e2b5061af785994678be0ac8f7660e63680f4414fd5381d6",
+    "3e11d3b6848e73e885826f93e621634eae39c8cd27af7c560b227a3031530004"
+   ],
+   "bytes": 3332777,
+   "bytes_comprimidos": 290036,
+   "recoleta_de": "b20192334e065e03a54f73e65135fb65"
+  },
+  {
+   "uid": "bb84664ce2a3446aab18d39348c9d775",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-04-30",
+    "dataInicial": "2026-01-01",
+    "entidade": 1,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:21:43-03:00",
+   "status": "completa",
+   "sha256": [
+    "b960e9a55ff695d024da56ff1d76b838d9c21864891a88b8182962023d5b214e",
+    "162b2860d192f3bb901f5847e327deaa661d6eeab2d16835f873598a3974010a",
+    "60428d53759eabadf9e74cfcd3bd49249ec63b4d960589048f4dfda30960de98"
+   ],
+   "bytes": 3334311,
+   "bytes_comprimidos": 291150,
+   "recoleta_de": "9393c957eeb05117bcb3d8f3f0e24bcb"
+  },
+  {
+   "uid": "12f4dd8deb6b43a4b8146ac0ab302def",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-04-30",
+    "dataInicial": "2026-01-01",
+    "entidade": 3,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:22:01-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": "8aace32e3680526ea1b796a29af7b7fc"
+  },
+  {
+   "uid": "0ef5ea242c9246b29043c0be49d14161",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-04-30",
+    "dataInicial": "2026-01-01",
+    "entidade": 4,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:22:03-03:00",
+   "status": "completa",
+   "sha256": [
+    "38645e460295f31470f57d4c438230f6d6ec7dc05e9d508cfcfd948e7b22db89"
+   ],
+   "bytes": 10336,
+   "bytes_comprimidos": 1405,
+   "recoleta_de": "436ec62bc2ef531091c6231783220905"
+  },
+  {
+   "uid": "2817961d93eb45958f84a27d255a56f2",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-04-30",
+    "dataInicial": "2026-01-01",
+    "entidade": 5,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:22:05-03:00",
+   "status": "completa",
+   "sha256": [
+    "1007932933f466b80a8632f4d73ccd8e9376d7b4846d51321acbf3d2c1d8be10"
+   ],
+   "bytes": 328896,
+   "bytes_comprimidos": 25357,
+   "recoleta_de": "7cc2896e6d475dab9c34d8706fb2eb9d"
+  },
+  {
+   "uid": "fd0b146d5b30452383b2990667a14c49",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-04-30",
+    "dataInicial": "2026-01-01",
+    "entidade": 6,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:22:07-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": "c5ce993d08f4564b86a04b6dd3c0bc33"
+  },
+  {
+   "uid": "a65bde5c42ba42c2a7fe0a455a0fc84d",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-04-30",
+    "dataInicial": "2026-01-01",
+    "entidade": 8,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:22:09-03:00",
+   "status": "completa",
+   "sha256": [
+    "58abfb40d7d3687ba2c4d9097ae2f83abfaf868b369a7c343a0a6aa78c4545ab"
+   ],
+   "bytes": 7726,
+   "bytes_comprimidos": 1359,
+   "recoleta_de": "91fe4a486fb25b358e5d8629acbe9040"
+  },
+  {
+   "uid": "2a3e080e16174f3cb91f79bebc04cc5d",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-04-30",
+    "dataInicial": "2026-01-01",
+    "entidade": 9,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:22:11-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": "c3aaca07edce571a87e80c340bbb46a7"
+  },
+  {
+   "uid": "e5f7d3aea7fb4247931400342741abce",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-04-30",
+    "dataInicial": "2026-01-01",
+    "entidade": 10,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:22:13-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": "bb0619e38a6559818a87f3fc55252a79"
+  },
+  {
+   "uid": "a75cefe48c044c0ea96b3e439cbcc060",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-04-30",
+    "dataInicial": "2026-01-01",
+    "entidade": 11,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:22:15-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": "d5a549f693d558f1940277a8098a73f5"
+  },
+  {
+   "uid": "f802bc1c0ab349749ae0b4d4176ca9a5",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-04-30",
+    "dataInicial": "2026-01-01",
+    "entidade": 15,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:22:17-03:00",
+   "status": "completa",
+   "sha256": [
+    "bded9042b707579a1edb5ad196b1ca70d2ebc43ddb336cd9ce948ce1f935f5f0"
+   ],
+   "bytes": 550443,
+   "bytes_comprimidos": 38427,
+   "recoleta_de": "ad0037a66ee55fce89e8c6a949d97cb5"
+  },
+  {
+   "uid": "666dba3634894053bc388553a6e5ba13",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-06-30",
+    "dataInicial": "2026-01-01",
+    "entidade": 1,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:22:20-03:00",
+   "status": "completa",
+   "sha256": [
+    "81db2cecc7d33672dc4961c1291481cf850f4fb12d7800948da86247a3fb1572",
+    "2cd45c1a74c71b7b40687ad7211028280c894c6ac03afe7d1ed8565e801a484d",
+    "387e55060034814a90e5edc007186c62bef826d7bbd829be35e1b7090953631a"
+   ],
+   "bytes": 3338117,
+   "bytes_comprimidos": 294242,
+   "recoleta_de": "c53d3741c3145ac6b55d8c27491d38bb"
+  },
+  {
+   "uid": "9ddb3521b7cc4773a5de90ef48a4711b",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-08-31",
+    "dataInicial": "2026-01-01",
+    "entidade": 1,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:22:37-03:00",
+   "status": "completa",
+   "sha256": [
+    "976de22a770c987566877478dc5a30ad9c153c5f02f112b1dc52676c55ff3547",
+    "022459dccb2de2ff2a6726f29a2a6b41f6395f8e61d6a3f993a4a4263e99189f",
+    "1f54f3e59c4f63e83d7d138c7dfe21ad5b763895a8b5d01ca811a41dc8950d6c"
+   ],
+   "bytes": 3340018,
+   "bytes_comprimidos": 295668,
+   "recoleta_de": "a0bf1379d3425fe3a79893da4bd1c03d"
+  },
+  {
+   "uid": "0721d7864c934566b0ba4a5fd65d6ae8",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2026-12-31",
+    "dataInicial": "2026-01-01",
+    "entidade": 1,
+    "exercicio": 2026,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:22:55-03:00",
+   "status": "completa",
+   "sha256": [
+    "32ebf22ee7fbdab4f0366b13be124912188df577305eb78ac5cee087a78d5bb5",
+    "dc584ea08bcfe6aa2840fbd2050bcc4bde0d6b432cd533e5815d487729df070c",
+    "ebc8246d85bd62701dfc6ed432ba6dfadc6936460808e5bc812faf0a6e2ee9c5"
+   ],
+   "bytes": 3340354,
+   "bytes_comprimidos": 295859,
+   "recoleta_de": "939bd31f242b538f9637e5215cb80fa3"
+  }
+ ],
+ "bytes_brutos": 34368074,
+ "bytes_comprimidos": 2976051,
+ "normalizacao": {
+  "id": 11,
+  "respostas": 529,
+  "ignoradas_sem_pagina": 0,
+  "rp_registro": 228873,
+  "movimentacao_lancamento": 2019,
+  "rreo_valor": 1529,
+  "problemas": [
+   {
+    "coleta_id": 403,
+    "extrator": "rp-rreo-coordenadas/1",
+    "erro": "LayoutDesconhecido: período não encontrado no RREO (coleta 403)"
+   },
+   {
+    "coleta_id": 426,
+    "extrator": "rp-rreo-coordenadas/1",
+    "erro": "LayoutDesconhecido: colunas não encontradas no RREO: {'c', 'L', 'k', 'h', 'j', 'd', 'i', 'g', 'f', 'e'}"
+   },
+   {
+    "coleta_id": 431,
+    "extrator": "rp-rreo-coordenadas/1",
+    "erro": "LayoutDesconhecido: período não encontrado no RREO (coleta 431)"
+   }
+  ]
+ },
+ "registros_do_lote": 46960,
+ "derivacoes": {
+  "atual": {
+   "id": 19,
+   "hash": "b9db914845573482b264340ed3e4b6a3037230f81bdeb8d8ecdf07d2f353470f"
+  },
+  "como_estava_29_09": {
+   "id": 20,
+   "hash": "b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68"
+  }
+ },
+ "continuidade": [
+  {
+   "entidade": 1,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 6740,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 7711,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 5962,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 5906,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 5098,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 2737,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 3097,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 4235,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 4651,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 3990,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 45,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 44,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 44,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 33,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 28,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 26,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 27,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 32,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 23,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 13,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 15,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 32,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 4,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 8,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 14,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 8,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 4,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 135,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 31,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 96,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 321,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 379,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 440,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 473,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 593,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 414,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 360,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 273,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 243,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 252,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 265,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 445,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 395,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 30,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 2,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 20,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 25,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 19,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 13,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 4,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 10,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 1,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 8,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 201,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 243,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 229,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 212,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 256,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 49,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 33,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 58,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 12,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 285,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 327,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 193,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 32,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 1656,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 750,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 766,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 847,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 1353,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 1516,
+   "falhas": 0
+  }
+ ],
+ "visoes": {
+  "comuns": 7500,
+  "novas": 0,
+  "sumidas": 0,
+  "alteradas_em_cortes_do_lote": 0
+ },
+ "testes": {
+  "producao": {
+   "ok": true,
+   "resumo": "76 passed in 87.32s (0:01:27)",
+   "segundos": 88
+  },
+  "investigacao": {
+   "ok": true,
+   "resumo": "26 passed in 17.44s",
+   "segundos": 18
+  }
+ },
+ "anomalias_do_lote": {
+  "COPIA-24": 5177,
+  "LIQ-NEG": 58,
+  "PAGOPROC-SEM-PROC": 10,
+  "PAR-INSCRICAO-DIVERGENTE": 27
+ },
+ "perfil_por_exercicio": {
+  "2025": {
+   "registros": 13858,
+   "programatica_28_dig": 13858,
+   "sem_programatica_detalhada": 48,
+   "fonte_3_dig": 5743,
+   "fonte_4_dig": 7453,
+   "fonte_2_dig": 424,
+   "fonte_5_dig": 114,
+   "fonte_1_dig": 124
+  },
+  "2026": {
+   "registros": 33102,
+   "programatica_28_dig": 33102,
+   "sem_programatica_detalhada": 105,
+   "fonte_3_dig": 14254,
+   "fonte_4_dig": 18017,
+   "fonte_2_dig": 486,
+   "fonte_5_dig": 182,
+   "fonte_1_dig": 163
+  }
+ },
+ "pares": [
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "relacao": "a_e_saldo_final_de_b",
+   "lado": "B",
+   "pares": 4,
+   "inscrito_a": 15648370,
+   "inscrito_b": 38983563,
+   "exec_a": 0,
+   "exec_b": 43160186
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "relacao": "igual",
+   "lado": "nenhum",
+   "pares": 11,
+   "inscrito_a": 43241790,
+   "inscrito_b": 43241790,
+   "exec_a": 0,
+   "exec_b": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "relacao": "outra",
+   "lado": "B",
+   "pares": 2,
+   "inscrito_a": 3001802,
+   "inscrito_b": 4677604,
+   "exec_a": 0,
+   "exec_b": 1492270
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "relacao": "outra",
+   "lado": "nenhum",
+   "pares": 3,
+   "inscrito_a": 30678300,
+   "inscrito_b": 66646160,
+   "exec_a": 0,
+   "exec_b": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "relacao": "a_e_saldo_final_de_b",
+   "lado": "B",
+   "pares": 6,
+   "inscrito_a": 21920380,
+   "inscrito_b": 46953573,
+   "exec_a": 0,
+   "exec_b": 45056186
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "relacao": "igual",
+   "lado": "nenhum",
+   "pares": 11,
+   "inscrito_a": 43241790,
+   "inscrito_b": 43241790,
+   "exec_a": 0,
+   "exec_b": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "relacao": "outra",
+   "lado": "B",
+   "pares": 1,
+   "inscrito_a": 2160802,
+   "inscrito_b": 3638604,
+   "exec_a": 0,
+   "exec_b": 2716652
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "relacao": "outra",
+   "lado": "nenhum",
+   "pares": 2,
+   "inscrito_a": 25247290,
+   "inscrito_b": 59715150,
+   "exec_a": 0,
+   "exec_b": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "relacao": "a_e_saldo_final_de_b",
+   "lado": "B",
+   "pares": 9,
+   "inscrito_a": 49328472,
+   "inscrito_b": 110307327,
+   "exec_a": 0,
+   "exec_b": 102189982
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "relacao": "igual",
+   "lado": "nenhum",
+   "pares": 11,
+   "inscrito_a": 43241790,
+   "inscrito_b": 43241790,
+   "exec_a": 0,
+   "exec_b": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "relacao": "igual",
+   "lado": "nenhum",
+   "pares": 731,
+   "inscrito_a": 3181390547,
+   "inscrito_b": 3181390547,
+   "exec_a": 0,
+   "exec_b": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "relacao": "igual",
+   "lado": "A",
+   "pares": 356,
+   "inscrito_a": 2326286000,
+   "inscrito_b": 2326286000,
+   "exec_a": 2323346198,
+   "exec_b": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "relacao": "igual",
+   "lado": "nenhum",
+   "pares": 375,
+   "inscrito_a": 855104547,
+   "inscrito_b": 855104547,
+   "exec_a": 0,
+   "exec_b": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "relacao": "igual",
+   "lado": "A",
+   "pares": 530,
+   "inscrito_a": 2664889958,
+   "inscrito_b": 2664889958,
+   "exec_a": 3047069370,
+   "exec_b": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "relacao": "igual",
+   "lado": "nenhum",
+   "pares": 201,
+   "inscrito_a": 516500589,
+   "inscrito_b": 516500589,
+   "exec_a": 0,
+   "exec_b": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "relacao": "igual",
+   "lado": "A",
+   "pares": 562,
+   "inscrito_a": 2814322603,
+   "inscrito_b": 2814322603,
+   "exec_a": 3460885212,
+   "exec_b": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "relacao": "igual",
+   "lado": "nenhum",
+   "pares": 169,
+   "inscrito_a": 367067944,
+   "inscrito_b": 367067944,
+   "exec_a": 0,
+   "exec_b": 0
+  }
+ ],
+ "conciliacao": [
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 16737888908,
+   "api": 16830709645,
+   "diferenca": 92820737
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 270528766,
+   "api": 270711716,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2547587359,
+   "api": 2547587359,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 378374736,
+   "api": 378374736,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 3187049,
+   "api": 3369999,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 2436554340,
+   "api": 2436554340,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1626129133,
+   "api": 1626787183,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 20518290253,
+   "api": 20610019515,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 8041820836,
+   "api": 8041820836,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 7805291013,
+   "api": 7805040538,
+   "diferenca": -250475
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 37793805,
+   "api": 37610855,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 14301334568,
+   "api": 14394155305,
+   "diferenca": 92820737
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 16737888908,
+   "api": 16830459170,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 270528766,
+   "api": 270711716,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2547587359,
+   "api": 2547587359,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 378374736,
+   "api": 378374736,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 3187049,
+   "api": 3369999,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 2436554340,
+   "api": 2436554340,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1626129133,
+   "api": 1626787183,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 20518290253,
+   "api": 20610019515,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 8041820836,
+   "api": 8041820836,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 7805291013,
+   "api": 7805291013,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 37793805,
+   "api": 37610855,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 14301334568,
+   "api": 14393904830,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 14331311615,
+   "api": 14423881877,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 266151565,
+   "api": 266334515,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2499369485,
+   "api": 2499369485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 331231875,
+   "api": 331231875,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 3187049,
+   "api": 3369999,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 2431102126,
+   "api": 2431102126,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1586184064,
+   "api": 1586842114,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 15916553025,
+   "api": 16008282287,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 5781304211,
+   "api": 5781304211,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 5566819831,
+   "api": 5566819831,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 35707769,
+   "api": 35524819,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 11900209489,
+   "api": 11992779751,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 14331311615,
+   "api": 14423881877,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 266151565,
+   "api": 266334515,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2499369485,
+   "api": 2499369485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 331231875,
+   "api": 331231875,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 3187049,
+   "api": 3369999,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 2431102126,
+   "api": 2431102126,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1586184064,
+   "api": 1586842114,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 15916553025,
+   "api": 16008282287,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 5781304211,
+   "api": 5781304211,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 5566819831,
+   "api": 5566819831,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 35707769,
+   "api": 35524819,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 11900209489,
+   "api": 11992779751,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 10655784589,
+   "api": 10748605326,
+   "diferenca": 92820737
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 270528766,
+   "api": 270711716,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2547587359,
+   "api": 2547587359,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 380518497,
+   "api": 380518497,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 6497083,
+   "api": 6680033,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 2431100545,
+   "api": 2431100545,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1626129133,
+   "api": 1626787183,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 20518290253,
+   "api": 20610019515,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 13041319222,
+   "api": 13041319222,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 12876043491,
+   "api": 12875793016,
+   "diferenca": -250475
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 1043691851,
+   "api": 1043508901,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 8224684044,
+   "api": 8317504781,
+   "diferenca": 92820737
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 10655784589,
+   "api": 10748354851,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 270528766,
+   "api": 270711716,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2547587359,
+   "api": 2547587359,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 380518497,
+   "api": 380518497,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 6497083,
+   "api": 6680033,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 2431100545,
+   "api": 2431100545,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1626129133,
+   "api": 1626787183,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 20518290253,
+   "api": 20610019515,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 13041319222,
+   "api": 13041319222,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 12876043491,
+   "api": 12876043491,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 1043691851,
+   "api": 1043508901,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 8224684044,
+   "api": 8317254306,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 9808470434,
+   "api": 9901040696,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 266151565,
+   "api": 266334515,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2499369485,
+   "api": 2499369485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 333375636,
+   "api": 333375636,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 3187049,
+   "api": 3369999,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 2428958365,
+   "api": 2428958365,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1586184064,
+   "api": 1586842114,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 15916553025,
+   "api": 16008282287,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 9948558444,
+   "api": 9948558444,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 9785786102,
+   "api": 9785786102,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 337438918,
+   "api": 337255968,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 7379512069,
+   "api": 7472082331,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 9808470434,
+   "api": 9901040696,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 266151565,
+   "api": 266334515,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2499369485,
+   "api": 2499369485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 333375636,
+   "api": 333375636,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 3187049,
+   "api": 3369999,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 2428958365,
+   "api": 2428958365,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1586184064,
+   "api": 1586842114,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 15916553025,
+   "api": 16008282287,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 9948558444,
+   "api": 9948558444,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 9785786102,
+   "api": 9785786102,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 337438918,
+   "api": 337255968,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 7379512069,
+   "api": 7472082331,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 8677243515,
+   "api": 7566152076,
+   "diferenca": -1111091439
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 270528766,
+   "api": 270711716,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2547587359,
+   "api": 2547587359,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 825784276,
+   "api": 825738076,
+   "diferenca": -46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": -182950,
+   "api": 7345841,
+   "diferenca": 7528791
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 1992514799,
+   "api": 1985215158,
+   "diferenca": -7299641
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1626129133,
+   "api": 1626787183,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 20518290253,
+   "api": 20610019515,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 15541072064,
+   "api": 15541072064,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 15459507720,
+   "api": 15459252295,
+   "diferenca": -255425
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 182950,
+   "api": 1196617485,
+   "diferenca": 1196434535
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 6684728716,
+   "api": 5580936918,
+   "diferenca": -1103791798
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 8677243515,
+   "api": 7565850451,
+   "diferenca": -1111393064
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 270528766,
+   "api": 270711716,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2547587359,
+   "api": 2547587359,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 825784276,
+   "api": 825784276,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": -182950,
+   "api": 7345841,
+   "diferenca": 7528791
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 1992514799,
+   "api": 1985168958,
+   "diferenca": -7345841
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1626129133,
+   "api": 1626787183,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 20518290253,
+   "api": 20610019515,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 15541072064,
+   "api": 15541072064,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 15459507720,
+   "api": 15459507720,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 182950,
+   "api": 1196617485,
+   "diferenca": 1196434535
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 6684728716,
+   "api": 5580681493,
+   "diferenca": -1104047223
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 7284183085,
+   "api": 6954757017,
+   "diferenca": -329426068
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 266151565,
+   "api": 266334515,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2499369485,
+   "api": 2499369485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 778282473,
+   "api": 778236273,
+   "diferenca": -46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": -182950,
+   "api": 3369999,
+   "diferenca": 3552949
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 1987421527,
+   "api": 1984097728,
+   "diferenca": -3323799
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1586184064,
+   "api": 1586842114,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 15916553025,
+   "api": 16008282287,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 12285525576,
+   "api": 12285525576,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 12205792581,
+   "api": 12205792581,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 182950,
+   "api": 418672531,
+   "diferenca": 418489581
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 5296761558,
+   "api": 4970659289,
+   "diferenca": -326102269
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 7284183085,
+   "api": 6954710817,
+   "diferenca": -329472268
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 266151565,
+   "api": 266334515,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2499369485,
+   "api": 2499369485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 778282473,
+   "api": 778282473,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": -182950,
+   "api": 3369999,
+   "diferenca": 3552949
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 1987421527,
+   "api": 1984051528,
+   "diferenca": -3369999
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1586184064,
+   "api": 1586842114,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 15916553025,
+   "api": 16008282287,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 12285525576,
+   "api": 12285525576,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 12205792581,
+   "api": 12205792581,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 182950,
+   "api": 418672531,
+   "diferenca": 418489581
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 5296761558,
+   "api": 4970659289,
+   "diferenca": -326102269
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 5288694895,
+   "api": 5381566782,
+   "diferenca": 92871887
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 270528766,
+   "api": 270711716,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2547587359,
+   "api": 2547587359,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 1109901590,
+   "api": 1109855390,
+   "diferenca": -46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 8050499,
+   "api": 8233449,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 1700164036,
+   "api": 1700210236,
+   "diferenca": 46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1626129133,
+   "api": 1626787183,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 20518290253,
+   "api": 20610019515,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 16362741070,
+   "api": 16362741070,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 16297219353,
+   "api": 16296963928,
+   "diferenca": -255425
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 2258669174,
+   "api": 2258486224,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 3588530859,
+   "api": 3681356546,
+   "diferenca": 92825687
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 5288694895,
+   "api": 5381265157,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 270528766,
+   "api": 270711716,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2547587359,
+   "api": 2547587359,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 1109901590,
+   "api": 1109901590,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 8050499,
+   "api": 8233449,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 1700164036,
+   "api": 1700164036,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1626129133,
+   "api": 1626787183,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 20518290253,
+   "api": 20610019515,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 16362741070,
+   "api": 16362741070,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 16297219353,
+   "api": 16297219353,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 2258669174,
+   "api": 2258486224,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 3588530859,
+   "api": 3681101121,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 4944442082,
+   "api": 5037058544,
+   "diferenca": 92616462
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 266151565,
+   "api": 266334515,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2499369485,
+   "api": 2499369485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 1062132687,
+   "api": 1062086487,
+   "diferenca": -46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 3447529,
+   "api": 3630479,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 1699940834,
+   "api": 1699987034,
+   "diferenca": 46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1586184064,
+   "api": 1586842114,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 15916553025,
+   "api": 16008282287,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 12972784758,
+   "api": 12972784758,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 12907390373,
+   "api": 12907390373,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 1350845468,
+   "api": 1350662518,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 3244501248,
+   "api": 3337071510,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 4944442082,
+   "api": 5037012344,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 266151565,
+   "api": 266334515,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2499369485,
+   "api": 2499369485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 1062132687,
+   "api": 1062132687,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 3447529,
+   "api": 3630479,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 1699940834,
+   "api": 1699940834,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1586184064,
+   "api": 1586842114,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 15916553025,
+   "api": 16008282287,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 12972784758,
+   "api": 12972784758,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 12907390373,
+   "api": 12907390373,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 1350845468,
+   "api": 1350662518,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 3244501248,
+   "api": 3337071510,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 3033667283,
+   "api": 3126539170,
+   "diferenca": 92871887
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 270528766,
+   "api": 270711716,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2547587359,
+   "api": 2547587359,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 2668066147,
+   "api": 2668019947,
+   "diferenca": -46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 9690445,
+   "api": 9873395,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 140359533,
+   "api": 140405733,
+   "diferenca": 46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1626129133,
+   "api": 1626787183,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 20518290253,
+   "api": 20610019515,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 16811277691,
+   "api": 16811277691,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 16695517812,
+   "api": 16695262387,
+   "diferenca": -255425
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 2555593824,
+   "api": 2555410874,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 2893307750,
+   "api": 2986133437,
+   "diferenca": 92825687
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 3033667283,
+   "api": 3126237545,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 270528766,
+   "api": 270711716,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2547587359,
+   "api": 2547587359,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 2668066147,
+   "api": 2668066147,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 9690445,
+   "api": 9873395,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 140359533,
+   "api": 140359533,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1626129133,
+   "api": 1626787183,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 20518290253,
+   "api": 20610019515,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 16811277691,
+   "api": 16811277691,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 16695517812,
+   "api": 16695517812,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 2555593824,
+   "api": 2555410874,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 2893307750,
+   "api": 2985878012,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 2751285914,
+   "api": 2843902376,
+   "diferenca": 92616462
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 266151565,
+   "api": 266334515,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2499369485,
+   "api": 2499369485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 2620297244,
+   "api": 2620251044,
+   "diferenca": -46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 5087475,
+   "api": 5270425,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 140136331,
+   "api": 140182531,
+   "diferenca": 46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1586184064,
+   "api": 1586842114,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 15916553025,
+   "api": 16008282287,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 13401145946,
+   "api": 13401145946,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 13285528620,
+   "api": 13285528620,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 1606058886,
+   "api": 1605875936,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 2611149583,
+   "api": 2703719845,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 2751285914,
+   "api": 2843856176,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 266151565,
+   "api": 266334515,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2499369485,
+   "api": 2499369485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 2620297244,
+   "api": 2620297244,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 5087475,
+   "api": 5270425,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 140136331,
+   "api": 140136331,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1586184064,
+   "api": 1586842114,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 15916553025,
+   "api": 16008282287,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 13401145946,
+   "api": 13401145946,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 13285528620,
+   "api": 13285528620,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 1606058886,
+   "api": 1605875936,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-10-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 2611149583,
+   "api": 2703719845,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 2034147166,
+   "api": 2127019053,
+   "diferenca": 92871887
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 270528766,
+   "api": 270711716,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2547587359,
+   "api": 2547587359,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 2668308316,
+   "api": 2668262116,
+   "diferenca": -46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 9793633,
+   "api": 9976583,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 140014176,
+   "api": 140060376,
+   "diferenca": 46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1626129133,
+   "api": 1626787183,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 20518290253,
+   "api": 20610019515,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 17097365485,
+   "api": 17097365485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 17088239644,
+   "api": 17087984219,
+   "diferenca": -255425
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 3162046752,
+   "api": 3161863802,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 1894132990,
+   "api": 1986958677,
+   "diferenca": 92825687
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 2034147166,
+   "api": 2126717428,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 270528766,
+   "api": 270711716,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2547587359,
+   "api": 2547587359,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 2668308316,
+   "api": 2668308316,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 9793633,
+   "api": 9976583,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 140014176,
+   "api": 140014176,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1626129133,
+   "api": 1626787183,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 20518290253,
+   "api": 20610019515,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 17097365485,
+   "api": 17097365485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 17088239644,
+   "api": 17088239644,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 3162046752,
+   "api": 3161863802,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 1894132990,
+   "api": 1986703252,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 1937482642,
+   "api": 2030099104,
+   "diferenca": 92616462
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 266151565,
+   "api": 266334515,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2499369485,
+   "api": 2499369485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 2620373811,
+   "api": 2620327611,
+   "diferenca": -46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 5190663,
+   "api": 5373613,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 139956576,
+   "api": 140002776,
+   "diferenca": 46200
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1586184064,
+   "api": 1586842114,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 15916553025,
+   "api": 16008282287,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 13638015867,
+   "api": 13638015867,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 13628890026,
+   "api": 13628890026,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 2076320997,
+   "api": 2076138047,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 1797526066,
+   "api": 1890096328,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 1937482642,
+   "api": 2030052904,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 266151565,
+   "api": 266334515,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2499369485,
+   "api": 2499369485,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 2620373811,
+   "api": 2620373811,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 5190663,
+   "api": 5373613,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 139956576,
+   "api": 139956576,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1586184064,
+   "api": 1586842114,
+   "diferenca": 658050
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 15916553025,
+   "api": 16008282287,
+   "diferenca": 91729262
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 13638015867,
+   "api": 13638015867,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 13628890026,
+   "api": 13628890026,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 2076320997,
+   "api": 2076138047,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2025,
+   "data_final": "2025-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 1797526066,
+   "api": 1890096328,
+   "diferenca": 92570262
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 13186841833,
+   "api": 14423603293,
+   "diferenca": 1236761460
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 148957067,
+   "api": 149140017,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2766559039,
+   "api": 3882432969,
+   "diferenca": 1115873930
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 1040043117,
+   "api": 1013771490,
+   "diferenca": -26271627
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 7259582,
+   "api": 7442532,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 1868213407,
+   "api": 3010358964,
+   "diferenca": 1142145557
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1977760361,
+   "api": 1977577411,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 14854112352,
+   "api": 14525037054,
+   "diferenca": -329075298
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 5654519511,
+   "api": 5332043767,
+   "diferenca": -322475744
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 5219049081,
+   "api": 4795357880,
+   "diferenca": -423691201
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 294195206,
+   "api": 294012256,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 11318628426,
+   "api": 11413244329,
+   "diferenca": 94615903
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 13186841833,
+   "api": 14423603293,
+   "diferenca": 1236761460
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 148957067,
+   "api": 149140017,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2766559039,
+   "api": 3882432969,
+   "diferenca": 1115873930
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 1040043117,
+   "api": 1013771490,
+   "diferenca": -26271627
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 7259582,
+   "api": 7442532,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 1868213407,
+   "api": 3010358964,
+   "diferenca": 1142145557
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1977760361,
+   "api": 1977577411,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 14854112352,
+   "api": 14525037054,
+   "diferenca": -329075298
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 5654519511,
+   "api": 5332043767,
+   "diferenca": -322475744
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 5219049081,
+   "api": 4795357880,
+   "diferenca": -423691201
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 294195206,
+   "api": 294012256,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 11318628426,
+   "api": 11413244329,
+   "diferenca": 94615903
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 9788992142,
+   "api": 11025753602,
+   "diferenca": 1236761460
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 148899467,
+   "api": 149082417,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 1622794086,
+   "api": 2738668016,
+   "diferenca": 1115873930
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 1032721197,
+   "api": 1006449570,
+   "diferenca": -26271627
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 7259582,
+   "api": 7442532,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 731712774,
+   "api": 1873858331,
+   "diferenca": 1142145557
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1881153437,
+   "api": 1880970487,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 12159312688,
+   "api": 11830237390,
+   "diferenca": -329075298
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 5121103120,
+   "api": 4798627376,
+   "diferenca": -322475744
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 4690903463,
+   "api": 4267212262,
+   "diferenca": -423691201
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 292283294,
+   "api": 292100344,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 9057279368,
+   "api": 9151895271,
+   "diferenca": 94615903
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 9788992142,
+   "api": 11025753602,
+   "diferenca": 1236761460
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 148899467,
+   "api": 149082417,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 1622794086,
+   "api": 2738668016,
+   "diferenca": 1115873930
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 1032721197,
+   "api": 1006449570,
+   "diferenca": -26271627
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 7259582,
+   "api": 7442532,
+   "diferenca": 182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 731712774,
+   "api": 1873858331,
+   "diferenca": 1142145557
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1881153437,
+   "api": 1880970487,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 12159312688,
+   "api": 11830237390,
+   "diferenca": -329075298
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 5121103120,
+   "api": 4798627376,
+   "diferenca": -322475744
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 4690903463,
+   "api": 4267212262,
+   "diferenca": -423691201
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 292283294,
+   "api": 292100344,
+   "diferenca": -182950
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-02-28",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 9057279368,
+   "api": 9151895271,
+   "diferenca": 94615903
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 10413529567,
+   "api": 10413529567,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 149140017,
+   "api": 149140017,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 3882432969,
+   "api": 3882432969,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 2239422200,
+   "api": 2239422200,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 7449732,
+   "api": 7449732,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 1784701054,
+   "api": 1784701054,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1977577411,
+   "api": 1977577411,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 14525037054,
+   "api": 14525037054,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 7746179102,
+   "api": 7746243518,
+   "diferenca": 64416
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 7527281637,
+   "api": 7527281637,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 346504315,
+   "api": 346504315,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 8628828513,
+   "api": 8628828513,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 10413529567,
+   "api": 10413529567,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 149140017,
+   "api": 149140017,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 3882432969,
+   "api": 3882432969,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 2239422200,
+   "api": 2239422200,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 7449732,
+   "api": 7449732,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 1784701054,
+   "api": 1784701054,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1977577411,
+   "api": 1977577411,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 14525037054,
+   "api": 14525037054,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 7746179102,
+   "api": 7746243518,
+   "diferenca": 64416
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 7527281637,
+   "api": 7527281637,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 346504315,
+   "api": 346504315,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 8628828513,
+   "api": 8628828513,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 7097440561,
+   "api": 7097440561,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 149082417,
+   "api": 149082417,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2738668016,
+   "api": 2738668016,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 2230282020,
+   "api": 2230282020,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 7449732,
+   "api": 7449732,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 650018681,
+   "api": 650018681,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1880970487,
+   "api": 1880970487,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 11830237390,
+   "api": 11830237390,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 7135413505,
+   "api": 7135477921,
+   "diferenca": 64416
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 6921357746,
+   "api": 6921357746,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 342428251,
+   "api": 342428251,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 6447421880,
+   "api": 6447421880,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 7097440561,
+   "api": 7097440561,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 149082417,
+   "api": 149082417,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2738668016,
+   "api": 2738668016,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 2230282020,
+   "api": 2230282020,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 7449732,
+   "api": 7449732,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 650018681,
+   "api": 650018681,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1880970487,
+   "api": 1880970487,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 11830237390,
+   "api": 11830237390,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 7135413505,
+   "api": 7135477921,
+   "diferenca": 64416
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 6921357746,
+   "api": 6921357746,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 342428251,
+   "api": 342428251,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-04-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 6447421880,
+   "api": 6447421880,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 9210656965,
+   "api": 9221570006,
+   "diferenca": 10913041
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 149140017,
+   "api": 149140017,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 3882432969,
+   "api": 3882432969,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 2459791209,
+   "api": 2460160434,
+   "diferenca": 369225
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 7836184,
+   "api": 7836184,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 1563945593,
+   "api": 1563576368,
+   "diferenca": -369225
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1977577411,
+   "api": 1977577411,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 14525037054,
+   "api": 14525037054,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 8666964478,
+   "api": 8645273154,
+   "diferenca": -21691324
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 8431515199,
+   "api": 8420232933,
+   "diferenca": -11282266
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 424387894,
+   "api": 424387894,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 7646711372,
+   "api": 7657993638,
+   "diferenca": 11282266
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 9210656965,
+   "api": 9221568208,
+   "diferenca": 10911243
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 149140017,
+   "api": 149140017,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 3882432969,
+   "api": 3882432969,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 2459791209,
+   "api": 2460160434,
+   "diferenca": 369225
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 7836184,
+   "api": 7836184,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 1563945593,
+   "api": 1563576368,
+   "diferenca": -369225
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1977577411,
+   "api": 1977577411,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 14525037054,
+   "api": 14525037054,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 8666964478,
+   "api": 8645273154,
+   "diferenca": -21691324
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 8431515199,
+   "api": 8420234731,
+   "diferenca": -11280468
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 424387894,
+   "api": 424387894,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 7646711372,
+   "api": 7657991840,
+   "diferenca": 11280468
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 5945645733,
+   "api": 5956556976,
+   "diferenca": 10911243
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 149082417,
+   "api": 149082417,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2738668016,
+   "api": 2738668016,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 2450651029,
+   "api": 2450651029,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 7836184,
+   "api": 7836184,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 429263220,
+   "api": 429263220,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1880970487,
+   "api": 1880970487,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 11830237390,
+   "api": 11830237390,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 8009713894,
+   "api": 7988022570,
+   "diferenca": -21691324
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 7776438326,
+   "api": 7765527083,
+   "diferenca": -10911243
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 418387038,
+   "api": 418387038,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 5516382513,
+   "api": 5527293756,
+   "diferenca": 10911243
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 5945645733,
+   "api": 5956556976,
+   "diferenca": 10911243
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 149082417,
+   "api": 149082417,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2738668016,
+   "api": 2738668016,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 2450651029,
+   "api": 2450651029,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 7836184,
+   "api": 7836184,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 429263220,
+   "api": 429263220,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1880970487,
+   "api": 1880970487,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 11830237390,
+   "api": 11830237390,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 8009713894,
+   "api": 7988022570,
+   "diferenca": -21691324
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 7776438326,
+   "api": 7765527083,
+   "diferenca": -10911243
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 418387038,
+   "api": 418387038,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-06-30",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 5516382513,
+   "api": 5527293756,
+   "diferenca": 10911243
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 8060641154,
+   "api": 8084415777,
+   "diferenca": 23774623
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 149140017,
+   "api": 149140017,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 3882432969,
+   "api": 3882432969,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 2564873239,
+   "api": 2565242464,
+   "diferenca": 369225
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 7857099,
+   "api": 7857099,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 1458842648,
+   "api": 1458473423,
+   "diferenca": -369225
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1977577411,
+   "api": 1977577411,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 14525037054,
+   "api": 14525037054,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 9252179718,
+   "api": 9217631762,
+   "diferenca": -34547956
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 9078801424,
+   "api": 9054657576,
+   "diferenca": -24143848
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 822014535,
+   "api": 822014535,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 6601798506,
+   "api": 6625942354,
+   "diferenca": 24143848
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 8060641154,
+   "api": 8084409029,
+   "diferenca": 23767875
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 149140017,
+   "api": 149140017,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 3882432969,
+   "api": 3882432969,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 2564873239,
+   "api": 2565242464,
+   "diferenca": 369225
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 7857099,
+   "api": 7857099,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 1458842648,
+   "api": 1458473423,
+   "diferenca": -369225
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1977577411,
+   "api": 1977577411,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 14525037054,
+   "api": 14525037054,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 9252179718,
+   "api": 9217631762,
+   "diferenca": -34547956
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 9078801424,
+   "api": 9054664324,
+   "diferenca": -24137100
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 822014535,
+   "api": 822014535,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 6601798506,
+   "api": 6625935606,
+   "diferenca": 24137100
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 4844479117,
+   "api": 4868251942,
+   "diferenca": 23772825
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 4844479117,
+   "api": 4868251942,
+   "diferenca": 23772825
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 149082417,
+   "api": 149082417,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 149082417,
+   "api": 149082417,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2738668016,
+   "api": 2738668016,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 2738668016,
+   "api": 2738668016,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 2555733059,
+   "api": 2555733059,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 2555733059,
+   "api": 2555733059,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 7857099,
+   "api": 7857099,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 7857099,
+   "api": 7857099,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 324160275,
+   "api": 324160275,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 324160275,
+   "api": 324160275,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1880970487,
+   "api": 1880970487,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 1880970487,
+   "api": 1880970487,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 11830237390,
+   "api": 11830237390,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 11830237390,
+   "api": 11830237390,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 8559910805,
+   "api": 8525362849,
+   "diferenca": -34547956
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 8559910805,
+   "api": 8525362849,
+   "diferenca": -34547956
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 8389314591,
+   "api": 8365541766,
+   "diferenca": -23772825
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 8389314591,
+   "api": 8365541766,
+   "diferenca": -23772825
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 801574444,
+   "api": 801574444,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 801574444,
+   "api": 801574444,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 4520318842,
+   "api": 4544091667,
+   "diferenca": 23772825
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 4520318842,
+   "api": 4544091667,
+   "diferenca": 23772825
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 4844479117,
+   "api": 4868246992,
+   "diferenca": 23767875
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 4844479117,
+   "api": 4868246992,
+   "diferenca": 23767875
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 149082417,
+   "api": 149082417,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 149082417,
+   "api": 149082417,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2738668016,
+   "api": 2738668016,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 2738668016,
+   "api": 2738668016,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 2555733059,
+   "api": 2555733059,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 2555733059,
+   "api": 2555733059,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 7857099,
+   "api": 7857099,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 7857099,
+   "api": 7857099,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 324160275,
+   "api": 324160275,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 324160275,
+   "api": 324160275,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1880970487,
+   "api": 1880970487,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 1880970487,
+   "api": 1880970487,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 11830237390,
+   "api": 11830237390,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 11830237390,
+   "api": 11830237390,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 8559910805,
+   "api": 8525362849,
+   "diferenca": -34547956
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 8559910805,
+   "api": 8525362849,
+   "diferenca": -34547956
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 8389314591,
+   "api": 8365546716,
+   "diferenca": -23767875
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 8389314591,
+   "api": 8365546716,
+   "diferenca": -23767875
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 801574444,
+   "api": 801574444,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 801574444,
+   "api": 801574444,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 4520318842,
+   "api": 4544086717,
+   "diferenca": 23767875
+  },
+  {
+   "exercicio": 2026,
+   "data_final": "2026-08-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 4520318842,
+   "api": 4544086717,
+   "diferenca": 23767875
+  }
+ ],
+ "rreo_sem_extracao": [
+  {
+   "rreo_snapshot": "d369f5b945054a96ba9acd1966f659a1"
+  },
+  {
+   "rreo_snapshot": "722468ea426746d19ff55275aa270fa1"
+  },
+  {
+   "rreo_snapshot": "36f1ef8e4bbc480987a7c7a07c4c5260"
+  }
+ ],
+ "comparacoes_temporais": [
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 1,
+    "exercicio": 2025,
+    "data_inicial": "2025-01-01",
+    "data_final": "2025-06-30",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "f8ac1d8b5ae3532caef018cdfd34485b",
+    "coletada_em": "2026-09-29T20:23:34-03:00",
+    "registros": 3990
+   },
+   "posterior": {
+    "snapshot_uid": "832fbe61f1124b4eb5a2f16ab8917691",
+    "coletada_em": "2026-09-30T01:19:56-03:00",
+    "registros": 3990
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 3990,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 2765704000,
+     "depois": 2765704000,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 17595124401,
+     "depois": 17595124401,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 12984075054,
+     "depois": 12984075054,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 332066937,
+     "depois": 332066937,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 422042530,
+     "depois": 422042530,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 12282155577,
+     "depois": 12282155577,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 408316640,
+     "depois": 408316640,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 6954710817,
+    "depois": 6954710817,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 1,
+    "exercicio": 2025,
+    "data_inicial": "2025-01-01",
+    "data_final": "2025-10-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "1486479ab1d85d9dba2449cd31cbeb5b",
+    "coletada_em": "2026-09-29T20:23:46-03:00",
+    "registros": 3990
+   },
+   "posterior": {
+    "snapshot_uid": "01a3a3f66d2c4cda8b38dabc9f52b6ba",
+    "coletada_em": "2026-09-30T01:20:09-03:00",
+    "registros": 3990
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 3990,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 2765704000,
+     "depois": 2765704000,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 17595124401,
+     "depois": 17595124401,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 15905825864,
+     "depois": 15905825864,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 379403265,
+     "depois": 379403265,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 1611146361,
+     "depois": 1611146361,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 13395772333,
+     "depois": 13395772333,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 439511621,
+     "depois": 439511621,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 2843856176,
+    "depois": 2843856176,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 1,
+    "exercicio": 2025,
+    "data_inicial": "2025-01-01",
+    "data_final": "2025-12-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "134eea87cc7e5ff5a4e71a9e66bd017f",
+    "coletada_em": "2026-09-29T20:12:49-03:00",
+    "registros": 3990
+   },
+   "posterior": {
+    "snapshot_uid": "03a8b62445f74e5f94f3235abfbe825c",
+    "coletada_em": "2026-09-30T01:20:20-03:00",
+    "registros": 3990
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 3990,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 2765704000,
+     "depois": 2765704000,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 17595124401,
+     "depois": 17595124401,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 16249263837,
+     "depois": 16249263837,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 379403265,
+     "depois": 379403265,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 2081511660,
+     "depois": 2081511660,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 13632642254,
+     "depois": 13632642254,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 448493774,
+     "depois": 448493774,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 2030052904,
+    "depois": 2030052904,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 3,
+    "exercicio": 2025,
+    "data_inicial": "2025-01-01",
+    "data_final": "2025-12-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "93b786187e215424b81630071014f9c4",
+    "coletada_em": "2026-09-29T20:34:12-03:00",
+    "registros": 0
+   },
+   "posterior": {
+    "snapshot_uid": "db8f88baa0c849cc9dd1456d8d91cb5c",
+    "coletada_em": "2026-09-30T01:20:31-03:00",
+    "registros": 0
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 0,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 0,
+    "depois": 0,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 4,
+    "exercicio": 2025,
+    "data_inicial": "2025-01-01",
+    "data_final": "2025-12-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "9fe78d6bb8ac54338ff9a3de718b7f79",
+    "coletada_em": "2026-09-29T20:34:15-03:00",
+    "registros": 4
+   },
+   "posterior": {
+    "snapshot_uid": "2257e1a55fa94d48801c43ed2dbaa239",
+    "coletada_em": "2026-09-30T01:20:33-03:00",
+    "registros": 4
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 4,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 36133895,
+     "depois": 36133895,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 36118585,
+     "depois": 36118585,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 36118585,
+     "depois": 36118585,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 2733275,
+     "depois": 2733275,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 15310,
+    "depois": 15310,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 5,
+    "exercicio": 2025,
+    "data_inicial": "2025-01-01",
+    "data_final": "2025-12-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "9337705ee159574795b93ba1a5aaadb1",
+    "coletada_em": "2026-09-29T20:34:18-03:00",
+    "registros": 360
+   },
+   "posterior": {
+    "snapshot_uid": "b80233da0bb74dce8a06c7d6a4faaba8",
+    "coletada_em": "2026-09-30T01:20:35-03:00",
+    "registros": 360
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 360,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 41507984,
+     "depois": 41507984,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 318916677,
+     "depois": 318916677,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 325738975,
+     "depois": 325738975,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 42542905,
+     "depois": 42542905,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 30606734,
+     "depois": 30606734,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 284288591,
+     "depois": 284288591,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 38319244,
+     "depois": 38319244,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 4078952,
+    "depois": 4078952,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 6,
+    "exercicio": 2025,
+    "data_inicial": "2025-01-01",
+    "data_final": "2025-12-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "9645993842ba5391bf3e4427ff3ba931",
+    "coletada_em": "2026-09-29T20:34:20-03:00",
+    "registros": 0
+   },
+   "posterior": {
+    "snapshot_uid": "cf4b547ba3854210b0c95dc51e0c3917",
+    "coletada_em": "2026-09-30T01:20:37-03:00",
+    "registros": 0
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 0,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 0,
+    "depois": 0,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 8,
+    "exercicio": 2025,
+    "data_inicial": "2025-01-01",
+    "data_final": "2025-12-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "1ca2911861ca5be3b72eac607412dfa0",
+    "coletada_em": "2026-09-29T20:34:23-03:00",
+    "registros": 8
+   },
+   "posterior": {
+    "snapshot_uid": "7a07ffb1a11646878e85a700725ff613",
+    "coletada_em": "2026-09-30T01:20:39-03:00",
+    "registros": 8
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 8,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 1739759,
+     "depois": 1739759,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 5059711,
+     "depois": 5059711,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 6799470,
+     "depois": 6799470,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 5059711,
+     "depois": 5059711,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 45164,
+     "depois": 45164,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 0,
+    "depois": 0,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 9,
+    "exercicio": 2025,
+    "data_inicial": "2025-01-01",
+    "data_final": "2025-12-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "510a49eed3245bdea0ef76335adfe892",
+    "coletada_em": "2026-09-29T20:34:26-03:00",
+    "registros": 0
+   },
+   "posterior": {
+    "snapshot_uid": "daf1e5ec07564d22bd1c83d4e3ee585a",
+    "coletada_em": "2026-09-30T01:20:41-03:00",
+    "registros": 0
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 0,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 0,
+    "depois": 0,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 10,
+    "exercicio": 2025,
+    "data_inicial": "2025-01-01",
+    "data_final": "2025-12-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "0afc924589fa564da8fd9135117dea34",
+    "coletada_em": "2026-09-29T20:34:28-03:00",
+    "registros": 0
+   },
+   "posterior": {
+    "snapshot_uid": "7a1db3dfc0e64d88b36727708c0e9e63",
+    "coletada_em": "2026-09-30T01:20:43-03:00",
+    "registros": 0
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 0,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 0,
+    "depois": 0,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 11,
+    "exercicio": 2025,
+    "data_inicial": "2025-01-01",
+    "data_final": "2025-12-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "c6e106608194547fa5a7dd746d9ea81a",
+    "coletada_em": "2026-09-29T20:34:31-03:00",
+    "registros": 0
+   },
+   "posterior": {
+    "snapshot_uid": "26734419d8dd4c9ea1cb6b7d919403f5",
+    "coletada_em": "2026-09-30T01:20:45-03:00",
+    "registros": 0
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 0,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 0,
+    "depois": 0,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 15,
+    "exercicio": 2025,
+    "data_inicial": "2025-01-01",
+    "data_final": "2025-12-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "69b45ba442675beda70d8378e58467ca",
+    "coletada_em": "2026-09-29T20:34:34-03:00",
+    "registros": 1516
+   },
+   "posterior": {
+    "snapshot_uid": "fc06f3332dc14b7bb8de8aa8edd6539d",
+    "coletada_em": "2026-09-30T01:20:47-03:00",
+    "registros": 1516
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 1516,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 9347332,
+     "depois": 9347332,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 4281572014,
+     "depois": 4281572014,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 3138627093,
+     "depois": 3138627093,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 86568394,
+     "depois": 86568394,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 1059721991,
+     "depois": 1059721991,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 3129279761,
+     "depois": 3129279761,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 373714507,
+     "depois": 373714507,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 92570262,
+    "depois": 92570262,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 1,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-01-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "c6428bd73e6559dabeb13799da76207c",
+    "coletada_em": "2026-09-29T20:14:02-03:00",
+    "registros": 4557
+   },
+   "posterior": {
+    "snapshot_uid": "b2590de2acbd4387b4fca55631bc8e84",
+    "coletada_em": "2026-09-30T01:20:50-03:00",
+    "registros": 4557
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 4557,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 2887750433,
+     "depois": 2887750433,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 13711207877,
+     "depois": 13711207877,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 3547265354,
+     "depois": 3547265354,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 12824523,
+     "depois": 12824523,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 4632418,
+     "depois": 4632418,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 3670227722,
+     "depois": 3670227722,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 210365803,
+     "depois": 210365803,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 13047060538,
+    "depois": 13047060538,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 1,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-02-28",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "be2d23c6fef857a2ae9cfb5ad2cb56f2",
+    "coletada_em": "2026-09-29T20:22:57-03:00",
+    "registros": 4557
+   },
+   "posterior": {
+    "snapshot_uid": "12179f91ede04e49965c5bc63422689f",
+    "coletada_em": "2026-09-30T01:21:08-03:00",
+    "registros": 4557
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 4557,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 2887750433,
+     "depois": 2887750433,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 13711207877,
+     "depois": 13711207877,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 5273661832,
+     "depois": 5273661832,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 34372412,
+     "depois": 34372412,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 299542876,
+     "depois": 299542876,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 4791184844,
+     "depois": 4791184844,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 245380457,
+     "depois": 245380457,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 11025753602,
+    "depois": 11025753602,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 1,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-03-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "b20192334e065e03a54f73e65135fb65",
+    "coletada_em": "2026-09-29T20:14:33-03:00",
+    "registros": 4557
+   },
+   "posterior": {
+    "snapshot_uid": "96056e85876c413782a94ac4c07cbcc3",
+    "coletada_em": "2026-09-30T01:21:25-03:00",
+    "registros": 4557
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 4557,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 2887750433,
+     "depois": 2887750433,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 13711207877,
+     "depois": 13711207877,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 8503857945,
+     "depois": 8503857945,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 175299713,
+     "depois": 175299713,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 303614520,
+     "depois": 303614520,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 6722393724,
+     "depois": 6722393724,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 304521907,
+     "depois": 304521907,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 7791485845,
+    "depois": 7791485845,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 1,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-04-30",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "9393c957eeb05117bcb3d8f3f0e24bcb",
+    "coletada_em": "2026-09-29T20:23:16-03:00",
+    "registros": 4557
+   },
+   "posterior": {
+    "snapshot_uid": "bb84664ce2a3446aab18d39348c9d775",
+    "coletada_em": "2026-09-30T01:21:43-03:00",
+    "registros": 4557
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 4557,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 2887750433,
+     "depois": 2887750433,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 13711207877,
+     "depois": 13711207877,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 9151639766,
+     "depois": 9151639766,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 186030081,
+     "depois": 186030081,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 349877983,
+     "depois": 349877983,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 7125611529,
+     "depois": 7125611529,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 318790388,
+     "depois": 318790388,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 7097440561,
+    "depois": 7097440561,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 3,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-04-30",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "8aace32e3680526ea1b796a29af7b7fc",
+    "coletada_em": "2026-09-29T20:33:19-03:00",
+    "registros": 0
+   },
+   "posterior": {
+    "snapshot_uid": "12f4dd8deb6b43a4b8146ac0ab302def",
+    "coletada_em": "2026-09-30T01:22:01-03:00",
+    "registros": 0
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 0,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 0,
+    "depois": 0,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 4,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-04-30",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "436ec62bc2ef531091c6231783220905",
+    "coletada_em": "2026-09-29T20:33:21-03:00",
+    "registros": 14
+   },
+   "posterior": {
+    "snapshot_uid": "0ef5ea242c9246b29043c0be49d14161",
+    "coletada_em": "2026-09-30T01:22:03-03:00",
+    "registros": 14
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 14,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 143982396,
+     "depois": 143982396,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 79110265,
+     "depois": 79110265,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 25453053,
+     "depois": 25453053,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 79110265,
+     "depois": 79110265,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 2219556,
+     "depois": 2219556,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 64872131,
+    "depois": 64872131,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 5,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-04-30",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "7cc2896e6d475dab9c34d8706fb2eb9d",
+    "coletada_em": "2026-09-29T20:33:24-03:00",
+    "registros": 448
+   },
+   "posterior": {
+    "snapshot_uid": "2817961d93eb45958f84a27d255a56f2",
+    "coletada_em": "2026-09-30T01:22:05-03:00",
+    "registros": 448
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 448,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 6605120,
+     "depois": 6605120,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 598046163,
+     "depois": 598046163,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 532874145,
+     "depois": 532874145,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 1601200,
+     "depois": 1601200,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 4076064,
+     "depois": 4076064,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 531210289,
+     "depois": 531210289,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 46278488,
+     "depois": 46278488,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 67701074,
+    "depois": 67701074,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 6,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-04-30",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "c5ce993d08f4564b86a04b6dd3c0bc33",
+    "coletada_em": "2026-09-29T20:33:27-03:00",
+    "registros": 0
+   },
+   "posterior": {
+    "snapshot_uid": "fd0b146d5b30452383b2990667a14c49",
+    "coletada_em": "2026-09-30T01:22:07-03:00",
+    "registros": 0
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 0,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 0,
+    "depois": 0,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 8,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-04-30",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "91fe4a486fb25b358e5d8629acbe9040",
+    "coletada_em": "2026-09-29T20:33:29-03:00",
+    "registros": 10
+   },
+   "posterior": {
+    "snapshot_uid": "a65bde5c42ba42c2a7fe0a455a0fc84d",
+    "coletada_em": "2026-09-30T01:22:09-03:00",
+    "registros": 10
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 10,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 2634618,
+     "depois": 2634618,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 2570297,
+     "depois": 2570297,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 3079661,
+     "depois": 3079661,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 445043,
+     "depois": 445043,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 17206,
+     "depois": 17206,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 2125254,
+    "depois": 2125254,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 9,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-04-30",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "c3aaca07edce571a87e80c340bbb46a7",
+    "coletada_em": "2026-09-29T20:33:32-03:00",
+    "registros": 0
+   },
+   "posterior": {
+    "snapshot_uid": "2a3e080e16174f3cb91f79bebc04cc5d",
+    "coletada_em": "2026-09-30T01:22:11-03:00",
+    "registros": 0
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 0,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 0,
+    "depois": 0,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 10,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-04-30",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "bb0619e38a6559818a87f3fc55252a79",
+    "coletada_em": "2026-09-29T20:33:34-03:00",
+    "registros": 0
+   },
+   "posterior": {
+    "snapshot_uid": "e5f7d3aea7fb4247931400342741abce",
+    "coletada_em": "2026-09-30T01:22:13-03:00",
+    "registros": 0
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 0,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 0,
+    "depois": 0,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 11,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-04-30",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "d5a549f693d558f1940277a8098a73f5",
+    "coletada_em": "2026-09-29T20:33:37-03:00",
+    "registros": 0
+   },
+   "posterior": {
+    "snapshot_uid": "a75cefe48c044c0ea96b3e439cbcc060",
+    "coletada_em": "2026-09-30T01:22:15-03:00",
+    "registros": 0
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 0,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 0,
+    "depois": 0,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 15,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-04-30",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "ad0037a66ee55fce89e8c6a949d97cb5",
+    "coletada_em": "2026-09-29T20:33:40-03:00",
+    "registros": 731
+   },
+   "posterior": {
+    "snapshot_uid": "f802bc1c0ab349749ae0b4d4176ca9a5",
+    "coletada_em": "2026-09-30T01:22:17-03:00",
+    "registros": 731
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 731,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 1134582815,
+     "depois": 1134582815,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 2046807732,
+     "depois": 2046807732,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 0,
+     "depois": 0,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 3181390547,
+    "depois": 3181390547,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 1,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-06-30",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "c53d3741c3145ac6b55d8c27491d38bb",
+    "coletada_em": "2026-09-29T20:15:04-03:00",
+    "registros": 4557
+   },
+   "posterior": {
+    "snapshot_uid": "666dba3634894053bc388553a6e5ba13",
+    "coletada_em": "2026-09-30T01:22:20-03:00",
+    "registros": 4557
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 4557,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 2887750433,
+     "depois": 2887750433,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 13711207877,
+     "depois": 13711207877,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 10216178112,
+     "depois": 10216178112,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 207757793,
+     "depois": 207757793,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 426223222,
+     "depois": 426223222,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 7977769726,
+     "depois": 7977769726,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 358946917,
+     "depois": 358946917,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 5956556976,
+    "depois": 5956556976,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 1,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-08-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "a0bf1379d3425fe3a79893da4bd1c03d",
+    "coletada_em": "2026-09-29T20:12:30-03:00",
+    "registros": 4557
+   },
+   "posterior": {
+    "snapshot_uid": "9ddb3521b7cc4773a5de90ef48a4711b",
+    "coletada_em": "2026-09-30T01:22:37-03:00",
+    "registros": 4557
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 4557,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 2887750433,
+     "depois": 2887750433,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 13711207877,
+     "depois": 13711207877,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 10921279775,
+     "depois": 10921279775,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 210903039,
+     "depois": 210903039,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 809431543,
+     "depois": 809431543,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 8515089090,
+     "depois": 8515089090,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 373753303,
+     "depois": 373753303,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 4868246992,
+    "depois": 4868246992,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  },
+  {
+   "corte": {
+    "tipo": "rp_listagem",
+    "entidade": 1,
+    "exercicio": 2026,
+    "data_inicial": "2026-01-01",
+    "data_final": "2026-12-31",
+    "tipo_pesquisa": null
+   },
+   "anterior": {
+    "snapshot_uid": "939bd31f242b538f9637e5215cb80fa3",
+    "coletada_em": "2026-09-29T20:11:21-03:00",
+    "registros": 4557
+   },
+   "posterior": {
+    "snapshot_uid": "0721d7864c934566b0ba4a5fd65d6ae8",
+    "coletada_em": "2026-09-30T01:22:55-03:00",
+    "registros": 4557
+   },
+   "bytes_identicos": true,
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 4557,
+    "alterados": 0,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_financeiro_por_grupo": {
+    "inscricao_processada": {
+     "antes": 2887750433,
+     "depois": 2887750433,
+     "diferenca": 0
+    },
+    "inscricao_nao_processada": {
+     "antes": 13711207877,
+     "depois": 13711207877,
+     "diferenca": 0
+    },
+    "pagamentos": {
+     "antes": 11031625061,
+     "depois": 11031625061,
+     "diferenca": 0
+    },
+    "estornos_de_pagamento": {
+     "antes": 212459647,
+     "depois": 212459647,
+     "diferenca": 0
+    },
+    "cancelamentos": {
+     "antes": 814634732,
+     "depois": 814634732,
+     "diferenca": 0
+    },
+    "liquidacoes": {
+     "antes": 8686843780,
+     "depois": 8686843780,
+     "diferenca": 0
+    },
+    "retencoes": {
+     "antes": 383023620,
+     "depois": 383023620,
+     "diferenca": 0
+    }
+   },
+   "saldo_s1": {
+    "antes": 4752698517,
+    "depois": 4752698517,
+    "diferenca": 0
+   },
+   "alterados": [],
+   "novos": [],
+   "removidos": []
+  }
+ ],
+ "compactacao": [
+  209121280,
+  120123392
+ ],
+ "fim": "2026-09-30T01:26:52"
+}

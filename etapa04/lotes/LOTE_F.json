@@ -1,0 +1,1979 @@
+{
+ "lote": "F",
+ "titulo": "2016–2017 (+ RREO 2019, que o filtro sensível a maiúsculas pulou no Lote E)",
+ "inicio": "2026-09-30T01:14:14",
+ "gates": {
+  "G1 coleta completa": {
+   "ok": true,
+   "detalhe": {
+    "completa": 25,
+    "fora_do_catalogo (não exigido)": 2
+   }
+  },
+  "G2 integridade armazém×banco (após coleta)": {
+   "ok": true,
+   "detalhe": []
+  },
+  "G3 fidelidade (registros = bruto; sem chave desconhecida; chaves-base presentes)": {
+   "ok": true,
+   "detalhe": {
+    "esperado": 16456,
+    "obtido": 16456,
+    "com_chaves_extras": 0,
+    "chaves_base_faltando": []
+   }
+  },
+  "G4 continuidade fechamento→abertura": {
+   "ok": true,
+   "detalhe": "100 pares entidade×ano, 0 falhas"
+  },
+  "G5 regressão temporal ('como estava em 29/09' inalterado)": {
+   "ok": true,
+   "detalhe": {
+    "referencia": "b8a0b2ed2328bf09",
+    "obtido": "b8a0b2ed2328bf09"
+   }
+  },
+  "G6 sem efeito colateral em cortes não tocados pelo lote": {
+   "ok": true,
+   "detalhe": {
+    "alteradas_fora_do_lote": 0,
+    "sumidas": 0
+   }
+  },
+  "G7 testes (produção + investigação)": {
+   "ok": true,
+   "detalhe": "76 passed in 86.00s (0:01:26) | 26 passed in 14.66s"
+  },
+  "G2b integridade armazém×banco (após processamento)": {
+   "ok": true,
+   "detalhe": ""
+  },
+  "G8 sem anomalia estrutural": {
+   "ok": true,
+   "detalhe": {}
+  },
+  "G2c integridade após limpeza": {
+   "ok": true,
+   "detalhe": ""
+  }
+ },
+ "parou_em": null,
+ "backup": "C:\\Users\\maped\\RestosAPagar_local\\backups_operacionais\\20260930-011414_antes-lote-F.sqlite",
+ "cortes_planejados": [
+  [
+   1,
+   2016,
+   "2016-12-31"
+  ],
+  [
+   15,
+   2016,
+   "2016-12-31"
+  ],
+  [
+   4,
+   2016,
+   "2016-12-31"
+  ],
+  [
+   5,
+   2016,
+   "2016-12-31"
+  ],
+  [
+   8,
+   2016,
+   "2016-12-31"
+  ],
+  [
+   3,
+   2016,
+   "2016-12-31"
+  ],
+  [
+   6,
+   2016,
+   "2016-12-31"
+  ],
+  [
+   9,
+   2016,
+   "2016-12-31"
+  ],
+  [
+   10,
+   2016,
+   "2016-12-31"
+  ],
+  [
+   11,
+   2016,
+   "2016-12-31"
+  ],
+  [
+   1,
+   2017,
+   "2017-12-31"
+  ],
+  [
+   15,
+   2017,
+   "2017-12-31"
+  ],
+  [
+   4,
+   2017,
+   "2017-12-31"
+  ],
+  [
+   5,
+   2017,
+   "2017-12-31"
+  ],
+  [
+   8,
+   2017,
+   "2017-12-31"
+  ],
+  [
+   3,
+   2017,
+   "2017-12-31"
+  ],
+  [
+   6,
+   2017,
+   "2017-12-31"
+  ],
+  [
+   9,
+   2017,
+   "2017-12-31"
+  ],
+  [
+   10,
+   2017,
+   "2017-12-31"
+  ],
+  [
+   11,
+   2017,
+   "2017-12-31"
+  ]
+ ],
+ "requisicoes": 33,
+ "fora_do_catalogo": [
+  {
+   "entidade": 15,
+   "exercicio": 2016,
+   "status": "completa",
+   "registros": 0
+  },
+  {
+   "entidade": 15,
+   "exercicio": 2017,
+   "status": "completa",
+   "registros": 0
+  }
+ ],
+ "snapshots": [
+  {
+   "uid": "dcc16aed2e054fbd821a1ddd95571b36",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2016-12-31",
+    "dataInicial": "2016-01-01",
+    "entidade": 1,
+    "exercicio": 2016,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:14:15-03:00",
+   "status": "completa",
+   "sha256": [
+    "53243fab6521a1d073325b8d201238b7a7e4f9d1e9de28778a8d9ed5ac132481",
+    "3f089db73992526950ce62d46fef734736151648152539662a3f624f29eee960",
+    "ee55256720571bbb2060217716ad0926567daaa1ed127f5be63e9a853a5fe11b",
+    "f6d7fa8cd8d6ad1dd5b1cc4433932adef839a0b69ab6ad2bcfa43e80fdeaa62d"
+   ],
+   "bytes": 4716522,
+   "bytes_comprimidos": 413667,
+   "recoleta_de": null
+  },
+  {
+   "uid": "4c0af66ba2984e8b9382bdd6e6a28271",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2016-12-31",
+    "dataInicial": "2016-01-01",
+    "entidade": 15,
+    "exercicio": 2016,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:14:29-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": null
+  },
+  {
+   "uid": "d3f501fabace4affb2d032aef7727bab",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2016-12-31",
+    "dataInicial": "2016-01-01",
+    "entidade": 4,
+    "exercicio": 2016,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:14:30-03:00",
+   "status": "completa",
+   "sha256": [
+    "cf0a3f430eb2c47f09b67c80cd485b1d1b32f42edbd666068f32c801a36e9042"
+   ],
+   "bytes": 22026,
+   "bytes_comprimidos": 2654,
+   "recoleta_de": null
+  },
+  {
+   "uid": "60c275f20eb94169a3aa171dfe11dadf",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2016-12-31",
+    "dataInicial": "2016-01-01",
+    "entidade": 5,
+    "exercicio": 2016,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:14:32-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b99068499566905c1dfa89b507b5fd7bbb27b50fcb8d1932d01a27cca04a5c2"
+   ],
+   "bytes": 103861,
+   "bytes_comprimidos": 7510,
+   "recoleta_de": null
+  },
+  {
+   "uid": "33d8e91eff8c4846810a3dd00eb9121d",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2016-12-31",
+    "dataInicial": "2016-01-01",
+    "entidade": 8,
+    "exercicio": 2016,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:14:34-03:00",
+   "status": "completa",
+   "sha256": [
+    "c094822ace3b97589a88b96258d83161cb05a7e7dc7edf8647cebb09de13d02e"
+   ],
+   "bytes": 23520,
+   "bytes_comprimidos": 2380,
+   "recoleta_de": null
+  },
+  {
+   "uid": "9aeaf10abb8445f7872394bc7153ddc0",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2016-12-31",
+    "dataInicial": "2016-01-01",
+    "entidade": 3,
+    "exercicio": 2016,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:14:36-03:00",
+   "status": "completa",
+   "sha256": [
+    "c2ced337a7b544decbb5ca1ab2509347baac9de9863a74b1a845c12722e11455"
+   ],
+   "bytes": 31971,
+   "bytes_comprimidos": 2989,
+   "recoleta_de": null
+  },
+  {
+   "uid": "ce80e767ccd842eba1eb25b4670cbbd9",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2016-12-31",
+    "dataInicial": "2016-01-01",
+    "entidade": 6,
+    "exercicio": 2016,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:14:38-03:00",
+   "status": "completa",
+   "sha256": [
+    "bd579aae79171242e0f813dd79de9e44b84255bb290a8a047202faf82159fb7a"
+   ],
+   "bytes": 204027,
+   "bytes_comprimidos": 14052,
+   "recoleta_de": null
+  },
+  {
+   "uid": "f21d1092b84a4560af28831cb3f00212",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2016-12-31",
+    "dataInicial": "2016-01-01",
+    "entidade": 9,
+    "exercicio": 2016,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:14:40-03:00",
+   "status": "completa",
+   "sha256": [
+    "84840df13eb3c691602ad154a21375123f83e34623a0c98e183ae86c1f5882a0"
+   ],
+   "bytes": 140681,
+   "bytes_comprimidos": 11250,
+   "recoleta_de": null
+  },
+  {
+   "uid": "da3c602fadae444897ebde845b328bdb",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2016-12-31",
+    "dataInicial": "2016-01-01",
+    "entidade": 10,
+    "exercicio": 2016,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:14:42-03:00",
+   "status": "completa",
+   "sha256": [
+    "0eb0eed7c2a95c39f92d1e1abda94ebc0c31dadbb0c22751beff92140a524c21"
+   ],
+   "bytes": 24059,
+   "bytes_comprimidos": 2523,
+   "recoleta_de": null
+  },
+  {
+   "uid": "438c6f573d0246f79d2de46be965ae71",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2016-12-31",
+    "dataInicial": "2016-01-01",
+    "entidade": 11,
+    "exercicio": 2016,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:14:44-03:00",
+   "status": "completa",
+   "sha256": [
+    "5b228b529a90d2c52ebfb8686b89b4bdaf846e9b3d4378c571a9c637833cc14c"
+   ],
+   "bytes": 199553,
+   "bytes_comprimidos": 14626,
+   "recoleta_de": null
+  },
+  {
+   "uid": "e0c86ce96e0746a8b40d5bf58214f203",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2017-12-31",
+    "dataInicial": "2017-01-01",
+    "entidade": 1,
+    "exercicio": 2017,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:14:46-03:00",
+   "status": "completa",
+   "sha256": [
+    "1054b3ad279d3ee8380a67eb48a481d602b838a90fe9a3f5542fcb39541c4cf9",
+    "b3906b62395058977b00f0fc57ebad6a86157aac434fadfffbb4e5a079ad4195",
+    "60f5077ad58a83e6dbf51e056df82c1f7182984c0adca3e31fd1288fc411db9b",
+    "412cde6d2f8a1c250e6f2498f601d16722fc0e978c8c2d3449a9d5738145c6a1"
+   ],
+   "bytes": 5455642,
+   "bytes_comprimidos": 479770,
+   "recoleta_de": null
+  },
+  {
+   "uid": "b336e88eafbe4fad8be29835b2a00945",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2017-12-31",
+    "dataInicial": "2017-01-01",
+    "entidade": 15,
+    "exercicio": 2017,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:14:59-03:00",
+   "status": "completa",
+   "sha256": [
+    "6b3aea428ff1a9a0c79fbd433a3103a1f7a7c8ea45d2e08f8494ad9b7f17f5c8"
+   ],
+   "bytes": 233,
+   "bytes_comprimidos": 137,
+   "recoleta_de": null
+  },
+  {
+   "uid": "a61fc059853546619f20b9256b6721fc",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2017-12-31",
+    "dataInicial": "2017-01-01",
+    "entidade": 4,
+    "exercicio": 2017,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:15:00-03:00",
+   "status": "completa",
+   "sha256": [
+    "c09def8c18a07b0c8958a2b0b6d4d94561c29fe46ca619f15917953c4cdf1392"
+   ],
+   "bytes": 16151,
+   "bytes_comprimidos": 1959,
+   "recoleta_de": null
+  },
+  {
+   "uid": "18a44fa413d345bb9456f349666829d1",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2017-12-31",
+    "dataInicial": "2017-01-01",
+    "entidade": 5,
+    "exercicio": 2017,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:15:02-03:00",
+   "status": "completa",
+   "sha256": [
+    "5137f1d4375f848ca12681bdd86da862895531a135c9763cebcf97c4ba899a2d"
+   ],
+   "bytes": 23441,
+   "bytes_comprimidos": 2626,
+   "recoleta_de": null
+  },
+  {
+   "uid": "9686f07e284e4190889c5c229389f939",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2017-12-31",
+    "dataInicial": "2017-01-01",
+    "entidade": 8,
+    "exercicio": 2017,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:15:04-03:00",
+   "status": "completa",
+   "sha256": [
+    "0f5027791717710bbcce600db51dab9165dd05b16a8a3427dd0bde8f57ff3fac"
+   ],
+   "bytes": 1768,
+   "bytes_comprimidos": 711,
+   "recoleta_de": null
+  },
+  {
+   "uid": "4ee03a845bf44017909e35b585a669f0",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2017-12-31",
+    "dataInicial": "2017-01-01",
+    "entidade": 3,
+    "exercicio": 2017,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:15:06-03:00",
+   "status": "completa",
+   "sha256": [
+    "16e428bf4705d6436c239c030bf51026f98f5e85da06d90c4124c073a7307fbb"
+   ],
+   "bytes": 31359,
+   "bytes_comprimidos": 2930,
+   "recoleta_de": null
+  },
+  {
+   "uid": "15dd9527f2184ad0a63e4226134098ef",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2017-12-31",
+    "dataInicial": "2017-01-01",
+    "entidade": 6,
+    "exercicio": 2017,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:15:08-03:00",
+   "status": "completa",
+   "sha256": [
+    "fa99f2f261517161993a5cf30c5634f65dd233edc20957d0ea0b5fbd5b8f9ee4"
+   ],
+   "bytes": 182604,
+   "bytes_comprimidos": 13285,
+   "recoleta_de": null
+  },
+  {
+   "uid": "c5fb9da6f03546d5a4bfa3659392f263",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2017-12-31",
+    "dataInicial": "2017-01-01",
+    "entidade": 9,
+    "exercicio": 2017,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:15:10-03:00",
+   "status": "completa",
+   "sha256": [
+    "28f7f8eeb32741c99b1be07a632896150b81dca4044748854441a38b3faad14f"
+   ],
+   "bytes": 173249,
+   "bytes_comprimidos": 13678,
+   "recoleta_de": null
+  },
+  {
+   "uid": "5d47286ee6774f13b9fb4cd15c11c170",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2017-12-31",
+    "dataInicial": "2017-01-01",
+    "entidade": 10,
+    "exercicio": 2017,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:15:12-03:00",
+   "status": "completa",
+   "sha256": [
+    "65436072c5baea1e31e3c7ec9be13b9880fcb46ff05726052b254441b60a0248"
+   ],
+   "bytes": 42489,
+   "bytes_comprimidos": 3795,
+   "recoleta_de": null
+  },
+  {
+   "uid": "72ef11180b324093adb5e025adc13e3d",
+   "tipo": "rp_listagem",
+   "parametros": {
+    "dataFinal": "2017-12-31",
+    "dataInicial": "2017-01-01",
+    "entidade": 11,
+    "exercicio": 2017,
+    "size": 2000
+   },
+   "coletada_em": "2026-09-30T01:15:14-03:00",
+   "status": "completa",
+   "sha256": [
+    "e619f76efe661bffcf0e8cd7d13787c6f7a47a07a4f0728c7448fe94db131ba1"
+   ],
+   "bytes": 231333,
+   "bytes_comprimidos": 14302,
+   "recoleta_de": null
+  },
+  {
+   "uid": "f29f9700586142168b9facac3d9759ff",
+   "tipo": "publicacoes",
+   "parametros": {
+    "entidade": 1,
+    "exercicio": 2016
+   },
+   "coletada_em": "2026-09-30T01:15:16-03:00",
+   "status": "completa",
+   "sha256": [
+    "c946739c1c546a2ff395173afad84e33ea8f5874d0081624da15e8290fe4072d"
+   ],
+   "bytes": 17398,
+   "bytes_comprimidos": 2783,
+   "recoleta_de": null
+  },
+  {
+   "uid": "722468ea426746d19ff55275aa270fa1",
+   "tipo": "rreo_pdf",
+   "parametros": {
+    "dataArquivo": "2018-12-17",
+    "entidade": 1,
+    "exercicio": 2016,
+    "id_arquivo": 16394,
+    "nomeArquivo": "8854134301324616836.pdf",
+    "rotulo": "6º Bimestre"
+   },
+   "coletada_em": "2026-09-30T01:15:17-03:00",
+   "status": "completa",
+   "sha256": [
+    "cac84b635fd6110a02e380bed19d31c2e423d18bef74ff944ed33e70ea7495cb"
+   ],
+   "bytes": 58321,
+   "bytes_comprimidos": 56233,
+   "recoleta_de": null
+  },
+  {
+   "uid": "7ea69b3981884b58866e52393829cc6f",
+   "tipo": "publicacoes",
+   "parametros": {
+    "entidade": 1,
+    "exercicio": 2017
+   },
+   "coletada_em": "2026-09-30T01:15:22-03:00",
+   "status": "completa",
+   "sha256": [
+    "8d81dc0d15141b31bf36eea95f35a78165d0b89a6ecbc3f454f2df3d51b3b4cb"
+   ],
+   "bytes": 34341,
+   "bytes_comprimidos": 5062,
+   "recoleta_de": null
+  },
+  {
+   "uid": "aa268a9330b541ec986ba6031dee7e64",
+   "tipo": "rreo_pdf",
+   "parametros": {
+    "dataArquivo": "2018-12-17",
+    "entidade": 1,
+    "exercicio": 2017,
+    "id_arquivo": 22621,
+    "nomeArquivo": "42689754324527017883.pdf",
+    "rotulo": "6º Bimestre - Consolidado"
+   },
+   "coletada_em": "2026-09-30T01:15:24-03:00",
+   "status": "completa",
+   "sha256": [
+    "415a1a32c4aee0e96fbf23912439062e6b90aeee321b92db6f6aba429898f060"
+   ],
+   "bytes": 59927,
+   "bytes_comprimidos": 57817,
+   "recoleta_de": null
+  },
+  {
+   "uid": "b1deaab5a0ab44ac81bfe28a4656ff02",
+   "tipo": "rreo_pdf",
+   "parametros": {
+    "dataArquivo": "2018-12-17",
+    "entidade": 1,
+    "exercicio": 2017,
+    "id_arquivo": 16491,
+    "nomeArquivo": "23222904122186218011.pdf",
+    "rotulo": "6º Bimestre"
+   },
+   "coletada_em": "2026-09-30T01:15:29-03:00",
+   "status": "completa",
+   "sha256": [
+    "5c29cc30db56f1c82ef821055b872b71da087d017fb61134790cfe2229a27310"
+   ],
+   "bytes": 59942,
+   "bytes_comprimidos": 57823,
+   "recoleta_de": null
+  },
+  {
+   "uid": "82625b5d4e664bc99e09cc609d9aa480",
+   "tipo": "publicacoes",
+   "parametros": {
+    "entidade": 1,
+    "exercicio": 2019
+   },
+   "coletada_em": "2026-09-30T01:15:34-03:00",
+   "status": "completa",
+   "sha256": [
+    "9068e2021953394af10bbdfde683d0ad9a374bec4448d3e36e95d3527069f7f4"
+   ],
+   "bytes": 14244,
+   "bytes_comprimidos": 1842,
+   "recoleta_de": null
+  },
+  {
+   "uid": "36f1ef8e4bbc480987a7c7a07c4c5260",
+   "tipo": "rreo_pdf",
+   "parametros": {
+    "dataArquivo": "2020-02-20",
+    "entidade": 1,
+    "exercicio": 2019,
+    "id_arquivo": 64176,
+    "nomeArquivo": "rreo anexo 7.pdf",
+    "rotulo": "6º BIMESTRE"
+   },
+   "coletada_em": "2026-09-30T01:15:35-03:00",
+   "status": "completa",
+   "sha256": [
+    "373aacea1b39de526883e6c5f3a423a47e73354a87e0ea9b2085dada69974635"
+   ],
+   "bytes": 57273,
+   "bytes_comprimidos": 31385,
+   "recoleta_de": null
+  }
+ ],
+ "bytes_brutos": 11926168,
+ "bytes_comprimidos": 1217926,
+ "normalizacao": {
+  "id": 10,
+  "respostas": 484,
+  "ignoradas_sem_pagina": 0,
+  "rp_registro": 181913,
+  "movimentacao_lancamento": 2019,
+  "rreo_valor": 1529,
+  "problemas": [
+   {
+    "coleta_id": 403,
+    "extrator": "rp-rreo-coordenadas/1",
+    "erro": "LayoutDesconhecido: período não encontrado no RREO (coleta 403)"
+   },
+   {
+    "coleta_id": 426,
+    "extrator": "rp-rreo-coordenadas/1",
+    "erro": "LayoutDesconhecido: colunas não encontradas no RREO: {'k', 'i', 'f', 'h', 'L', 'e', 'j', 'd', 'c', 'g'}"
+   },
+   {
+    "coleta_id": 431,
+    "extrator": "rp-rreo-coordenadas/1",
+    "erro": "LayoutDesconhecido: período não encontrado no RREO (coleta 431)"
+   }
+  ]
+ },
+ "registros_do_lote": 16456,
+ "derivacoes": {
+  "atual": {
+   "id": 17,
+   "hash": "88f1de281da27c257aa69e4557b27e9a960d336d01c4a43779575358585d6f45"
+  },
+  "como_estava_29_09": {
+   "id": 18,
+   "hash": "b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68"
+  }
+ },
+ "continuidade": [
+  {
+   "entidade": 1,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 6740,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 7711,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 5962,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 5906,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 5098,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 2737,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 3097,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 4235,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 4651,
+   "falhas": 0
+  },
+  {
+   "entidade": 1,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 3990,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 45,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 44,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 44,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 33,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 28,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 26,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 27,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 3,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 32,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 23,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 13,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 15,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 32,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 4,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 8,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 14,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 8,
+   "falhas": 0
+  },
+  {
+   "entidade": 4,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 4,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 135,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 31,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 96,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 321,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 379,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 440,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 473,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 593,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 414,
+   "falhas": 0
+  },
+  {
+   "entidade": 5,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 360,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 273,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 243,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 252,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 265,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 445,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 395,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 6,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 30,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 2,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 20,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 25,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 19,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 13,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 4,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 10,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 1,
+   "falhas": 0
+  },
+  {
+   "entidade": 8,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 8,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 201,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 243,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 229,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 212,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 256,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 49,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 9,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 33,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 58,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 12,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 10,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 285,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 327,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 193,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 32,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 11,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2016,
+   "para": 2017,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2017,
+   "para": 2018,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2018,
+   "para": 2019,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2019,
+   "para": 2020,
+   "verificados": 0,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2020,
+   "para": 2021,
+   "verificados": 1656,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2021,
+   "para": 2022,
+   "verificados": 750,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2022,
+   "para": 2023,
+   "verificados": 766,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2023,
+   "para": 2024,
+   "verificados": 847,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2024,
+   "para": 2025,
+   "verificados": 1353,
+   "falhas": 0
+  },
+  {
+   "entidade": 15,
+   "de": 2025,
+   "para": 2026,
+   "verificados": 1516,
+   "falhas": 0
+  }
+ ],
+ "visoes": {
+  "comuns": 6720,
+  "novas": 780,
+  "sumidas": 0,
+  "alteradas_em_cortes_do_lote": 0
+ },
+ "testes": {
+  "producao": {
+   "ok": true,
+   "resumo": "76 passed in 86.00s (0:01:26)",
+   "segundos": 87
+  },
+  "investigacao": {
+   "ok": true,
+   "resumo": "26 passed in 14.66s",
+   "segundos": 15
+  }
+ },
+ "anomalias_do_lote": {
+  "LIQ-NEG": 280,
+  "PAGOPROC-SEM-PROC": 3
+ },
+ "perfil_por_exercicio": {
+  "2016": {
+   "registros": 7774,
+   "programatica_27_dig": 179,
+   "sem_programatica_detalhada": 1770,
+   "fonte_4_dig": 3381,
+   "fonte_3_dig": 3377,
+   "programatica_28_dig": 7595,
+   "fonte_1_dig": 812,
+   "fonte_2_dig": 204
+  },
+  "2017": {
+   "registros": 8682,
+   "programatica_27_dig": 179,
+   "sem_programatica_detalhada": 1522,
+   "fonte_4_dig": 3761,
+   "fonte_3_dig": 3827,
+   "programatica_28_dig": 8503,
+   "fonte_1_dig": 787,
+   "fonte_2_dig": 307
+  }
+ },
+ "pares": [],
+ "conciliacao": [
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 1748654507,
+   "api": 1745630037,
+   "diferenca": -3024470
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 622008229,
+   "api": 622008229,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 1739999902,
+   "api": 1731547450,
+   "diferenca": -8452452
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 1877417477,
+   "api": 1851632005,
+   "diferenca": -25785472
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 107501899,
+   "api": 86884628,
+   "diferenca": -20617271
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 377088755,
+   "api": 415039046,
+   "diferenca": 37950291
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 2749669064,
+   "api": 2748343162,
+   "diferenca": -1325902
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 4183824329,
+   "api": 4165960955,
+   "diferenca": -17863374
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 3390742907,
+   "api": 3507230338,
+   "diferenca": 116487431
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 3449339347,
+   "api": 3460059761,
+   "diferenca": 10720414
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 2112588294,
+   "api": 2123653365,
+   "diferenca": 11065071
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 1371565752,
+   "api": 1330590991,
+   "diferenca": -40974761
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 1748654507,
+   "api": 1740173225,
+   "diferenca": -8481282
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 622008229,
+   "api": 622008229,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 1739999902,
+   "api": 1731547450,
+   "diferenca": -8452452
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 1877417477,
+   "api": 1857088817,
+   "diferenca": -20328660
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 107501899,
+   "api": 86884628,
+   "diferenca": -20617271
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 377088755,
+   "api": 409582234,
+   "diferenca": 32493479
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 2749669064,
+   "api": 2748343162,
+   "diferenca": -1325902
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 4183824329,
+   "api": 4165960955,
+   "diferenca": -17863374
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 3390742907,
+   "api": 3507230338,
+   "diferenca": 116487431
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 3449339347,
+   "api": 3460059761,
+   "diferenca": 10720414
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 2112588294,
+   "api": 2123653365,
+   "diferenca": 11065071
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "consolidado",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 1371565752,
+   "api": 1330590991,
+   "diferenca": -40974761
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "L",
+   "rreo": 1644098491,
+   "api": 1659226491,
+   "diferenca": 15128000
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "a",
+   "rreo": 617010125,
+   "api": 617010125,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "b",
+   "rreo": 1646073545,
+   "api": 1646073545,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "c",
+   "rreo": 1779786883,
+   "api": 1762010830,
+   "diferenca": -17776053
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "d",
+   "rreo": 107281363,
+   "api": 86664092,
+   "diferenca": -20617271
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "e",
+   "rreo": 376015424,
+   "api": 414408748,
+   "diferenca": 38393324
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "f",
+   "rreo": 2581191773,
+   "api": 2581191773,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "g",
+   "rreo": 3706764284,
+   "api": 3706764284,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "h",
+   "rreo": 2994611929,
+   "api": 3101127835,
+   "diferenca": 106515906
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "i",
+   "rreo": 3042465419,
+   "api": 3054665672,
+   "diferenca": 12200253
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "j",
+   "rreo": 1977407571,
+   "api": 1988472642,
+   "diferenca": 11065071
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 1,
+   "coluna": "k",
+   "rreo": 1268083067,
+   "api": 1244817743,
+   "diferenca": -23265324
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "L",
+   "rreo": 1644098491,
+   "api": 1653650691,
+   "diferenca": 9552200
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "a",
+   "rreo": 617010125,
+   "api": 617010125,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "b",
+   "rreo": 1646073545,
+   "api": 1646073545,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "c",
+   "rreo": 1779786883,
+   "api": 1767586630,
+   "diferenca": -12200253
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "d",
+   "rreo": 107281363,
+   "api": 86664092,
+   "diferenca": -20617271
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "e",
+   "rreo": 376015424,
+   "api": 408832948,
+   "diferenca": 32817524
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "f",
+   "rreo": 2581191773,
+   "api": 2581191773,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "g",
+   "rreo": 3706764284,
+   "api": 3706764284,
+   "diferenca": 0
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "h",
+   "rreo": 2994611929,
+   "api": 3101127835,
+   "diferenca": 106515906
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "i",
+   "rreo": 3042465419,
+   "api": 3054665672,
+   "diferenca": 12200253
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "j",
+   "rreo": 1977407571,
+   "api": 1988472642,
+   "diferenca": 11065071
+  },
+  {
+   "exercicio": 2017,
+   "data_final": "2017-12-31",
+   "escopo": "entidade",
+   "rreo_col": 2,
+   "coluna": "k",
+   "rreo": 1268083067,
+   "api": 1244817743,
+   "diferenca": -23265324
+  }
+ ],
+ "rreo_sem_extracao": [
+  {
+   "rreo_snapshot": "d369f5b945054a96ba9acd1966f659a1"
+  },
+  {
+   "rreo_snapshot": "722468ea426746d19ff55275aa270fa1"
+  },
+  {
+   "rreo_snapshot": "36f1ef8e4bbc480987a7c7a07c4c5260"
+  }
+ ],
+ "compactacao": [
+  181256192,
+  99954688
+ ],
+ "fim": "2026-09-30T01:18:45"
+}

@@ -1,0 +1,206 @@
+### C0 caso 11963/2016 (Etapa 01) — 11963/2016 | saldo em 01/01/2026 reconstruído: a liquidar=0.00 a pagar(liquidado)=3,864.52
+    (3 lançamentos antes de 12/2025 omitidos)
+    2026-05-27 Estorno Liquidação              3,864.52 liq 2016/1
+    2026-05-28 Cancelamento Empenho            3,864.52 
+    API 01/01-31/12/2026: {'proc': '3,864.52', 'canceladoAProc': '3,864.52', 'liquidado': '-3,864.52'}
+### B0 caso 5659/2025 (Etapa 01) — 5659/2025 | saldo em 01/01/2026 reconstruído: a liquidar=0.00 a pagar(liquidado)=3,141,530.40
+    (4 lançamentos antes de 12/2025 omitidos)
+    2025-12-03 Pagamento                      53,817.20 liq 2025/1
+    2026-01-19 Pagamento                     140,157.01 liq 2025/1
+    2026-02-19 Pagamento                     188,166.60 liq 2025/1
+    2026-03-06 Pagamento                     441,378.44 liq 2025/1
+    2026-03-19 Pagamento                     260,180.98 liq 2025/1
+    2026-04-24 Pagamento                     211,397.04 liq 2025/1
+    2026-05-04 Pagamento                     245,081.19 liq 2025/1
+    2026-06-11 Pagamento                     306,641.86 liq 2025/1
+    2026-07-06 Pagamento                     267,924.46 liq 2025/1
+    2026-07-30 Pagamento                     130,090.49 liq 2025/1
+    2026-08-31 Pagamento                      86,726.99 liq 2025/1
+    API 01/01-31/12/2026: {'proc': '3,141,530.40', 'pagoProc': '2,277,745.06'}
+### A  processado sem pagamento — 2398/2012 | saldo em 01/01/2026 reconstruído: a liquidar=0.00 a pagar(liquidado)=754.32
+    (24 lançamentos antes de 12/2025 omitidos)
+    API 01/01-31/12/2026: {'proc': '754.32'}
+### B1 processado pago integralmente — 22455/2022 | saldo em 01/01/2026 reconstruído: a liquidar=0.00 a pagar(liquidado)=8,147.23
+    (8 lançamentos antes de 12/2025 omitidos)
+    2026-08-27 Pagamento                       8,147.23 liq 2023/1
+    API 01/01-31/12/2026: {'proc': '8,147.23', 'pagoProc': '8,147.23'}
+### B2 processado pago parcialmente — 5658/2025 | saldo em 01/01/2026 reconstruído: a liquidar=0.00 a pagar(liquidado)=1,258,490.49
+    (4 lançamentos antes de 12/2025 omitidos)
+    2025-12-17 Pagamento                      34,021.54 liq 2025/1
+    2026-01-22 Pagamento                      29,270.78 liq 2025/1
+    2026-02-23 Pagamento                      24,520.03 liq 2025/1
+    2026-03-12 Pagamento                      43,063.30 liq 2025/1
+    2026-04-15 Pagamento                      62,526.07 liq 2025/1
+    2026-05-21 Pagamento                     188,957.47 liq 2025/1
+    2026-06-03 Pagamento                      40,304.80 liq 2025/1
+    2026-07-06 Pagamento                     122,753.40 liq 2025/1
+    2026-08-04 Pagamento                     202,443.49 liq 2025/1
+    2026-08-31 Pagamento                      96,246.11 liq 2025/1
+    API 01/01-31/12/2026: {'proc': '1,258,490.49', 'pagoProc': '810,085.45'}
+### C  processado com cancelamento — 15577/2023 | saldo em 01/01/2026 reconstruído: a liquidar=0.00 a pagar(liquidado)=74,425.32
+    (22 lançamentos antes de 12/2025 omitidos)
+    2026-02-18 Estorno Liquidação             74,425.32 liq 2024/6
+    2026-02-24 Cancelamento Empenho           74,425.32 
+    API 01/01-31/12/2026: {'proc': '74,425.32', 'canceladoAProc': '74,425.32', 'liquidado': '-74,425.32'}
+### D1 processado com pagamento estornado — 1874/2025 | saldo em 01/01/2026 reconstruído: a liquidar=348,199.16 a pagar(liquidado)=163,888.32
+    (29 lançamentos antes de 12/2025 omitidos)
+    2025-12-03 Pagamento                       4,506.06 liq 2025/10
+    2025-12-03 Pagamento                      77,093.31 liq 2025/9
+    2025-12-12 Liquidação                     77,297.27 liq 2025/11
+    2025-12-12 Liquidação                      5,397.92 liq 2025/12
+    2025-12-12 Liquidação                      5,397.92 liq 2025/13
+    2025-12-12 Estorno Liquidação              5,397.92 liq 2025/12
+    2025-12-12 Retenção                        3,710.27 liq 2025/11
+    2025-12-12 Retenção                          259.10 liq 2025/12
+    2025-12-12 Retenção                          582.98 liq 2025/13
+    2025-12-12 Est Retenção                      259.10 liq 2025/12
+    2026-01-15 Liquidação                      6,160.14 liq 2026/14
+    2026-01-15 Liquidação                     82,878.37 liq 2026/15
+    2026-01-15 Retenção                          295.69 liq 2026/14
+    2026-01-15 Retenção                        3,978.16 liq 2026/15
+    2026-01-21 Pagamento                      79,622.21 liq 2025/7
+    2026-01-21 Pagamento                       5,864.17 liq 2025/8
+    2026-02-19 Liquidação                     82,967.12 liq 2026/16
+    2026-02-19 Liquidação                      6,160.14 liq 2026/17
+    2026-02-19 Retenção                        3,982.42 liq 2026/16
+    2026-02-19 Retenção                          295.69 liq 2026/17
+    2026-03-12 Pagamento                      73,587.00 liq 2025/11
+    2026-03-12 Pagamento                       4,814.94 liq 2025/13
+    2026-03-12 Pagamento                       5,864.45 liq 2026/17
+    2026-03-12 Pagamento                      78,984.70 liq 2026/16
+    2026-03-12 Pagamento                       5,864.45 liq 2026/14
+    2026-03-12 Pagamento                      78,900.21 liq 2026/15
+    2026-03-12 Pagamento                       5,864.45 liq 2026/14
+    2026-03-12 Pagamento                      78,900.21 liq 2026/15
+    2026-03-12 Pagamento                      73,587.00 liq 2025/11
+    2026-03-12 Pagamento                       4,814.94 liq 2025/13
+    2026-03-12 Pagamento                       5,864.45 liq 2026/17
+    2026-03-12 Pagamento                      78,984.70 liq 2026/16
+    2026-03-12 Pagamento                      73,587.00 liq 2025/11
+    2026-03-12 Pagamento                       4,814.94 liq 2025/13
+    2026-03-12 Pagamento                       5,864.45 liq 2026/17
+    2026-03-12 Pagamento                      78,984.70 liq 2026/16
+    2026-03-12 Estorno Pagamento              73,587.00 liq 2025/11
+    2026-03-12 Estorno Pagamento               4,814.94 liq 2025/13
+    2026-03-12 Estorno Pagamento               5,864.45 liq 2026/17
+    2026-03-12 Estorno Pagamento              78,984.70 liq 2026/16
+    2026-03-12 Estorno Pagamento               5,864.45 liq 2026/14
+    2026-03-12 Estorno Pagamento              78,900.21 liq 2026/15
+    2026-03-12 Estorno Pagamento              73,587.00 liq 2025/11
+    2026-03-12 Estorno Pagamento               4,814.94 liq 2025/13
+    2026-03-12 Estorno Pagamento               5,864.45 liq 2026/17
+    2026-03-12 Estorno Pagamento              78,984.70 liq 2026/16
+    2026-08-17 Liquidação                     84,098.08 liq 2026/18
+    API 01/01-31/12/2026: {'proc': '163,888.32', 'aproc': '348,199.16', 'pagoProc': '163,888.32', 'pagoProcEstornado': '156,803.88', 'pagoAProc': '178,165.77', 'pagoAProcEstornado': '254,462.96', 'liquidado': '262,263.85', 'retencao': '8,551.96'}
+### D2 processado com estorno de liquidação sem cancelamento — 15193/2025 | saldo em 01/01/2026 reconstruído: a liquidar=0.00 a pagar(liquidado)=24,166.60
+    (2 lançamentos antes de 12/2025 omitidos)
+    2026-03-17 Estorno Liquidação             24,166.60 liq 2025/1
+    API 01/01-31/12/2026: {'proc': '24,166.60', 'liquidado': '-24,166.60'}
+### E  não processado sem liquidação — 14285/2017 | saldo em 01/01/2026 reconstruído: a liquidar=7,879.90 a pagar(liquidado)=0.00
+    (1 lançamentos antes de 12/2025 omitidos)
+    API 01/01-31/12/2026: {'aproc': '7,879.90'}
+### F  não processado parcialmente liquidado — 7724/2017 | saldo em 01/01/2026 reconstruído: a liquidar=2,874.26 a pagar(liquidado)=0.00
+    (93 lançamentos antes de 12/2025 omitidos)
+    2025-12-10 Liquidação                        125.40 liq 2025/38
+    2025-12-10 Pagamento                         125.40 liq 2025/38
+    2025-12-15 Liquidação                        125.40 liq 2025/39
+    2025-12-16 Pagamento                         125.40 liq 2025/39
+    2026-01-15 Liquidação                        130.64 liq 2026/40
+    2026-01-16 Pagamento                         130.64 liq 2026/40
+    2026-02-05 Liquidação                        130.64 liq 2026/41
+    2026-02-05 Pagamento                         130.64 liq 2026/41
+    2026-02-19 Liquidação                        130.64 liq 2026/42
+    2026-02-19 Pagamento                         130.64 liq 2026/42
+    2026-08-03 Liquidação                        130.64 liq 2026/43
+    2026-08-03 Pagamento                         130.64 liq 2026/43
+    2026-08-07 Liquidação                        261.28 liq 2026/44
+    2026-08-07 Liquidação                        261.28 liq 2026/45
+    2026-08-07 Pagamento                         130.64 liq 2026/44
+    2026-08-07 Pagamento                         130.64 liq 2026/44
+    2026-08-07 Pagamento                         130.64 liq 2026/45
+    2026-08-07 Pagamento                         130.64 liq 2026/45
+    2026-08-24 Liquidação                        130.64 liq 2026/46
+    2026-08-25 Pagamento                         130.64 liq 2026/46
+    API 01/01-31/12/2026: {'aproc': '2,874.26', 'pagoAProc': '1,175.76', 'liquidado': '1,175.76'}
+### G  não processado liquidado e pago — 23729/2022 | saldo em 01/01/2026 reconstruído: a liquidar=104,580.24 a pagar(liquidado)=0.00
+    (22 lançamentos antes de 12/2025 omitidos)
+    2026-01-15 Liquidação                    104,580.24 liq 2026/8
+    2026-01-15 Retenção                        4,825.69 liq 2026/8
+    2026-02-10 Pagamento                      99,754.55 liq 2026/8
+    API 01/01-31/12/2026: {'aproc': '104,580.24', 'pagoAProc': '104,580.24', 'liquidado': '104,580.24', 'retencao': '4,825.69'}
+### G2 não processado liquidado, pago em parte — 12057/2024 | saldo em 01/01/2026 reconstruído: a liquidar=514,673.37 a pagar(liquidado)=0.00
+    (19 lançamentos antes de 12/2025 omitidos)
+    2026-09-29 Liquidação                    292,157.17 liq 2026/7
+    2026-09-29 Retenção                       39,730.44 liq 2026/7
+    API 01/01-31/12/2026: {'aproc': '514,673.37', 'pagoAProc': '39,730.44', 'liquidado': '292,157.17', 'retencao': '39,730.44'}
+### G3 não processado com pagamento estornado — 17442/2024 | saldo em 01/01/2026 reconstruído: a liquidar=50,000.00 a pagar(liquidado)=0.00
+    (1 lançamentos antes de 12/2025 omitidos)
+    2026-08-26 Liquidação                     15,183.23 liq 2026/1
+    2026-08-26 Liquidação                     13,496.20 liq 2026/2
+    2026-08-26 Retenção                          728.78 liq 2026/1
+    2026-08-26 Retenção                          647.80 liq 2026/2
+    2026-08-27 Pagamento                      14,454.45 liq 2026/1
+    2026-08-27 Pagamento                      12,848.40 liq 2026/2
+    2026-08-27 Estorno Pagamento              14,454.45 liq 2026/1
+    API 01/01-31/12/2026: {'aproc': '50,000.00', 'pagoAProc': '14,224.98', 'pagoAProcEstornado': '14,454.45', 'liquidado': '28,679.43', 'retencao': '1,376.58'}
+### H1 nas duas abas — 933/2021 | saldo em 01/01/2026 reconstruído: a liquidar=10.00 a pagar(liquidado)=540.00
+    (335 lançamentos antes de 12/2025 omitidos)
+    API 01/01-31/12/2026: {'proc': '540.00', 'aproc': '10.00'}
+### H2 nas duas abas, com pagamento dos dois tipos — 23186/2023 | saldo em 01/01/2026 reconstruído: a liquidar=559,880.98 a pagar(liquidado)=72,890.38
+    (6 lançamentos antes de 12/2025 omitidos)
+    2026-01-21 Pagamento                      72,890.38 liq 2025/2
+    2026-03-13 Liquidação                     38,234.38 liq 2026/3
+    2026-03-13 Pagamento                      37,546.16 liq 2026/3
+    2026-03-13 Retenção                          688.22 liq 2026/3
+    2026-03-30 Liquidação                    359,756.78 liq 2026/4
+    2026-03-30 Retenção                        6,475.62 liq 2026/4
+    2026-04-23 Pagamento                     150,000.00 liq 2026/4
+    2026-05-07 Pagamento                     100,000.00 liq 2026/4
+    2026-06-08 Pagamento                     103,281.16 liq 2026/4
+    2026-07-20 Liquidação                    161,889.82 liq 2026/5
+    2026-07-20 Pagamento                     100,000.00 liq 2026/5
+    2026-07-20 Retenção                        7,949.38 liq 2026/5
+    2026-09-22 Pagamento                      53,940.44 liq 2026/5
+    API 01/01-31/12/2026: {'proc': '72,890.38', 'aproc': '559,880.98', 'pagoProc': '72,890.38', 'pagoAProc': '559,880.98', 'liquidado': '559,880.98', 'retencao': '15,113.22'}
+### I1 não processado cancelado em parte e liquidado — 11921/2024 | saldo em 01/01/2026 reconstruído: a liquidar=23,069.17 a pagar(liquidado)=200.23
+    (25 lançamentos antes de 12/2025 omitidos)
+    2025-12-18 Liquidação                        200.23 liq 2025/13
+    2026-01-15 Pagamento                         200.23 liq 2025/13
+    2026-02-05 Cancelamento Empenho           13,960.31 
+    2026-02-19 Liquidação                        459.68 liq 2026/14
+    2026-03-12 Pagamento                         459.68 liq 2026/14
+    2026-05-05 Liquidação                        282.02 liq 2026/15
+    2026-05-28 Pagamento                         282.02 liq 2026/15
+    2026-07-01 Liquidação                        619.29 liq 2026/16
+    2026-07-23 Pagamento                         619.29 liq 2026/16
+    2026-09-04 Liquidação                        499.07 liq 2026/17
+    API 01/01-31/12/2026: {'proc': '200.23', 'aproc': '23,069.17', 'pagoProc': '200.23', 'canceladoAProc': '13,960.31', 'pagoAProc': '1,360.99', 'liquidado': '1,860.06'}
+### I2 pagoProc sem proc (valor em aba NaoProc) — 2410946/2025 | saldo em 01/01/2026 reconstruído: a liquidar=49.50 a pagar(liquidado)=0.00
+    2025-12-30 Empenho                            49.50 
+    2026-06-22 Liquidação                         49.50 liq 2026/1
+    2026-07-06 Pagamento                          49.50 liq 2026/1
+    2026-07-07 Estorno Pagamento                  49.50 liq 2026/1
+    2026-07-08 Pagamento                          49.50 liq 2026/1
+    API 01/01-31/12/2026: {'aproc': '49.50', 'pagoProc': '49.50', 'pagoProcEstornado': '49.50', 'liquidado': '49.50'}
+### I3 retenção — 5176/2023 | saldo em 01/01/2026 reconstruído: a liquidar=198,278.74 a pagar(liquidado)=0.00
+    (14 lançamentos antes de 12/2025 omitidos)
+    2026-05-22 Liquidação                    198,278.74 liq 2026/5
+    2026-05-22 Retenção                       13,751.63 liq 2026/5
+    2026-05-25 Pagamento                     184,527.11 liq 2026/5
+    API 01/01-31/12/2026: {'aproc': '198,278.74', 'pagoAProc': '198,278.74', 'liquidado': '198,278.74', 'retencao': '13,751.63'}
+### I4 pagoAProcEstornado não aditivo #1 — 20738/2025 | saldo em 01/01/2026 reconstruído: a liquidar=4,500.00 a pagar(liquidado)=0.00
+    2025-12-23 Empenho                         4,500.00 
+    2026-01-23 Liquidação                      4,500.00 liq 2026/1
+    2026-01-30 Pagamento                       4,500.00 liq 2026/1
+    2026-02-02 Estorno Pagamento               4,500.00 liq 2026/1
+    2026-02-05 Pagamento                       4,500.00 liq 2026/1
+    2026-02-06 Estorno Pagamento               4,500.00 liq 2026/1
+    2026-02-13 Pagamento                       4,500.00 liq 2026/1
+    API 01/01-31/12/2026: {'aproc': '4,500.00', 'pagoAProc': '4,500.00', 'pagoAProcEstornado': '9,000.00', 'liquidado': '4,500.00'}
+### I4 pagoAProcEstornado não aditivo #2 — 20744/2025 | saldo em 01/01/2026 reconstruído: a liquidar=4,500.00 a pagar(liquidado)=0.00
+    2025-12-23 Empenho                         4,500.00 
+    2026-01-23 Liquidação                      4,500.00 liq 2026/1
+    2026-01-30 Pagamento                       4,500.00 liq 2026/1
+    2026-02-02 Estorno Pagamento               4,500.00 liq 2026/1
+    2026-02-05 Pagamento                       4,500.00 liq 2026/1
+    API 01/01-31/12/2026: {'aproc': '4,500.00', 'pagoAProc': '4,500.00', 'pagoAProcEstornado': '4,500.00', 'liquidado': '4,500.00'}
