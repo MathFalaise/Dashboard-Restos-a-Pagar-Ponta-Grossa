@@ -6,6 +6,7 @@ Código de **produção**:
 - **Revisão corretiva 01–04.4:** camada de consulta somente leitura para o futuro dashboard (`rp/painel`), governança e parâmetros das regras, evidência externa e registro do método de extração do RREO (esquema v4).
 - **04.5:** interface pública somente leitura (`rp/interface`), sobre a camada `rp/painel`: `python -m rp interface`.
 - **04.6:** homologação da interface: situação de cada dado, busca por empenho, resultado vazio sem R$ 0,00, análise experimental rotulada, configuração portátil, portões de uma carga nova (`python -m rp portoes`) e procedimento de instalação e atualização.
+- **04.7:** encerramento técnico da Etapa 04, sem mudança de código: plano atualizado (`../etapa04/PLANO_ETAPA04.md`), relatório consolidado (`../etapa04/RELATORIO_ETAPA04_FINAL.md`) e ponto de restauração (tag `etapa-04-final`).
 
 **Fontes** (detalhe em `../etapa04/ARQUITETURA_FONTES.md`):
 - API do Portal da Transparência de Ponta Grossa (Elotech/Oxy Transparência) → fonte primária dos dados operacionais de RP;
