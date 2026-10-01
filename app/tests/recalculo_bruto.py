@@ -7,8 +7,8 @@ Oraculo de validacao das metricas numericas da Etapa 05 (regime "bruto", contrat
   * NAO importa rp.painel, rp.derivar nem rp.normalizar: nada aqui reaproveita a implementacao de producao, que e
     justamente o que se valida.
 Generaliza registros_brutos / recalcular de test_homologacao_real.py (04.6) para pontos de serie com a situacao do
-dado (contrato secao 2), diferencas (posterior - anterior), composicao por dimensao (contrato M-05 a M-08) e
-contribuicoes por empenho (contrato M-09 a M-11).
+dado (contrato secao 2), diferencas (posterior - anterior), composicao por dimensao (contrato M-05 a M-08),
+contribuicoes por empenho (contrato M-09 a M-11) e o historico de um empenho nos cortes (M-12).
 Anomalias e verificacoes NAO sao recalculadas aqui (regime "derivacao"): seria uma segunda implementacao das regras.
 So suporta o retrato atual (sem "como estava em").
 """
@@ -297,6 +297,20 @@ class Bruto:
             return {"situacao": pt["situacao"], "composicao": None}
         itens = [r for c in pt["coletas"] for r in self.itens(c)]
         return {"situacao": pt["situacao"], "composicao": composicao(itens, exercicio)}
+
+    # ---------------------------------------------------------------- historico de um empenho (contrato M-12)
+    def empenho_nos_cortes(self, entidade, anoempenho, empenho, exercicio):
+        """Para cada corte do universo do exercicio: situacao da entidade e os valores (valores_do_item) de cada
+        ocorrencia da chave no snapshot vigente (lista vazia = empenho ausente do corte)."""
+        saida = []
+        for df in self.cortes_do_exercicio(exercicio):
+            sit = self.situacao(entidade, exercicio, df)
+            ocorrencias = None
+            if sit in TEM_VALOR:
+                ocorrencias = [valores_do_item(r) for r in self.itens(self.vigente(entidade, exercicio, df))
+                               if (r["entidade"], r["anoempenho"], r["empenho"]) == (entidade, anoempenho, empenho)]
+            saida.append({"data_final": df, "situacao": sit, "ocorrencias": ocorrencias})
+        return saida
 
     # ---------------------------------------------------------------- contribuicoes (contrato M-09 a M-11)
     def contribuicoes(self, exercicio, df_anterior, df_posterior, entidade=None, metrica="s1", top=10):

@@ -1,0 +1,31 @@
+{
+ "subetapa": "05.5",
+ "data": "2026-10-01",
+ "metodo": "navegador interno do app (Chromium), servidor local somente leitura (python rp.py interface --porta 8051) sobre o banco ativo; medicao por JavaScript de scrollWidth x innerWidth, elementos fora da largura (exceto dentro do quadro .rolagem, que rola a tabela) e altura das linhas das tabelas",
+ "criterio": "sem estouro horizontal da pagina; tabela larga rola dentro do proprio quadro; texto >= 11 px",
+ "ajustes_feitos_durante_a_verificacao": [
+  "'Os dois cortes': os 10 identificadores de snapshot do Municipio ficavam empilhados na celula (linhas de 675 px em 375 px); passaram a um bloco recolhivel com a contagem (linhas de 89 px)",
+  "empenho nos cortes: coluna Situacao com largura minima 14em (a linha do corte posterior a coleta tinha 187 px em 375 px; agora 70 px)",
+  "lista de contribuicoes: coluna Classe com largura minima 9em"
+ ],
+ "medicoes": {
+  "375x812 (celular)": {
+   "/variacao Municipio 31/10 -> 31/12/2025 (S1)": {"scrollWidth": 375, "fora": 0, "tabelas": "dois cortes max 89 px; grupos 70 px; maiores reducoes 70 px; classes 50 px; lista 50 linhas max 55 px (798 px rolando em quadro de 351 px)", "menor_fonte_px": 11.5},
+   "/variacao Municipio 31/01 -> 28/02/2026 (indisponivel)": {"scrollWidth": 375, "fora": 0, "texto": "o corte 31/01/2026 nao tem valor para o escopo (Municipio indisponivel ... [4, 5, 8, 15]). Nenhuma contribuicao e mostrada"},
+   "/empenho/cortes 5659/2025, entidade 1, 2026": {"scrollWidth": 375, "fora": 0, "tabela": "7 linhas, max 70 px"},
+   "/empenho/cortes 1751/2023, entidade 15, 2026": {"scrollWidth": 375, "fora": 0, "tabela": "7 linhas (3 lacunas 'corte nao coletado'), max 70 px"}
+  },
+  "768x1024 (tablet)": {
+   "/variacao Municipio 28/02 -> 30/04/2026 (salta a lacuna de 31/03)": {"scrollWidth": 753, "fora": 0, "tabelas": "dois cortes 55 px; resumo e classes 30 px; lista max 55 px"},
+   "/empenho/cortes 2401751/2023, entidade 1, 2025": {"scrollWidth": 768, "fora": 0, "tabela": "6 linhas, max 55 px, 1396 px rolando em quadro de 728 px"}
+  },
+  "1280x800 (notebook)": {
+   "/variacao Municipio 28/02 -> 30/04/2026": {"scrollWidth": 1265, "fora": 0, "tabelas": "todas cabem no quadro (1225 px), linhas de 30 a 36 px"},
+   "/empenho/cortes 2401751/2023": {"scrollWidth": 1265, "fora": 0, "tabela": "max 55 px"},
+   "/evolucao 2026 (links novos para a variacao)": {"scrollWidth": 1265, "links": ["30/04/2026 -> 30/06/2026", "30/06/2026 -> 31/08/2026"]}
+  },
+  "396 px (painel do app)": {
+   "/variacao Municipio 31/10 -> 31/12/2025 (pagamentos)": {"scrollWidth": 381, "fora": 0, "tabelas": "max 89 px"}
+  }
+ }
+}
