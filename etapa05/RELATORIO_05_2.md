@@ -8,8 +8,8 @@ Data: 01/10/2026. Ramo `subetapa-05.2`, criado de `subetapa-05.1` (`8d22313`), s
   - A diferença para o corte vizinho anterior (posterior − anterior) só existe quando os dois têm valor.
 - **Tela `/evolucao`:** gráfico SVG gerado no servidor (lacuna desenhada como lacuna), tabela de valores exatos e tabela de diferenças.
 - **Validação:** série do painel = série recalculada do JSON bruto (`recalculo_bruto.py`), ao centavo, em todos os pontos de 2025 e 2026, para o Município e as 10 entidades; tela = painel.
-- **Testes:** **292/292** de produção (277 + 15 novos) e **26/26** da investigação. `verificar` sem problemas; `portoes` apto. Bruto, armazém, derivações e os 5.575 valores homologados da 04.6 idênticos.
-- **Pendente:** a conferência visual de responsividade (celular, tablet, notebook, desktop). O painel do navegador ficou oculto durante a sessão e o layout não pôde ser medido (seção 5).
+- **Testes:** **294/294** de produção (277 + 15 da 05.2 + 2 do atalho da raiz) e **26/26** da investigação. `verificar` sem problemas; `portoes` apto. Bruto, armazém, derivações e os 5.575 valores homologados da 04.6 idênticos.
+- **Responsividade:** verificada em celular, tablet, notebook e desktop, sem nenhum estouro (seção 5). Dois ajustes de apresentação foram feitos durante a verificação.
 
 ---
 
@@ -61,7 +61,7 @@ Data: 01/10/2026. Ramo `subetapa-05.2`, criado de `subetapa-05.1` (`8d22313`), s
 
 | Verificação | Resultado | Evidência |
 |---|---|---|
-| Suíte de produção | **292 passed** | `resultados/05_2_testes_producao.txt` |
+| Suíte de produção | **294 passed** (inclui os 2 testes do atalho `rp.py` da raiz, commit `075b9f7`) | `resultados/05_2_testes_producao.txt` |
 | Investigação | **26 passed** | `resultados/05_2_testes_investigacao.txt` |
 | `verificar` | sem problemas | `resultados/05_2_verificar.txt` |
 | `portoes` | apto | `resultados/05_2_portoes.json` |
@@ -69,12 +69,22 @@ Data: 01/10/2026. Ramo `subetapa-05.2`, criado de `subetapa-05.1` (`8d22313`), s
 | Valores homologados | 0 diferenças na camada painel e nos 5.575 valores de tela (antes × depois e 04.6 × depois) | idem |
 | Política de segurança no navegador | as cores das barras vêm de `estilo.css` (a CSP aceitou o SVG estilizado por classes) e as lacunas aparecem tracejadas, verificado no navegador embutido | — |
 
-## 5. Pendência para homologar
+## 5. Responsividade (verificada)
 
-- **Responsividade:** o plano pede a verificação em celular, tablet, notebook e desktop. Durante a sessão, o painel do navegador embutido ficou oculto, e com ele oculto o layout mede zero. Por isso o estouro de largura e a legibilidade do gráfico em 375 px **não foram medidos**.
-  - **Elementos novos:** SVG com `viewBox`, `width: 100%`, `height: auto`; tabelas dentro de `.rolagem`, como as homologadas na 04.6.
-  - **Falta:** só a medição.
-- **Pendências do contrato que continuam fora da 05.2:** `exercicio_sem_cobertura` e o corte representativo (05.3).
+Medida no navegador embutido, com a interface local, só para leitura, sobre o banco ativo (`resultados/05_2_responsividade.json`):
+
+| Tamanho | Telas | Resultado |
+|---|---|---|
+| Celular 375 × 812 | evolução 2026 (Município e entidade 15), evolução 2025, Resumo, Metodologia | nenhum estouro de largura; nenhum elemento ou controle fora da tela; nenhuma fonte < 11 px; um `h1` por página, sem salto de título; gráfico de 351 px, menor texto 14 px; "sem dado" dentro da lacuna |
+| Tablet 768 × 1024 | evolução 2026, entidade 1 | sem estouro; gráfico de 713 px; rótulo R4 presente |
+| Notebook 1280 × 720 | evolução 2026, Município | sem estouro; gráfico de 820 px (largura máxima) |
+| Desktop (largura do painel) | evolução 2025, entidade 15 | sem estouro; gráfico de 661 px |
+
+Ajustes feitos durante a verificação, só de apresentação, sem efeito em valores:
+- **Rótulo "sem dado":** passou a ocupar duas linhas. Com 7 cortes em 375 px, ele passava da borda da lacuna.
+- **Célula "Situação":** mostra a forma curta (por exemplo, "Município indisponível"), com o texto completo como dica. O motivo detalhado já aparece na célula de valores. Em 375 px, as linhas chegavam a cerca de 200 px de altura; agora vão até 37 px.
+
+Pendências do contrato que continuam fora da 05.2: `exercicio_sem_cobertura` e o corte representativo (05.3).
 
 ## 6. O que não foi implementado
 
