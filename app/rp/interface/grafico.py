@@ -39,8 +39,9 @@ def barras(ident, titulo, descricao, pontos):
         if v is None:
             forma = (f'<rect class="lacuna" x="{x:.1f}" y="{TOPO}" width="{largura_barra:.1f}" '
                      f'height="{altura_util}"/>'
-                     f'<text class="rotulo-lacuna" x="{centro:.1f}" y="{TOPO + altura_util / 2:.1f}" '
-                     'text-anchor="middle">sem dado</text>')
+                     f'<text class="rotulo-lacuna" x="{centro:.1f}" y="{TOPO + altura_util / 2 - 12:.1f}" '
+                     f'text-anchor="middle"><tspan x="{centro:.1f}">sem</tspan>'
+                     f'<tspan x="{centro:.1f}" dy="26">dado</tspan></text>')
         elif v == 0:
             forma = (f'<line class="zero" x1="{x:.1f}" y1="{base:.1f}" x2="{x + largura_barra:.1f}" y2="{base:.1f}"/>'
                      f'<text class="rotulo-zero" x="{centro:.1f}" y="{base - 6:.1f}" text-anchor="middle">0</text>')

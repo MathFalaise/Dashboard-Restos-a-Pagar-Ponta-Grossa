@@ -361,8 +361,11 @@ def evolucao(p, q):
 
 
 def _celula_situacao(x):
-    texto = x["situacao"]["texto"] + "".join(f"; {rot}" for rot in x["rotulos"])
-    return f'<span id="sit-{esc(x["data_final"])}">{esc(texto)}</span>'
+    """Forma curta da situacao (antes de ':'), com o texto completo como dica; o motivo detalhado esta na celula ao
+    lado. Os rotulos (ex.: corte posterior a coleta) aparecem sempre por inteiro."""
+    curto = x["situacao"]["texto"].split(":")[0]
+    texto = curto + "".join(f"; {rot}" for rot in x["rotulos"])
+    return f'<span id="sit-{esc(x["data_final"])}" title="{esc(x["situacao"]["texto"])}">{esc(texto)}</span>'
 
 
 def _tabela_serie(serie, sel):
