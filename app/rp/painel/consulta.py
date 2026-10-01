@@ -61,6 +61,18 @@ ROTULO_POSTERIOR_A_COLETA = "corte posterior à coleta: valores até a data da c
 ROTULO_EXERCICIO_EM_ABERTO = "exercício em aberto: último corte com o Município disponível"
 INDICADORES_ENTRE_EXERCICIOS = ("inscricao_total", "pagamentos", "cancelamentos", "saldo_total")
 CONTINUIDADE = "continuidade fechamento→abertura"          # descricao gravada pela derivacao (ANOM-CONT v1)
+# Composicao do corte (Subetapa 05.4; contrato M-05 a M-08): cada dimensao fecha SOZINHA com o total do corte.
+ROTULO_CATEGORIA = {"processado": "processado", "nao_processado": "não processado",
+                    "ambos": "processado e não processado", "sem_saldo_abertura": "sem saldo de abertura"}
+FAIXAS = ("a", "b", "f", "g")
+DIMENSOES_ORCAMENTARIAS = ("fonte_recurso", "orgao", "funcao", "programa", "elemento")
+COMPOSICOES = ("categoria", "faixa", "tipo_credor") + DIMENSOES_ORCAMENTARIAS
+ROTULO_COMPOSICAO = {"categoria": "Categoria (CAT v1)", "faixa": "Faixa (FAIXA v1)", "tipo_credor": "Tipo de credor",
+                     "fonte_recurso": "Fonte de recurso", "orgao": "Órgão", "funcao": "Função", "programa": "Programa",
+                     "elemento": "Elemento de despesa"}
+MEDIDAS_DA_COMPOSICAO = ("registros", "inscricao_total_c", "saldo_total_c")
+TEXTO_FAIXA = "composição dos registros da API segundo a regra FAIXA v1"
+SEM_CLASSIFICACAO = "sem classificação (campo ausente no registro da API)"
 
 
 def diferenca(anterior, posterior):
@@ -149,6 +161,17 @@ class SemProcessamento(ErroDoPainel):
 
 class EsquemaAntigo(ErroDoPainel):
     pass
+
+
+def fechamento(total, componentes):
+    """Contrato secao 4.2: diferenca = soma dos componentes - total; fecha so com diferenca 0. Sem tolerancia e sem
+    componente de ajuste; valor que nao seja inteiro (inclusive bool e float) e erro, nunca convertido."""
+    for v in (total, *componentes):
+        if isinstance(v, bool) or not isinstance(v, int):
+            raise ErroDoPainel(f"fechamento exige inteiros: {v!r}")
+    soma = sum(componentes)
+    return {"fecha": soma == total, "total": total, "soma_dos_grupos": soma, "diferenca": soma - total,
+            "grupos": len(componentes)}
 
 
 def _data_br(iso):
@@ -513,15 +536,11 @@ class Painel:
             }
         categorias = []
         if corte["disponivel"]:
-            filtro, p = self._de_coletas(corte["somar"])
             regs_cat = [r for r in regras_usadas if r["codigo"] in ("CAT", "S1")]
-            for cat, n, insc, s1 in self.con.execute(
-                    f"SELECT d.categoria, COUNT(*), SUM(r.proc_c + r.aproc_c), SUM(d.s1_saldo_total_c) FROM rp_registro r "
-                    f"JOIN rp_derivado d ON d.derivacao_id=? AND d.resposta_id=r.resposta_id AND d.indice=r.indice "
-                    f"WHERE r.normalizacao_id=? AND {filtro} GROUP BY d.categoria ORDER BY d.categoria",
-                    (ctx["derivacao"]["id"], ctx["normalizacao"]["id"], *p)):
-                categorias.append({"categoria": cat, "registros": n, "inscricao_total_c": insc or 0,
-                                   "saldo_total_c": s1 or 0, "natureza": "derivado", "regras": regs_cat,
+            for g in sorted(self._por_grupo(ctx, corte["somar"], ["d.categoria"]), key=lambda g: str(g["chave"][0])):
+                categorias.append({"categoria": g["chave"][0], "registros": g["registros"],
+                                   "inscricao_total_c": g["inscricao_total_c"], "saldo_total_c": g["saldo_total_c"],
+                                   "natureza": "derivado", "regras": regs_cat,
                                    "proveniencia": self._prov_curta(ctx, uids, "agrupamento por categoria (CAT v1)",
                                                                     regs_cat)})
         avisos = [fontes.METODOLOGIA["importante"]] + corte["avisos"]
@@ -761,27 +780,163 @@ class Painel:
         regras_usadas = self._regras_publicaveis(REGRAS_DO_INDICADOR)
         if not corte["disponivel"]:
             return {"dimensao": dimensao, "disponivel": False, "motivo_indisponivel": corte["motivo"], "linhas": []}
-        grupo = ", ".join(DIMENSOES[dimensao])
-        filtro, p = self._de_coletas(corte["somar"])
         uids = self._uids(corte["somar"])
         regs = [r for r in regras_usadas if r["codigo"] in ("S1",) + (("CAT",) if dimensao == "categoria" else ())]
-        k = len(DIMENSOES[dimensao])
-        linhas = []
-        for row in self.con.execute(
-                f"SELECT {grupo}, COUNT(*), SUM(r.proc_c + r.aproc_c), SUM(r.pago_proc_c + r.pago_aproc_c), "
-                f"SUM(r.liquidado_c), SUM({EXPR_CANCELAMENTOS}), SUM(d.s1_saldo_total_c) "
-                f"FROM rp_registro r JOIN rp_derivado d ON d.derivacao_id=? AND d.resposta_id=r.resposta_id "
-                f"AND d.indice=r.indice WHERE r.normalizacao_id=? AND {filtro} GROUP BY {grupo} "
-                f"ORDER BY SUM(d.s1_saldo_total_c) DESC, {grupo}",
-                (ctx["derivacao"]["id"], ctx["normalizacao"]["id"], *p)):
-            chave = dict(zip([c.split(".")[1] for c in DIMENSOES[dimensao]], row[:k]))
-            n, insc, pag, liq, canc, s1 = row[k:]
-            linhas.append({**chave, "registros": n, "inscricao_total_c": insc or 0, "pagamentos_c": pag or 0,
-                           "liquidacoes_c": liq or 0, "cancelamentos_c": canc or 0, "saldo_total_c": s1 or 0,
-                           "natureza": "derivado",
-                           "proveniencia": self._prov_curta(ctx, uids, f"somas agrupadas por {dimensao}", regs)})
+        nomes = [c.split(".")[1] for c in DIMENSOES[dimensao]]
+        linhas = [{**dict(zip(nomes, g.pop("chave"))), **g, "natureza": "derivado",
+                   "proveniencia": self._prov_curta(ctx, uids, f"somas agrupadas por {dimensao}", regs)}
+                  for g in self._por_grupo(ctx, corte["somar"], DIMENSOES[dimensao])]
         return {"dimensao": dimensao, "disponivel": True, "retrato": corte["retrato"], "fonte": fontes.ELOTECH["rotulo"],
                 "linhas": linhas, "proveniencia": self._proveniencia(ctx, corte["somar"], f"somas agrupadas por {dimensao}")}
+
+    def _por_grupo(self, ctx, coletas, colunas):
+        """Consulta unica de agrupamento (por_dimensao, categorias do indicador e composicao): registros e somas por
+        valor de `colunas` (expressoes SQL fixas deste modulo), INCLUSIVE o grupo nulo, em ordem de S1 decrescente."""
+        grupo = ", ".join(colunas)
+        filtro, p = self._de_coletas(coletas)
+        k = len(colunas)
+        return [{"chave": row[:k], "registros": row[k], "inscricao_total_c": row[k + 1] or 0,
+                 "pagamentos_c": row[k + 2] or 0, "liquidacoes_c": row[k + 3] or 0, "cancelamentos_c": row[k + 4] or 0,
+                 "saldo_total_c": row[k + 5] or 0}
+                for row in self.con.execute(
+                    f"SELECT {grupo}, COUNT(*), SUM(r.proc_c + r.aproc_c), SUM(r.pago_proc_c + r.pago_aproc_c), "
+                    f"SUM(r.liquidado_c), SUM({EXPR_CANCELAMENTOS}), SUM(d.s1_saldo_total_c) "
+                    f"FROM rp_registro r JOIN rp_derivado d ON d.derivacao_id=? AND d.resposta_id=r.resposta_id "
+                    f"AND d.indice=r.indice WHERE r.normalizacao_id=? AND {filtro} GROUP BY {grupo} "
+                    f"ORDER BY SUM(d.s1_saldo_total_c) DESC, {grupo}",
+                    (ctx["derivacao"]["id"], ctx["normalizacao"]["id"], *p))]
+
+    def _por_faixa(self, ctx, coletas):
+        """Valor inscrito por faixa (FAIXA v1; R3): proc por faixa do processado e aproc por faixa do nao processado. Um
+        registro com as duas partes entra em dois grupos, por isso so os VALORES fecham; a contagem e por parte."""
+        filtro, p = self._de_coletas(coletas)
+        saida = {}
+        for coluna, valor in (("d.faixa_processado", "r.proc_c"), ("d.faixa_nao_processado", "r.aproc_c")):
+            for faixa, n, v in self.con.execute(
+                    f"SELECT {coluna}, COUNT(*), SUM({valor}) FROM rp_registro r JOIN rp_derivado d ON d.derivacao_id=? "
+                    f"AND d.resposta_id=r.resposta_id AND d.indice=r.indice WHERE r.normalizacao_id=? AND {filtro} "
+                    f"AND {coluna} IS NOT NULL GROUP BY {coluna}",
+                    (ctx["derivacao"]["id"], ctx["normalizacao"]["id"], *p)):
+                saida[faixa] = {"registros": n, "inscricao_total_c": v or 0}
+        return saida
+
+    def composicao(self, exercicio, data_final, entidade=None, em=None):
+        """Composicao da inscricao e do saldo de um corte (Subetapa 05.4; contrato M-05 a M-08), por categoria, faixa,
+        tipo de credor e dimensao orcamentaria.
+        * Cada dimensao fecha SOZINHA com o total do corte, por medida (secao 4.2: soma dos grupos - total = 0, sem
+          tolerancia nem ajuste). Dimensao que nao fecha nao e exibida: sai sem grupos, com o motivo e o fechamento.
+        * Grupos fixos (categoria, faixa, tipo de credor) aparecem todos, com 0 quando nao tem registros (zero do
+          grupo); nas dimensoes orcamentarias o grupo 'sem classificacao' (campo ausente na API) aparece sempre.
+        * Faixa (R3): so o valor inscrito fecha; a contagem de registros por faixa e por parte e nao e somada.
+        * Cada grupo traz o filtro da lista de empenhos cujo total e o proprio grupo.
+        * Corte sem valor para o escopo: indisponivel, com a situacao (nunca grupos com zero)."""
+        ctx, em = self.contexto(), instante(em)
+        corte = self._corte(ctx, exercicio, data_final, entidade, em)
+        codigo = self._situacao_do_ponto(corte, entidade)
+        saida = {"consulta": {"exercicio": exercicio, "data_final": data_final, "entidade": entidade, "como_estava_em": em},
+                 "escopo": f"entidade {entidade}" if entidade is not None else "Município (entidades do catálogo oficial do exercício)",
+                 "situacao": {"codigo": codigo, "texto": SITUACOES_DO_PONTO[codigo]}, "disponivel": codigo in TEM_VALOR,
+                 "motivo_indisponivel": None if codigo in TEM_VALOR else corte["motivo"], "retrato": corte["retrato"],
+                 "fonte": fontes.ELOTECH["rotulo"], "total": None, "dimensoes": {},
+                 "pares_espelhados_no_corte": 0, "proveniencia": None, "nota": fontes.METODOLOGIA["importante"]}
+        if codigo not in TEM_VALOR:
+            return saida
+        regras_usadas = self._regras_publicaveis(REGRAS_DO_INDICADOR | {("FAIXA", 1)})
+        uids = self._uids(corte["somar"])
+        s = self._somas(ctx, corte["somar"])
+        total = {"registros": s["registros"], "inscricao_total_c": s["inscricao_total"], "saldo_total_c": s["saldo_total"]}
+        saida.update(total=total, proveniencia=self._proveniencia(ctx, corte["somar"], "composição por dimensão sobre "
+                                                                                      "rp_registro + rp_derivado"))
+        for d in COMPOSICOES:
+            saida["dimensoes"][d] = self._dimensao(ctx, corte["somar"], uids, regras_usadas, d, total, exercicio)
+        par = regras.parametros(self.con, "PAR-24", 1)
+        if entidade is None or entidade in (par["entidade_copia"], par["entidade_original"]):
+            saida["pares_espelhados_no_corte"] = self.con.execute(
+                "SELECT COUNT(DISTINCT anoempenho_a || '/' || empenho_a) FROM espelhamento_par WHERE derivacao_id=? AND "
+                "exercicio=? AND data_inicial=? AND data_final=?",
+                (ctx["derivacao"]["id"], exercicio, f"{exercicio}-01-01", data_final)).fetchone()[0]
+        return saida
+
+    def _dimensao(self, ctx, coletas, uids, regras_usadas, d, total, exercicio):
+        """Grupos e fechamento de UMA dimensao da composicao (ver `composicao`)."""
+        codigos = {"categoria": ("S1", "CAT"), "faixa": ("FAIXA",)}.get(d, ("S1",))
+        regs = [r for r in regras_usadas if r["codigo"] in codigos]
+        medidas = ("inscricao_total_c",) if d == "faixa" else MEDIDAS_DA_COMPOSICAO
+        por = {"categoria": "categoria (CAT v1)", "tipo_credor": "tipo de credor",
+               "fonte_recurso": "fonte de recurso (código e descrição)", "orgao": "órgão", "funcao": "função",
+               "programa": "programa", "elemento": "elemento de despesa"}
+        consulta = (f"{TEXTO_FAIXA}: soma de proc por faixa do processado e de aproc por faixa do não processado"
+                    if d == "faixa" else f"registros, soma de proc + aproc e soma de S1 por {por.get(d)}")
+        grupos = []
+        if d == "faixa":
+            achadas = self._por_faixa(ctx, coletas)
+            anterior = exercicio - 1
+            textos = {"a": ("processada", f"empenhos de anos anteriores a {anterior}", "inscricao_processada"),
+                      "b": ("processada", f"empenhos de {anterior}", "inscricao_processada"),
+                      "f": ("não processada", f"empenhos de anos anteriores a {anterior}", "inscricao_nao_processada"),
+                      "g": ("não processada", f"empenhos de {anterior}", "inscricao_nao_processada")}
+            for f in list(FAIXAS) + sorted(set(achadas) - set(FAIXAS)):
+                parte, origem, na_lista = textos.get(f, ("?", "valor de faixa não previsto pela regra", None))
+                v = achadas.get(f, {"registros": 0, "inscricao_total_c": 0})
+                grupos.append({"ident": f, "chave": f, "rotulo": f"faixa {f} — parte {parte} de {origem}", "parte": parte,
+                               "registros": v["registros"], "inscricao_total_c": v["inscricao_total_c"],
+                               "filtro": {"faixa": f} if f in FAIXAS else None, "total_na_lista": na_lista})
+        else:
+            colunas = {"categoria": ["d.categoria"], "tipo_credor": ["tipo_credor(r.cnpj)"]}.get(d, DIMENSOES.get(d))
+            achados = {g["chave"]: g for g in self._por_grupo(ctx, coletas, colunas)}
+            fixos = {"categoria": CATEGORIAS, "tipo_credor": publico.TIPOS_CREDOR}.get(d)
+            if fixos:
+                chaves = [(k,) for k in fixos] + [k for k in achados if k[0] not in fixos]
+            else:
+                nulo = (None,) * len(colunas)
+                chaves = [k for k in achados if k != nulo] + [nulo]
+            descricoes = {}
+            for k in chaves:
+                if d == "fonte_recurso" and k[0] is not None:
+                    descricoes.setdefault(k[0], set()).add(k[1])
+            for i, k in enumerate(chaves):
+                g = achados.get(k, {"registros": 0, "inscricao_total_c": 0, "saldo_total_c": 0})
+                grupos.append({**self._rotulo_do_grupo(d, k, i, descricoes), "registros": g["registros"],
+                               "inscricao_total_c": g["inscricao_total_c"], "saldo_total_c": g["saldo_total_c"]})
+        for g in grupos:
+            g.update(natureza="derivado", proveniencia=self._prov_curta(ctx, uids, consulta, regs))
+        fech = {m: fechamento(total[m], [g[m] for g in grupos]) for m in medidas}
+        abertas = [m for m in medidas if not fech[m]["fecha"]]
+        motivo = None
+        if abertas:
+            motivo = ("a soma dos grupos não fecha com o total do corte ("
+                      + "; ".join(f"{m}: diferença {fech[m]['diferenca']}" for m in abertas)
+                      + "): a dimensão não é exibida até a causa ser explicada")
+        return {"dimensao": d, "rotulo": ROTULO_COMPOSICAO[d], "medidas": list(medidas), "regras": regs,
+                "consulta": consulta, "fechamento": fech, "fecha": not abertas, "exibida": not abertas,
+                "motivo_nao_exibida": motivo, "grupos": [] if abertas else grupos,
+                "contagem_aditiva": d != "faixa"}
+
+    @staticmethod
+    def _rotulo_do_grupo(d, k, i, descricoes):
+        """Identificador, rotulo e filtro da lista de empenhos de um grupo (ver `composicao`). Grupo sem filtro exato
+        (valor nao previsto, codigo com mais de uma descricao) sai com filtro None e o motivo, nunca com lista errada."""
+        v = k[0]
+        if d in DIMENSOES_ORCAMENTARIAS and all(x is None for x in k):
+            return {"ident": "sem", "chave": None, "rotulo": SEM_CLASSIFICACAO, "filtro": {"sem_classificacao": d}}
+        if d == "categoria":
+            return {"ident": str(v), "chave": v, "rotulo": ROTULO_CATEGORIA.get(v, f"valor não previsto: {v}"),
+                    "filtro": {"categoria": v} if v in CATEGORIAS else None}
+        if d == "tipo_credor":
+            ident = {"pessoa jurídica": "pj", "pessoa física": "pf", "não identificado": "ni"}.get(v, f"tipo{i}")
+            return {"ident": ident, "chave": v, "rotulo": v,
+                    "filtro": {"tipo_credor": v} if v in publico.TIPOS_CREDOR else None}
+        if d == "fonte_recurso":
+            item = {"ident": str(v), "chave": {"fonte_recurso": v, "descricao_fonte": k[1]},
+                    "rotulo": k[1] or f"fonte {v}", "filtro": {"fonte_recurso": v}}
+            if v is None:
+                item.update(ident="sem-codigo", filtro=None, motivo_sem_lista="registro sem o código da fonte")
+            elif len(descricoes.get(v, ())) > 1:
+                item.update(filtro=None, motivo_sem_lista=f"o código {v} aparece com mais de uma descrição neste "
+                                                          "corte; a lista por código juntaria esses grupos")
+            return item
+        nome = {"orgao": "órgão", "funcao": "função", "programa": "programa", "elemento": "elemento"}[d]
+        return {"ident": str(v), "chave": v, "rotulo": f"{nome} {v}", "filtro": {d: v}}
 
     # ------------------------------------------------------------------ registros
     def _registros(self, ctx, coletas, filtro_extra="", params=(), limite=None, deslocamento=0, ordem="saldo"):
@@ -817,10 +972,14 @@ class Painel:
 
     @staticmethod
     def _filtros_empenho(categoria=None, fonte_recurso=None, programatica=None, tipo_credor=None, cnpj=None,
-                         anoempenho=None, empenho=None):
+                         anoempenho=None, empenho=None, faixa=None, orgao=None, funcao=None, programa=None,
+                         elemento=None, sem_classificacao=None):
         """SQL (sempre parametrizado) dos filtros da listagem de empenhos. Filtro so escolhe registros; nunca muda valor.
         cnpj: so CNPJ completo (14 digitos) de pessoa juridica; CPF nunca e aceito como filtro.
-        anoempenho / empenho: busca de um empenho pelo ano e/ou numero (igualdade exata)."""
+        anoempenho / empenho: busca de um empenho pelo ano e/ou numero (igualdade exata).
+        faixa (05.4): a/b escolhem pela faixa do processado, f/g pela do nao processado (FAIXA v1).
+        orgao, funcao, programa, elemento (05.4): codigo exato como a API devolve (texto de digitos).
+        sem_classificacao (05.4): registros sem o campo da dimensao orcamentaria indicada (valor nulo)."""
         sql, params, eco = "", [], {}
         for nome, valor in (("anoempenho", anoempenho), ("empenho", empenho)):
             if valor is not None:
@@ -855,17 +1014,35 @@ class Painel:
             formatado = f"{d[:2]}.{d[2:5]}.{d[5:8]}/{d[8:12]}-{d[12:]}"
             sql, eco["cnpj"] = sql + " AND r.cnpj = ?", formatado
             params.append(formatado)
+        if faixa is not None:
+            if faixa not in FAIXAS:
+                raise ErroDoPainel(f"faixa precisa ser uma de {FAIXAS}")
+            coluna = "d.faixa_processado" if faixa in ("a", "b") else "d.faixa_nao_processado"
+            sql, eco["faixa"] = sql + f" AND {coluna} = ?", faixa
+            params.append(faixa)
+        for nome, valor in (("orgao", orgao), ("funcao", funcao), ("programa", programa), ("elemento", elemento)):
+            if valor is not None:
+                if not re.fullmatch(r"\d{1,20}", str(valor)):
+                    raise ErroDoPainel(f"{nome}: informe o código como a API devolve (de 1 a 20 dígitos)")
+                sql, eco[nome] = sql + f" AND r.{nome} = ?", str(valor)
+                params.append(str(valor))
+        if sem_classificacao is not None:
+            if sem_classificacao not in DIMENSOES_ORCAMENTARIAS:
+                raise ErroDoPainel(f"sem_classificacao precisa ser uma de {DIMENSOES_ORCAMENTARIAS}")
+            sql, eco["sem_classificacao"] = sql + f" AND r.{sem_classificacao} IS NULL", sem_classificacao
         return sql, tuple(params), eco
 
     def empenhos(self, exercicio, data_final, entidade=None, em=None, limite=100, deslocamento=0, ordem="saldo",
                  categoria=None, fonte_recurso=None, programatica=None, tipo_credor=None, cnpj=None, anoempenho=None,
-                 empenho=None):
+                 empenho=None, faixa=None, orgao=None, funcao=None, programa=None, elemento=None,
+                 sem_classificacao=None):
         """Lista paginada de registros do corte, com filtros opcionais, e os totais do conjunto filtrado.
         No nivel publico, sem nenhuma identificacao do credor (so o tipo).
         Conjunto vazio: `sem_resultado` e totais None (nunca R$ 0,00), com a mensagem do motivo."""
         limite, deslocamento = max(1, min(int(limite), LIMITE_LISTA)), max(0, int(deslocamento))
         filtro, params, eco = self._filtros_empenho(categoria, fonte_recurso, programatica, tipo_credor, cnpj,
-                                                    anoempenho, empenho)
+                                                    anoempenho, empenho, faixa, orgao, funcao, programa, elemento,
+                                                    sem_classificacao)
         ctx, em = self.contexto(), instante(em)
         corte = self._corte(ctx, exercicio, data_final, entidade, em)
         if not corte["disponivel"]:
