@@ -16,10 +16,11 @@ from ..painel import fontes as F
 from ..painel import publico
 from ..painel.consulta import CATEGORIAS
 from . import formato as fm
+from . import grafico
 from .formato import esc
 
 TAMANHO_PAGINA = 50
-MENU = [("/", "Resumo"), ("/entidades", "Entidades"), ("/empenhos", "Empenhos"), ("/retratos", "Retratos"),
+MENU = [("/", "Resumo"), ("/evolucao", "Evolução no exercício"), ("/entidades", "Entidades"), ("/empenhos", "Empenhos"), ("/retratos", "Retratos"),
         ("/reconciliacao", "Reconciliação com o RREO"), ("/metodologia", "Metodologia e fontes"),
         ("/pares", "Técnico: pares espelhados")]
 NOME_CATEGORIA = {"processado": "processado", "nao_processado": "não processado",
@@ -106,21 +107,24 @@ def _quando(sel):
     return f"como a base estava em {fm.data_br(sel['em'])}" if sel["em"] else "estado atual da base"
 
 
-def _formulario(acao, sel, entidades=None, extra=""):
+def _formulario(acao, sel, entidades=None, extra="", com_corte=True):
     cortes = [(c["data_final"], fm.data_br(c["data_final"]) + ("" if c["municipio_disponivel"] else
                                                                " (Município incompleto)"))
               for c in sel["cortes_do_exercicio"]]
     campos = [f'<label>Exercício <select name="exercicio">{fm.opcoes([(x, x) for x in sel["exercicios"]], sel["exercicio"])}'
-              "</select></label>",
-              f'<label>Corte (data final) <select name="data_final">{fm.opcoes(cortes, sel["data_final"])}</select></label>']
+              "</select></label>"]
+    if com_corte:
+        campos.append(f'<label>Corte (data final) <select name="data_final">{fm.opcoes(cortes, sel["data_final"])}'
+                      "</select></label>")
     if entidades is not None:
         lista = fm.opcoes([(e, f"{e} — {n}") for e, n in entidades], sel["entidade"] if sel["entidade"] else "")
         campos.append('<label>Entidade <select name="entidade"><option value="">Município (entidades do catálogo '
                       f"oficial)</option>{lista}</select></label>")
     campos.append(f'<label>Como estava em (opcional) <input type="date" name="em" value="{esc(sel["em"] or "")}"></label>')
+    dica = ('<p class="dica">Mudou o exercício? Consulte uma vez para atualizar a lista de cortes.</p>'
+            if com_corte else "")
     return (f'<form class="filtros" method="get" action="{esc(acao)}">{"".join(campos)}{extra}'
-            '<button type="submit">Consultar</button></form>'
-            '<p class="dica">Mudou o exercício? Consulte uma vez para atualizar a lista de cortes.</p>')
+            f'<button type="submit">Consultar</button></form>{dica}')
 
 
 def _retrato(ret):
@@ -229,7 +233,11 @@ def resumo(p, q):
     titulo = (f"Restos a Pagar — {escopo}, exercício {sel['exercicio']}, corte {fm.data_br(sel['data_final'])} "
               f"({_quando(sel)})")
     partes = [f"<h1>{esc(titulo)}</h1>", _avisos(sel["avisos"]),
-              _formulario("/", sel, _entidades_do_catalogo(p)), _retrato(ind["retrato"])]
+              _formulario("/", sel, _entidades_do_catalogo(p)),
+              '<p class="dica">' + fm.link("/evolucao", f"Ver a evolução de todos os cortes do exercício "
+                                                        f"{sel['exercicio']}", exercicio=sel["exercicio"],
+                                           entidade=sel["entidade"], em=sel["em"]) + "</p>",
+              _retrato(ind["retrato"])]
     unicas = [e for e in ind["entidades"] if e["entra_no_total"]]
     if ind["disponivel"] and unicas and all(e["situacao_do_dado"]["codigo"] == "sem_rp" for e in unicas):
         partes.append('<p class="aviso" id="sem-rp">Zero de verdade: a API devolveu zero registros de RP para '
@@ -305,6 +313,104 @@ def _conferencia(ind, sel):
             + f'<p>Situação do dado: {esc(c["situacao_do_dado"]["texto"])}.</p>'
             + f'<p>Situação da diferença: {_explicacoes(c["situacao_da_diferenca"], c["explicacoes"])}</p>'
             + f'<p class="nota">{esc(c["nota"])}</p><p>{detalhe}</p></section>')
+
+
+# ---------------------------------------------------------------------------------------------- evolucao
+SERIE_COLUNAS = [("inscricao_total", "Inscrição (abertura)", "proc + aproc"),
+                 ("pagamentos", "Pagamentos (acumulado)", "pagoProc + pagoAProc, de 01/01 até o corte"),
+                 ("liquidacoes", "Liquidações (acumulado)", "liquidado, de 01/01 até o corte"),
+                 ("cancelamentos", "Cancelamentos (acumulado)", "canceladoAProc + canceladoProc, de 01/01 até o corte"),
+                 ("saldo_total", "Saldo no corte (S1)", "S1 v1")]
+
+
+def evolucao(p, q):
+    """Serie de todos os cortes do exercicio (Subetapa 05.2). Valores e diferencas vem prontos da camada painel."""
+    try:
+        sel = _selecao(p, q)
+    except SemDados as e:
+        return erro("Sem dados processados", str(e))
+    r = p.evolucao(sel["exercicio"], sel["entidade"], sel["em"])
+    escopo = f"entidade {sel['entidade']}" if sel["entidade"] is not None else "Município"
+    titulo = f"Evolução no exercício {sel['exercicio']} — {escopo} ({_quando(sel)})"
+    corpo = [f"<h1>{esc(titulo)}</h1>", _avisos(sel["avisos"]),
+             _formulario("/evolucao", sel, _entidades_do_catalogo(p), com_corte=False),
+             f'<p class="nota">{esc(r["nota"])} Todos os cortes processados do exercício aparecem; corte sem valor '
+             "para este escopo aparece como lacuna, com o motivo, e nunca como zero. A diferença só é calculada entre "
+             "cortes vizinhos que tenham valor.</p>"]
+    if r["pares_espelhados_no_exercicio"]:
+        corpo.append(f'<p class="aviso" id="aviso-pares">Este escopo envolve as entidades 1 e 15, que têm '
+                     f'{fm.inteiro(r["pares_espelhados_no_exercicio"])} registros espelhados (cópias 24xxxxx) neste '
+                     "exercício. Os dois lados continuam nos valores, como a API os devolve; a natureza das cópias não "
+                     f"está determinada. {fm.link('/pares', 'Ver os pares', exercicio=sel['exercicio'])}</p>")
+    serie = r["serie"]
+    if any(x["tem_valor"] for x in serie):
+        pontos = [{"rotulo": fm.data_br(x["data_final"])[:5],
+                   "valor_c": x["valores"]["saldo_total"]["valor_c"] if x["tem_valor"] else None,
+                   "titulo": (f"{fm.data_br(x['data_final'])}: " + (fm.moeda(x["valores"]["saldo_total"]["valor_c"])
+                                                                     if x["tem_valor"] else
+                                                                     f"sem dado — {x['situacao']['texto']}")),
+                   "href": fm.url("/", exercicio=sel["exercicio"], data_final=x["data_final"], entidade=sel["entidade"],
+                                  em=sel["em"])} for x in serie]
+        corpo.append('<section class="grupo"><h2>Saldo de RP no corte (S1)</h2>'
+                     + grafico.barras("graf-s1", f"Saldo de RP (S1) por corte — exercício {sel['exercicio']}, {escopo}",
+                                      "Barras por corte; corte sem valor aparece como lacuna tracejada.", pontos)
+                     + "</section>")
+    corpo.append(_tabela_serie(serie, sel))
+    corpo.append(_tabela_diferencas(serie))
+    return titulo, "".join(corpo)
+
+
+def _celula_situacao(x):
+    texto = x["situacao"]["texto"] + "".join(f"; {rot}" for rot in x["rotulos"])
+    return f'<span id="sit-{esc(x["data_final"])}">{esc(texto)}</span>'
+
+
+def _tabela_serie(serie, sel):
+    linhas = []
+    for x in serie:
+        df = x["data_final"]
+        corte = fm.link("/", fm.data_br(df), exercicio=sel["exercicio"], data_final=df, entidade=sel["entidade"],
+                        em=sel["em"])
+        if x["tem_valor"]:
+            pv = x["valores"]["saldo_total"]["proveniencia"]
+            snaps = " ".join(f"<code>{esc(u)}</code>" for u in pv["snapshots"]) or "—"
+            origem = (f'<details class="origem"><summary>origem</summary>Snapshots: {snaps}. Derivação '
+                      f'{esc(pv["derivacao_id"])} (hash <code>{esc(pv["derivacao_hash"][:16])}…</code>), normalização '
+                      f'{esc(pv["normalizacao_id"])}.</details>')
+            linhas.append([corte, _celula_situacao(x)]
+                          + [fm.valor(x["valores"][k]["valor_c"], f"ser-{df}-{k}") for k, _, _ in SERIE_COLUNAS]
+                          + [origem])
+        else:
+            linhas.append([corte, _celula_situacao(x),
+                           f'<td colspan="{len(SERIE_COLUNAS)}" class="sem-valor" id="lacuna-{esc(df)}">sem valor — '
+                           f'{esc(x["motivo_indisponivel"] or x["situacao"]["texto"])}</td>', "—"])
+    return ('<section class="grupo"><h2>Valores por corte</h2>'
+            + fm.selo("elotech", "derivado", [{"codigo": "S1", "versao": 1, "situacao": "operacional"}],
+                      "indicadores homologados de cada corte")
+            + fm.tabela([("Corte", "abre o resumo do corte"), ("Situação", None)]
+                        + [(rot, dica) for _, rot, dica in SERIE_COLUNAS] + [("Origem", None)], linhas)
+            + "</section>")
+
+
+def _tabela_diferencas(serie):
+    linhas = []
+    for x in serie[1:]:
+        d = x["diferenca_para_o_anterior"]
+        df = x["data_final"]
+        rotulo = esc(f"{fm.data_br(d['anterior'])} → {fm.data_br(df)}")
+        if d["motivo_indisponivel"]:
+            linhas.append([rotulo, f'<td colspan="{len(SERIE_COLUNAS)}" class="sem-valor" id="dif-lacuna-{esc(df)}">'
+                                   f'{esc(d["motivo_indisponivel"])}</td>'])
+        else:
+            linhas.append([rotulo] + [fm.valor(d["valores"][k], f"dif-{df}-{k}") for k, _, _ in SERIE_COLUNAS])
+    if not linhas:
+        return ""
+    return ('<section class="grupo"><h2>Diferença para o corte anterior</h2>'
+            + fm.selo("elotech", "diferenca", None, "posterior − anterior, só entre cortes vizinhos com valor")
+            + '<p class="nota">Inscrição igual em todos os cortes dá diferença 0. Pagamentos, liquidações e '
+              "cancelamentos são acumulados: a diferença é o movimento do intervalo.</p>"
+            + fm.tabela([("Cortes", "anterior → posterior")] + [(rot, None) for _, rot, _ in SERIE_COLUNAS], linhas)
+            + "</section>")
 
 
 # ---------------------------------------------------------------------------------------------- entidades

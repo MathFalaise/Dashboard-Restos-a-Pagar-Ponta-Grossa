@@ -46,6 +46,25 @@ SITUACOES_DO_DADO = {
     "incompleto": "dado indisponível: só há coleta incompleta ou com falha deste corte",
     "divergente": "dado com diferença em relação ao RREO (a diferença é mostrada; o valor da API não muda)",
 }
+# Situacao de um PONTO de serie (etapa05/CONTRATO_ANALITICO.md secao 2): estende a taxonomia acima, sem outra
+# paralela. 'municipio_indisponivel' entra na 05.2; 'exercicio_sem_cobertura' entra na 05.3.
+SITUACOES_DO_PONTO = {
+    **{k: v for k, v in SITUACOES_DO_DADO.items() if k != "divergente"},
+    "municipio_indisponivel": "Município indisponível: alguma entidade do catálogo do exercício sem snapshot processado "
+                              "neste corte",
+}
+TEM_VALOR = ("com_dados", "sem_rp")
+# Indicadores da serie no exercicio (contrato M-01 e M-02)
+INDICADORES_DA_SERIE = ("inscricao_total", "pagamentos", "liquidacoes", "cancelamentos", "saldo_total")
+ROTULO_POSTERIOR_A_COLETA = "corte posterior à coleta: valores até a data da coleta"
+
+
+def diferenca(anterior, posterior):
+    """Unica regra de diferenca da Etapa 05 (contrato secao 1.5): posterior - anterior, em centavos inteiros. Ausencia
+    em qualquer lado devolve None: diferenca nunca e calculada contra zero implicito."""
+    if anterior is None or posterior is None:
+        return None
+    return posterior - anterior
 
 # Expressao unica do cancelamento de um registro: usada no indicador, no agrupamento e na coluna da lista (a
 # interface nao soma campos por conta propria).
@@ -535,21 +554,68 @@ class Painel:
                 "nota": ("Fonte primária: API Elotech. Fonte de reconciliação: RREO Anexo VII. A diferença é mostrada; "
                          "o saldo da API nunca é trocado pelo valor do RREO.")}
 
+    @staticmethod
+    def _situacao_do_ponto(r, entidade):
+        """Situacao de um ponto (contrato secao 2.2) a partir do resultado de `indicadores`."""
+        if entidade is not None:
+            return r["entidades"][0]["situacao_do_dado"]["codigo"]
+        if not r["disponivel"]:
+            return "municipio_indisponivel"
+        somadas = [e for e in r["entidades"] if e["entra_no_total"]]
+        return "sem_rp" if all(e["situacao_do_dado"]["codigo"] == "sem_rp" for e in somadas) else "com_dados"
+
     def evolucao(self, exercicio, entidade=None, em=None):
-        """Indicadores de todos os cortes processados do exercicio (evolucao dentro do ano)."""
+        """Serie dos cortes do exercicio (Subetapa 05.2; contrato M-01 e M-02).
+        * Universo: TODOS os cortes processados do exercicio, de qualquer entidade, para qualquer escopo. Corte sem
+          dado para o escopo aparece com a situacao (R1), nunca omitido e nunca com valor zero.
+        * Cada ponto: situacao, valores dos indicadores (None sem valor), retrato, rotulos (R4) e proveniencia.
+        * Diferenca para o ponto adjacente anterior: posterior - anterior, so quando os dois tem valor (nunca pula
+          lacuna); natureza 'diferenca', com a proveniencia dos dois lados."""
         ctx, em = self.contexto(), instante(em)
         di = f"{exercicio}-01-01"
-        cortes = sorted({df for (e, ex, d0, df) in self._vigentes(ctx, em)
-                         if ex == exercicio and d0 == di and (entidade is None or e == entidade)})
-        serie = []
-        for df in cortes:
+        universo = sorted({df for (e, ex, d0, df) in self._vigentes(ctx, em) if ex == exercicio and d0 == di})
+        serie, anterior = [], None
+        for df in universo:
             r = self.indicadores(exercicio, df, entidade, em)
-            serie.append({"data_final": df, "disponivel": r["disponivel"], "motivo_indisponivel": r["motivo_indisponivel"],
-                          "retrato": r["retrato"],
-                          "valores": {k: {x: v[x] for x in ("rotulo", "valor_c", "natureza", "proveniencia")}
-                                      for k, v in r["valores"].items()}})
+            codigo = self._situacao_do_ponto(r, entidade)
+            tem_valor = codigo in TEM_VALOR
+            posterior_a_coleta = tem_valor and bool(r["retrato"] and r["retrato"]["corte_posterior_a_coleta"])
+            ponto = {"data_final": df, "disponivel": r["disponivel"], "motivo_indisponivel": r["motivo_indisponivel"],
+                     "situacao": {"codigo": codigo, "texto": SITUACOES_DO_PONTO[codigo]}, "tem_valor": tem_valor,
+                     "retrato": r["retrato"], "rotulos": [ROTULO_POSTERIOR_A_COLETA] if posterior_a_coleta else [],
+                     "entidades": [{"entidade": e["entidade"], "situacao": e["situacao_do_dado"]["codigo"],
+                                    "entra_no_total": e["entra_no_total"]} for e in r["entidades"]],
+                     "valores": {k: {x: v[x] for x in ("rotulo", "valor_c", "natureza", "proveniencia")}
+                                 for k, v in r["valores"].items()}}
+            ponto["diferenca_para_o_anterior"] = None if anterior is None else self._diferenca_de_pontos(anterior, ponto)
+            serie.append(ponto)
+            anterior = ponto
+        par = regras.parametros(self.con, "PAR-24", 1)
+        envolve_pares = entidade is None or entidade in (par["entidade_copia"], par["entidade_original"])
+        pares = self.con.execute(          # copias 24xxxxx distintas com par em algum corte do exercicio
+            "SELECT COUNT(DISTINCT anoempenho_a || '/' || empenho_a) FROM espelhamento_par WHERE derivacao_id=? AND "
+            "exercicio=?", (ctx["derivacao"]["id"], exercicio)).fetchone()[0] if envolve_pares else 0
         return {"exercicio": exercicio, "entidade": entidade, "como_estava_em": em, "fonte": fontes.ELOTECH["rotulo"],
-                "serie": serie}
+                "indicadores_da_serie": list(INDICADORES_DA_SERIE), "serie": serie,
+                "pares_espelhados_no_exercicio": pares,
+                "nota": ("Cada corte é o estado atual da base para aquele corte, na data da coleta. Pagamentos, "
+                         "liquidações e cancelamentos são acumulados de 01/01 até o corte; a diferença entre cortes "
+                         "vizinhos é o movimento do intervalo, se os dois cortes refletem a mesma base.")}
+
+    @staticmethod
+    def _diferenca_de_pontos(anterior, ponto):
+        """Diferenca entre pontos adjacentes (contrato secao 2.6): valores None quando algum lado nao tem valor."""
+        motivo = None
+        if not (anterior["tem_valor"] and ponto["tem_valor"]):
+            lacuna = anterior if not anterior["tem_valor"] else ponto
+            motivo = (f"sem diferença: o corte {_data_br(lacuna['data_final'])} não tem valor "
+                      f"({lacuna['situacao']['texto']})")
+        return {"anterior": anterior["data_final"], "natureza": "diferenca", "sinal": "posterior − anterior",
+                "motivo_indisponivel": motivo,
+                "valores": {k: diferenca(anterior["valores"][k]["valor_c"], ponto["valores"][k]["valor_c"])
+                            for k in ponto["valores"]},
+                "proveniencia": {"anterior": anterior["valores"]["saldo_total"]["proveniencia"],
+                                 "posterior": ponto["valores"]["saldo_total"]["proveniencia"]}}
 
     def por_dimensao(self, dimensao, exercicio, data_final, entidade=None, em=None):
         """Totais por fonte de recurso, programacao orcamentaria, orgao, categoria etc. (lista fechada de dimensoes)."""
@@ -1202,7 +1268,7 @@ class Painel:
         datas = [v for (v,) in self.con.execute("SELECT DISTINCT vigencia_em FROM derivacao_execucao WHERE vigencia_em "
                                                 "IS NOT NULL ORDER BY vigencia_em")]
         return {**fontes.METODOLOGIA, "datas_como_estava_em_com_derivacao": datas,
-                "situacoes_do_dado": SITUACOES_DO_DADO}
+                "situacoes_do_dado": {**SITUACOES_DO_DADO, **SITUACOES_DO_PONTO}}
 
     @staticmethod
     def dicionario_campos():
