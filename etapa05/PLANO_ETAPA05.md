@@ -5,7 +5,10 @@ Data: 01/10/2026. Ramo `subetapa-05-planejamento`, criado da tag `etapa-04-final
 **Situação: proposta revisada, para aprovação.** Nada da Etapa 05 foi implementado. Este plano não altera código, banco, snapshots, regras, fórmulas nem interface.
 
 - **Versão 1:** commit `01dc272`.
-- **Versão 2:** esta. Incorpora a revisão pedida pelo responsável e os problemas encontrados ao conferir o plano contra o código da tag; o registro das correções está na seção 18.
+- **Versão 2:** commit `89d6092`. Incorpora a revisão pedida pelo responsável e os problemas encontrados ao conferir o plano contra o código da tag.
+- **Versão 2, revisão final:** esta. Fecha as ambiguidades restantes e decide os itens da seção 10.
+
+O registro de todas as correções está na seção 18.
 
 Ordem de prioridade que orienta o plano:
 
@@ -313,6 +316,17 @@ Cada ponto de série (exercício × corte × escopo) tem uma situação, sempre 
 - Todos os cortes processados do exercício, para **qualquer** escopo (Município ou entidade). Hoje `evolucao` para uma entidade só lista os cortes em que ela tem snapshot (R1).
 - Na série entre exercícios (05.3): todos os exercícios de 2016 a 2026.
 
+**Corte que representa cada exercício na série entre exercícios** (R8):
+- Um único corte por exercício, **o mesmo para todos os escopos**, para que entidades e Município sejam comparáveis no mesmo ponto.
+- Regra: 31/12 do exercício, se o Município estiver disponível nele; senão, o último corte do exercício com o Município disponível, rotulado "exercício em aberto".
+- Hoje isso dá 31/12 para 2016–2025 e 31/08 para 2026. O corte 31/12/2026, que só a entidade 1 tem e que é posterior à coleta, não representa 2026 na série entre exercícios; ele aparece só na série dentro do exercício (05.2), com o rótulo de R4.
+- Se nenhum corte do exercício tiver o Município disponível, o exercício fica como lacuna ("Município indisponível em todos os cortes do exercício") para **todos** os escopos, inclusive as entidades, para não misturar cortes diferentes no mesmo ponto.
+
+**Diferença entre pontos de uma série** (R9):
+- Só entre pontos **adjacentes na lista completa** de cortes (ou de exercícios). Uma diferença nunca "pula" uma lacuna.
+- Se um dos dois pontos adjacentes for lacuna, a diferença é lacuna, com o motivo do ponto indisponível.
+- Exemplo (Município, 2026): 28/02 → 31/03 e 31/03 → 30/04 são lacunas, porque 31/03 é indisponível. Não existe diferença automática 28/02 → 30/04 na série; essa comparação é uma escolha explícita do usuário na investigação (05.5).
+
 ### 9.3 Arquitetura que a Etapa 05 preserva
 
 ```text
@@ -356,7 +370,14 @@ Nos dois regimes, a interface mostra exatamente o que a camada painel devolve.
 - **Testes:**
   - o recálculo reproduz `Painel.indicadores` em todos os pontos disponíveis dos 22 cortes;
   - as suítes existentes continuam passando.
-- **Critério de aceitação:** contrato aprovado; validação cobrindo todo ponto disponível; nenhum valor exibido muda.
+- **Critério de aceitação** (todos verificáveis):
+  - toda métrica de 05.2–05.5 tem as 14 respostas da seção 9.1 preenchidas no contrato;
+  - o catálogo de interpretações das verificações (05.6) cobre as 4 descrições existentes;
+  - a ferramenta de recálculo reproduz `Painel.indicadores` ao centavo em todos os pontos disponíveis dos 22 cortes;
+  - testes sintéticos de cada situação da seção 9.2 escritos e passando;
+  - suítes existentes passando, e comparação de estado sem nenhuma diferença;
+  - a técnica de gráfico registrada, com os critérios da seção 10 atendidos;
+  - o contrato aprovado pelo responsável.
 - **Critério de parada:** métrica sem recálculo independente possível sai do escopo.
 
 ### 05.2 — Evolução dentro do exercício
@@ -374,7 +395,7 @@ Nos dois regimes, a interface mostra exatamente o que a camada painel devolve.
   - todo ponto disponível com bruto = painel = tela;
   - 2026: Município em 31/01, 31/03 e 31/12 presente como lacuna "corte não coletado para as entidades [4, 5, 8, 15]";
   - entidade 15 em 31/01, 31/03 e 31/12 de 2026 presente como lacuna, e não ausente;
-  - nenhuma diferença calculada contra lacuna;
+  - nenhuma diferença calculada contra lacuna, nem "pulando" lacuna (R9);
   - 31/12/2026 rotulado "posterior à coleta";
   - proveniência de cada ponto;
   - responsividade.
@@ -399,10 +420,17 @@ Nos dois regimes, a interface mostra exatamente o que a camada painel devolve.
   - camada painel: a diferença fechamento × abertura **pelas mesmas definições do código** (`_api_do_corte`: S1 de A e (a)+(f) de A+1 pela FAIXA v1), agora para todo escopo e não só os com RREO;
   - leitura da verificação ANOM-CONT;
   - interface.
+- **Corte de cada exercício:** a regra única da seção 9.2 (R8).
 - **Fechamento × abertura** (R2): nunca "saldo final de A × inscrição de A+1".
   - A inscrição de A+1 inclui os empenhos do próprio ano A (faixas b/g da FAIXA v1), que não estavam no saldo de RP de A.
   - A comparação definida é S1(A) contra (a)+(f)(A+1), com natureza `diferenca` e sinal (a)+(f)(A+1) − S1(A).
   - Diferença ≠ 0 mostra que o fechamento de A e a abertura de A+1 não coincidem na base atual. Ela aparece como diferença, nunca como erro, e a causa é investigada, não presumida.
+  - (a)+(f) usa os campos de inscrição (proc e aproc com data inicial 01/01), que são iguais em todos os cortes de A+1 (seção 5.4). Usa-se o corte que representa A+1 na série.
+- **Conjunto de entidades no fechamento × abertura do Município** (R7). O catálogo muda entre exercícios: a entidade 15 entra em 2019, a 10 sai em 2023, e as 3, 6, 9 e 11 saem em 2026.
+  - Para cada entidade que está só de um lado, verifica-se o valor dela nesse lado.
+  - Se todas essas entidades forem `sem_rp` (zero registros), a comparação do Município é feita e mostra quais entidades entram e quais saem. É o caso de hoje nas três transições; medido na revisão final.
+  - Se alguma tiver registros, a comparação do Município fica **indisponível**, com o motivo e a lista dessas entidades. A comparação por entidade continua disponível.
+  - Nunca se compara o Município com conjuntos diferentes como se fossem equivalentes.
 - **Distinguir na série:**
   - exercício sem cobertura;
   - entidade fora do catálogo (entidade 15 antes de 2019; entidade 10 depois de 2022; entidades 3, 6, 9 e 11 em 2026);
@@ -416,7 +444,9 @@ Nos dois regimes, a interface mostra exatamente o que a camada painel devolve.
   - teste do **texto do retrato** em todos os pontos;
   - ausência de frases como "Restos a Pagar de 2020" ou "situação em 2020" sem o retrato;
   - entidades fora do catálogo como lacuna;
-  - fechamento × abertura igual ao já exibido na coerência para os escopos com RREO;
+  - fechamento × abertura igual ao já exibido na coerência para os escopos com RREO (hoje S1(A) = (a)+(f)(A+1) ao centavo no consolidado e na entidade 1, de 2020 a 2025);
+  - sintético: entidade só de um lado com registros bloqueia o Município (R7); só com zero registros, não bloqueia e é listada;
+  - corte representativo de cada exercício igual para todos os escopos (R8);
   - ANOM-CONT igual à tabela `verificacao`.
 - **Critério de aceitação:** coincidência ao centavo em todo ponto disponível; lacunas rotuladas; texto do retrato verificado em todo ponto.
 - **Critério de parada:** divergência entre a série e os indicadores homologados, ou falha nova de continuidade.
@@ -463,6 +493,8 @@ Nos dois regimes, a interface mostra exatamente o que a camada painel devolve.
 - **Dependências:** 05.1 e 05.2.
 - **Risco:** médio; é a consulta mais sensível da etapa.
 
+**Escolha do par:** dois cortes quaisquer do mesmo exercício, escolhidos explicitamente pelo usuário, anterior < posterior. Entre exercícios diferentes não há investigação de variação (o universo de registros é outro); essa relação é a do fechamento × abertura (05.3).
+
 **Pré-condições do par de cortes:**
 - os dois cortes estão disponíveis no escopo;
 - no Município, o mesmo conjunto de entidades entra no total nos dois cortes;
@@ -503,6 +535,8 @@ O total é calculado pela mesma soma do indicador homologado em cada corte.
 
 **Fechamento e apresentação:**
 - **Lista completa paginada:** é a opção coerente com a arquitetura atual, que já pagina com `LIMIT`/`OFFSET`. A lista contém **todas** as chaves com contribuição ≠ 0.
+  - Ordem fixa: contribuição decrescente (o maior aumento primeiro e a maior redução por último), com desempate por (entidade, anoempenho, empenho).
+  - Toda página mostra o subtotal da página e o total acumulado até ela. A última página fecha com a variação total.
 - **Resumo com grupos:** a tela de resumo mostra:
   - TOP N aumentos (contribuição > 0, em ordem decrescente);
   - "outros aumentos" (soma e quantidade);
@@ -524,7 +558,8 @@ O total é calculado pela mesma soma do indicador homologado em cada corte.
 **Histórico de um empenho:** valores do registro da chave em cada corte em que aparece, com a situação do ponto (seção 9.2) nos cortes em que não aparece.
 
 **Testes:**
-- fechamento ao centavo (grupos e classes) em todos os pares de cortes consecutivos disponíveis de 2025 e 2026, nas duas métricas;
+- fechamento ao centavo (grupos e classes) em todos os pares de cortes adjacentes disponíveis de 2025 e 2026, nas duas métricas, e em pelo menos um par que salta uma lacuna (Município 2026: 28/02 → 30/04);
+- soma das páginas da lista completa = variação total;
 - recálculo do bruto de cada contribuição;
 - sintéticos:
   - chave só no posterior;
@@ -562,6 +597,7 @@ O total é calculado pela mesma soma do indicador homologado em cada corte.
   - "continuidade fechamento→abertura" e "pareamento de cópias 24xxxxx": falha = item que não cumpriu a verificação; 0 = "sem falha";
   - "conciliação RREO × API (colunas com diferença)": "falhas" = **colunas com diferença**, informativo, remetendo à reconciliação e às situações abaixo;
   - "RREO sem valores extraídos": "falhas" = PDFs não lidos pelo extrator;
+- verificação cuja descrição não esteja no catálogo de interpretações da 05.6 aparece com os números brutos (verificados e "falhas") e a situação "significado não catalogado". Nunca recebe interpretação por analogia;
 - a verificação é de conjunto. **Não** se apresenta cada falha como um empenho. Quando a mesma regra registra anomalias por empenho (ex.: SALDO-SEM-CONTINUIDADE e DESCONTINUIDADE para a continuidade), a ligação é feita por regra e escopo, para a lista de anomalias.
 
 **Diferenças com o RREO**, cinco situações separadas:
@@ -597,20 +633,33 @@ A contagem é feita por coluna × documento × regra de agregação (RREO-COL v1
   - responsividade e acessibilidade das telas novas;
   - relatório final;
   - tag `etapa-05-final`.
-- **Decisão antes da 05.7:** se a primeira atualização real da base (D1) será feita (seção 10).
+- **Pré-requisito:** os relatórios de homologação de 05.1 a 05.6 aprovados, cada um com seus critérios de aceitação cumpridos. A 05.7 não reavalia por julgamento: refaz as verificações objetivas da seção 17 sobre o conjunto.
+- **Decisão antes da 05.7:** D1 (seção 10).
 - **Critério de aceitação:** seção 17.
 
 O agrupamento é deliberado. Comparação entre entidades (B5) sai das séries de 05.2 e 05.3. Gráficos entram na subetapa da pergunta que respondem, depois da tabela homologada.
 
-## 10. Dependências e decisões do responsável
+## 10. Dependências e decisões
 
-| Decisão | Opções | Recomendação |
-|---|---|---|
-| Integração da Etapa 04 no `main` (PRs #1 → #2 → #3) | antes ou durante a Etapa 05 | **antes**, para que os PRs da Etapa 05 mostrem só o próprio trabalho |
-| Aprovação deste plano (versão 2) e da ordem das subetapas | — | condição para iniciar a 05.1 |
-| D1: primeira atualização real da base | fazer antes da 05.7, adiar ou deixar fora | **não é dependência de 05.1–05.6.** Exercitaria o procedimento da 04.6 e daria os primeiros casos reais de mudança entre retratos. Decidir antes da 05.7 |
-| Técnica de gráfico | decidida na 05.1 | sem dependência nova de execução, salvo justificativa aprovada |
-| Concentração por credor | manter fora ou abrir decisão de governança | manter fora |
+Decididas na revisão final, contra os 10 critérios pedidos:
+1. compatível com o código;
+2. depende de implementação inexistente?;
+3. preserva as garantias da Etapa 04;
+4. fonte de dados definida;
+5. regra determinística;
+6. ausência de dados tratada;
+7. critério de validação;
+8. proveniência;
+9. teste objetivo;
+10. pertence à Etapa 05.
+
+| Item | Decisão | Justificativa técnica | Ajuste feito no plano |
+|---|---|---|---|
+| Integração da Etapa 04 no `main` (PRs #1 → #2 → #3) | **AJUSTAR** | Não é trabalho da Etapa 05 (critério 10) e não bloqueia o código: as subetapas partem da tag `etapa-04-final`, que é a base homologada, esteja ou não no `main`. Afeta só a rastreabilidade dos PRs | passa a pré-requisito **recomendado e não bloqueante**, com regra objetiva:<br>• antes de abrir o PR da 05.1, mesclar #1 → #2 → #3 → #4;<br>• se isso não tiver acontecido, o ramo da 05.1 parte de `subetapa-05-planejamento`, e o PR declara a cadeia de commits que carrega, como nos PRs #2 a #4 |
+| Aprovação do plano e da ordem 05.1 → 05.7 | **APROVAR** | Conferido contra o código e o banco da tag (seção 18):<br>• toda métrica tem fonte (camada 2 existente), regra determinística, tratamento de ausência (seção 9.2), validação (seção 9.4), proveniência (seção 14) e teste objetivo;<br>• nenhuma exige regra nova, fonte nova ou mudança na derivação;<br>• nenhuma dependência técnica obriga a mudar a ordem | esta revisão final (R7–R10) |
+| D1: primeira atualização real da base | **ADIAR** | Não é dependência de 05.1–05.6 (critério 2). Gera snapshots novos e muda o estado comparado na homologação (critério 3), e o procedimento da 04.6 nunca foi executado (critério 9 ainda sem evidência) | decidir antes da 05.7. Se for feita:<br>• entra como subetapa própria, depois da homologação da 05.6;<br>• segue o procedimento do `app/README.md` (referência do bruto → coleta → `verificar` → processar → testes → `portoes --referencia`);<br>• a 05.7 refaz todas as comparações de estado sobre a base nova, tratando a diferença de valores como efeito documentado da coleta, nunca como regressão |
+| Técnica de gráfico | **ADIAR** (para a 05.1) | Nenhuma pergunta depende do gráfico: a tabela é a fonte da verdade. Escolher agora anteciparia implementação | critérios obrigatórios da decisão na 05.1:<br>• sem JavaScript;<br>• compatível com a CSP atual (`default-src 'none'`, `style-src 'self'`; nada de estilo embutido);<br>• sem CDN;<br>• sem dependência nova de execução, salvo justificativa aprovada;<br>• tabela de valores exatos sempre presente;<br>• lacuna desenhada como lacuna;<br>• cada ponto com link de proveniência;<br>• legível em 375 px |
+| Concentração e ranking por credor (P11) | **FORA DO ESCOPO** | A especificação da 04.5 vedou ranking e tela pública de fornecedores. Os dados identificados só existem no nível interno, e a decisão de expor é de governança (critérios 3 e 10) | nenhum; continua na seção 8 |
 
 ## 11. Critérios de homologação (toda subetapa)
 
@@ -724,10 +773,10 @@ HOMOLOGAÇÃO (suítes completas + verificar + portoes + estado antes × depois)
 
 A Etapa 05 estará encerrada quando, no commit final:
 
-1. **P1/P2:** as séries existirem para Município e entidades. Cada ponto disponível coincide ao centavo entre JSON bruto, camada painel e interface. Cada ponto indisponível aparece com sua situação (seção 9.2), nunca como R$ 0,00 nem ausente. O texto do retrato de cada ponto histórico foi verificado por teste.
+1. **P1/P2:** as séries existirem para Município e entidades, com todos os cortes (ou exercícios) do universo da seção 9.2 e diferenças só entre pontos adjacentes disponíveis (R9). Cada ponto disponível coincide ao centavo entre JSON bruto, camada painel e interface. Cada ponto indisponível aparece com sua situação (seção 9.2), nunca como R$ 0,00 nem ausente. O texto do retrato de cada ponto histórico foi verificado por teste.
 2. **P3/P4:** cada composição exibida fechar **individualmente** com o total do corte, por dimensão, ao centavo. Dimensão que não fecha não é exibida. A faixa é apresentada como "composição dos registros da API segundo a regra FAIXA v1".
 3. **P6:** para todo par de cortes consecutivos disponível, as contribuições fecharem exatamente a variação, por grupos e por classe, com sinal preservado. Pares com chave duplicada ou escopo incompatível ficam bloqueados com motivo.
-4. **P7:** a comparação fechamento × abertura usar S1(A) × (a)+(f)(A+1) pela FAIXA v1 e aparecer como diferença e verificação, não como erro.
+4. **P7:** a comparação fechamento × abertura usar S1(A) × (a)+(f)(A+1) pela FAIXA v1, no corte representativo de cada exercício (R8), e aparecer como diferença e verificação, não como erro. No Município, só com entidades exclusivas de um lado sem registros (R7); fora disso, indisponível com motivo.
 5. **P9:** "sem diferença" separado de "explicada", "parcialmente explicada", "hipótese" e "não determinada", e as contagens iguais às da reconciliação.
 6. **P12:** anomalias e verificações validadas segundo sua natureza (derivação → painel → interface). Drill-down só para anomalias com chave de empenho; verificações apresentadas como conjunto.
 7. Toda métrica numérica nova estar no contrato com as 14 respostas e validada por recálculo independente.
@@ -779,3 +828,26 @@ Mantidos sem mudança, conforme pedido:
 | R6 | No Município, comparar dois cortes exige o mesmo conjunto de entidades no total | `_corte`: entidades fora do catálogo ou sem snapshot não entram | **correção do plano** (pré-condição da 05.5) |
 
 Nenhum desses problemas exige implementação agora, e nenhum muda a ordem das subetapas.
+
+### 18.3 Revisão final da versão 2 (conferência contra o código e o banco da tag)
+
+Conferidos:
+- `consulta.py`: `_corte`, `evolucao`, `indicadores`, `_api_do_corte`, `coerencia_entre_publicacoes`, `por_dimensao`, `_registros`, `_linhas_conciliacao`, `detalhe_empenho`, `SITUACOES_DO_DADO`, `SOMAS`;
+- `explicacoes.py`: `SITUACOES`, `resumo`, `explicar`;
+- `derivar.py`: categoria, faixas, S1–S3, anomalias, verificações;
+- `esquema.sql`: `anomalia`, `verificacao`;
+- testes: `test_homologacao.py`, `test_homologacao_real.py`;
+- banco ativo, com consultas que só leem.
+
+R1 a R6 confirmados e tratados como estavam:
+- R1 continua pendência de implementação (05.1 e 05.2), não resolvida;
+- R2 não foi reintroduzido em nenhum ponto do plano.
+
+| # | Problema | Evidência | Classificação |
+|---|---|---|---|
+| R7 | O catálogo de entidades muda entre exercícios (15 entra em 2019; 10 sai em 2023; 3, 6, 9 e 11 saem em 2026), e o fechamento × abertura do Município (P7) não dizia o que fazer com a entidade que só existe de um lado | medição: nas três transições, as entidades exclusivas de um lado têm 0 registros. A coerência mostra S1(A) = (a)+(f)(A+1) ao centavo no consolidado e na entidade 1, de 2020 a 2025 | **correção do plano** (05.3 e seção 17): Município comparável só se as exclusivas forem `sem_rp`; senão, indisponível com motivo |
+| R8 | A versão 2 deixava aberto qual corte representa o exercício em aberto (2026) para cada escopo; entidade e Município poderiam usar cortes diferentes (entidade 1 em 31/12, posterior à coleta; Município em 31/08) | `cortes()`: 31/12/2026 só da entidade 1 | **correção do plano** (seção 9.2): um corte único por exercício para todos os escopos |
+| R9 | A versão 2 não dizia se a diferença entre cortes "pula" uma lacuna (Município 2026: 31/03 indisponível entre 28/02 e 30/04) | `evolucao(2026)` do Município | **correção do plano** (seção 9.2 e 05.2): diferença só entre adjacentes; o par que salta a lacuna é escolha explícita na 05.5 |
+| R10 | Faltavam a ordem da lista completa da 05.5, e a regra para uma descrição de verificação fora do catálogo de interpretações (05.6) | — | **correção do plano** (05.5 e 05.6) |
+
+Nenhum desses pontos exige implementação agora, regra nova ou mudança de ordem.
