@@ -211,6 +211,28 @@ class Bruto:
             anterior = pt
         return pontos
 
+    # ---------------------------------------------------------------- serie entre exercicios (contrato M-03, M-04)
+    def sem_cobertura(self, exercicio):
+        return not self._listagens(None, exercicio)
+
+    def corte_representativo(self, exercicio):
+        """(data_final, aberto): 31/12 com Municipio disponivel; senao o ultimo corte com Municipio disponivel."""
+        disp = [df for df in self.cortes_do_exercicio(exercicio) if self.ponto(exercicio, df)["tem_valor"]]
+        if f"{exercicio}-12-31" in disp:
+            return f"{exercicio}-12-31", False
+        return (disp[-1], True) if disp else (None, None)
+
+    def a_mais_f(self, exercicio, coletas):
+        """Abertura de RP de exercicios anteriores a exercicio-1: proc e aproc dos itens com anoempenho diferente de
+        exercicio-1 (faixas 'a' e 'f'; so a parte positiva entra em faixa), recalculado do bruto."""
+        total = 0
+        for c in coletas:
+            for r in self.itens(c):
+                v = valores_do_item(r)
+                if r["anoempenho"] != exercicio - 1:
+                    total += (v["proc"] if v["proc"] > 0 else 0) + (v["aproc"] if v["aproc"] > 0 else 0)
+        return total
+
     # ---------------------------------------------------------------- contribuicoes (contrato M-09 a M-11)
     def contribuicoes(self, exercicio, df_anterior, df_posterior, entidade=None, metrica="s1", top=10):
         """Contribuicao de cada empenho para a variacao de `metrica` ('s1' ou 'pagamentos') entre dois cortes do
