@@ -1,0 +1,97 @@
+{
+ "data": "2026-10-01",
+ "ferramenta": "navegador embutido do app (Chromium), interface local somente leitura sobre o banco ativo",
+ "medicoes": [
+  {
+   "tamanho": "celular 375x812",
+   "url": "/historico",
+   "vw": 375,
+   "estouro": 0,
+   "fora": 0,
+   "fontes_menores_11px": 0,
+   "controles_fora": 0,
+   "h1": 1,
+   "saltos_de_titulo": 0,
+   "grafico": {
+    "largura_px": 351,
+    "cabe": true,
+    "barras": 11,
+    "rotulos_sobrepostos": 0,
+    "texto_min_px": 15
+   },
+   "altura_max_linha_px": 89
+  },
+  {
+   "tamanho": "celular 375x812",
+   "url": "/historico?entidade=15",
+   "vw": 375,
+   "estouro": 0,
+   "fora": 0,
+   "grafico": {
+    "texto_min_px": 14,
+    "texto_sem_dado_dentro_da_lacuna": [
+     true,
+     true,
+     true
+    ]
+   },
+   "altura_max_linha_px": 89
+  },
+  {
+   "tamanho": "celular 375x812",
+   "url": "/evolucao?exercicio=2026",
+   "vw": 375,
+   "estouro": 0,
+   "fora": 0,
+   "grafico": {
+    "texto_sem_dado_dentro_da_lacuna": [
+     true,
+     true,
+     true
+    ]
+   },
+   "altura_max_linha_px": 55
+  },
+  {
+   "tamanho": "tablet 768x1024",
+   "url": "/historico",
+   "vw": 753,
+   "estouro": 0,
+   "fora": 0,
+   "grafico": {
+    "largura_px": 713,
+    "cabe": true
+   }
+  },
+  {
+   "tamanho": "notebook 1280x720",
+   "url": "/historico?entidade=1",
+   "vw": 1265,
+   "estouro": 0,
+   "fora": 0,
+   "grafico": {
+    "largura_px": 820,
+    "cabe": true
+   },
+   "rotulo_exercicio_em_aberto": true
+  },
+  {
+   "tamanho": "desktop (largura do painel)",
+   "url": "/historico?entidade=15",
+   "vw": 701,
+   "estouro": 0,
+   "fora": 0,
+   "h1": 1,
+   "saltos_de_titulo": 0,
+   "grafico": {
+    "largura_px": 661,
+    "cabe": true
+   }
+  }
+ ],
+ "ajustes_feitos_na_verificacao": [
+  "lacuna do grafico com ~90% da faixa do ponto: com 11 exercicios em 375 px o rotulo 'sem dado' (23 px) passava da lacuna (18 px)",
+  "forma curta da situacao tambem corta o parentese ('entidade inexistente no exercicio'), nas duas telas de serie",
+  "largura minima nas colunas de texto (Retrato 17em, Situacao 11em): linhas de ate 194 px caem para 89 px em 375 px"
+ ]
+}

@@ -36,9 +36,10 @@ def barras(ident, titulo, descricao, pontos):
         x = MARGEM_X + i * faixa + (faixa - largura_barra) / 2
         centro = MARGEM_X + i * faixa + faixa / 2
         v = p["valor_c"]
-        if v is None:
-            forma = (f'<rect class="lacuna" x="{x:.1f}" y="{TOPO}" width="{largura_barra:.1f}" '
-                     f'height="{altura_util}"/>'
+        if v is None:       # a lacuna ocupa quase toda a faixa do ponto, para o rotulo caber com muitos pontos
+            largura_lacuna = faixa * 0.9
+            forma = (f'<rect class="lacuna" x="{centro - largura_lacuna / 2:.1f}" y="{TOPO}" '
+                     f'width="{largura_lacuna:.1f}" height="{altura_util}"/>'
                      f'<text class="rotulo-lacuna" x="{centro:.1f}" y="{TOPO + altura_util / 2 - 12:.1f}" '
                      f'text-anchor="middle"><tspan x="{centro:.1f}">sem</tspan>'
                      f'<tspan x="{centro:.1f}" dy="26">dado</tspan></text>')
