@@ -92,7 +92,9 @@ Os testes são conferidos por quem disponibiliza. Se um portão falhar, o retrat
 - Saída redirecionada para arquivo em cp1252 não derruba o programa: caractere que a codificação não representa (ex.: "→") sai como `→`.
 - `apagar-execucao` protege a derivação mais recente de cada vigência (a atual e a de cada data "como estava em").
 
-## Comandos (rodar dentro de `app/`)
+## Comandos (rodar dentro de `app/` ou na raiz do projeto)
+
+Na raiz do projeto, o atalho `rp.py` encaminha `python -m rp ...` para o pacote em `app/rp`, com a mesma configuração. Em qualquer outra pasta, o Python não acha o pacote (`No module named rp`).
 
 Criar pastas e banco:
 
