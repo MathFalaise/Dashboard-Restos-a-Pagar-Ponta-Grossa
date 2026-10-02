@@ -137,10 +137,12 @@ def test_SINTETICO_serie_lista_todos_os_cortes_e_nao_pula_lacuna(mundo):
     assert [x["situacao"] for x in mun] == ["com_dados", "municipio_indisponivel", "com_dados"]
     um = b.serie(2025, 1)
     assert [x["diferenca_saldo"] for x in um] == [None, -2000, -500]
-    with mundo.painel() as p:      # o painel atual omite o corte sem a entidade (R1, corrigido na 05.2)
-        assert [x["data_final"] for x in p.evolucao(2025, 15)["serie"]] == ["2025-02-28", "2025-06-30"]
+    with mundo.painel() as p:      # R1 corrigido na 05.2: o painel lista todos os cortes, com a situacao
+        ev = p.evolucao(2025, 15)["serie"]
+        assert [x["data_final"] for x in ev] == ["2025-02-28", "2025-04-30", "2025-06-30"]
+        assert [x["situacao"]["codigo"] for x in ev] == [x["situacao"] for x in serie]
         assert [l["situacao_do_dado"]["codigo"] for l in p.entidades_do_corte(2025, "2025-04-30")["linhas"]
-                if l["entidade"] == 15] == ["sem_coleta"]                   # mas o ponto e representavel
+                if l["entidade"] == 15] == ["sem_coleta"]
 
 
 # ================================================================== contribuicoes e fechamento (SINTETICO)
@@ -289,7 +291,8 @@ def test_universo_da_serie_e_R1_no_dado_real(real, bruto_real):
         assert [x["situacao"] for x in serie] == ["sem_coleta", "com_dados", "sem_coleta", "com_dados", "com_dados",
                                                   "com_dados", "sem_coleta"]
         assert all(x["valores"] is None for x in serie if x["situacao"] == "sem_coleta")
-        assert len(p.evolucao(2026, ent)["serie"]) == 4      # R1 continua no painel atual; correcao na 05.2
+        ev = p.evolucao(2026, ent)["serie"]                 # R1 corrigido na 05.2: os 7 cortes, com situacao
+        assert [x["situacao"]["codigo"] for x in ev] == [x["situacao"] for x in serie]
     assert [x["situacao"] for x in b.serie(2026)] == ["municipio_indisponivel", "com_dados", "municipio_indisponivel",
                                                      "com_dados", "com_dados", "com_dados", "municipio_indisponivel"]
 
