@@ -94,6 +94,14 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 .dimensoes { font-size: 14px; line-height: 2.1; margin: 10px 0 12px; }
 .empenho-cortes td:nth-child(2) { min-width: 14em; }
 .variacao td:nth-child(4) { min-width: 9em; }
+.anomalias td:first-child code { white-space: nowrap; word-break: normal; }
+.anomalias td:nth-child(2) { min-width: 16em; }
+.anomalias td:nth-child(4), .anomalias td:nth-child(8) { min-width: 11em; }
+.verificacoes td:nth-child(6) { min-width: 16em; }
+.itens-verificacao td:first-child { min-width: 18em; }
+.itens-verificacao td:nth-child(5) { min-width: 9em; }
+.ocorrencias td:nth-child(4) { min-width: 12em; }
+.ocorrencias td:nth-child(7) { min-width: 20em; }
 .mais-filtros { flex: 1 1 100%; font-size: 13px; }
 .filtros-extra { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: flex-end; margin-top: 8px; }
 @media (max-width: 640px) {
