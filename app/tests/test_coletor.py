@@ -50,7 +50,8 @@ def test_repete_em_503_e_completa(ambiente):
     tres_paginas(p)
     p.rotas[(EP_RP, "1")] = [(503, b"indisponivel"), (200, pagina([REG(3), REG(4)], 1, 5, False, 3))]
     s = ambiente["coletor"].listagem(1, 2026, "2026-08-31")
-    assert s["status"] == "completa" and len(p.chamadas) == 4
+    # 3 paginas + 1 repeticao do 503 + 3 da segunda leitura (auditoria COL-01: corte de varias paginas e lido 2 vezes)
+    assert s["status"] == "completa" and len(p.chamadas) == 7
     assert 5.0 in ambiente["relogio"].dormiu  # espera antes de repetir
     m = ambiente["armazem"].ler_manifesto(s["manifesto"])
     assert [r["tentativas"] for r in m["respostas"]] == [1, 2, 1]
@@ -73,7 +74,7 @@ def test_erro_de_rede_esgota_tentativas_e_registra_falha(ambiente):
 def test_pausa_minima_entre_requisicoes(ambiente):
     tres_paginas(ambiente["portal"])
     ambiente["coletor"].listagem(1, 2026, "2026-08-31")
-    assert ambiente["relogio"].dormiu == [1.5, 1.5]  # 3 requisicoes, 2 pausas
+    assert ambiente["relogio"].dormiu == [1.5] * 5  # 3 paginas + 3 da segunda leitura = 6 requisicoes, 5 pausas
 
 
 # ------------------------------------------------------------------ armazem e banco
