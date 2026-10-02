@@ -7,6 +7,7 @@ Código de **produção**:
 - **04.5:** interface pública somente leitura (`rp/interface`), sobre a camada `rp/painel`: `python -m rp interface`.
 - **04.6:** homologação da interface: situação de cada dado, busca por empenho, resultado vazio sem R$ 0,00, análise experimental rotulada, configuração portátil, portões de uma carga nova (`python -m rp portoes`) e procedimento de instalação e atualização.
 - **04.7:** encerramento técnico da Etapa 04, sem mudança de código: plano atualizado (`../etapa04/PLANO_ETAPA04.md`), relatório consolidado (`../etapa04/RELATORIO_ETAPA04_FINAL.md`) e ponto de restauração (tag `etapa-04-final`).
+- **05.1:** contrato analítico da Etapa 05 (`../etapa05/CONTRATO_ANALITICO.md`) e ferramenta de recálculo independente a partir do JSON bruto (`tests/recalculo_bruto.py`), sem mudança no código de produção.
 
 **Fontes** (detalhe em `../etapa04/ARQUITETURA_FONTES.md`):
 - API do Portal da Transparência de Ponta Grossa (Elotech/Oxy Transparência) → fonte primária dos dados operacionais de RP;
