@@ -18,7 +18,7 @@ import json
 import logging
 from collections import OrderedDict, defaultdict
 
-from . import agora, regras
+from . import DataInvalida, agora, instante, regras
 
 log = logging.getLogger("rp.derivar")
 
@@ -48,7 +48,11 @@ NOMES_LINHA = CAMPOS_REGISTRO + CAMPOS_DERIVADO
 
 def derivar(con, nid, em=None):
     """Nova derivacao sobre a normalizacao `nid`. `em` (ISO com fuso): considera so snapshots coletados
-    ate essa data - 'como estava em'. Sem `em`, usa todos (o mais recente de cada corte e o vigente)."""
+    ate essa data - 'como estava em'. Sem `em`, usa todos (o mais recente de cada corte e o vigente).
+    `em` precisa estar na forma canonica de rp.instante (a comparacao com coletada_em e textual e a camada painel
+    procura a derivacao por esse texto): outra forma do mesmo instante e recusada, nunca comparada (auditoria CLI-01)."""
+    if em is not None and instante(em) != em:
+        raise DataInvalida(f"vigencia {em!r} fora da forma canonica {instante(em)!r}: use rp.instante")
     regras.semear(con)
     R = regras.ids(con)
     par = regras.parametros(con, "PAR-24", 1)
@@ -180,11 +184,13 @@ EFEITO = {20: ("empenho", 1), 21: ("cancelamento", -1), 22: ("estorno_cancelamen
 
 
 def _movimentacao(con, did, nid, em=None):
+    """Lancamentos so de snapshot completo, como os registros (_registros): snapshot incompleto nunca vira retrato
+    valido (auditoria DER-01)."""
     filtro, p = _ate(em)
     fonte = con.execute(
         "SELECT m.resposta_id, m.indice, m.tipo_lancamento, m.valor_c, m.exercicio_liquidacao_rotulo, "
         "m.no_liquidacao_rotulo, m.exercicio_pagamento_rotulo, m.no_pagamento_rotulo FROM movimentacao_lancamento m "
-        "JOIN coleta c ON c.id = m.coleta_id WHERE m.normalizacao_id = ?" + filtro +
+        "JOIN coleta c ON c.id = m.coleta_id WHERE m.normalizacao_id = ? AND c.status = 'completa'" + filtro +
         " ORDER BY m.resposta_id, m.indice", (nid, *p)).fetchall()
 
     def interpretados():
