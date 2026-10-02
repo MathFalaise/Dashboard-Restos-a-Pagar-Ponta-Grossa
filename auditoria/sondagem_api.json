@@ -1,0 +1,2098 @@
+{
+ "requisicoes": [
+  {
+   "rotulo": "ent5 size=2000 p0 (1a)",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 2000,
+    "page": 0
+   },
+   "status": 200,
+   "segundos": 1.55,
+   "bytes": 329463,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:03:47 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0827012529c4b2c3f2c2dfefd907c5cb9\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 2000,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": true,
+    "totalPages": 1,
+    "totalElements": 448,
+    "size": 2000,
+    "number": 0,
+    "sort": [],
+    "first": true,
+    "numberOfElements": 448,
+    "empty": false
+   },
+   "len_content": 448,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "5f2ed80f38803fab",
+   "primeiras_chaves": [
+    [
+     5,
+     2019,
+     1444
+    ],
+    [
+     5,
+     2024,
+     680
+    ],
+    [
+     5,
+     2024,
+     681
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2025,
+     2262
+    ],
+    [
+     5,
+     2025,
+     2263
+    ],
+    [
+     5,
+     2025,
+     2264
+    ]
+   ]
+  },
+  {
+   "rotulo": "ent5 size=2000 p0 (2a)",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 2000,
+    "page": 0
+   },
+   "status": 200,
+   "segundos": 0.9,
+   "bytes": 329463,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:03:50 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0827012529c4b2c3f2c2dfefd907c5cb9\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 2000,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": true,
+    "totalPages": 1,
+    "totalElements": 448,
+    "size": 2000,
+    "number": 0,
+    "sort": [],
+    "first": true,
+    "numberOfElements": 448,
+    "empty": false
+   },
+   "len_content": 448,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "5f2ed80f38803fab",
+   "primeiras_chaves": [
+    [
+     5,
+     2019,
+     1444
+    ],
+    [
+     5,
+     2024,
+     680
+    ],
+    [
+     5,
+     2024,
+     681
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2025,
+     2262
+    ],
+    [
+     5,
+     2025,
+     2263
+    ],
+    [
+     5,
+     2025,
+     2264
+    ]
+   ]
+  },
+  {
+   "rotulo": "ent5 size=100 p0",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 100,
+    "page": 0
+   },
+   "status": 200,
+   "segundos": 0.99,
+   "bytes": 73593,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:03:53 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0e92b0e876c0e6167f566f6a6f714ad2d\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 100,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": false,
+    "totalPages": 5,
+    "totalElements": 448,
+    "size": 100,
+    "number": 0,
+    "sort": [],
+    "first": true,
+    "numberOfElements": 100,
+    "empty": false
+   },
+   "len_content": 100,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "b257ebc219389852",
+   "primeiras_chaves": [
+    [
+     5,
+     2019,
+     1444
+    ],
+    [
+     5,
+     2024,
+     680
+    ],
+    [
+     5,
+     2024,
+     681
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2025,
+     833
+    ],
+    [
+     5,
+     2025,
+     834
+    ],
+    [
+     5,
+     2025,
+     835
+    ]
+   ]
+  },
+  {
+   "rotulo": "ent5 size=100 p1",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 100,
+    "page": 1
+   },
+   "status": 200,
+   "segundos": 0.98,
+   "bytes": 73429,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:03:56 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"031e47ec98bec9bfe36964394ac0c2204\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 100,
+     "pageNumber": 1,
+     "pageSize": 100,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": false,
+    "totalPages": 5,
+    "totalElements": 448,
+    "size": 100,
+    "number": 1,
+    "sort": [],
+    "first": false,
+    "numberOfElements": 100,
+    "empty": false
+   },
+   "len_content": 100,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "00d5fc2edfd429ed",
+   "primeiras_chaves": [
+    [
+     5,
+     2025,
+     836
+    ],
+    [
+     5,
+     2025,
+     842
+    ],
+    [
+     5,
+     2025,
+     863
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2025,
+     1734
+    ],
+    [
+     5,
+     2025,
+     1735
+    ],
+    [
+     5,
+     2025,
+     1737
+    ]
+   ]
+  },
+  {
+   "rotulo": "ent5 size=100 p2",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 100,
+    "page": 2
+   },
+   "status": 200,
+   "segundos": 0.91,
+   "bytes": 73664,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:03:59 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"057dd37b650269c436220dbf1c5417630\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 200,
+     "pageNumber": 2,
+     "pageSize": 100,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": false,
+    "totalPages": 5,
+    "totalElements": 448,
+    "size": 100,
+    "number": 2,
+    "sort": [],
+    "first": false,
+    "numberOfElements": 100,
+    "empty": false
+   },
+   "len_content": 100,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "2a218dec5ad8a431",
+   "primeiras_chaves": [
+    [
+     5,
+     2025,
+     1739
+    ],
+    [
+     5,
+     2025,
+     1740
+    ],
+    [
+     5,
+     2025,
+     1743
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2025,
+     2020
+    ],
+    [
+     5,
+     2025,
+     2028
+    ],
+    [
+     5,
+     2025,
+     2030
+    ]
+   ]
+  },
+  {
+   "rotulo": "ent5 size=100 p3",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 100,
+    "page": 3
+   },
+   "status": 200,
+   "segundos": 1.13,
+   "bytes": 74255,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:02 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0f03e5996951c7c9467c6783a808beaad\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 300,
+     "pageNumber": 3,
+     "pageSize": 100,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": false,
+    "totalPages": 5,
+    "totalElements": 448,
+    "size": 100,
+    "number": 3,
+    "sort": [],
+    "first": false,
+    "numberOfElements": 100,
+    "empty": false
+   },
+   "len_content": 100,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "64905b3b398ff04e",
+   "primeiras_chaves": [
+    [
+     5,
+     2025,
+     2033
+    ],
+    [
+     5,
+     2025,
+     2034
+    ],
+    [
+     5,
+     2025,
+     2035
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2025,
+     2179
+    ],
+    [
+     5,
+     2025,
+     2181
+    ],
+    [
+     5,
+     2025,
+     2182
+    ]
+   ]
+  },
+  {
+   "rotulo": "ent5 size=100 p4",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 100,
+    "page": 4
+   },
+   "status": 200,
+   "segundos": 1.08,
+   "bytes": 35475,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:05 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"07802067cd5962dcb259e20f121b4d107\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 400,
+     "pageNumber": 4,
+     "pageSize": 100,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": true,
+    "totalPages": 5,
+    "totalElements": 448,
+    "size": 100,
+    "number": 4,
+    "sort": [],
+    "first": false,
+    "numberOfElements": 48,
+    "empty": false
+   },
+   "len_content": 48,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "f58b908f046da29c",
+   "primeiras_chaves": [
+    [
+     5,
+     2025,
+     2183
+    ],
+    [
+     5,
+     2025,
+     2184
+    ],
+    [
+     5,
+     2025,
+     2185
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2025,
+     2262
+    ],
+    [
+     5,
+     2025,
+     2263
+    ],
+    [
+     5,
+     2025,
+     2264
+    ]
+   ]
+  },
+  {
+   "rotulo": "ent5 size=100 p0 repetida",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 100,
+    "page": 0
+   },
+   "status": 200,
+   "segundos": 1.02,
+   "bytes": 73593,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:09 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0e92b0e876c0e6167f566f6a6f714ad2d\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 100,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": false,
+    "totalPages": 5,
+    "totalElements": 448,
+    "size": 100,
+    "number": 0,
+    "sort": [],
+    "first": true,
+    "numberOfElements": 100,
+    "empty": false
+   },
+   "len_content": 100,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "b257ebc219389852",
+   "primeiras_chaves": [
+    [
+     5,
+     2019,
+     1444
+    ],
+    [
+     5,
+     2024,
+     680
+    ],
+    [
+     5,
+     2024,
+     681
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2025,
+     833
+    ],
+    [
+     5,
+     2025,
+     834
+    ],
+    [
+     5,
+     2025,
+     835
+    ]
+   ]
+  },
+  {
+   "rotulo": "ent5 size=100 p99 (fora)",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 100,
+    "page": 99
+   },
+   "status": 200,
+   "segundos": 1.0,
+   "bytes": 239,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:12 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0ca27d0f1c03e7d63de632f04ba199444\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 9900,
+     "pageNumber": 99,
+     "pageSize": 100,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": true,
+    "totalPages": 5,
+    "totalElements": 448,
+    "size": 100,
+    "number": 99,
+    "sort": [],
+    "first": false,
+    "numberOfElements": 0,
+    "empty": true
+   },
+   "len_content": 0,
+   "chaves_registro": [],
+   "sha_content": "4f53cda18c2baa0c",
+   "primeiras_chaves": [],
+   "ultimas_chaves": []
+  },
+  {
+   "rotulo": "ent5 size=100 page=-1",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 100,
+    "page": -1
+   },
+   "status": 200,
+   "segundos": 0.68,
+   "bytes": 73593,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:14 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0e92b0e876c0e6167f566f6a6f714ad2d\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 100,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": false,
+    "totalPages": 5,
+    "totalElements": 448,
+    "size": 100,
+    "number": 0,
+    "sort": [],
+    "first": true,
+    "numberOfElements": 100,
+    "empty": false
+   },
+   "len_content": 100,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "b257ebc219389852",
+   "primeiras_chaves": [
+    [
+     5,
+     2019,
+     1444
+    ],
+    [
+     5,
+     2024,
+     680
+    ],
+    [
+     5,
+     2024,
+     681
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2025,
+     833
+    ],
+    [
+     5,
+     2025,
+     834
+    ],
+    [
+     5,
+     2025,
+     835
+    ]
+   ]
+  },
+  {
+   "rotulo": "ent5 size=0",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 0,
+    "page": 0
+   },
+   "status": 200,
+   "segundos": 0.91,
+   "bytes": 14840,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:17 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"014916f5ab15130a85bd68b5e251ca63e\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 20,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": false,
+    "totalPages": 23,
+    "totalElements": 448,
+    "size": 20,
+    "number": 0,
+    "sort": [],
+    "first": true,
+    "numberOfElements": 20,
+    "empty": false
+   },
+   "len_content": 20,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "96fe21a9a0c2133b",
+   "primeiras_chaves": [
+    [
+     5,
+     2019,
+     1444
+    ],
+    [
+     5,
+     2024,
+     680
+    ],
+    [
+     5,
+     2024,
+     681
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2024,
+     2163
+    ],
+    [
+     5,
+     2024,
+     2173
+    ],
+    [
+     5,
+     2024,
+     2253
+    ]
+   ]
+  },
+  {
+   "rotulo": "ent5 sem size/page",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31"
+   },
+   "status": 200,
+   "segundos": 0.88,
+   "bytes": 14840,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:20 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"014916f5ab15130a85bd68b5e251ca63e\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 20,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": false,
+    "totalPages": 23,
+    "totalElements": 448,
+    "size": 20,
+    "number": 0,
+    "sort": [],
+    "first": true,
+    "numberOfElements": 20,
+    "empty": false
+   },
+   "len_content": 20,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "96fe21a9a0c2133b",
+   "primeiras_chaves": [
+    [
+     5,
+     2019,
+     1444
+    ],
+    [
+     5,
+     2024,
+     680
+    ],
+    [
+     5,
+     2024,
+     681
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2024,
+     2163
+    ],
+    [
+     5,
+     2024,
+     2173
+    ],
+    [
+     5,
+     2024,
+     2253
+    ]
+   ]
+  },
+  {
+   "rotulo": "ent1 size=5000 p0",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 1,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 5000,
+    "page": 0
+   },
+   "status": 200,
+   "segundos": 6.88,
+   "bytes": 1460624,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:29 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"02d479d9c56fb954cde0a107fcf0b6b8a\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 2000,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": false,
+    "totalPages": 3,
+    "totalElements": 4557,
+    "size": 2000,
+    "number": 0,
+    "sort": [],
+    "first": true,
+    "numberOfElements": 2000,
+    "empty": false
+   },
+   "len_content": 2000,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "647b5830c72f1950",
+   "primeiras_chaves": [
+    [
+     1,
+     2012,
+     2398
+    ],
+    [
+     1,
+     2012,
+     5136
+    ],
+    [
+     1,
+     2012,
+     6344
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     1,
+     2025,
+     12979
+    ],
+    [
+     1,
+     2025,
+     12987
+    ],
+    [
+     1,
+     2025,
+     12988
+    ]
+   ]
+  },
+  {
+   "rotulo": "ent5 size=100 p0 sort=empenho,asc",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 100,
+    "page": 0,
+    "sort": "empenho,asc"
+   },
+   "status": 200,
+   "segundos": 0.82,
+   "bytes": 73823,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:32 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0a1f273cee8a45ab3ebc07f79be22ce44\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [
+      {
+       "property": "empenho",
+       "ascending": true,
+       "descending": false,
+       "direction": "ASC"
+      }
+     ],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 100,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": false,
+    "totalPages": 5,
+    "totalElements": 448,
+    "size": 100,
+    "number": 0,
+    "sort": [
+     {
+      "property": "empenho",
+      "ascending": true,
+      "descending": false,
+      "direction": "ASC"
+     }
+    ],
+    "first": true,
+    "numberOfElements": 100,
+    "empty": false
+   },
+   "len_content": 100,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "2748a9ad7d3c20d6",
+   "primeiras_chaves": [
+    [
+     5,
+     2025,
+     29
+    ],
+    [
+     5,
+     2025,
+     30
+    ],
+    [
+     5,
+     2025,
+     32
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2025,
+     1087
+    ],
+    [
+     5,
+     2025,
+     1130
+    ],
+    [
+     5,
+     2025,
+     1131
+    ]
+   ]
+  },
+  {
+   "rotulo": "exercicio invalido 1900",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 1900,
+    "dataInicial": "1900-01-01",
+    "dataFinal": "1900-12-31",
+    "size": 10,
+    "page": 0
+   },
+   "status": 200,
+   "segundos": 0.1,
+   "bytes": 229,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:34 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0b80ca25388a46345c7184e1b057255ff\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 10,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": true,
+    "totalPages": 0,
+    "totalElements": 0,
+    "size": 10,
+    "number": 0,
+    "sort": [],
+    "first": true,
+    "numberOfElements": 0,
+    "empty": true
+   },
+   "len_content": 0,
+   "chaves_registro": [],
+   "sha_content": "4f53cda18c2baa0c",
+   "primeiras_chaves": [],
+   "ultimas_chaves": []
+  },
+  {
+   "rotulo": "entidade inexistente 99999",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 99999,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 10,
+    "page": 0
+   },
+   "status": 200,
+   "segundos": 0.06,
+   "bytes": 229,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:36 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0b80ca25388a46345c7184e1b057255ff\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 10,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": true,
+    "totalPages": 0,
+    "totalElements": 0,
+    "size": 10,
+    "number": 0,
+    "sort": [],
+    "first": true,
+    "numberOfElements": 0,
+    "empty": true
+   },
+   "len_content": 0,
+   "chaves_registro": [],
+   "sha_content": "4f53cda18c2baa0c",
+   "primeiras_chaves": [],
+   "ultimas_chaves": []
+  },
+  {
+   "rotulo": "data invalida 2026-13-45",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-13-45",
+    "size": 10,
+    "page": 0
+   },
+   "status": 400,
+   "segundos": 0.1,
+   "bytes": 2817,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:38 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked"
+   },
+   "json_objeto": {
+    "timestamp": "2026-10-02T16:04:38-03:00",
+    "status": 400,
+    "error": "Bad Request",
+    "exception": "org.springframework.validation.BindException",
+    "message": "org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object 'empenhoParams' on field 'dataFinal': rejected value [2026-13-45]; codes [typeMismatch.empenhoParams.dataFinal,typeMismatch.dataFinal,typeMismatch.java.time.LocalDate,typeMismatch]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [empenhoParams.dataFinal,dataFinal]; arguments []; default message [dataFinal]]; default message [Failed to convert property value of type 'java.lang.String' to required type 'java.time.LocalDate' for property 'dataFinal'; nested exception is org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.lang.String] to type [@io.swagger.v3.oas.annotations.media.Schema @org.springframework.format.annotation.DateTimeFormat java.time.LocalDate] for value [2026-13-45]; nested exception is java.lang.IllegalArgumentException: Parse attempt failed for value [2026-13-45]]",
+    "path": "/portaltransparencia-api/empenhos/restos-a-pagar",
+    "detail": "BindException: org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object 'empenhoParams' on field 'dataFinal': rejected value [2026-13-45]; codes [typeMismatch.empenhoParams.dataFinal,typeMismatch.dataFinal,typeMismatch.java.time.LocalDate,typeMismatch]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [empenhoParams.dataFinal,dataFinal]; arguments []; default message [dataFinal]]; default message [Failed to convert property value of type 'java.lang.String' to required type 'java.time.LocalDate' for property 'dataFinal'; nested exception is org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.lang.String] to type [@io.swagger.v3.oas.annotations.media.Schema @org.springframework.format.annotation.DateTimeFormat java.time.LocalDate] for value [2026-13-45]; nested exception is java.lang.IllegalArgumentException: Parse attempt failed for value [2026-13-45]]",
+    "violations": "list"
+   }
+  },
+  {
+   "rotulo": "sem dataFinal",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "size": 10,
+    "page": 0
+   },
+   "status": 500,
+   "segundos": 0.04,
+   "bytes": 397,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:40 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked"
+   },
+   "json_objeto": {
+    "timestamp": "2026-10-02T16:04:40-03:00",
+    "status": 500,
+    "error": "Internal Server Error",
+    "exception": "br.com.elotech.core.exception.EloDatabaseException",
+    "message": "Erro desconhecido ao acessar dados.",
+    "path": "/portaltransparencia-api/empenhos/restos-a-pagar",
+    "detail": "InvalidDataAccessApiUsageException: No value supplied for the SQL parameter 'dataFinal': No value registered for key 'dataFinal'"
+   }
+  },
+  {
+   "rotulo": "parametro desconhecido foo=bar",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2026-08-31",
+    "size": 10,
+    "page": 0,
+    "foo": "bar"
+   },
+   "status": 200,
+   "segundos": 0.92,
+   "bytes": 7511,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:43 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0066dd849f1725a9e7eda52c8aec4207d\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 10,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": false,
+    "totalPages": 45,
+    "totalElements": 448,
+    "size": 10,
+    "number": 0,
+    "sort": [],
+    "first": true,
+    "numberOfElements": 10,
+    "empty": false
+   },
+   "len_content": 10,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "530a673c1403e85d",
+   "primeiras_chaves": [
+    [
+     5,
+     2019,
+     1444
+    ],
+    [
+     5,
+     2024,
+     680
+    ],
+    [
+     5,
+     2024,
+     681
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2024,
+     1257
+    ],
+    [
+     5,
+     2024,
+     1850
+    ],
+    [
+     5,
+     2024,
+     1887
+    ]
+   ]
+  },
+  {
+   "rotulo": "dataFinal em outro ano",
+   "caminho": "/empenhos/restos-a-pagar",
+   "params": {
+    "entidade": 5,
+    "exercicio": 2026,
+    "dataInicial": "2026-01-01",
+    "dataFinal": "2027-02-28",
+    "size": 10,
+    "page": 0
+   },
+   "status": 200,
+   "segundos": 0.69,
+   "bytes": 7514,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:46 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0be6447a813e56dd9f62b7772d897aaa9\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 10,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": false,
+    "totalPages": 45,
+    "totalElements": 448,
+    "size": 10,
+    "number": 0,
+    "sort": [],
+    "first": true,
+    "numberOfElements": 10,
+    "empty": false
+   },
+   "len_content": 10,
+   "chaves_registro": [
+    "anoempenho",
+    "aproc",
+    "canceladoAProc",
+    "canceladoProc",
+    "cnpj",
+    "cnpjNome",
+    "dataEmissao",
+    "descricaoFonte",
+    "desdobraDesp",
+    "elemento",
+    "empenho",
+    "empenhoExercicio",
+    "entidade",
+    "fonteRecurso",
+    "fornecedor",
+    "funcao",
+    "liquidado",
+    "nome",
+    "orgao",
+    "pagoAProc",
+    "pagoAProcEstornado",
+    "pagoProc",
+    "pagoProcEstornado",
+    "proc",
+    "programa",
+    "programatica",
+    "projeto",
+    "retencao",
+    "subDesdobramento",
+    "subFuncao",
+    "unidade"
+   ],
+   "sha_content": "781f0b1370ec016a",
+   "primeiras_chaves": [
+    [
+     5,
+     2019,
+     1444
+    ],
+    [
+     5,
+     2024,
+     680
+    ],
+    [
+     5,
+     2024,
+     681
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     5,
+     2024,
+     1257
+    ],
+    [
+     5,
+     2024,
+     1850
+    ],
+    [
+     5,
+     2024,
+     1887
+    ]
+   ]
+  },
+  {
+   "rotulo": "entidades/lista",
+   "caminho": "/api/entidades/lista",
+   "params": null,
+   "status": 200,
+   "segundos": 0.31,
+   "bytes": 182255,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:48 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0a037342a2be90f7ff6a13ef660764d59\"",
+    "Content-Encoding": "gzip"
+   },
+   "json_lista": 10,
+   "chaves_item": [
+    "bairro",
+    "brasao",
+    "cep",
+    "cidade",
+    "cnpj",
+    "entidadePrincipal",
+    "habilitadoPortal",
+    "id",
+    "logradouro",
+    "nome",
+    "registrado",
+    "telefone",
+    "tipo",
+    "uf"
+   ]
+  },
+  {
+   "rotulo": "exercicios/entidade/5",
+   "caminho": "/api/exercicios/entidade/5",
+   "params": null,
+   "status": 200,
+   "segundos": 0.04,
+   "bytes": 324623,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:50 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0b5740e0049ed13621b9a1a99dd842838\"",
+    "Content-Encoding": "gzip"
+   },
+   "json_lista": 11,
+   "chaves_item": [
+    "aberto",
+    "anoBasePPA",
+    "entidadeId",
+    "exercicio",
+    "fechado",
+    "id",
+    "modeloDespesa"
+   ]
+  },
+  {
+   "rotulo": "publicacoes/1 ent1 2026",
+   "caminho": "/api/publicacoes/1",
+   "params": {
+    "entidade": 1,
+    "exercicio": 2026
+   },
+   "status": 200,
+   "segundos": 0.25,
+   "bytes": 24338,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:52 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"09f4796713fc2afa609bcbfbcddeab177\"",
+    "Content-Encoding": "gzip"
+   },
+   "json_lista": 1,
+   "chaves_item": [
+    "filtrarPorExercicio",
+    "id",
+    "list",
+    "mostraWeb",
+    "valor"
+   ]
+  },
+  {
+   "rotulo": "movimentacao ent1 2025 emp5659",
+   "caminho": "/empenhos/detalhe/movimentacao",
+   "params": {
+    "entidade": 1,
+    "exercicio": 2025,
+    "empenho": 5659,
+    "size": 500
+   },
+   "status": 200,
+   "segundos": 0.47,
+   "bytes": 4306,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:55 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "ETag": "W/\"0d7aae0e0e88ae4035a509abb01b22089\"",
+    "Content-Encoding": "gzip"
+   },
+   "pagina": {
+    "pageable": {
+     "sort": [],
+     "offset": 0,
+     "pageNumber": 0,
+     "pageSize": 500,
+     "paged": true,
+     "unpaged": false
+    },
+    "last": true,
+    "totalPages": 1,
+    "totalElements": 15,
+    "size": 500,
+    "number": 0,
+    "sort": [],
+    "first": true,
+    "numberOfElements": 15,
+    "empty": false
+   },
+   "len_content": 15,
+   "chaves_registro": [
+    "data",
+    "descricaoTipoLancamento",
+    "exercicioLiquidacao",
+    "exercicioPagamento",
+    "noLiquidacao",
+    "noPagamento",
+    "nroDocumento",
+    "tipoLancamento",
+    "valor",
+    "valorALiquidar",
+    "valorAPagar"
+   ],
+   "sha_content": "baa7a62988a87328",
+   "primeiras_chaves": [
+    [
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null
+    ]
+   ],
+   "ultimas_chaves": [
+    [
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null
+    ]
+   ]
+  },
+  {
+   "rotulo": "caminho inexistente",
+   "caminho": "/empenhos/nao-existe",
+   "params": null,
+   "status": 404,
+   "segundos": 0.14,
+   "bytes": 0,
+   "cabecalhos": {
+    "Server": "nginx",
+    "Date": "Fri, 02 Oct 2026 19:04:57 GMT",
+    "Transfer-Encoding": "chunked"
+   },
+   "corpo_inicio": ""
+  }
+ ],
+ "analises": {
+  "consultas_consecutivas_identicas_bytes_content": true,
+  "consultas_consecutivas_mesma_ordem_de_chaves": true,
+  "paginas100_total_registros": 448,
+  "paginas100_chaves_distintas": 448,
+  "paginas100_mesmo_conjunto_que_size2000": true,
+  "paginas100_mesma_ordem_que_size2000": true,
+  "paginas100_registros_identicos_ao_size2000": true,
+  "pagina0_repetida_identica": true,
+  "ordem_crescente_por_empenho": false,
+  "ordem_por_anoempenho_empenho": true,
+  "chave_entidade_ano_empenho_unica_no_corte": true,
+  "size5000_len_content": 2000,
+  "size5000_size_ecoado": 2000,
+  "size5000_totalPages": 3,
+  "sort_param_ordena_por_empenho": true,
+  "sort_ecoado": [
+   {
+    "property": "empenho",
+    "ascending": true,
+    "descending": false,
+    "direction": "ASC"
+   }
+  ]
+ }
+}
