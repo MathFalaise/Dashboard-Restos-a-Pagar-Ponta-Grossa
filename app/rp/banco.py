@@ -329,8 +329,45 @@ def reconstruir(cfg, armazem, destino):
     return con, n
 
 
+def _diferencas_do_manifesto(con, rel, m):
+    """Campos em que a camada 0 do banco nao e a do manifesto (auditoria REC-01): a presenca do snapshot_uid nao
+    basta; o banco precisa ter os mesmos parametros, status, datas e as mesmas respostas (ordem, URL, hash, tamanho)."""
+    try:
+        cid, manif, tipo, ep, pj, ent, ex, di, df, tp, ano, emp, arq, quando, origem, st, obs, cv = con.execute(
+            "SELECT id, manifesto, tipo, endpoint, parametros_json, entidade, exercicio, data_inicial, data_final, "
+            "tipo_pesquisa, anoempenho, empenho, id_arquivo, coletada_em, origem_carimbo, status, observacao, "
+            "coletor_versao_id FROM coleta WHERE snapshot_uid=?", (m["snapshot_uid"],)).fetchone()
+        p = m["parametros"]
+        esperado = {"manifesto": rel, "tipo": m["tipo"], "endpoint": m["endpoint"], "parametros": p,
+                    "entidade": p.get("entidade"), "exercicio": p.get("exercicio"), "data_inicial": p.get("dataInicial"),
+                    "data_final": p.get("dataFinal"), "tipo_pesquisa": p.get("tipoPesquisa"),
+                    "anoempenho": p.get("anoempenho"), "empenho": p.get("empenho"), "id_arquivo": p.get("id_arquivo"),
+                    "coletada_em": m["coletada_em"], "origem_carimbo": m["origem_carimbo"], "status": m["status"],
+                    "observacao": m.get("observacao")}
+        no_banco = {"manifesto": manif, "tipo": tipo, "endpoint": ep, "parametros": json.loads(pj), "entidade": ent,
+                    "exercicio": ex, "data_inicial": di, "data_final": df, "tipo_pesquisa": tp, "anoempenho": ano,
+                    "empenho": emp, "id_arquivo": arq, "coletada_em": quando, "origem_carimbo": origem, "status": st,
+                    "observacao": obs}
+        dif = [k for k in esperado if esperado[k] != no_banco[k]]
+        col = con.execute("SELECT nome, versao, sha256_codigo FROM coletor_versao WHERE id=?", (cv,)).fetchone()
+        if tuple(col) != (m["coletor"]["nome"], m["coletor"]["versao"], m["coletor"]["sha256_codigo"]):
+            dif.append("coletor")
+        resp = [(o, u, s, json.loads(c or "{}"), r, h, t) for o, u, s, c, r, h, t in con.execute(
+            "SELECT ordem, url, http_status, cabecalhos_json, recebida_em, sha256, tamanho FROM resposta_bruta "
+            "WHERE coleta_id=? ORDER BY ordem", (cid,))]
+        esperadas = [(r["ordem"], r["url"], r["http_status"], r.get("cabecalhos") or {}, r["recebida_em"], r["sha256"],
+                      r["tamanho"]) for r in sorted(m["respostas"], key=lambda r: r["ordem"])]
+        if resp != esperadas:
+            dif.append("respostas")
+        return dif
+    except (KeyError, TypeError, ValueError, AttributeError) as e:
+        return [f"manifesto sem campo esperado ({type(e).__name__}: {e})"]
+
+
 def verificar(con, armazem):
-    """Problemas de integridade entre banco e armazem (lista vazia = integro)."""
+    """Problemas de integridade entre banco e armazem (lista vazia = integro): objetos e manifestos do armazem, os
+    dois sentidos da presenca (manifesto x coleta, evidencia x banco), cada coleta igual ao seu manifesto campo a
+    campo e cada objeto do banco conferido pelo hash."""
     problemas = [f"armazém: {p}" for p in armazem.verificar()]
     registrados = {u for (u,) in con.execute("SELECT snapshot_uid FROM coleta")}
     no_disco = {}
@@ -342,6 +379,11 @@ def verificar(con, armazem):
     for uid, rel in con.execute("SELECT snapshot_uid, manifesto FROM coleta"):
         if uid not in no_disco:
             problemas.append(f"coleta sem manifesto no armazém: {uid} ({rel})")
+    for rel, m in itens:
+        if m["snapshot_uid"] in registrados:
+            dif = _diferencas_do_manifesto(con, rel, m)
+            if dif:
+                problemas.append(f"coleta difere do manifesto {rel}: {', '.join(dif)}")
     evid, _ = armazem.evidencias_e_erros()        # os ilegiveis ja vieram de armazem.verificar()
     evid_no_disco = {m["evidencia_uid"]: rel for rel, m in evid}
     evid_no_banco = dict(con.execute("SELECT evidencia_uid, manifesto FROM evidencia_externa WHERE evidencia_uid IS NOT NULL"))
