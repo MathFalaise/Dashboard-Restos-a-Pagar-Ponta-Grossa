@@ -73,6 +73,12 @@ ROTULO_COMPOSICAO = {"categoria": "Categoria (CAT v1)", "faixa": "Faixa (FAIXA v
 MEDIDAS_DA_COMPOSICAO = ("registros", "inscricao_total_c", "saldo_total_c")
 TEXTO_FAIXA = "composição dos registros da API segundo a regra FAIXA v1"
 SEM_CLASSIFICACAO = "sem classificação (campo ausente no registro da API)"
+# Investigacao de variacoes (Subetapa 05.5; contrato M-09 a M-12); as metricas ficam em METRICAS_DA_VARIACAO.
+CLASSES_DA_CHAVE = {"nos_dois": "nos dois cortes", "so_posterior": "presente só no corte posterior",
+                    "so_anterior": "ausente no corte posterior"}
+TOP_DA_VARIACAO = 10
+CAMPOS_DO_HISTORICO = ("proc_c", "aproc_c", "pago_proc_c", "pago_aproc_c", "liquidado_c", "cancelado_aproc_c",
+                       "s1_saldo_total_c")
 
 
 def diferenca(anterior, posterior):
@@ -85,6 +91,17 @@ def diferenca(anterior, posterior):
 # Expressao unica do cancelamento de um registro: usada no indicador, no agrupamento e na coluna da lista (a
 # interface nao soma campos por conta propria).
 EXPR_CANCELAMENTOS = "r.cancelado_aproc_c + r.cancelado_proc_c"
+# Expressao unica dos pagamentos de um registro (indicador, agrupamento e variacao da 05.5; contrato M-09 e M-11).
+EXPR_PAGAMENTOS = "r.pago_proc_c + r.pago_aproc_c"
+# Metricas da investigacao de variacoes (05.5; contrato M-10 e M-11): so estas duas.
+METRICAS_DA_VARIACAO = {
+    "s1": {"rotulo": "Saldo de RP (S1)", "sql": "d.s1_saldo_total_c", "indicador": "saldo_total",
+           "formula": "S1 v1 = proc + aproc − pagoProc − pagoAProc − canceladoAProc", "natureza_do_operando": "derivado",
+           "regras": {("S1", 1)}},
+    "pagamentos": {"rotulo": "Pagamentos (acumulados de 01/01 até o corte)", "sql": f"({EXPR_PAGAMENTOS})",
+                   "indicador": "pagamentos", "formula": "pagoProc + pagoAProc", "natureza_do_operando": "da_fonte",
+                   "regras": set()},
+}
 
 # Indicadores do corte: todos calculados sobre os registros da API (rp_registro) e os derivados por registro
 # (rp_derivado). `rreo` = colunas do RREO com que o indicador e comparado na reconciliacao (nunca substituido).
@@ -101,7 +118,7 @@ SOMAS = [
          formula="soma de pagoProc", rreo=["c"]),
     dict(id="pago_nao_processado", rotulo="Pago não processado (inclui retenções)", sql="SUM(r.pago_aproc_c)",
          colunas=["pago_aproc_c"], regras=[], formula="soma de pagoAProc", rreo=["i"]),
-    dict(id="pagamentos", rotulo="Pagamentos no período", sql="SUM(r.pago_proc_c + r.pago_aproc_c)",
+    dict(id="pagamentos", rotulo="Pagamentos no período", sql=f"SUM({EXPR_PAGAMENTOS})",
          colunas=["pago_proc_c", "pago_aproc_c"], regras=[], formula="soma de pagoProc + pagoAProc"),
     dict(id="estornos_de_pagamento", rotulo="Estornos de pagamento (informativo; já descontados dos pagamentos)",
          sql="SUM(r.pago_proc_estornado_c + r.pago_aproc_estornado_c)",
@@ -799,7 +816,7 @@ class Painel:
                  "pagamentos_c": row[k + 2] or 0, "liquidacoes_c": row[k + 3] or 0, "cancelamentos_c": row[k + 4] or 0,
                  "saldo_total_c": row[k + 5] or 0}
                 for row in self.con.execute(
-                    f"SELECT {grupo}, COUNT(*), SUM(r.proc_c + r.aproc_c), SUM(r.pago_proc_c + r.pago_aproc_c), "
+                    f"SELECT {grupo}, COUNT(*), SUM(r.proc_c + r.aproc_c), SUM({EXPR_PAGAMENTOS}), "
                     f"SUM(r.liquidado_c), SUM({EXPR_CANCELAMENTOS}), SUM(d.s1_saldo_total_c) "
                     f"FROM rp_registro r JOIN rp_derivado d ON d.derivacao_id=? AND d.resposta_id=r.resposta_id "
                     f"AND d.indice=r.indice WHERE r.normalizacao_id=? AND {filtro} GROUP BY {grupo} "
@@ -849,13 +866,18 @@ class Painel:
                                                                                       "rp_registro + rp_derivado"))
         for d in COMPOSICOES:
             saida["dimensoes"][d] = self._dimensao(ctx, corte["somar"], uids, regras_usadas, d, total, exercicio)
-        par = regras.parametros(self.con, "PAR-24", 1)
-        if entidade is None or entidade in (par["entidade_copia"], par["entidade_original"]):
-            saida["pares_espelhados_no_corte"] = self.con.execute(
-                "SELECT COUNT(DISTINCT anoempenho_a || '/' || empenho_a) FROM espelhamento_par WHERE derivacao_id=? AND "
-                "exercicio=? AND data_inicial=? AND data_final=?",
-                (ctx["derivacao"]["id"], exercicio, f"{exercicio}-01-01", data_final)).fetchone()[0]
+        saida["pares_espelhados_no_corte"] = self._pares_no_corte(ctx, exercicio, data_final, entidade)
         return saida
+
+    def _pares_no_corte(self, ctx, exercicio, data_final, entidade):
+        """Copias 24xxxxx distintas com par no corte (PAR-24 v1), quando o escopo envolve as entidades do par; senao 0."""
+        par = regras.parametros(self.con, "PAR-24", 1)
+        if entidade is not None and entidade not in (par["entidade_copia"], par["entidade_original"]):
+            return 0
+        return self.con.execute(
+            "SELECT COUNT(DISTINCT anoempenho_a || '/' || empenho_a) FROM espelhamento_par WHERE derivacao_id=? AND "
+            "exercicio=? AND data_inicial=? AND data_final=?",
+            (ctx["derivacao"]["id"], exercicio, f"{exercicio}-01-01", data_final)).fetchone()[0]
 
     def _dimensao(self, ctx, coletas, uids, regras_usadas, d, total, exercicio):
         """Grupos e fechamento de UMA dimensao da composicao (ver `composicao`)."""
@@ -937,6 +959,200 @@ class Painel:
             return item
         nome = {"orgao": "órgão", "funcao": "função", "programa": "programa", "elemento": "elemento"}[d]
         return {"ident": str(v), "chave": v, "rotulo": f"{nome} {v}", "filtro": {d: v}}
+
+    # ------------------------------------------------------------------ investigacao de variacoes (05.5)
+    def _universo_do_exercicio(self, vig, exercicio):
+        """Cortes processados do exercicio, de qualquer entidade (contrato secao 2.4)."""
+        di = f"{exercicio}-01-01"
+        return sorted({df for (e, ex, d0, df) in vig if ex == exercicio and d0 == di})
+
+    def _valores_por_chave(self, ctx, coletas, expr):
+        """{(entidade, anoempenho, empenho): [ocorrencias]} com o valor de `expr` (expressao fixa deste modulo) e a
+        origem de cada registro (snapshot, resposta HTTP, posicao no content[] e SHA-256 do objeto bruto)."""
+        filtro, p = self._de_coletas(coletas)
+        mapa = {}
+        for e, ano, emp, v, uid, ordem, sha, indice, rid in self.con.execute(
+                f"SELECT r.entidade, r.anoempenho, r.empenho, {expr}, c.snapshot_uid, rb.ordem, rb.sha256, r.indice, "
+                f"r.resposta_id FROM rp_registro r JOIN rp_derivado d ON d.derivacao_id=? AND d.resposta_id=r.resposta_id "
+                f"AND d.indice=r.indice JOIN coleta c ON c.id=r.coleta_id JOIN resposta_bruta rb ON rb.id=r.resposta_id "
+                f"WHERE r.normalizacao_id=? AND {filtro}", (ctx["derivacao"]["id"], ctx["normalizacao"]["id"], *p)):
+            mapa.setdefault((e, ano, emp), []).append(
+                {"valor_c": v, "proveniencia": {"snapshot_uid": uid, "resposta_ordem": ordem, "indice_no_content": indice,
+                                                "objeto_bruto_sha256": sha, "resposta_id": rid}})
+        return mapa
+
+    def variacao(self, exercicio, anterior, posterior, entidade=None, metrica="s1", em=None, limite=50, deslocamento=0,
+                 top=TOP_DA_VARIACAO):
+        """Variacao de uma metrica entre dois cortes do MESMO exercicio, explicada pelas contribuicoes de cada empenho
+        (Subetapa 05.5; contrato M-09 a M-11).
+        * Par escolhido explicitamente (anterior < posterior), adjacente ou nao. Fica indisponivel, com o motivo, se
+          um lado nao tem valor no escopo; no Municipio, se o conjunto de entidades somadas difere (R6); se a mesma
+          chave (entidade, anoempenho, empenho) aparece mais de uma vez num lado (lista das chaves; nada e escolhido).
+        * Variacao total = indicador homologado do posterior - do anterior. Contribuicao por chave, sempre posterior -
+          anterior: nos dois cortes = post - ant; so no posterior = post; so no anterior = 0 - ant.
+        * Fechamento ao centavo (secao 4.2) da lista, dos grupos do resumo e das classes; se falhar, o par e
+          bloqueado (criterio de parada da 05.5), nunca exibido com resto.
+        * Lista completa (chaves com contribuicao != 0) em ordem de contribuicao decrescente, desempate pela chave;
+          paginada, com subtotal da pagina e acumulado ate ela."""
+        if metrica not in METRICAS_DA_VARIACAO:
+            raise ErroDoPainel(f"metrica precisa ser uma de {sorted(METRICAS_DA_VARIACAO)}")
+        if isinstance(top, bool) or not isinstance(top, int) or top < 1:
+            raise ErroDoPainel("top precisa ser um inteiro positivo")
+        if not (isinstance(anterior, str) and isinstance(posterior, str) and anterior < posterior):
+            raise ErroDoPainel("o corte anterior precisa ser anterior ao corte posterior")
+        limite, deslocamento = max(1, min(int(limite), LIMITE_LISTA)), max(0, int(deslocamento))
+        m = METRICAS_DA_VARIACAO[metrica]
+        ctx, em = self.contexto(), instante(em)
+        vig, cat = self._vigentes(ctx, em), self._catalogo(ctx, em)
+        regs = self._regras_publicaveis(m["regras"])
+        saida = {"consulta": {"exercicio": exercicio, "anterior": anterior, "posterior": posterior, "entidade": entidade,
+                              "metrica": metrica, "como_estava_em": em},
+                 "escopo": f"entidade {entidade}" if entidade is not None else "Município (entidades do catálogo oficial do exercício)",
+                 "metrica": {"id": metrica, "rotulo": m["rotulo"], "formula": m["formula"],
+                             "natureza_do_operando": m["natureza_do_operando"], "regras": regs},
+                 "fonte": fontes.ELOTECH["rotulo"], "natureza": "diferenca", "sinal": "posterior − anterior",
+                 "disponivel": False, "motivo_indisponivel": None, "chaves_repetidas": [], "anterior": None,
+                 "posterior": None, "variacao_c": None, "resumo": None, "classes": None, "fechamentos": None,
+                 "lista": None, "chaves": None, "pares_espelhados": None, "proveniencia": None, "nota": None}
+        universo = self._universo_do_exercicio(vig, exercicio)
+        faltam = [df for df in (anterior, posterior) if df not in universo]
+        if faltam:
+            saida["motivo_indisponivel"] = (f"corte sem processamento no exercício {exercicio}: "
+                                            + ", ".join(_data_br(df) for df in faltam))
+            return saida
+        lados = {}
+        for nome, df in (("anterior", anterior), ("posterior", posterior)):
+            corte = self._corte(ctx, exercicio, df, entidade, em, vig, cat)
+            codigo = self._situacao_do_ponto(corte, entidade)
+            lados[nome] = {"data_final": df, "situacao": {"codigo": codigo, "texto": SITUACOES_DO_PONTO[codigo]},
+                           "tem_valor": codigo in TEM_VALOR, "motivo_indisponivel": None if codigo in TEM_VALOR else corte["motivo"],
+                           "retrato": corte["retrato"],
+                           "snapshots": self._uids(corte["somar"]) if codigo in TEM_VALOR else [],
+                           "entidades_no_total": sorted(e["entidade"] for e in corte["entidades"] if e["entra_no_total"]),
+                           "total_c": None, "coletas": corte["somar"]}
+            if lados[nome]["tem_valor"]:   # total do corte: o indicador homologado (exibido mesmo com o par indisponivel)
+                lados[nome]["total_c"] = self._somas(ctx, corte["somar"])[m["indicador"]]
+        publico_ = {nome: {k: v for k, v in l.items() if k != "coletas"} for nome, l in lados.items()}
+        saida.update(anterior=publico_["anterior"], posterior=publico_["posterior"])
+        sem_valor = [l for l in lados.values() if not l["tem_valor"]]
+        if sem_valor:
+            saida["motivo_indisponivel"] = "; ".join(
+                f"o corte {_data_br(l['data_final'])} não tem valor para o escopo ({l['situacao']['texto']}"
+                + (f": {l['motivo_indisponivel']}" if l["motivo_indisponivel"] else "") + ")" for l in sem_valor)
+            return saida
+        a, b = lados["anterior"]["entidades_no_total"], lados["posterior"]["entidades_no_total"]
+        if entidade is None and a != b:
+            saida["motivo_indisponivel"] = (f"conjunto de entidades diferente nos dois cortes (R6): só no anterior "
+                                            f"{sorted(set(a) - set(b))}, só no posterior {sorted(set(b) - set(a))}")
+            return saida
+        mapas = {nome: self._valores_por_chave(ctx, l["coletas"], m["sql"]) for nome, l in lados.items()}
+        repetidas = sorted({k for mp in mapas.values() for k, occ in mp.items() if len(occ) > 1})
+        if repetidas:
+            saida["chaves_repetidas"] = [{"chave": dict(zip(("entidade", "anoempenho", "empenho"), k)),
+                                          "anterior": len(mapas["anterior"].get(k, ())),
+                                          "posterior": len(mapas["posterior"].get(k, ()))} for k in repetidas]
+            saida["motivo_indisponivel"] = (f"a mesma chave (entidade, ano, empenho) aparece mais de uma vez num dos "
+                                            f"snapshots ({len(repetidas)} chave(s)); nenhuma ocorrência é escolhida")
+            return saida
+        variacao = diferenca(lados["anterior"]["total_c"], lados["posterior"]["total_c"])
+        itens = []
+        for k in set(mapas["anterior"]) | set(mapas["posterior"]):
+            ant, post = mapas["anterior"].get(k, [None])[0], mapas["posterior"].get(k, [None])[0]
+            if ant and post:
+                classe, contrib = "nos_dois", diferenca(ant["valor_c"], post["valor_c"])
+            elif post:
+                classe, contrib = "so_posterior", post["valor_c"]
+            else:
+                classe, contrib = "so_anterior", 0 - ant["valor_c"]
+            itens.append({"chave": {"entidade": k[0], "anoempenho": k[1], "empenho": k[2]}, "classe": classe,
+                          "classe_texto": CLASSES_DA_CHAVE[classe], "anterior": ant, "posterior": post,
+                          "contribuicao_c": contrib, "natureza": "diferenca", "_k": k})
+        itens.sort(key=lambda x: (-x["contribuicao_c"], x["_k"]))
+        aumentos = [x for x in itens if x["contribuicao_c"] > 0]
+        reducoes = sorted((x for x in itens if x["contribuicao_c"] < 0), key=lambda x: (x["contribuicao_c"], x["_k"]))
+        zeros = [x for x in itens if x["contribuicao_c"] == 0]
+        lista = aumentos + [x for x in itens if x["contribuicao_c"] < 0]      # ordem do contrato: decrescente
+        for i, x in enumerate(lista, 1):
+            x["posicao"] = i
+        for x in itens:
+            del x["_k"]
+
+        def soma(xs):
+            return sum(x["contribuicao_c"] for x in xs)
+
+        grupos = [{"id": "top_aumentos", "rotulo": f"maiores aumentos (até {top})", "quantidade": len(aumentos[:top]),
+                   "soma_c": soma(aumentos[:top]), "itens": aumentos[:top]},
+                  {"id": "outros_aumentos", "rotulo": "outros aumentos", "quantidade": len(aumentos[top:]),
+                   "soma_c": soma(aumentos[top:])},
+                  {"id": "top_reducoes", "rotulo": f"maiores reduções (até {top})", "quantidade": len(reducoes[:top]),
+                   "soma_c": soma(reducoes[:top]), "itens": reducoes[:top]},
+                  {"id": "outras_reducoes", "rotulo": "outras reduções", "quantidade": len(reducoes[top:]),
+                   "soma_c": soma(reducoes[top:])},
+                  {"id": "sem_variacao", "rotulo": "sem variação", "quantidade": len(zeros), "soma_c": 0}]
+        classes = [{"id": c, "rotulo": CLASSES_DA_CHAVE[c], "quantidade": sum(1 for x in itens if x["classe"] == c),
+                    "soma_c": soma(x for x in itens if x["classe"] == c)} for c in CLASSES_DA_CHAVE]
+        fech = {"grupos": fechamento(variacao, [g["soma_c"] for g in grupos]),
+                "classes": fechamento(variacao, [c["soma_c"] for c in classes]),
+                "lista": fechamento(variacao, [x["contribuicao_c"] for x in lista])}
+        saida["fechamentos"] = fech
+        if not all(f["fecha"] for f in fech.values()):
+            saida["motivo_indisponivel"] = ("as contribuições não fecham com a variação total: o par não é exibido até a "
+                                            "causa ser investigada (critério de parada da 05.5)")
+            return saida
+        pagina = lista[deslocamento:deslocamento + limite]
+        saida.update(
+            disponivel=True, variacao_c=variacao,
+            resumo={"top": top, "grupos": grupos}, classes=classes,
+            lista={"itens": pagina, "total_de_chaves": len(lista), "limite": limite, "deslocamento": deslocamento,
+                   "subtotal_c": soma(pagina), "acumulado_c": soma(lista[:deslocamento + limite]),
+                   "ultima_pagina": deslocamento + limite >= len(lista)},
+            chaves={"total": len(itens), "com_variacao": len(lista), "sem_variacao": len(zeros)},
+            pares_espelhados={nome: self._pares_no_corte(ctx, exercicio, l["data_final"], entidade)
+                              for nome, l in lados.items()},
+            proveniencia={nome: self._proveniencia(ctx, l["coletas"], f"{m['formula']} por registro do corte "
+                                                                     f"{_data_br(l['data_final'])}")
+                          for nome, l in lados.items()},
+            nota=("Variação = valor do corte posterior − valor do corte anterior, pela mesma soma do indicador homologado. "
+                  "Cada corte é o estado atual da base para aquele corte, na data da coleta: se as duas coletas "
+                  "refletem bases diferentes, a variação mistura o movimento do intervalo com mudança retroativa."))
+        return saida
+
+    def historico_empenho(self, entidade, anoempenho, empenho, exercicio, em=None):
+        """Um empenho em cada corte do exercicio (Subetapa 05.5; contrato M-12): os valores do registro em cada corte
+        do universo (secao 2.4), sem formula nova. Corte sem valor para a entidade aparece com a situacao; corte com
+        valor em que a chave nao aparece, como 'empenho ausente deste corte'; chave repetida mostra todas as
+        ocorrencias, sem escolher."""
+        ctx, em = self.contexto(), instante(em)
+        vig, cat = self._vigentes(ctx, em), self._catalogo(ctx, em)
+        governo = self._naturezas_derivados()
+        cortes = []
+        for df in self._universo_do_exercicio(vig, exercicio):
+            corte = self._corte(ctx, exercicio, df, entidade, em, vig, cat)
+            codigo = self._situacao_do_ponto(corte, entidade)
+            ponto = {"data_final": df, "situacao": {"codigo": codigo, "texto": SITUACOES_DO_PONTO[codigo]},
+                     "tem_valor": codigo in TEM_VALOR, "motivo_indisponivel": None if codigo in TEM_VALOR else corte["motivo"],
+                     "retrato": corte["retrato"], "rotulos": [], "presente": False, "motivo_ausencia": None,
+                     "ocorrencias": []}
+            if ponto["tem_valor"]:
+                if corte["retrato"] and corte["retrato"]["corte_posterior_a_coleta"]:
+                    ponto["rotulos"].append(ROTULO_POSTERIOR_A_COLETA)
+                for reg, prov, _, _ in self._registros(ctx, corte["somar"], " AND r.anoempenho=? AND r.empenho=?",
+                                                        (anoempenho, empenho), ordem="empenho"):
+                    ponto["ocorrencias"].append({"valores": {c: reg[c] for c in CAMPOS_DO_HISTORICO},
+                                                 "categoria": reg["categoria"], "proveniencia": prov})
+                ponto["presente"] = bool(ponto["ocorrencias"])
+                ponto["motivo_ausencia"] = None if ponto["presente"] else "empenho ausente deste corte"
+            cortes.append(ponto)
+        campos = [{"coluna": c, "rotulo": fontes.CAMPOS[c][1] if c in fontes.CAMPOS else fontes.DERIVADOS[c][0],
+                   "campo_api": fontes.CAMPOS[c][0] if c in fontes.CAMPOS else None,
+                   "natureza": "da_fonte" if c in fontes.CAMPOS else governo[c]} for c in CAMPOS_DO_HISTORICO]
+        repetida = any(len(x["ocorrencias"]) > 1 for x in cortes)
+        return {"chave": {"entidade": entidade, "anoempenho": anoempenho, "empenho": empenho}, "exercicio": exercicio,
+                "como_estava_em": em, "fonte": fontes.ELOTECH["rotulo"], "campos": campos, "cortes": cortes,
+                "derivacao": {"id": ctx["derivacao"]["id"], "hash_resultado": ctx["derivacao"]["hash_resultado"]},
+                "normalizacao_id": ctx["normalizacao"]["id"],
+                "nota": ("Mais de uma ocorrência num corte = a mesma chave apareceu mais de uma vez no snapshot; nenhuma é "
+                         "descartada.") if repetida else None}
 
     # ------------------------------------------------------------------ registros
     def _registros(self, ctx, coletas, filtro_extra="", params=(), limite=None, deslocamento=0, ordem="saldo"):

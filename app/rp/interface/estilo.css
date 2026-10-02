@@ -92,6 +92,8 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 .composicao td:first-child { min-width: 16em; }
 .composicao td:last-child a { white-space: nowrap; }
 .dimensoes { font-size: 14px; line-height: 2.1; margin: 10px 0 12px; }
+.empenho-cortes td:nth-child(2) { min-width: 14em; }
+.variacao td:nth-child(4) { min-width: 9em; }
 .mais-filtros { flex: 1 1 100%; font-size: 13px; }
 .filtros-extra { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: flex-end; margin-top: 8px; }
 @media (max-width: 640px) {
