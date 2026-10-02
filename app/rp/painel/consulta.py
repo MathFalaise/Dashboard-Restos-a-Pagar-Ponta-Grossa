@@ -52,11 +52,15 @@ SITUACOES_DO_PONTO = {
     **{k: v for k, v in SITUACOES_DO_DADO.items() if k != "divergente"},
     "municipio_indisponivel": "Município indisponível: alguma entidade do catálogo do exercício sem snapshot processado "
                               "neste corte",
+    "exercicio_sem_cobertura": "exercício sem cobertura: nenhuma coleta deste exercício no banco",
 }
 TEM_VALOR = ("com_dados", "sem_rp")
 # Indicadores da serie no exercicio (contrato M-01 e M-02)
 INDICADORES_DA_SERIE = ("inscricao_total", "pagamentos", "liquidacoes", "cancelamentos", "saldo_total")
 ROTULO_POSTERIOR_A_COLETA = "corte posterior à coleta: valores até a data da coleta"
+ROTULO_EXERCICIO_EM_ABERTO = "exercício em aberto: último corte com o Município disponível"
+INDICADORES_ENTRE_EXERCICIOS = ("inscricao_total", "pagamentos", "cancelamentos", "saldo_total")
+CONTINUIDADE = "continuidade fechamento→abertura"          # descricao gravada pela derivacao (ANOM-CONT v1)
 
 
 def diferenca(anterior, posterior):
@@ -617,6 +621,137 @@ class Painel:
                 "proveniencia": {"anterior": anterior["valores"]["saldo_total"]["proveniencia"],
                                  "posterior": ponto["valores"]["saldo_total"]["proveniencia"]}}
 
+    def _sem_cobertura(self, exercicio, em):
+        """Contrato secao 2.1: nenhuma coleta de listagem do exercicio (de qualquer entidade e situacao) ate `em`."""
+        filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        return not self.con.execute("SELECT 1 FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND "
+                                    "exercicio=? AND data_inicial=?" + filtro + " LIMIT 1",
+                                    (exercicio, f"{exercicio}-01-01", *p)).fetchone()
+
+    def _corte_representativo(self, ctx, vig, cat, exercicio, em):
+        di, fim = f"{exercicio}-01-01", f"{exercicio}-12-31"
+        cortes = sorted({df for (e, ex, d0, df) in vig if ex == exercicio and d0 == di})
+        base = {"exercicio": exercicio, "data_final": None, "aberto": None, "motivo": None}
+        if not cortes:
+            return {**base, "motivo": ("exercício sem cobertura" if self._sem_cobertura(exercicio, em)
+                                       else "nenhum corte processado do exercício")}
+        disponiveis = [df for df in cortes if self._corte(ctx, exercicio, df, None, em, vig, cat)["disponivel"]]
+        if fim in disponiveis:
+            return {**base, "data_final": fim, "aberto": False}
+        if disponiveis:
+            return {**base, "data_final": disponiveis[-1], "aberto": True}
+        return {**base, "motivo": "Município indisponível em todos os cortes do exercício"}
+
+    def corte_representativo(self, exercicio, em=None):
+        """Corte que representa o exercicio na serie entre exercicios (contrato secao 2.5; R8): 31/12 se o Municipio
+        estiver disponivel nele; senao o ultimo corte com o Municipio disponivel ('exercicio em aberto'); senao nenhum
+        (lacuna para todos os escopos). O mesmo corte vale para todo escopo."""
+        ctx, em = self.contexto(), instante(em)
+        return self._corte_representativo(ctx, self._vigentes(ctx, em), self._catalogo(ctx, em), exercicio, em)
+
+    def serie_entre_exercicios(self, entidade=None, em=None):
+        """Serie por exercicio (Subetapa 05.3; contrato M-03 e M-04).
+        * Universo: todos os exercicios entre o primeiro e o ultimo com coleta de listagem; exercicio sem nenhuma
+          coleta aparece como 'exercicio_sem_cobertura'.
+        * Cada exercicio no corte representativo (R8), o mesmo para todos os escopos; valores None sem dado.
+        * Todo ponto com valor carrega o retrato 'Estado atual da base para o exercicio de A, corte ..., coletado em
+          ...': o passado e o estado atual da base, nao o que se sabia na epoca.
+        * Fechamento de A x abertura de A+1: (a)+(f)(A+1) - S1(A) pela FAIXA v1 (R2); no Municipio, so com as entidades
+          exclusivas de um lado sem registros (R7); com a verificacao de continuidade da derivacao (ANOM-CONT v1)."""
+        ctx, em = self.contexto(), instante(em)
+        vig, cat = self._vigentes(ctx, em), self._catalogo(ctx, em)
+        filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        anos = [ex for (ex,) in self.con.execute(
+            "SELECT DISTINCT exercicio FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND "
+            "data_inicial = exercicio || '-01-01'" + filtro, p)]
+        pontos = []
+        for ex in (range(min(anos), max(anos) + 1) if anos else []):
+            pontos.append(self._ponto_do_exercicio(ctx, vig, cat, ex, entidade, em))
+        fechamentos = [self._fechamento_abertura(ctx, vig, cat, a, b, entidade, em) for a, b in zip(pontos, pontos[1:])]
+        par = regras.parametros(self.con, "PAR-24", 1)
+        pares = {}
+        if entidade is None or entidade in (par["entidade_copia"], par["entidade_original"]):
+            pares = dict(self.con.execute(
+                "SELECT exercicio, COUNT(DISTINCT anoempenho_a || '/' || empenho_a) FROM espelhamento_par "
+                "WHERE derivacao_id=? GROUP BY exercicio", (ctx["derivacao"]["id"],)).fetchall())
+        return {"entidade": entidade, "como_estava_em": em, "fonte": fontes.ELOTECH["rotulo"],
+                "indicadores": list(INDICADORES_ENTRE_EXERCICIOS), "exercicios": pontos,
+                "fechamento_abertura": fechamentos, "pares_espelhados_por_exercicio": pares,
+                "nota": fontes.METODOLOGIA["importante"]}
+
+    def _ponto_do_exercicio(self, ctx, vig, cat, ex, entidade, em):
+        rep = self._corte_representativo(ctx, vig, cat, ex, em)
+        # mesmo formato da serie no exercicio (05.2): todo indicador presente, com valor_c None quando nao ha valor
+        ponto = {"exercicio": ex, "data_final": rep["data_final"], "aberto": rep["aberto"], "retrato": None,
+                 "rotulos": [], "entidades": [], "tem_valor": False,
+                 "valores": {i["id"]: {"rotulo": i["rotulo"], "valor_c": None, "natureza": "derivado",
+                                       "proveniencia": None} for i in SOMAS}}
+        if self._sem_cobertura(ex, em):
+            codigo, motivo = "exercicio_sem_cobertura", SITUACOES_DO_PONTO["exercicio_sem_cobertura"]
+        elif rep["data_final"] is None:
+            codigo, motivo = "municipio_indisponivel", rep["motivo"]
+        else:
+            r = self.indicadores(ex, rep["data_final"], entidade, em)
+            codigo, motivo = self._situacao_do_ponto(r, entidade), r["motivo_indisponivel"]
+            ponto.update(retrato=r["retrato"],
+                         entidades=[{"entidade": e["entidade"], "situacao": e["situacao_do_dado"]["codigo"],
+                                     "entra_no_total": e["entra_no_total"]} for e in r["entidades"]],
+                         valores={k: {x: v[x] for x in ("rotulo", "valor_c", "natureza", "proveniencia")}
+                                  for k, v in r["valores"].items()})
+        ponto.update(situacao={"codigo": codigo, "texto": SITUACOES_DO_PONTO[codigo]}, tem_valor=codigo in TEM_VALOR,
+                     motivo_indisponivel=None if codigo in TEM_VALOR else motivo)
+        if ponto["tem_valor"]:
+            ponto["rotulos"] = ([ROTULO_EXERCICIO_EM_ABERTO] if rep["aberto"] else []) + (
+                [ROTULO_POSTERIOR_A_COLETA] if ponto["retrato"]["corte_posterior_a_coleta"] else [])
+        return ponto
+
+    def _fechamento_abertura(self, ctx, vig, cat, a, b, entidade, em):
+        """Contrato M-04: (a)+(f)(A+1) - S1(A), cada um no corte representativo; R7 no Municipio."""
+        item = {"de": a["exercicio"], "para": b["exercicio"], "natureza": "diferenca",
+                "sinal": "(a)+(f) da abertura de A+1 − S1 do fechamento de A", "regras": ["S1 v1", "FAIXA v1"],
+                "s1_de_c": None, "a_mais_f_para_c": None, "diferenca_c": None, "motivo_indisponivel": None,
+                "entidades_que_entram": [], "entidades_que_saem": [], "proveniencia": None,
+                "continuidade": self._continuidade(ctx, a["exercicio"], entidade,
+                                                   {e["entidade"] for e in a["entidades"] + b["entidades"]})}
+        if not (a["tem_valor"] and b["tem_valor"]):
+            falta = a if not a["tem_valor"] else b
+            item["motivo_indisponivel"] = f"exercício {falta['exercicio']} sem valor ({falta['situacao']['texto']})"
+            return item
+        if entidade is None:
+            ea = {e["entidade"]: e["situacao"] for e in a["entidades"] if e["entra_no_total"]}
+            eb = {e["entidade"]: e["situacao"] for e in b["entidades"] if e["entra_no_total"]}
+            item["entidades_que_saem"], item["entidades_que_entram"] = sorted(set(ea) - set(eb)), sorted(set(eb) - set(ea))
+            com_registros = ([e for e in item["entidades_que_saem"] if ea[e] != "sem_rp"]
+                             + [e for e in item["entidades_que_entram"] if eb[e] != "sem_rp"])
+            if com_registros:
+                item["motivo_indisponivel"] = ("conjunto de entidades diferente nos dois exercícios, com registros na(s) "
+                                               f"entidade(s) {sorted(com_registros)} (R7)")
+                return item
+        coletas_b = self._corte(ctx, b["exercicio"], b["data_final"], entidade, em, vig, cat)["somar"]
+        _, af = self._s1_e_a_mais_f(ctx, coletas_b)
+        s1 = a["valores"]["saldo_total"]["valor_c"]
+        item.update(s1_de_c=s1, a_mais_f_para_c=af, diferenca_c=diferenca(s1, af),
+                    proveniencia={"de": a["valores"]["saldo_total"]["proveniencia"],
+                                  "para": {**b["valores"]["saldo_total"]["proveniencia"],
+                                           "consulta": "Σ proc com faixa 'a' + Σ aproc com faixa 'f' (FAIXA v1)"}})
+        return item
+
+    def _continuidade(self, ctx, de, entidade, entidades):
+        """Verificacao ANOM-CONT v1 gravada pela derivacao (regime 'derivacao'): uma linha por entidade e par de
+        exercicios; aqui so se le e se soma no Municipio."""
+        linhas = []
+        for escopo_json, verificados, falhas in self.con.execute(
+                "SELECT escopo_json, verificados, falhas FROM verificacao WHERE derivacao_id=? AND descricao=?",
+                (ctx["derivacao"]["id"], CONTINUIDADE)):
+            esc = json.loads(escopo_json)
+            if esc["de"] == de and (esc["entidade"] == entidade if entidade is not None else esc["entidade"] in entidades):
+                linhas.append({"entidade": esc["entidade"], "verificados": verificados, "falhas": falhas,
+                               "snapshots": esc.get("snapshots")})
+        linhas.sort(key=lambda x: x["entidade"])
+        return {"regra": "ANOM-CONT v1", "descricao": CONTINUIDADE, "linhas": linhas,
+                "verificados": sum(x["verificados"] for x in linhas), "falhas": sum(x["falhas"] for x in linhas),
+                "nota": "a abertura usada pela derivação é o snapshot de A+1 de maior data final"}
+
     def por_dimensao(self, dimensao, exercicio, data_final, entidade=None, em=None):
         """Totais por fonte de recurso, programacao orcamentaria, orgao, categoria etc. (lista fechada de dimensoes)."""
         if dimensao not in DIMENSOES:
@@ -1143,14 +1278,21 @@ class Painel:
         corte = self._corte(ctx, exercicio, data_final, ent_rreo if escopo == "entidade" else None, None, vig, cat)
         if not corte["disponivel"]:
             return None
-        filtro, p = self._de_coletas(corte["somar"])
+        s1, af = self._s1_e_a_mais_f(ctx, corte["somar"])
+        return {"s1_c": s1, "a_mais_f_c": af, "snapshots": self._uids(corte["somar"]),
+                "retrato": corte["retrato"]["texto"]}
+
+    def _s1_e_a_mais_f(self, ctx, coletas):
+        """Definicao unica (contrato M-04) de S1 e de (a)+(f) de um conjunto de coletas: soma de S1 v1, e soma de proc
+        com faixa 'a' + soma de aproc com faixa 'f' (FAIXA v1). Usada pela coerencia entre publicacoes e pela serie entre
+        exercicios."""
+        filtro, p = self._de_coletas(coletas)
         s1, af = self.con.execute(
             f"SELECT SUM(d.s1_saldo_total_c), SUM(CASE WHEN d.faixa_processado='a' THEN r.proc_c ELSE 0 END) + "
             f"SUM(CASE WHEN d.faixa_nao_processado='f' THEN r.aproc_c ELSE 0 END) FROM rp_registro r JOIN rp_derivado d "
             f"ON d.derivacao_id=? AND d.resposta_id=r.resposta_id AND d.indice=r.indice WHERE r.normalizacao_id=? AND "
             f"{filtro}", (ctx["derivacao"]["id"], ctx["normalizacao"]["id"], *p)).fetchone()
-        return {"s1_c": s1 or 0, "a_mais_f_c": af or 0, "snapshots": self._uids(corte["somar"]),
-                "retrato": corte["retrato"]["texto"]}
+        return s1 or 0, af or 0
 
     def coerencia_entre_publicacoes(self):
         """Saldo final L do RREO de dezembro de A x (a)+(f) (RP de exercicios anteriores) de cada RREO de A+1:
