@@ -79,6 +79,29 @@ CLASSES_DA_CHAVE = {"nos_dois": "nos dois cortes", "so_posterior": "presente só
 TOP_DA_VARIACAO = 10
 CAMPOS_DO_HISTORICO = ("proc_c", "aproc_c", "pago_proc_c", "pago_aproc_c", "liquidado_c", "cancelado_aproc_c",
                        "s1_saldo_total_c")
+# Qualidade dos dados (Subetapa 05.6; contrato secao 6): estruturas gravadas pela derivacao, so lidas (regime
+# "derivacao"). O significado de "falhas" depende da verificacao (R5): catalogo por descricao literal e regra;
+# descricao fora do catalogo sai com os numeros brutos e "significado nao catalogado", nunca por analogia.
+SITUACOES_DAS_DIFERENCAS = ("sem diferença",) + explicacoes.SITUACOES
+NAO_CATALOGADA = "significado não catalogado"
+INTERPRETACOES_DE_VERIFICACAO = {
+    CONTINUIDADE: {
+        "regra": ("ANOM-CONT", 1), "natureza": "conformidade", "anomalias": ("SALDO-SEM-CONTINUIDADE", "DESCONTINUIDADE"),
+        "verificados": "registros do fechamento de A (corte 31/12)",
+        "falhas": "registros com saldo que somem da abertura de A+1, ou cuja abertura (proc, aproc) difere de (S3, S2) do "
+                  "fechamento"},
+    "pareamento de cópias 24xxxxx": {
+        "regra": ("PAR-24", 1), "natureza": "conformidade", "anomalias": ("COPIA-SEM-PAR",),
+        "verificados": "cópias 24xxxxx da entidade 1 no corte",
+        "falhas": "cópias sem registro correspondente na entidade 15, ou com campos de conferência diferentes"},
+    "conciliação RREO × API (colunas com diferença)": {
+        "regra": ("CONC-RREO", 1), "natureza": "colunas_com_diferenca", "anomalias": (),
+        "verificados": "colunas do RREO comparadas, por snapshot do PDF e regra de agregação",
+        "falhas": "colunas com diferença entre a API projetada e o valor publicado (informativo, não é erro)"},
+    "RREO sem valores extraídos (ver problemas da normalização)": {
+        "regra": ("CONC-RREO", 1), "natureza": "pdfs_nao_lidos", "anomalias": (),
+        "verificados": "PDFs do RREO", "falhas": "PDFs que o extrator de produção não leu"},
+}
 
 
 def diferenca(anterior, posterior):
@@ -1154,6 +1177,183 @@ class Painel:
                 "nota": ("Mais de uma ocorrência num corte = a mesma chave apareceu mais de uma vez no snapshot; nenhuma é "
                          "descartada.") if repetida else None}
 
+    # ------------------------------------------------------------------ qualidade dos dados (05.6)
+    def qualidade(self):
+        """Anomalias, verificacoes e situacao das diferencas com o RREO (Subetapa 05.6; contrato secao 6), cada uma
+        segundo a sua natureza e lidas da derivacao atual, sem nenhuma regra nova.
+        * Anomalias: uma linha por ocorrencia, em TODO snapshot processado (inclusive retratos anteriores e coletas
+          por tipo de pesquisa); por tipo, a contagem da derivacao e quantas estao em snapshots vigentes.
+        * Verificacoes: de conjunto; a situacao e interpretada pela descricao (R5); nunca viram lista de empenhos.
+        * Diferencas com o RREO: as cinco situacoes separadas, contadas por coluna x documento x regra de agregacao
+          (as mesmas linhas da reconciliacao); 'sem diferenca' nunca e contada como explicada."""
+        ctx = self.contexto()
+        did = ctx["derivacao"]["id"]
+        governo = governanca.situacao_atual(self.con)
+        vig = sorted(set(self._vigentes(ctx, None).values()))
+        tipos = {c: {"descricao": d, "status_evidencia": s, "fonte": f} for c, d, s, f in self.con.execute(
+            "SELECT codigo, descricao, status_evidencia, fonte FROM anomalia_tipo ORDER BY codigo")}
+        por_tipo = []
+        for tipo, cod, ver, n, coletas, com_chave, vigentes, anos in self.con.execute(
+                "SELECT a.tipo, g.codigo, g.versao, COUNT(*), COUNT(DISTINCT a.coleta_id), SUM(a.entidade IS NOT NULL AND "
+                f"a.anoempenho IS NOT NULL AND a.empenho IS NOT NULL), SUM(a.coleta_id IN ({_in(len(vig))})), "
+                "GROUP_CONCAT(DISTINCT c.exercicio) FROM anomalia a JOIN regra g ON g.id = a.regra_id LEFT JOIN coleta c "
+                "ON c.id = a.coleta_id WHERE a.derivacao_id=? GROUP BY a.tipo, g.codigo, g.versao "
+                "ORDER BY a.tipo, g.codigo, g.versao", (*vig, did)):
+            t = tipos.get(tipo, {"descricao": None, "status_evidencia": None, "fonte": None})
+            por_tipo.append({"tipo": tipo, **t, "regra": f"{cod} v{ver}",
+                             "situacao_da_regra": governo.get((cod, ver), {}).get("situacao"), "ocorrencias": n,
+                             "em_snapshots_vigentes": vigentes or 0, "com_chave_de_empenho": com_chave or 0,
+                             "snapshots": coletas, "exercicios": sorted(int(x) for x in (anos or "").split(",") if x)})
+        presentes = {x["tipo"] for x in por_tipo}
+        sem_ocorrencia = [{"tipo": c, **t} for c, t in tipos.items() if c not in presentes]
+        return {"derivacao": ctx["derivacao"], "normalizacao": ctx["normalizacao"], "fonte": fontes.ELOTECH["rotulo"],
+                "anomalias": {"por_tipo": por_tipo, "tipos_sem_ocorrencia": sem_ocorrencia,
+                              "total": sum(x["ocorrencias"] for x in por_tipo)},
+                "verificacoes": self._verificacoes(did, governo, por_tipo),
+                "diferencas_rreo": self._situacao_das_diferencas(did),
+                "nota": ("Anomalias e verificações são gravadas pela derivação (regras versionadas) e aqui só são lidas. "
+                         "Anomalia não é erro: é um fato registrado, descrito pelo tipo. Verificação é de conjunto: o "
+                         "significado de 'falhas' depende da verificação.")}
+
+    def _verificacoes(self, did, governo, por_tipo):
+        contagem = {x["tipo"]: x["ocorrencias"] for x in por_tipo}
+        grupos = {}
+        for cod, ver, descricao, escopo_json, verificados, falhas in self.con.execute(
+                "SELECT g.codigo, g.versao, v.descricao, v.escopo_json, v.verificados, v.falhas FROM verificacao v JOIN "
+                "regra g ON g.id = v.regra_id WHERE v.derivacao_id=? ORDER BY v.descricao, g.codigo, g.versao, v.rowid",
+                (did,)):
+            g = grupos.setdefault((descricao, cod, ver), {"descricao": descricao, "regra": f"{cod} v{ver}",
+                                                          "situacao_da_regra": governo.get((cod, ver), {}).get("situacao"),
+                                                          "itens": []})
+            escopo = json.loads(escopo_json)
+            snaps = escopo.get("snapshots") or ([escopo["rreo_snapshot"]] if "rreo_snapshot" in escopo else [])
+            g["itens"].append({"escopo": escopo, "verificados": verificados, "falhas": falhas, "snapshots": snaps})
+        saida = []
+        for (descricao, cod, ver), g in grupos.items():
+            cat = INTERPRETACOES_DE_VERIFICACAO.get(descricao)
+            catalogada = cat is not None and cat["regra"] == (cod, ver)
+            v, f = sum(i["verificados"] for i in g["itens"]), sum(i["falhas"] for i in g["itens"])
+            natureza = cat["natureza"] if catalogada else None
+            for i in g["itens"]:
+                i["situacao"] = self._situacao_da_verificacao(natureza, i["verificados"], i["falhas"])
+                i["anomalias_do_escopo"] = ([{"tipo": t, **self._escopo_das_anomalias(descricao, i["escopo"])}
+                                             for t in cat["anomalias"]] if catalogada and i["falhas"] else [])
+            g.update(verificados=v, falhas=f, catalogada=catalogada, natureza=natureza,
+                     significado_de_verificados=cat["verificados"] if catalogada else None,
+                     significado_de_falhas=cat["falhas"] if catalogada else NAO_CATALOGADA,
+                     situacao=self._situacao_da_verificacao(natureza, v, f),
+                     anomalias_ligadas=[{"tipo": t, "ocorrencias": contagem.get(t, 0)}
+                                        for t in (cat["anomalias"] if catalogada else ())])
+            saida.append(g)
+        return saida
+
+    def _escopo_das_anomalias(self, descricao, escopo):
+        """Filtros da lista de anomalias que a mesma regra grava para o escopo de um item de verificacao: a
+        continuidade grava no snapshot de abertura de A+1 da entidade; o pareamento, no snapshot da entidade-copia do
+        corte (derivar._continuidade e _pareamento)."""
+        if descricao == CONTINUIDADE:
+            return {"exercicio": escopo["para"], "entidade": escopo["entidade"]}
+        par = regras.parametros(self.con, "PAR-24", 1)
+        return {"exercicio": escopo["exercicio"], "entidade": par["entidade_copia"], "data_final": escopo["data_final"]}
+
+    @staticmethod
+    def _situacao_da_verificacao(natureza, verificados, falhas):
+        """Situacao exibida de uma verificacao (contrato E-02), pela natureza catalogada da descricao."""
+        if natureza == "conformidade":
+            return "sem falha" if falhas == 0 else "com falhas"
+        if natureza == "colunas_com_diferenca":
+            return f"colunas com diferença: {falhas} de {verificados}"
+        if natureza == "pdfs_nao_lidos":
+            return f"PDFs não lidos: {falhas}"
+        return NAO_CATALOGADA
+
+    def _situacao_das_diferencas(self, did):
+        """Contrato E-03: as cinco situacoes, por regra de agregacao (linhas da reconciliacao: coluna x documento x
+        regra) e na coerencia entre publicacoes; conferencia com a verificacao CONC-RREO, que conta por snapshot do PDF."""
+        rec = self.reconciliacao()
+        linhas = rec["linhas"]
+        regras_ = sorted({x["regra_agregacao"]["regra"] for x in linhas})
+        por_regra = {r: {s: sum(1 for x in linhas if x["regra_agregacao"]["regra"] == r and x["situacao_da_diferenca"] == s)
+                         for s in SITUACOES_DAS_DIFERENCAS} for r in regras_}
+        coe = self.coerencia_entre_publicacoes()["comparacoes"]
+        coerencia = {nome: {s: sum(1 for x in lista if x["situacao_da_diferenca"] == s) for s in SITUACOES_DAS_DIFERENCAS}
+                     for nome, lista in (("exibida", [x for x in coe if x["mais_recente"]]), ("todas", coe))}
+        repetidos = sorted({u for x in linhas for u in x["pdf"]["mesmo_pdf_coletado_tambem_em"]})
+        itens = [(json.loads(e), v, f) for e, v, f in self.con.execute(
+            "SELECT escopo_json, verificados, falhas FROM verificacao WHERE derivacao_id=? AND descricao=?",
+            (did, "conciliação RREO × API (colunas com diferença)"))]
+        conf = {"verificacao": {"itens": len(itens), "colunas": sum(v for _, v, _ in itens),
+                                "com_diferenca": sum(f for _, _, f in itens)},
+                "pdfs_repetidos": {"snapshots": repetidos,
+                                   "itens": sum(1 for e, _, _ in itens if e.get("rreo_snapshot") in repetidos),
+                                   "colunas": sum(v for e, v, _ in itens if e.get("rreo_snapshot") in repetidos),
+                                   "com_diferenca": sum(f for e, _, f in itens if e.get("rreo_snapshot") in repetidos)},
+                "reconciliacao": {"colunas": len(linhas), "com_diferenca": sum(1 for x in linhas if x["diferenca_c"])}}
+        conf["confere"] = (conf["verificacao"]["colunas"] - conf["pdfs_repetidos"]["colunas"] == conf["reconciliacao"]["colunas"]
+                           and conf["verificacao"]["com_diferenca"] - conf["pdfs_repetidos"]["com_diferenca"]
+                           == conf["reconciliacao"]["com_diferenca"])
+        return {"situacoes": list(SITUACOES_DAS_DIFERENCAS), "por_regra": por_regra,
+                "total_por_regra": {r: sum(v.values()) for r, v in por_regra.items()},
+                "documentos": len({x["pdf"]["snapshot_uid"] for x in linhas}), "linhas": len(linhas),
+                "coerencia": coerencia, "total_coerencia": {k: sum(v.values()) for k, v in coerencia.items()},
+                "conferencia_com_a_verificacao": conf,
+                "sem_diferenca_contada_como_explicada": sum(1 for x in linhas + coe if x["diferenca_c"] == 0
+                                                             and x["situacao_da_diferenca"] != "sem diferença"),
+                "nota": ("'Sem diferença' (diferença zero) não é explicação e nunca é somada às explicadas. A contagem é "
+                         "por coluna do RREO, documento e regra de agregação (RREO-COL v1 e v2 separadas).")}
+
+    def anomalias(self, tipo, limite=50, deslocamento=0, exercicio=None, entidade=None, data_final=None):
+        """Ocorrencias de UM tipo de anomalia (contrato E-01) COM chave de empenho, paginadas, com o snapshot de cada
+        uma; as sem chave completa ficam so no agregado (`sem_chave` conta as do filtro). Filtros opcionais de escopo
+        (exercicio, entidade, corte) servem a ligacao vinda de uma verificacao. A ligacao ao registro (drill-down) e
+        exata so quando o snapshot da ocorrencia e o vigente do corte (o detalhe do empenho mostra o retrato
+        vigente); ocorrencia em retrato anterior leva aos retratos do corte; em coleta que nao e corte do painel
+        (tipo de pesquisa, data inicial fora de 01/01), nao tem ligacao."""
+        ctx = self.contexto()
+        did = ctx["derivacao"]["id"]
+        if not self.con.execute("SELECT 1 FROM anomalia_tipo WHERE codigo=?", (tipo,)).fetchone():
+            raise ErroDoPainel(f"tipo de anomalia desconhecido: {tipo!r}")
+        for nome, valor in (("exercicio", exercicio), ("entidade", entidade)):
+            if valor is not None and (isinstance(valor, bool) or not isinstance(valor, int)):
+                raise ErroDoPainel(f"{nome} precisa ser inteiro")
+        limite, deslocamento = max(1, min(int(limite), LIMITE_LISTA)), max(0, int(deslocamento))
+        vig = set(self._vigentes(ctx, None).values())
+        filtro, p = "", []
+        for coluna, valor in (("c.exercicio", exercicio), ("a.entidade", entidade), ("c.data_final", data_final)):
+            if valor is not None:
+                filtro, p = filtro + f" AND {coluna} = ?", p + [valor]
+        com_chave = " AND a.entidade IS NOT NULL AND a.anoempenho IS NOT NULL AND a.empenho IS NOT NULL"
+        base = "FROM anomalia a LEFT JOIN coleta c ON c.id = a.coleta_id WHERE a.derivacao_id=? AND a.tipo=?" + filtro
+        total = self.con.execute(f"SELECT COUNT(*) {base}{com_chave}", (did, tipo, *p)).fetchone()[0]
+        sem_chave = self.con.execute(f"SELECT COUNT(*) {base} AND NOT (a.entidade IS NOT NULL AND a.anoempenho IS NOT "
+                                     "NULL AND a.empenho IS NOT NULL)", (did, tipo, *p)).fetchone()[0]
+        itens = []
+        for cid, uid, ex, di, df, tp, quando, e, ano, emp, det, cod, ver in self.con.execute(
+                "SELECT a.coleta_id, c.snapshot_uid, c.exercicio, c.data_inicial, c.data_final, c.tipo_pesquisa, "
+                "c.coletada_em, a.entidade, a.anoempenho, a.empenho, a.detalhe_json, g.codigo, g.versao FROM anomalia a "
+                "JOIN regra g ON g.id = a.regra_id LEFT JOIN coleta c ON c.id = a.coleta_id WHERE a.derivacao_id=? AND "
+                "a.tipo=?" + filtro + com_chave + " ORDER BY c.exercicio, c.data_final, a.entidade, a.anoempenho, "
+                "a.empenho, c.coletada_em, c.snapshot_uid, a.rowid LIMIT ? OFFSET ?", (did, tipo, *p, limite, deslocamento)):
+            chave = {"entidade": e, "anoempenho": ano, "empenho": emp}
+            corte = cid is not None and tp is None and di == f"{ex}-01-01"
+            if not corte:
+                retrato = "coleta por tipo de pesquisa ou fora de 01/01 (não é corte do painel)" if cid else "sem snapshot"
+            else:
+                retrato = "vigente" if cid in vig else "retrato anterior do corte"
+            ligacao = {"destino": "empenho" if cid in vig else "retratos", "exercicio": ex, "data_final": df} if corte else None
+            itens.append({"snapshot": uid, "exercicio": ex, "data_inicial": di, "data_final": df, "coletada_em": quando,
+                          "retrato": retrato, "vigente": cid in vig, "chave": chave,
+                          "detalhe": json.loads(det) if det else None, "regra": f"{cod} v{ver}", "ligacao": ligacao})
+        t = self.con.execute("SELECT descricao, status_evidencia, fonte FROM anomalia_tipo WHERE codigo=?", (tipo,)).fetchone()
+        return {"tipo": tipo, "descricao": t[0], "status_evidencia": t[1], "fonte": t[2],
+                "filtros": {k: v for k, v in (("exercicio", exercicio), ("entidade", entidade), ("data_final", data_final))
+                            if v is not None},
+                "total": total, "sem_chave": sem_chave, "limite": limite, "deslocamento": deslocamento, "itens": itens,
+                "derivacao": ctx["derivacao"],
+                "nota": ("Uma linha por ocorrência em cada snapshot processado: o mesmo empenho aparece uma vez por "
+                         "retrato e por corte em que a condição vale. Ocorrência sem entidade, ano e número do empenho "
+                         "fica só na contagem por tipo.")}
+
     # ------------------------------------------------------------------ registros
     def _registros(self, ctx, coletas, filtro_extra="", params=(), limite=None, deslocamento=0, ordem="saldo"):
         ordens = {"saldo": "d.s1_saldo_total_c DESC, r.entidade, r.anoempenho, r.empenho, r.resposta_id, r.indice",
@@ -1738,6 +1938,13 @@ class Painel:
                         "nota": ("O saldo que fecha A deveria ser o RP de exercícios anteriores que abre A+1; diferença "
                                  "indica alteração da base entre as duas emissões. Os valores da API são o estado atual "
                                  "da base, não o da época de cada emissão.")})
+        ultima = {}   # por (escopo, A): a comparacao com a publicacao mais recente de A+1 (a primeira, em empate)
+        for x in saida:
+            k = (x["escopo"], x["de"])
+            if k not in ultima or x["data_final_para"] > ultima[k]["data_final_para"]:
+                ultima[k] = x
+        for x in saida:
+            x["mais_recente"] = ultima[(x["escopo"], x["de"])] is x
         return {"fonte": fontes.RREO["rotulo"], "comparacoes": saida,
                 "limitacao": ("Só entram PDFs com valores transcritos pelo extrator de produção; os RREOs de 2016 "
                               "(entidade), 2018 e 2019 não são lidos por ele (ver 'pdfs_sem_valores_transcritos' na "

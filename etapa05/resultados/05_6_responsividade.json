@@ -1,0 +1,25 @@
+{
+ "subetapa": "05.6",
+ "data": "2026-10-02",
+ "metodo": "navegador interno do app (Chromium), servidor local somente leitura (python rp.py interface --porta 8051) sobre o banco ativo; medicao por JavaScript de scrollWidth x innerWidth, elementos fora da largura (exceto dentro do quadro .rolagem, que rola a tabela) e altura das linhas das tabelas",
+ "criterio": "sem estouro horizontal da pagina; tabela larga rola dentro do proprio quadro; texto >= 11 px",
+ "ajustes_feitos_durante_a_verificacao": [
+  "anomalias por tipo: o codigo do tipo (ex.: PAR-INSCRICAO-DIVERGENTE) quebrava letra a letra numa coluna de 43 px (linhas de ate 226 px em 375 px); passou a nao quebrar, e as colunas de descricao, regra e exercicios ganharam largura minima (linhas de ate 89 px)",
+  "itens das verificacoes: coluna de escopo com largura minima 18em (o pareamento tinha 19 linhas de 168 px; agora 51 px)",
+  "significado das falhas: largura minima 16em (128 px -> 109 px)",
+  "ocorrencias: colunas de retrato e de detalhe registrado com largura minima (PAR-INSCRICAO-DIVERGENTE: 50 linhas de 128 px -> 70 px; COPIA-24 em tablet: 109 px -> 89 px em 375 px)"
+ ],
+ "medicoes": {
+  "375x812 (celular)": {
+   "/qualidade?tipo=PAR-INSCRICAO-DIVERGENTE": {"scrollWidth": 375, "fora": 0, "tabelas": "anomalias max 89 px; ocorrencias 50 linhas max 70 px; verificacoes max 109 px; itens das verificacoes max 89 px; situacoes 50 px", "menor_fonte_px": 11.5},
+   "/qualidade?tipo=COPIA-24&pagina=349 (ultima pagina, com coletas por tipo de pesquisa)": {"scrollWidth": 375, "fora": 0, "tabelas": "ocorrencias 34 linhas max 89 px"},
+   "/qualidade?tipo=LIQ-NEG": {"scrollWidth": 375, "fora": 0, "tabelas": "ocorrencias 50 linhas max 51 px"}
+  },
+  "768x1024 (tablet)": {
+   "/qualidade?tipo=COPIA-24&pagina=349": {"scrollWidth": 753, "fora": 0, "tabelas": "max 109 px (antes do ajuste das ocorrencias)"}
+  },
+  "1280x800 (notebook)": {
+   "/qualidade?tipo=LIQ-NEG&exercicio=2026": {"scrollWidth": 1265, "fora": 0, "tabelas": "anomalias e verificacoes 70 px; ocorrencias, itens e situacoes 31 a 50 px"}
+  }
+ }
+}
