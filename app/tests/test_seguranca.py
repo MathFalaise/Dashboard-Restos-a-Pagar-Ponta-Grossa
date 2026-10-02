@@ -249,8 +249,15 @@ def test_servidor_que_ignora_page_nao_prende_o_coletor(ambiente):
     # a mesma pagina, sempre com last=false e sem totalPages: sem a trava, o coletor pediria paginas para sempre
     p.rotas[(EP_RP, None)] = [(200, pagina([_registro(aproc=1)] * 2, 0, 5, False, None))]
     s = ambiente["coletor"].listagem(998, 2026, "2026-12-31")
-    assert s["status"] == "incompleta" and len(p.chamadas) == 3     # 2 + 2 + 2 = 6 > 5 na terceira pagina
-    assert "passou de totalElements" in s["observacao"]
+    # auditoria COL-02: a pagina 1 volta com number=0 e e recusada ja na segunda chamada (antes: 3 chamadas, pela soma)
+    assert s["status"] == "incompleta" and len(p.chamadas) == 2
+    assert "devolveu a página number=0" in s["observacao"]
+    # sem `number` na resposta, a trava antiga continua valendo: 2 + 2 + 2 = 6 > 5 na terceira pagina
+    p.chamadas.clear()
+    p.rotas[(EP_RP, None)] = [(200, json.dumps({"content": [_registro(aproc=1)] * 2, "totalElements": 5,
+                                                "last": False}).encode())]
+    s = ambiente["coletor"].listagem(997, 2026, "2026-12-31")
+    assert s["status"] == "incompleta" and len(p.chamadas) <= 3
 
 
 def test_id_de_arquivo_que_nao_e_inteiro_nao_entra_na_url(ambiente):
