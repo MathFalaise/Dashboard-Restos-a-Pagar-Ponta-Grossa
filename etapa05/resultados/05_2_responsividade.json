@@ -1,0 +1,110 @@
+{
+ "data": "2026-10-01",
+ "ferramenta": "navegador embutido do app (Chromium), interface local somente leitura sobre o banco ativo",
+ "criterios": "estouro = largura do documento - largura da janela; fora = elementos fora da tela que nao estejam em quadro com rolagem nem no SVG; texto do grafico medido pela altura renderizada",
+ "medicoes": [
+  {
+   "tamanho": "celular 375x812",
+   "url": "/evolucao?exercicio=2026",
+   "vw": 375,
+   "estouro": 0,
+   "fora": 0,
+   "fontes_menores_11px": 0,
+   "controles_fora": 0,
+   "h1": 1,
+   "saltos_de_titulo": 0,
+   "grafico": {
+    "largura_px": 351,
+    "cabe": true,
+    "texto_min_px": 14,
+    "texto_sem_dado_dentro_da_lacuna": true
+   },
+   "altura_max_celula_situacao_px": 37
+  },
+  {
+   "tamanho": "celular 375x812",
+   "url": "/evolucao?exercicio=2026&entidade=15",
+   "vw": 375,
+   "estouro": 0,
+   "fora": 0,
+   "grafico": {
+    "largura_px": 351,
+    "cabe": true,
+    "texto_min_px": 14,
+    "barras": 4,
+    "lacunas": 3
+   }
+  },
+  {
+   "tamanho": "celular 375x812",
+   "url": "/evolucao?exercicio=2025",
+   "vw": 375,
+   "estouro": 0,
+   "fora": 0,
+   "fontes_menores_11px": 0,
+   "controles_fora": 0,
+   "h1": 1,
+   "saltos_de_titulo": 0,
+   "grafico": {
+    "largura_px": 351,
+    "cabe": true,
+    "texto_min_px": 15
+   }
+  },
+  {
+   "tamanho": "celular 375x812",
+   "url": "/?exercicio=2025&data_final=2025-12-31",
+   "vw": 375,
+   "estouro": 0,
+   "fora": 0,
+   "link_para_evolucao": true
+  },
+  {
+   "tamanho": "celular 375x812",
+   "url": "/metodologia",
+   "vw": 375,
+   "estouro": 0,
+   "fora": 0,
+   "lista_municipio_indisponivel": true
+  },
+  {
+   "tamanho": "tablet 768x1024",
+   "url": "/evolucao?exercicio=2026&entidade=1",
+   "vw": 753,
+   "estouro": 0,
+   "fora": 0,
+   "grafico": {
+    "largura_px": 713,
+    "cabe": true
+   },
+   "rotulo_R4_presente": true
+  },
+  {
+   "tamanho": "notebook 1280x720",
+   "url": "/evolucao?exercicio=2026",
+   "vw": 1265,
+   "estouro": 0,
+   "fora": 0,
+   "grafico": {
+    "largura_px": 820,
+    "cabe": true
+   }
+  },
+  {
+   "tamanho": "desktop (largura do painel)",
+   "url": "/evolucao?exercicio=2025&entidade=15",
+   "vw": 701,
+   "estouro": 0,
+   "fora": 0,
+   "grafico": {
+    "largura_px": 661,
+    "cabe": true,
+    "lacunas": 0
+   }
+  }
+ ],
+ "ajustes_feitos_na_verificacao": [
+  "rotulo 'sem dado' em duas linhas (antes passava da borda da lacuna com 7 cortes em 375 px)",
+  "celula 'Situacao' com a forma curta e o texto completo como dica (antes, linhas de ate ~200 px de altura em 375 px)"
+ ]
+}

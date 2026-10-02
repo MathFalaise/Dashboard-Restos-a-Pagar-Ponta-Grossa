@@ -77,6 +77,16 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 .analise { border-left: 4px solid var(--laranja); padding-left: 10px; }
 .sem-resultado { background: var(--fundo-2); border: 1px solid var(--borda); padding: 10px 14px; }
 .sem-resultado h2 { margin-top: 0; }
+.grafico { margin: 8px 0 4px; }
+.grafico svg { width: 100%; height: auto; max-width: 820px; display: block; }
+.grafico figcaption { font-size: 12.5px; color: var(--suave); margin-top: 4px; }
+.grafico .barra { fill: var(--azul); }
+.grafico .barra.negativa { fill: var(--vermelho); }
+.grafico .ponto:hover .barra, .grafico .ponto:focus .barra { fill: #0d2c4d; }
+.grafico .lacuna { fill: none; stroke: var(--suave); stroke-width: 2; stroke-dasharray: 6 5; }
+.grafico .eixo, .grafico .zero { stroke: var(--texto); stroke-width: 2; }
+.grafico text { fill: var(--texto); font-size: 22px; }
+.grafico .rotulo-lacuna { fill: var(--suave); font-style: italic; }
 @media (max-width: 640px) {
   body { font-size: 14.5px; }
   main { padding: 12px 12px 28px; }
