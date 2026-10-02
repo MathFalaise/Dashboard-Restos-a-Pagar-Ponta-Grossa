@@ -313,8 +313,11 @@ def test_10_filtros_nao_alteram_dados(app_producao, producao):
     total = dados(ok(app_producao, "/empenhos", entidade=1, **CORTE_REAL))
     soma_s1 = soma_n = 0
     for cat in ("processado", "nao_processado", "ambos", "sem_saldo_abertura"):
-        v = dados(ok(app_producao, "/empenhos", entidade=1, categoria=cat, **CORTE_REAL))
-        soma_s1, soma_n = soma_s1 + v["tot-s1"], soma_n + v["tot-registros"]
+        corpo = ok(app_producao, "/empenhos", entidade=1, categoria=cat, **CORTE_REAL)
+        v = dados(corpo)
+        if v["tot-registros"] == 0:   # 04.6: conjunto vazio = "Nenhum resultado encontrado", sem R$ 0,00
+            assert "tot-s1" not in v and 'id="sem-resultado"' in corpo
+        soma_s1, soma_n = soma_s1 + v.get("tot-s1", 0), soma_n + v["tot-registros"]
     assert (soma_s1, soma_n) == (total["tot-s1"], total["tot-registros"])
     for params in (dict(tipo_credor="pessoa jurídica"), dict(tipo_credor="pessoa física"), dict(programatica="09"),
                    dict(fonte_recurso=1000), dict(ordem="empenho", pagina=3), dict(cnpj="00000000000000")):

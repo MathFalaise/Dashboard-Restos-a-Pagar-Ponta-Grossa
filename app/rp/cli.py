@@ -127,6 +127,10 @@ def _main(argv=None):
     p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
     p.add_argument("--host", default="127.0.0.1", help="padrao 127.0.0.1 (so esta maquina)")
     p.add_argument("--porta", type=int, default=8050)
+    p = sub.add_parser("portoes", help="portoes de qualidade antes de disponibilizar uma carga nova (somente leitura)")
+    p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
+    p.add_argument("--referencia", help="JSON gravado antes da carga (--gravar-referencia): confere o bruto anterior")
+    p.add_argument("--gravar-referencia", help="grava o retrato do bruto atual neste arquivo (nunca sobrescreve) e sai")
     a = ap.parse_args(argv)
 
     cfg = carregar(a.config)
@@ -137,6 +141,15 @@ def _main(argv=None):
         from .interface import servir
         servir(a.banco or cfg.banco, a.host, a.porta)
         return 0
+    if a.cmd == "portoes":     # idem: so leitura do banco e do armazem
+        from . import portoes
+        if a.gravar_referencia:
+            print(json.dumps(portoes.gravar_referencia(a.banco or cfg.banco, a.gravar_referencia), indent=1))
+            return 0
+        ref = json.loads(open(a.referencia, encoding="utf-8").read()) if a.referencia else None
+        r = portoes.avaliar(a.banco or cfg.banco, Armazem(cfg.snapshots), ref)
+        print(json.dumps(r, ensure_ascii=False, indent=1, default=str))
+        return 0 if r["apto"] else 1
     armazem = Armazem(cfg.snapshots)
     if a.cmd == "reconstruir":
         con, n = banco.reconstruir(cfg, armazem, a.destino)
@@ -282,7 +295,8 @@ def _painel(a, cfg):
             r = p.por_dimensao(a.dimensao, a.exercicio, a.data_final, a.entidade, a.em)
         elif c == "empenhos":
             _exigir(a, "exercicio", "data_final")
-            r = p.empenhos(a.exercicio, a.data_final, a.entidade, a.em, a.limite, a.deslocamento, a.ordem)
+            r = p.empenhos(a.exercicio, a.data_final, a.entidade, a.em, a.limite, a.deslocamento, a.ordem,
+                           anoempenho=a.anoempenho, empenho=a.empenho)
         elif c == "empenho":
             _exigir(a, "entidade", "anoempenho", "empenho", "exercicio")
             r = p.detalhe_empenho(a.entidade, a.anoempenho, a.empenho, a.exercicio, a.data_final, a.em)

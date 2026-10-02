@@ -71,16 +71,19 @@ def _validar(c):
 
 
 def _caminho(v, base):
-    p = Path(v)
+    """'~' = pasta do usuario (em qualquer sistema); relativo = a partir da pasta do arquivo de configuracao."""
+    p = Path(v).expanduser()
     return p if p.is_absolute() else (base / p).resolve()
 
 
 def carregar(arquivo=None, **substituir):
+    """Le o config.toml (ou o arquivo de RP_CONFIG). RP_DADOS_LOCAIS, se definida, substitui caminhos.dados_locais:
+    permite apontar outra pasta local (banco ativo e logs) sem editar o arquivo versionado."""
     arquivo = Path(arquivo or os.environ.get("RP_CONFIG") or RAIZ_APP / "config.toml")
     c = tomllib.loads(arquivo.read_text(encoding="utf-8"))
     base = arquivo.parent
     valores = dict(
-        dados_locais=_caminho(c["caminhos"]["dados_locais"], base),
+        dados_locais=_caminho(os.environ.get("RP_DADOS_LOCAIS") or c["caminhos"]["dados_locais"], base),
         snapshots=_caminho(c["caminhos"]["snapshots"], base),
         backups=_caminho(c["caminhos"]["backups"], base),
         api_base=c["api"]["base"].rstrip("/"),

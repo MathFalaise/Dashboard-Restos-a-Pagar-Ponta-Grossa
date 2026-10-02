@@ -52,6 +52,21 @@ NATUREZAS = {
     "diferenca": "Diferença — divergência entre duas fontes ou dois retratos",
 }
 
+# Colunas do RREO Anexo VII (rotulos transcritos na Etapa 02, etapa02/RELATORIO_ETAPA02.md secao 5)
+COLUNAS_RREO = {
+    "a": "Processados — inscritos em exercícios anteriores",
+    "b": "Processados — inscritos em 31/dez do exercício anterior",
+    "c": "Processados — pagos",
+    "d": "Processados — cancelados",
+    "e": "Processados — saldo = (a+b) − (c+d)",
+    "f": "Não processados — inscritos em exercícios anteriores",
+    "g": "Não processados — inscritos em 31/dez do exercício anterior",
+    "h": "Não processados — liquidados",
+    "i": "Não processados — pagos",
+    "j": "Não processados — cancelados",
+    "k": "Não processados — saldo = (f+g) − (i+j)",
+    "L": "Saldo total = e + k",
+}
 # coluna normalizada -> (campo da API, rotulo apresentado, significado confirmado na Etapa 02, status de evidencia)
 CAMPOS = {
     "proc_c": ("proc", "Inscrição processada",
@@ -136,4 +151,29 @@ METODOLOGIA = {
                    "alterações retroativas na base (lançamentos com data no passado feitos depois e registros inseridos "
                    "depois que aparecem em cortes antigos)."),
     "arquitetura": "etapa04/ARQUITETURA_FONTES.md",
+    "snapshots": ("Cada consulta à API vira um snapshot: as respostas HTTP são guardadas byte a byte, com SHA-256, "
+                  "num armazém onde nada é sobrescrito nem apagado. Coletar de novo o mesmo corte cria outro snapshot "
+                  "(outro retrato); o anterior continua disponível."),
+    "processamento": ("A normalização lê os snapshots e grava um registro por item devolvido pela API, sem mudar "
+                      "valores. A derivação aplica regras versionadas (saldos S1–S3, categoria, faixas, pares) e grava "
+                      "um hash do resultado. Snapshot coletado depois da última normalização aparece como 'coletado, "
+                      "mas ainda não processado', nunca como zero."),
+    "retrato_atual_e_historico": ("Retrato atual: o snapshot mais recente de cada entidade para o corte. Para um "
+                                  "exercício passado, isso é o estado atual da base para aquele corte, visto na data "
+                                  "da coleta, e não o que se publicava na época. 'Como estava em' limita a escolha aos "
+                                  "snapshots coletados até a data informada."),
+    "limitacoes": [
+        "A base do Município muda depois do fim do exercício: lançamentos com data no passado e registros incluídos "
+        "depois aparecem em cortes antigos (Etapa 04.4).",
+        "Os empenhos 24xxxxx da Prefeitura espelham registros da Fundação Municipal de Saúde; a natureza dessas "
+        "cópias não está determinada e os dois lados continuam nos totais, como a API devolve.",
+        "Parte das diferenças entre a API e o RREO está sem explicação documentada ('não determinada'); a origem foi "
+        "perguntada no pedido e-SIC em rascunho.",
+        "A reconciliação 'como estava em' só existe para as datas que têm derivação 'como estava em' própria "
+        "(listadas nesta página).",
+        "Os RREOs de 2016 (entidade), 2018 e 2019 não são lidos pelo extrator de produção.",
+        "O catálogo de entidades é o que a API devolve hoje; entidade extinta que não conste dele não é conhecida.",
+        "A consulta de RP usada (/empenhos/restos-a-pagar) não consta da documentação oficial da API nem do menu do "
+        "portal.",
+    ],
 }
