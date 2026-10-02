@@ -1,0 +1,45 @@
+Instalacao em ambiente limpo (05.7) — 02/10/2026
+Copia: arquivos versionados + novos (git ls-files -co --exclude-standard, 1341 arquivos), sem .git e sem __pycache__,
+em pasta fora do OneDrive (pasta temporaria da sessao, caminho curto).
+Ambiente: python -m venv (Python 3.14.3), sem pacotes; pip install -r app/requirements-dev.txt
+Script: instalacao_limpa_057b.sh (fora do repositorio); mesmo procedimento da 04.6 e do app/README.md.
+
+Package            Version
+------------------ ---------
+certifi            2026.7.22
+charset-normalizer 3.5.2
+colorama           0.4.6
+idna               3.20
+iniconfig          2.3.0
+packaging          26.3
+pip                25.3
+pluggy             1.6.0
+Pygments           2.21.0
+pymupdf            1.28.2
+pytest             9.1.1
+requests           2.34.2
+urllib3            2.8.0
+
+python -W error -c "import requests, charset_normalizer": sem aviso (requests 2.34.2, charset_normalizer 3.5.2)
+RP_DADOS_LOCAIS=<pasta temporaria>/dados
+reconstruir: 466 snapshots registrados, problemas: [] (8 s)
+processar: derivacao 1, hash_resultado 2f6b4e295ce795934f7051fba31d9d3c1b5bc42c8858d4622a3e89ec88e3f2a5 (19 s)
+processar --normalizacao 1 --em 2026-09-29T23:59:59-03:00: derivacao 2, hash_resultado b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68
+verificar: problemas []
+portoes: apto true
+acessibilidade (05_7_acessibilidade.py, 38 paginas): 0 problemas
+
+Testes no ambiente limpo:
+348 passed in 350.43s (0:05:50)      (pytest -rw: nenhum aviso)
+exit=0
+26 passed in 10.60s
+exit=0
+
+Primeira execucao (descartada como evidencia, registrada pelo achado):
+a mesma instalacao numa pasta mais profunda da pasta temporaria deu 348 passed + 1 aviso:
+  RequestsDependencyWarning: Unable to find acceptable character detection dependency (chardet or charset_normalizer)
+Diagnostico: "import charset_normalizer" falhava com "ImportError: DLL load failed while importing cd: O nome do
+arquivo ou a extensao e muito grande" — o caminho da biblioteca nativa (cd.cp314-win_amd64.pyd) passava de 260
+caracteres (limite do Windows). Nao e defeito do projeto: com caminho curto (237 caracteres no maior arquivo) o
+import funciona e o aviso desaparece. O app/README.md passou a recomendar pasta de caminho curto no Windows.
+Mesmos hashes, verificar, portoes e 26 testes da investigacao na primeira execucao.
