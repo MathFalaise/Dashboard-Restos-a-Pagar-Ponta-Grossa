@@ -214,7 +214,8 @@ def test_SINTETICO_tela_da_variacao_e_do_empenho(variacao):
     assert 'id="indisponivel"' in corpo and not any(k.startswith(("lst-", "grp-", "cls-", "fech-")) for k in dados(corpo))
     assert dados(corpo)["var-anterior"] == 18500 and "var-posterior" not in dados(corpo)
     corpo = ok(app, "/variacao", exercicio=2025, anterior="2025-04-30", data_final="2025-02-28")
-    assert "imediatamente anterior" in corpo                                     # par invertido: aviso, sem erro
+    assert "precisa ser anterior ao posterior" in corpo and dados(corpo) == {}   # par invertido: sem erro e sem
+    assert 'id="indisponivel"' in corpo                                          # troca (pos-05: test_selecao_pos05)
     assert chamar(app, "/variacao", exercicio=2025, metrica="liquidacoes")[0] == "400 Bad Request"
     corpo = ok(app, "/empenho/cortes", entidade=1, anoempenho=2024, empenho=2, exercicio=2025)
     v = dados(corpo)

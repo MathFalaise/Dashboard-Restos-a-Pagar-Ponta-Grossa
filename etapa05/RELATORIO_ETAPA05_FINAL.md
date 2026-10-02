@@ -21,6 +21,7 @@ Data: 02/10/2026. Subetapa 05.7 (homologação e encerramento), ramo `subetapa-0
 - **Telas novas:** 100.201 valores conferidos, todos iguais à camada painel.
 - **Testes:** **348** de produção (257 na `etapa-04-final`) e **26** da investigação, passando no ambiente ativo e numa instalação limpa.
 - **Os 14 critérios de encerramento** do plano (seção 17) estão cumpridos (seção 4). A tag `etapa-05-final` foi criada **localmente**, sem envio ao GitHub.
+- **Atualização de 02/10/2026, depois da 05.7:** os ramos, os PRs #9 a #11 e a tag foram enviados ao GitHub. O SHA da tag e o estado do encerramento formal estão na seção 8. As seções 1 a 7 ficam como foram escritas na 05.7.
 
 ---
 
@@ -150,3 +151,39 @@ A igualdade da camada painel com o JSON bruto foi verificada nas subetapas pelos
 - **Tag local:** `etapa-05-final`, anotada, aponta para o commit da 05.7. Nada foi enviado ao GitHub.
 - **Envio:** só a pedido, com `git push origin subetapa-05.5 subetapa-05.6 subetapa-05.7 etapa-05-final`, depois dos PRs anteriores.
 - **Tag anterior:** `etapa-04-final` não foi alterada.
+
+## 8. Encerramento formal (02/10/2026, depois da 05.7)
+
+Auditoria refeita sobre o commit da tag antes de qualquer mudança. O detalhe e as evidências estão em `etapa05/CONSOLIDACAO_POS_05.md` e `resultados/pos05_*`.
+
+| Verificação | Resultado |
+|---|---|
+| Testes | 348/348 de produção e 26/26 da investigação |
+| `verificar` / `portoes` | sem problemas / apto |
+| Estado × homologação 04.6 | bruto, armazém e derivações idênticos (14 de 14 blocos); 0 diferenças nos valores da camada painel e nos 5.575 valores de tela |
+| Hashes | `hash_resultado` `2f6b4e29…` (derivações 21 e 23) e `b8a0b2ed…` (22 e 24); `hash_camada0` `733670693c01d015…` |
+| Arquivos protegidos | nenhum mudou entre `etapa-04-final` e `etapa-05-final`: snapshots, Etapas 02/03, derivação, normalização, regras, esquema, coletor, configuração |
+
+**Tag da Etapa 05:**
+
+| | |
+|---|---|
+| Nome | `etapa-05-final` (anotada) |
+| Objeto da tag | `892940f83efe8332013725708d2a0451068b79e7` |
+| Commit apontado | `b38e8841eba6f5fc4911e8f9c2a9084ad4669fdb` (05.7, homologação final) |
+| No GitHub | sim: enviada pelo responsável em 02/10/2026, e o remoto aponta para o mesmo objeto |
+| Relação com `etapa-04-final` | `a6bd27c` é ancestral de `b38e884`, com 12 commits entre as duas tags (plano, 05.1 a 05.7) |
+
+- A tag não foi recriada nem movida.
+- Os commits feitos depois dela (este registro e a consolidação pós-05) ficam fora do ponto de restauração.
+
+**Pull requests:**
+- #1 a #11 abertos, todos com base `main` (`adc7510`); nenhum mesclado.
+- Ordem de mesclagem: #1 → #11.
+- Os ramos `subetapa-05.5`, `subetapa-05.6` e `subetapa-05.7` foram enviados, e os PRs #9, #10 e #11 abertos (isto substitui o item correspondente da seção 6).
+
+**Continuam abertos:**
+- a aprovação formal dos relatórios 05.4 a 05.6 e deste;
+- a D1 (primeira atualização real da base), que **não foi executada**: a Etapa 05 está homologada sobre a base de 29–30/09/2026.
+
+A classificação das demais pendências está em `CONSOLIDACAO_POS_05.md`.
