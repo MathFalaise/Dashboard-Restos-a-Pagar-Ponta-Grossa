@@ -7,11 +7,13 @@ Oraculo de validacao das metricas numericas da Etapa 05 (regime "bruto", contrat
   * NAO importa rp.painel, rp.derivar nem rp.normalizar: nada aqui reaproveita a implementacao de producao, que e
     justamente o que se valida.
 Generaliza registros_brutos / recalcular de test_homologacao_real.py (04.6) para pontos de serie com a situacao do
-dado (contrato secao 2), diferencas (posterior - anterior) e contribuicoes por empenho (contrato M-09 a M-11).
+dado (contrato secao 2), diferencas (posterior - anterior), composicao por dimensao (contrato M-05 a M-08) e
+contribuicoes por empenho (contrato M-09 a M-11).
 Anomalias e verificacoes NAO sao recalculadas aqui (regime "derivacao"): seria uma segunda implementacao das regras.
 So suporta o retrato atual (sem "como estava em").
 """
 import json
+import re
 from decimal import Decimal
 
 CAMPOS = {"proc": "proc", "aproc": "aproc", "pagoProc": "pago_proc", "pagoAProc": "pago_aproc",
@@ -64,6 +66,60 @@ def indicadores(itens):
         s["saldo_a_liquidar"] += v["s2"]
         s["saldo_liquidado_a_pagar"] += v["s3"]
     return s
+
+
+def categoria(v):
+    """CAT v1 pela definicao documentada (contrato M-05), sobre os centavos do item."""
+    if v["proc"] > 0 and v["aproc"] > 0:
+        return "ambos"
+    return "processado" if v["proc"] > 0 else "nao_processado" if v["aproc"] > 0 else "sem_saldo_abertura"
+
+
+def tipo_credor(cnpj):
+    """Tipo do credor pela definicao documentada (contrato M-07): CNPJ completo -> pessoa juridica; CPF mascarado
+    pela API ou 11 digitos -> pessoa fisica; resto -> nao identificado."""
+    s = str(cnpj or "")
+    if re.fullmatch(r"\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}", s):
+        return "pessoa jurídica"
+    if re.fullmatch(r"\*+\d{3}\*+", s) or len(re.sub(r"\D", "", s)) == 11:
+        return "pessoa física"
+    return "não identificado"
+
+
+# dimensoes orcamentarias da composicao (contrato M-08): chave do grupo a partir do item da API (chave ausente = None)
+CHAVES_ORCAMENTARIAS = {"fonte_recurso": ("fonteRecurso", "descricaoFonte"), "orgao": ("orgao",), "funcao": ("funcao",),
+                        "programa": ("programa",), "elemento": ("elemento",)}
+
+
+def composicao(itens, exercicio):
+    """Composicao de um conjunto de itens brutos (contrato M-05 a M-08): por dimensao, {chave: somas}; faixa so com o
+    valor inscrito de cada parte positiva (R3). Chaves: categoria e tipo como texto; faixa 'a'/'b'/'f'/'g';
+    orcamentarias como tupla dos valores do item (fonte: codigo e descricao)."""
+    saida = {d: {} for d in ("categoria", "faixa", "tipo_credor", *CHAVES_ORCAMENTARIAS)}
+
+    def somar(d, chave, registros, insc, s1=None):
+        g = saida[d].setdefault(chave, {"registros": 0, "inscricao_total_c": 0, "saldo_total_c": 0})
+        g["registros"] += registros
+        g["inscricao_total_c"] += insc
+        g["saldo_total_c"] += s1 or 0
+
+    total = {"registros": 0, "inscricao_total_c": 0, "saldo_total_c": 0}
+    for r in itens:
+        v = valores_do_item(r)
+        insc = v["proc"] + v["aproc"]
+        total["registros"] += 1
+        total["inscricao_total_c"] += insc
+        total["saldo_total_c"] += v["s1"]
+        somar("categoria", categoria(v), 1, insc, v["s1"])
+        somar("tipo_credor", tipo_credor(r.get("cnpj")), 1, insc, v["s1"])
+        for d, chaves in CHAVES_ORCAMENTARIAS.items():
+            somar(d, tuple(r.get(k) for k in chaves), 1, insc, v["s1"])
+        anterior = r["anoempenho"] == exercicio - 1          # FAIXA v1: b/g para exercicio-1, a/f para os demais
+        if v["proc"] > 0:
+            somar("faixa", "b" if anterior else "a", 1, v["proc"])
+        if v["aproc"] > 0:
+            somar("faixa", "g" if anterior else "f", 1, v["aproc"])
+    return {"total": total, "dimensoes": saida}
 
 
 def diferenca(anterior, posterior):
@@ -232,6 +288,15 @@ class Bruto:
                 if r["anoempenho"] != exercicio - 1:
                     total += (v["proc"] if v["proc"] > 0 else 0) + (v["aproc"] if v["aproc"] > 0 else 0)
         return total
+
+    # ---------------------------------------------------------------- composicao (contrato M-05 a M-08)
+    def composicao(self, exercicio, data_final, entidade=None):
+        """Composicao do ponto (situacao do contrato secao 2): None sem valor; senao `composicao()` dos itens."""
+        pt = self.ponto(exercicio, data_final, entidade)
+        if not pt["tem_valor"]:
+            return {"situacao": pt["situacao"], "composicao": None}
+        itens = [r for c in pt["coletas"] for r in self.itens(c)]
+        return {"situacao": pt["situacao"], "composicao": composicao(itens, exercicio)}
 
     # ---------------------------------------------------------------- contribuicoes (contrato M-09 a M-11)
     def contribuicoes(self, exercicio, df_anterior, df_posterior, entidade=None, metrica="s1", top=10):
