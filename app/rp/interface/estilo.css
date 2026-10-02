@@ -87,6 +87,8 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 .grafico .eixo, .grafico .zero { stroke: var(--texto); stroke-width: 2; }
 .grafico text { fill: var(--texto); font-size: 22px; }
 .grafico .rotulo-lacuna { fill: var(--suave); font-style: italic; }
+.historico td:nth-child(3) { min-width: 17em; }
+.historico td:nth-child(4), .serie td:nth-child(2) { min-width: 11em; }
 @media (max-width: 640px) {
   body { font-size: 14.5px; }
   main { padding: 12px 12px 28px; }
