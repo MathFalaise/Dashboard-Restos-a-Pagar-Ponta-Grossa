@@ -107,18 +107,51 @@ def _conectar(caminho):
 
 
 def _migrar(con, de, backup_antes):
+    """Cada migracao e UMA transacao explicita: comandos + registro em esquema_versao, ou nada.
+    `with con:` nao bastaria: no sqlite3 do Python o BEGIN implicito so vem antes de INSERT/UPDATE/DELETE, e um
+    CREATE/ALTER fora de transacao e confirmado na hora (falha no meio deixaria o esquema pela metade)."""
     for v in range(de + 1, VERSAO_ESQUEMA + 1):
         descricao, comandos = MIGRACOES[v]
-        with con:
+        con.execute("BEGIN")
+        try:
             for sql in comandos:
                 con.execute(sql)
             con.execute("INSERT INTO esquema_versao VALUES (?,?,?,?)", (v, descricao, agora(),
                                                                          str(backup_antes) if backup_antes else None))
+        except BaseException:
+            con.rollback()
+            raise
+        con.commit()
         log.info("esquema migrado para v%d (%s)", v, descricao)
 
 
 def versao_esquema(con):
-    return con.execute("SELECT MAX(versao) FROM esquema_versao").fetchone()[0]
+    try:
+        return con.execute("SELECT MAX(versao) FROM esquema_versao").fetchone()[0]
+    except sqlite3.OperationalError:   # arquivo sem a tabela: nao e um banco do projeto (ou criacao interrompida)
+        return None
+
+
+def _criar(caminho):
+    """Banco novo montado num arquivo temporario ao lado do destino e publicado so no fim, sem sobrescrever:
+    uma falha no meio (esquema, migracoes, catalogo) nao deixa no destino um arquivo que pareca banco existente."""
+    from .armazem import _publicar_sem_sobrescrever
+    tmp = caminho.with_name(f"{caminho.name}.criando{os.getpid()}")
+    con = _conectar(tmp)
+    try:
+        con.executescript(ESQUEMA.read_text(encoding="utf-8"))
+        with con:
+            con.execute("INSERT INTO esquema_versao VALUES (?,?,?,NULL)", (VERSAO_BASE, DESCRICAO_BASE, agora()))
+        _migrar(con, VERSAO_BASE, None)  # banco novo: nada a proteger
+        _semear_catalogo(con)
+        con.close()
+        _publicar_sem_sobrescrever(tmp, caminho)
+    except BaseException:
+        con.close()
+        tmp.unlink(missing_ok=True)
+        raise
+    log.info("banco criado em %s (esquema v%d)", caminho, VERSAO_ESQUEMA)
+    return _conectar(caminho)
 
 
 def abrir(cfg, caminho=None):
@@ -129,17 +162,14 @@ def abrir(cfg, caminho=None):
                                        "Aponte [caminhos].dados_locais para uma pasta local.")
     caminho = Path(caminho or cfg.banco)
     caminho.parent.mkdir(parents=True, exist_ok=True)
-    novo = not caminho.exists()
+    if not caminho.exists():
+        return _criar(caminho)
     con = _conectar(caminho)
-    if novo:
-        with con:
-            con.executescript(ESQUEMA.read_text(encoding="utf-8"))
-            con.execute("INSERT INTO esquema_versao VALUES (?,?,?,NULL)", (VERSAO_BASE, DESCRICAO_BASE, agora()))
-        _migrar(con, VERSAO_BASE, None)  # banco novo: nada a proteger
-        _semear_catalogo(con)
-        log.info("banco criado em %s (esquema v%d)", caminho, VERSAO_ESQUEMA)
-        return con
     atual = versao_esquema(con)
+    if atual is None:
+        con.close()
+        raise MigracaoPendente(f"{caminho} não tem versão de esquema: não é um banco do projeto ou a criação foi "
+                               "interrompida. Nada foi alterado.")
     if atual > VERSAO_ESQUEMA:
         raise MigracaoPendente(f"banco na v{atual} é mais novo que o código (v{VERSAO_ESQUEMA})")
     if atual < VERSAO_BASE:
