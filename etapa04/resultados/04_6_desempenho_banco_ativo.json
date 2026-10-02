@@ -1,0 +1,122 @@
+[
+ {
+  "operacao": "abertura",
+  "url": "/",
+  "status": "200 OK",
+  "bytes": 25809,
+  "ms_min": 56,
+  "ms_max": 174
+ },
+ {
+  "operacao": "troca de exercício",
+  "url": "/?exercicio=2019&data_final=2019-12-31",
+  "status": "200 OK",
+  "bytes": 26634,
+  "ms_min": 59,
+  "ms_max": 86
+ },
+ {
+  "operacao": "filtro de entidade",
+  "url": "/?exercicio=2025&data_final=2025-12-31&entidade=15",
+  "status": "200 OK",
+  "bytes": 18298,
+  "ms_min": 39,
+  "ms_max": 46
+ },
+ {
+  "operacao": "como estava em",
+  "url": "/?exercicio=2026&data_final=2026-08-31&em=2026-09-29",
+  "status": "200 OK",
+  "bytes": 7540,
+  "ms_min": 17,
+  "ms_max": 52
+ },
+ {
+  "operacao": "entidades",
+  "url": "/entidades?exercicio=2026&data_final=2026-08-31",
+  "status": "200 OK",
+  "bytes": 11267,
+  "ms_min": 43,
+  "ms_max": 49
+ },
+ {
+  "operacao": "lista de empenhos",
+  "url": "/empenhos?exercicio=2026&data_final=2026-08-31",
+  "status": "200 OK",
+  "bytes": 58337,
+  "ms_min": 65,
+  "ms_max": 73
+ },
+ {
+  "operacao": "filtros combinados",
+  "url": "/empenhos?exercicio=2026&data_final=2026-08-31&categoria=nao_processado&programatica=09&tipo_credor=pessoa+f%C3%ADsica",
+  "status": "200 OK",
+  "bytes": 49315,
+  "ms_min": 57,
+  "ms_max": 201
+ },
+ {
+  "operacao": "busca",
+  "url": "/empenhos?exercicio=2026&data_final=2026-08-31&anoempenho=2025&empenho=5659",
+  "status": "200 OK",
+  "bytes": 23814,
+  "ms_min": 156,
+  "ms_max": 201
+ },
+ {
+  "operacao": "navegação",
+  "url": "/empenhos?exercicio=2016&data_final=2016-12-31&pagina=40",
+  "status": "200 OK",
+  "bytes": 54352,
+  "ms_min": 175,
+  "ms_max": 310
+ },
+ {
+  "operacao": "consulta detalhada",
+  "url": "/empenho?entidade=1&anoempenho=2025&empenho=5659&exercicio=2026",
+  "status": "200 OK",
+  "bytes": 14797,
+  "ms_min": 10,
+  "ms_max": 30
+ },
+ {
+  "operacao": "retratos",
+  "url": "/retratos?entidade=1&exercicio=2026&data_final=2026-08-31",
+  "status": "200 OK",
+  "bytes": 4782,
+  "ms_min": 57,
+  "ms_max": 113
+ },
+ {
+  "operacao": "reconciliação",
+  "url": "/reconciliacao",
+  "status": "200 OK",
+  "bytes": 30334,
+  "ms_min": 383,
+  "ms_max": 659
+ },
+ {
+  "operacao": "reconciliação do documento",
+  "url": "/reconciliacao?exercicio=2026&data_final=2026-08-31&escopo=consolidado",
+  "status": "200 OK",
+  "bytes": 24968,
+  "ms_min": 7,
+  "ms_max": 7
+ },
+ {
+  "operacao": "pares",
+  "url": "/pares?exercicio=2026&data_final=2026-08-31",
+  "status": "200 OK",
+  "bytes": 114000,
+  "ms_min": 59,
+  "ms_max": 81
+ },
+ {
+  "operacao": "metodologia",
+  "url": "/metodologia",
+  "status": "200 OK",
+  "bytes": 16708,
+  "ms_min": 2,
+  "ms_max": 2
+ }
+]

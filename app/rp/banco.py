@@ -289,8 +289,9 @@ def sincronizar(con, armazem):
 
 
 def reconstruir(cfg, armazem, destino):
-    """Banco NOVO em `destino`, so a partir do armazem. Recusa sobrescrever arquivo existente."""
-    destino = Path(destino)
+    """Banco NOVO em `destino`, so a partir do armazem. Recusa sobrescrever arquivo existente.
+    '~' vira a pasta do usuario tambem quando o shell nao expande (PowerShell)."""
+    destino = Path(destino).expanduser()
     if destino.exists():
         raise FileExistsError(f"{destino} já existe: a reconstrução nunca sobrescreve um banco")
     con = abrir(cfg, destino)
