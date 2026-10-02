@@ -1,0 +1,34 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.3, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\maped\AppData\Local\Python\pythoncore-3.14-64\python.exe
+rootdir: C:\Users\maped\OneDrive\Área de Trabalho\Projeto Dashboard Restos a Pagar\etapa03\validacao
+plugins: anyio-4.15.1
+collecting ... collected 26 items
+
+tests/test_integridade.py::test_camada_bruta_imutavel PASSED             [  3%]
+tests/test_integridade.py::test_hash_de_cada_resposta_confere PASSED     [  7%]
+tests/test_integridade.py::test_regra_nao_se_edita PASSED                [ 11%]
+tests/test_integridade.py::test_paginacao_completa_e_nenhum_registro_perdido PASSED [ 15%]
+tests/test_integridade.py::test_chaves_base_sempre_presentes PASSED      [ 19%]
+tests/test_integridade.py::test_centavos_recusa_mais_de_duas_casas PASSED [ 23%]
+tests/test_integridade.py::test_movimentacao_guarda_rotulos_como_vieram PASSED [ 26%]
+tests/test_integridade.py::test_mov_ref_resolve_rotulos_trocados PASSED  [ 30%]
+tests/test_integridade.py::test_caso_11963_2016 PASSED                   [ 34%]
+tests/test_integridade.py::test_caso_5659_2025 PASSED                    [ 38%]
+tests/test_integridade.py::test_empenhos_nas_duas_abas_tem_os_mesmos_valores_da_consulta_sem_tipo PASSED [ 42%]
+tests/test_integridade.py::test_identidade_de_estoque_entre_periodos PASSED [ 46%]
+tests/test_integridade.py::test_continuidade_entre_exercicios_sem_falhas PASSED [ 50%]
+tests/test_integridade.py::test_anomalias_do_corte_2026 PASSED           [ 53%]
+tests/test_integridade.py::test_espelhamento_2026_execucao_so_na_copia PASSED [ 57%]
+tests/test_integridade.py::test_espelhamento_2025_execucao_no_original_e_copia_e_saldo_remanescente PASSED [ 61%]
+tests/test_integridade.py::test_nenhum_registro_espelhado_foi_removido PASSED [ 65%]
+tests/test_integridade.py::test_visoes_publicado_e_analiticas PASSED     [ 69%]
+tests/test_integridade.py::test_regras_de_consolidacao_sao_experimentais PASSED [ 73%]
+tests/test_integridade.py::test_conciliacao_reproduz_etapa02 PASSED      [ 76%]
+tests/test_integridade.py::test_rreo_col_v2_fecha_c_e_i_de_2025_pela_categoria_do_registro PASSED [ 80%]
+tests/test_integridade.py::test_rreo_col_v2_torna_L_igual_a_S1_em_todas_as_visoes PASSED [ 84%]
+tests/test_integridade.py::test_rreo_sem_snapshot_correspondente_e_registrado_nao_inventado PASSED [ 88%]
+tests/test_integridade.py::test_mesmo_corte_em_datas_diferentes PASSED   [ 92%]
+tests/test_integridade.py::test_SINTETICO_alteracao_retroativa_preserva_os_dois_retratos PASSED [ 96%]
+tests/test_integridade.py::test_reprocessamento_deterministico PASSED    [100%]
+
+============================= 26 passed in 17.44s =============================

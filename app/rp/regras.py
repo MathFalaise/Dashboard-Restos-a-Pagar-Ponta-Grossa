@@ -3,7 +3,15 @@
 Mesmos codigos e versoes da Etapa 03 (etapa03/RELATORIO_ETAPA03.md secao 6.1). Toda
 regra carrega o status de evidencia e a fonte. `uso='experimental'` significa:
 calculada e identificada, NUNCA promovida a padrao automaticamente.
+
+Parametros de negocio (entidades do par, base 2.400.000 das copias, entidade do RREO por entidade) ficam em
+PARAMETROS, presos a VERSAO da regra, e vao para a tabela imutavel regra_parametro. O codigo le os parametros
+da regra em vez de repetir numeros; mudar um parametro exige uma versao nova da regra.
+A situacao de uso de cada versao (operacional, experimental, nao recomendada...) fica em governanca.py.
 """
+import json
+
+from . import governanca
 
 E2 = "etapa02/RELATORIO_ETAPA02.md"
 E3 = "etapa03/RELATORIO_ETAPA03.md"
@@ -64,12 +72,41 @@ ANOMALIAS = [
 ]
 
 
+# (codigo, versao) -> parametros estruturados. Transcricao da definicao da regra: mesmo significado, sem numero
+# espalhado pelo codigo. Valor novo = versao nova da regra (a tabela regra_parametro nao aceita edicao).
+PARAMETROS = {
+    ("PAR-24", 1): {"entidade_copia": 1, "entidade_original": 15, "base_empenho_copia": 2400000,
+                    "campos_de_conferencia": ["cnpj", "data_emissao"]},
+    ("CONC-RREO", 1): {"entidade_do_rreo_por_entidade": 1},
+}
+
+
 def semear(con):
+    """Catalogo de regras, tipos de anomalia, parametros de regra e decisoes de governanca (tudo idempotente)."""
     for r in REGRAS:
         con.execute("INSERT OR IGNORE INTO regra (codigo, versao, tipo, uso, status_evidencia, definicao, fonte) "
                     "VALUES (?,?,?,?,?,?,?)", r)
     for a in ANOMALIAS:
         con.execute("INSERT OR IGNORE INTO anomalia_tipo (codigo, descricao, status_evidencia, fonte) VALUES (?,?,?,?)", a)
+    R = ids(con)
+    for (codigo, versao), valores in PARAMETROS.items():
+        for nome, valor in valores.items():
+            con.execute("INSERT OR IGNORE INTO regra_parametro VALUES (?,?,?)",
+                        (R[(codigo, versao)], nome, json.dumps(valor, sort_keys=True)))
+    governanca.semear(con, R)
+
+
+class ParametroAusente(KeyError):
+    pass
+
+
+def parametros(con, codigo, versao):
+    """Parametros registrados de uma versao de regra (le do banco; nunca de constante no codigo)."""
+    linhas = con.execute("SELECT p.nome, p.valor_json FROM regra_parametro p JOIN regra r ON r.id = p.regra_id "
+                         "WHERE r.codigo=? AND r.versao=?", (codigo, versao)).fetchall()
+    if not linhas:
+        raise ParametroAusente(f"regra {codigo} v{versao} sem parametros registrados")
+    return {nome: json.loads(valor) for nome, valor in linhas}
 
 
 def ids(con):
