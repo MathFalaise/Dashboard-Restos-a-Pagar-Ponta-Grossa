@@ -36,7 +36,7 @@ CABECALHOS = [
     ("Cache-Control", "no-store"),
 ]
 ROTAS = {
-    "/": paginas.resumo, "/evolucao": paginas.evolucao, "/historico": paginas.historico, "/composicao": paginas.composicao, "/entidades": paginas.entidades, "/empenhos": paginas.empenhos, "/empenho": paginas.empenho,
+    "/": paginas.resumo, "/evolucao": paginas.evolucao, "/historico": paginas.historico, "/composicao": paginas.composicao, "/variacao": paginas.variacao, "/empenho/cortes": paginas.empenho_cortes, "/entidades": paginas.entidades, "/empenhos": paginas.empenhos, "/empenho": paginas.empenho,
     "/retratos": paginas.retratos, "/comparar": paginas.comparar, "/reconciliacao": paginas.reconciliacao,
     "/pares": paginas.pares, "/metodologia": paginas.metodologia,
 }
