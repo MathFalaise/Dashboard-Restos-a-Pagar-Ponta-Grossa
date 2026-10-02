@@ -1,0 +1,21 @@
+{
+ "subetapa": "05.7",
+ "data": "2026-10-02",
+ "metodo": "varredura final, depois de todas as mudancas da Etapa 05, no navegador interno do app (Chromium) a 375x812, servidor local somente leitura sobre o banco ativo; medicao por JavaScript de scrollWidth x innerWidth, elementos fora da largura (exceto dentro do quadro .rolagem) e altura das linhas das tabelas. As medicoes por tela em celular, tablet, notebook e painel do app estao nas evidencias de cada subetapa (05_2 a 05_6_responsividade.json).",
+ "criterio": "sem estouro horizontal da pagina; tabela larga rola dentro do proprio quadro",
+ "medicoes_375x812": {
+  "/ (Resumo)": {"scrollWidth": 375, "fora": 0, "maior_linha_px": 148, "observacao": "a linha de 148 px e a da tabela 'Conferencia com o RREO', homologada na 04.6 e sem mudanca na Etapa 05"},
+  "/evolucao?exercicio=2026": {"scrollWidth": 375, "fora": 0, "maior_linha_px": 70},
+  "/historico": {"scrollWidth": 375, "fora": 0, "maior_linha_px": 89},
+  "/composicao (fonte de recurso, 31/12/2025)": {"scrollWidth": 375, "fora": 0, "maior_linha_px": 109},
+  "/variacao (31/10 -> 31/12/2025)": {"scrollWidth": 375, "fora": 0, "maior_linha_px": 89},
+  "/empenho/cortes (5659/2025)": {"scrollWidth": 375, "fora": 0, "maior_linha_px": 70},
+  "/qualidade?tipo=LIQ-NEG": {"scrollWidth": 375, "fora": 0, "maior_linha_px": 109},
+  "/empenhos (faixa g, com 'Mais filtros' aberto)": {"scrollWidth": 375, "fora": 0, "maior_linha_px": 31},
+  "/reconciliacao": {"scrollWidth": 375, "fora": 0, "maior_linha_px": 94}
+ },
+ "observacoes": [
+  "cabecalho: com os 12 itens do menu (eram 9 na 04.6), o topo ocupa 229 px de altura em 375 px, sem estouro; sugestao para depois: menu recolhivel sem JavaScript (<details>)",
+  "acessibilidade basica e ausencia de recurso externo: 05_7_acessibilidade.json (38 paginas, 0 problemas); sem rede: 05_7_percurso_sem_rede.json (25 visitas, 0 tentativas de conexao de saida)"
+ ]
+}

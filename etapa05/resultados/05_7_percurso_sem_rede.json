@@ -1,0 +1,177 @@
+[
+ {
+  "operacao": "abertura",
+  "url": "/",
+  "status": 200,
+  "bytes": 26267,
+  "ms": 156
+ },
+ {
+  "operacao": "resumo de um corte",
+  "url": "/?exercicio=2025&data_final=2025-12-31",
+  "status": 200,
+  "bytes": 30148,
+  "ms": 144
+ },
+ {
+  "operacao": "evolução no exercício",
+  "url": "/evolucao?exercicio=2026",
+  "status": 200,
+  "bytes": 16584,
+  "ms": 485
+ },
+ {
+  "operacao": "evolução de uma entidade",
+  "url": "/evolucao?exercicio=2026&entidade=15",
+  "status": 200,
+  "bytes": 14844,
+  "ms": 163
+ },
+ {
+  "operacao": "série entre exercícios",
+  "url": "/historico",
+  "status": 200,
+  "bytes": 26575,
+  "ms": 887
+ },
+ {
+  "operacao": "série de uma entidade",
+  "url": "/historico?entidade=1",
+  "status": 200,
+  "bytes": 22833,
+  "ms": 631
+ },
+ {
+  "operacao": "composição por categoria",
+  "url": "/composicao?exercicio=2025&data_final=2025-12-31",
+  "status": 200,
+  "bytes": 15932,
+  "ms": 252
+ },
+ {
+  "operacao": "composição por faixa",
+  "url": "/composicao?exercicio=2025&data_final=2025-12-31&dimensao=faixa",
+  "status": 200,
+  "bytes": 15761,
+  "ms": 357
+ },
+ {
+  "operacao": "composição por fonte",
+  "url": "/composicao?exercicio=2025&data_final=2025-12-31&dimensao=fonte_recurso",
+  "status": 200,
+  "bytes": 81322,
+  "ms": 225
+ },
+ {
+  "operacao": "composição indisponível",
+  "url": "/composicao?exercicio=2026&data_final=2026-03-31",
+  "status": 200,
+  "bytes": 5441,
+  "ms": 74
+ },
+ {
+  "operacao": "lista de um grupo da composição",
+  "url": "/empenhos?exercicio=2025&data_final=2025-12-31&faixa=a",
+  "status": 200,
+  "bytes": 61553,
+  "ms": 130
+ },
+ {
+  "operacao": "variação entre cortes",
+  "url": "/variacao?exercicio=2025&anterior=2025-10-31&data_final=2025-12-31",
+  "status": 200,
+  "bytes": 65898,
+  "ms": 855
+ },
+ {
+  "operacao": "variação que salta lacuna",
+  "url": "/variacao?exercicio=2026&anterior=2026-02-28&data_final=2026-04-30",
+  "status": 200,
+  "bytes": 66562,
+  "ms": 241
+ },
+ {
+  "operacao": "variação: última página",
+  "url": "/variacao?exercicio=2026&anterior=2026-02-28&data_final=2026-04-30&pagina=20",
+  "status": 200,
+  "bytes": 48497,
+  "ms": 249
+ },
+ {
+  "operacao": "variação indisponível",
+  "url": "/variacao?exercicio=2026&anterior=2026-01-31&data_final=2026-02-28",
+  "status": 200,
+  "bytes": 6104,
+  "ms": 150
+ },
+ {
+  "operacao": "empenho nos cortes",
+  "url": "/empenho/cortes?entidade=1&anoempenho=2025&empenho=5659&exercicio=2026",
+  "status": 200,
+  "bytes": 10836,
+  "ms": 28
+ },
+ {
+  "operacao": "qualidade dos dados",
+  "url": "/qualidade",
+  "status": 200,
+  "bytes": 66020,
+  "ms": 567
+ },
+ {
+  "operacao": "ocorrências de anomalia",
+  "url": "/qualidade?tipo=LIQ-NEG&exercicio=2026",
+  "status": 200,
+  "bytes": 84156,
+  "ms": 549
+ },
+ {
+  "operacao": "entidades",
+  "url": "/entidades?exercicio=2026&data_final=2026-08-31",
+  "status": 200,
+  "bytes": 11502,
+  "ms": 98
+ },
+ {
+  "operacao": "consulta detalhada",
+  "url": "/empenho?entidade=1&anoempenho=2025&empenho=5659&exercicio=2026",
+  "status": 200,
+  "bytes": 15198,
+  "ms": 20
+ },
+ {
+  "operacao": "reconciliação",
+  "url": "/reconciliacao",
+  "status": 200,
+  "bytes": 30569,
+  "ms": 891
+ },
+ {
+  "operacao": "metodologia",
+  "url": "/metodologia",
+  "status": 200,
+  "bytes": 17194,
+  "ms": 20
+ },
+ {
+  "operacao": "folha de estilo",
+  "url": "/estilo.css",
+  "status": 200,
+  "bytes": 7869,
+  "ms": 3
+ },
+ {
+  "operacao": "parâmetro inválido",
+  "url": "/variacao?metrica=liquidacoes",
+  "status": 400,
+  "bytes": 360,
+  "ms": 91
+ },
+ {
+  "operacao": "rota inexistente",
+  "url": "/nao-existe",
+  "status": 404,
+  "bytes": 377,
+  "ms": 2
+ }
+]

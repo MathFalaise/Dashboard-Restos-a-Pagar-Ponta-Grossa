@@ -1,0 +1,499 @@
+{
+ "paginas": [
+  {
+   "caminho": "/",
+   "consulta": {},
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 17,
+   "ids": 29
+  },
+  {
+   "caminho": "/",
+   "consulta": {
+    "exercicio": 2026,
+    "data_final": "2026-03-31"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 1,
+   "links": 16,
+   "ids": 13
+  },
+  {
+   "caminho": "/",
+   "consulta": {
+    "exercicio": 2025,
+    "data_final": "2025-12-31",
+    "entidade": 15
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 1,
+   "links": 16,
+   "ids": 17
+  },
+  {
+   "caminho": "/evolucao",
+   "consulta": {
+    "exercicio": 2026
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 29,
+   "ids": 48
+  },
+  {
+   "caminho": "/evolucao",
+   "consulta": {
+    "exercicio": 2026,
+    "entidade": 15
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 29,
+   "ids": 48
+  },
+  {
+   "caminho": "/historico",
+   "consulta": {},
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 34,
+   "ids": 100
+  },
+  {
+   "caminho": "/historico",
+   "consulta": {
+    "entidade": 10
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 34,
+   "ids": 75
+  },
+  {
+   "caminho": "/composicao",
+   "consulta": {
+    "exercicio": 2025,
+    "data_final": "2025-12-31",
+    "dimensao": "categoria"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 31,
+   "ids": 49
+  },
+  {
+   "caminho": "/composicao",
+   "consulta": {
+    "exercicio": 2025,
+    "data_final": "2025-12-31",
+    "dimensao": "faixa"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 32,
+   "ids": 41
+  },
+  {
+   "caminho": "/composicao",
+   "consulta": {
+    "exercicio": 2025,
+    "data_final": "2025-12-31",
+    "dimensao": "tipo_credor"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 30,
+   "ids": 46
+  },
+  {
+   "caminho": "/composicao",
+   "consulta": {
+    "exercicio": 2025,
+    "data_final": "2025-12-31",
+    "dimensao": "fonte_recurso"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 178,
+   "ids": 490
+  },
+  {
+   "caminho": "/composicao",
+   "consulta": {
+    "exercicio": 2025,
+    "data_final": "2025-12-31",
+    "dimensao": "orgao"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 56,
+   "ids": 121
+  },
+  {
+   "caminho": "/composicao",
+   "consulta": {
+    "exercicio": 2025,
+    "data_final": "2025-12-31",
+    "dimensao": "funcao"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 48,
+   "ids": 97
+  },
+  {
+   "caminho": "/composicao",
+   "consulta": {
+    "exercicio": 2025,
+    "data_final": "2025-12-31",
+    "dimensao": "programa"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 97,
+   "ids": 244
+  },
+  {
+   "caminho": "/composicao",
+   "consulta": {
+    "exercicio": 2025,
+    "data_final": "2025-12-31",
+    "dimensao": "elemento"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 77,
+   "ids": 184
+  },
+  {
+   "caminho": "/composicao",
+   "consulta": {
+    "exercicio": 2026,
+    "data_final": "2026-03-31"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 0,
+   "links": 12,
+   "ids": 3
+  },
+  {
+   "caminho": "/variacao",
+   "consulta": {
+    "exercicio": 2025,
+    "anterior": "2025-10-31",
+    "data_final": "2025-12-31"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 5,
+   "links": 173,
+   "ids": 93
+  },
+  {
+   "caminho": "/variacao",
+   "consulta": {
+    "exercicio": 2026,
+    "anterior": "2026-02-28",
+    "data_final": "2026-04-30",
+    "metrica": "pagamentos",
+    "pagina": 2
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 5,
+   "links": 174,
+   "ids": 93
+  },
+  {
+   "caminho": "/variacao",
+   "consulta": {
+    "exercicio": 2026,
+    "anterior": "2026-01-31",
+    "data_final": "2026-02-28"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 1,
+   "links": 12,
+   "ids": 4
+  },
+  {
+   "caminho": "/variacao",
+   "consulta": {
+    "exercicio": 2024
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 0,
+   "links": 13,
+   "ids": 2
+  },
+  {
+   "caminho": "/empenho/cortes",
+   "consulta": {
+    "entidade": 1,
+    "anoempenho": 2025,
+    "empenho": 5659,
+    "exercicio": 2026
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 1,
+   "links": 19,
+   "ids": 50
+  },
+  {
+   "caminho": "/empenho/cortes",
+   "consulta": {
+    "entidade": 15,
+    "anoempenho": 2023,
+    "empenho": 1751,
+    "exercicio": 2026
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 1,
+   "links": 16,
+   "ids": 32
+  },
+  {
+   "caminho": "/qualidade",
+   "consulta": {},
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 7,
+   "links": 22,
+   "ids": 49
+  },
+  {
+   "caminho": "/qualidade",
+   "consulta": {
+    "tipo": "LIQ-NEG"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 8,
+   "links": 73,
+   "ids": 50
+  },
+  {
+   "caminho": "/qualidade",
+   "consulta": {
+    "tipo": "CHAVE-DUP"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 7,
+   "links": 22,
+   "ids": 51
+  },
+  {
+   "caminho": "/entidades",
+   "consulta": {
+    "exercicio": 2026,
+    "data_final": "2026-08-31"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 1,
+   "links": 22,
+   "ids": 42
+  },
+  {
+   "caminho": "/empenhos",
+   "consulta": {
+    "exercicio": 2026,
+    "data_final": "2026-08-31"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 1,
+   "links": 63,
+   "ids": 9
+  },
+  {
+   "caminho": "/empenhos",
+   "consulta": {
+    "exercicio": 2025,
+    "data_final": "2025-12-31",
+    "faixa": "g"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 1,
+   "links": 63,
+   "ids": 9
+  },
+  {
+   "caminho": "/empenhos",
+   "consulta": {
+    "exercicio": 2026,
+    "data_final": "2026-08-31",
+    "empenho": 999999999
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 0,
+   "links": 12,
+   "ids": 4
+  },
+  {
+   "caminho": "/empenho",
+   "consulta": {
+    "entidade": 1,
+    "anoempenho": 2025,
+    "empenho": 5659,
+    "exercicio": 2026
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 4,
+   "links": 13,
+   "ids": 19
+  },
+  {
+   "caminho": "/retratos",
+   "consulta": {},
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 0,
+   "links": 40,
+   "ids": 1
+  },
+  {
+   "caminho": "/retratos",
+   "consulta": {
+    "entidade": 1,
+    "exercicio": 2026,
+    "data_final": "2026-08-31"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 1,
+   "links": 16,
+   "ids": 1
+  },
+  {
+   "caminho": "/reconciliacao",
+   "consulta": {},
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 44,
+   "ids": 14
+  },
+  {
+   "caminho": "/reconciliacao",
+   "consulta": {
+    "exercicio": 2026,
+    "data_final": "2026-08-31",
+    "escopo": "entidade"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 1,
+   "links": 13,
+   "ids": 73
+  },
+  {
+   "caminho": "/pares",
+   "consulta": {
+    "exercicio": 2026,
+    "data_final": "2026-08-31"
+   },
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 1,
+   "links": 12,
+   "ids": 2
+  },
+  {
+   "caminho": "/metodologia",
+   "consulta": {},
+   "status": "200 OK",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 2,
+   "links": 12,
+   "ids": 1
+  },
+  {
+   "caminho": "/empenhos",
+   "consulta": {
+    "empenho": "abc"
+   },
+   "status": "400 Bad Request",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 0,
+   "links": 1,
+   "ids": 0
+  },
+  {
+   "caminho": "/nao-existe",
+   "consulta": {},
+   "status": "404 Not Found",
+   "problemas": [],
+   "titulos": 1,
+   "tabelas": 0,
+   "links": 1,
+   "ids": 0
+  }
+ ],
+ "resumo": {
+  "paginas": 38,
+  "paginas_com_problema": 0
+ }
+}
