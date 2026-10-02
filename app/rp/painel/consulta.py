@@ -20,10 +20,10 @@ Fluxo:  API Elotech -> coleta -> snapshot imutavel -> normalizacao -> derivacao 
 import json
 import re
 import sqlite3
-from datetime import datetime
 from pathlib import Path
 
-from .. import BRT, banco, governanca, regras
+from .. import DataInvalida, banco, governanca, regras
+from .. import instante as _instante
 from ..comparador import comparar as _comparar
 from . import explicacoes, fontes, publico
 
@@ -227,18 +227,11 @@ def _instante_br(iso):
 
 
 def instante(em):
-    """'AAAA-MM-DD' (fim do dia) ou data/hora ISO -> ISO com fuso de Brasilia, no formato de coleta.coletada_em.
-    A comparacao com coletada_em e textual, por isso todo instante e convertido para -03:00."""
-    if em is None:
-        return None
+    """rp.instante (o mesmo da derivacao e do CLI), com o erro da camada painel."""
     try:
-        d = datetime.fromisoformat(str(em))
-    except ValueError as e:
-        raise ErroDoPainel(f"data invalida para 'como estava em': {em!r} (use AAAA-MM-DD ou ISO com fuso)") from e
-    if len(str(em)) == 10:
-        d = d.replace(hour=23, minute=59, second=59, tzinfo=BRT)
-    d = d.replace(tzinfo=BRT) if d.tzinfo is None else d.astimezone(BRT)
-    return d.isoformat(timespec="seconds")
+        return _instante(em)
+    except DataInvalida as e:
+        raise ErroDoPainel(str(e)) from e
 
 
 def _in(n):

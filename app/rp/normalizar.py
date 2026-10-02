@@ -214,7 +214,7 @@ def _rreo(con, nid, cid, params, corpo):
             if w.startswith(r) and c not in cols:
                 cols[c] = (x0 + x1) / 2
     if set(cols) != set(ROTULOS.values()):
-        raise LayoutDesconhecido(f"colunas não encontradas no RREO: {set(ROTULOS.values()) - set(cols)}")
+        raise LayoutDesconhecido(f"colunas não encontradas no RREO: {sorted(set(ROTULOS.values()) - set(cols))}")
     linhas = {}
     for x0, y0, x1, y1, w, *_ in palavras:
         if NUM.match(w):
@@ -226,7 +226,10 @@ def _rreo(con, nid, cid, params, corpo):
             y = next((k for k in linhas if abs(k - y0) < 2.5), None)
             if y is not None:
                 rotulo.setdefault(y, []).append(w)
-    valores = []
+    # Uma celula (linha, coluna) so pode ter UM valor. Dois numeros diferentes que caem na mesma celula (mesma linha,
+    # coluna mais proxima; ou a mesma linha impressa duas vezes) eram descartados em silencio (o segundo); agora o
+    # PDF inteiro fica sem transcricao e o motivo registrado (auditoria NORM-02). Repeticao do mesmo valor e aceita.
+    valores, celulas = [], {}
     for y, vals in linhas.items():
         nome = " ".join(rotulo.get(y, []))
         linha = next((l for l in LINHAS if nome.startswith(l)), None)
@@ -234,8 +237,13 @@ def _rreo(con, nid, cid, params, corpo):
             continue
         vistos = {}
         for xc, w in vals:
-            vistos.setdefault(min(cols, key=lambda k: abs(cols[k] - xc)), w)
+            c = min(cols, key=lambda k: abs(cols[k] - xc))
+            if vistos.setdefault(c, w) != w:
+                raise LayoutDesconhecido(f"dois números na coluna ({c}) da linha {linha!r}: {vistos[c]} e {w}")
         for c, w in vistos.items():
+            if celulas.setdefault((linha, c), w) != w:
+                raise LayoutDesconhecido(f"linha {linha!r} repetida com outro valor na coluna ({c}): "
+                                         f"{celulas[(linha, c)]} e {w}")
             valores.append((nid, cid, EXTRATOR_RREO, escopo, ano, data_final, emitido, linha, c,
                             int(Decimal(w.replace(".", "").replace(",", ".")) * 100)))
     return con.executemany(SQL_RREO, valores).rowcount if valores else 0

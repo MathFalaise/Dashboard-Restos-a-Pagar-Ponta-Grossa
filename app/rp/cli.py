@@ -5,7 +5,7 @@ import logging
 import sys
 from datetime import datetime
 
-from . import BRT, VERSAO, banco
+from . import BRT, VERSAO, DataInvalida, banco, instante
 from .armazem import TIPOS_EVIDENCIA, Armazem, ManifestoInvalido, ObjetoCorrompido
 from .coletor import Coletor, ParametroInvalido
 from .comparador import CorteDiferente
@@ -17,7 +17,7 @@ from .painel.consulta import ErroDoPainel
 
 ERROS_ESPERADOS = (ParametroInvalido, CorteDiferente, ExclusaoRecusada, ConfiguracaoInvalida, banco.MigracaoPendente,
                    banco.BancoEmPastaSincronizada, ManifestoInvalido, ObjetoCorrompido, FileExistsError,
-                   FileNotFoundError, KeyError, EvidenciaInvalida, ErroDoPainel)
+                   FileNotFoundError, KeyError, EvidenciaInvalida, ErroDoPainel, DataInvalida)
 CONSULTAS_PAINEL = ("contexto", "cortes", "entidades", "indicadores", "evolucao", "dimensao", "empenhos", "empenho",
                     "fornecedores", "pares", "retratos", "comparar-retratos", "reconciliacao", "coerencia", "analitica",
                     "regras", "evidencias", "fontes", "metodologia", "dicionario")
@@ -227,11 +227,12 @@ def _main(argv=None):
         return 0
     if a.cmd == "processar":
         from . import derivar, normalizar
+        em = instante(a.em)   # mesma forma da camada painel; data invalida e recusada antes de normalizar (CLI-01)
         if a.normalizacao:
             nid, resumo = a.normalizacao, {"reusada": a.normalizacao}
         else:
             nid, resumo = normalizar.normalizar(con)
-        did = derivar.derivar(con, nid, a.em)
+        did = derivar.derivar(con, nid, em)
         h = con.execute("SELECT hash_resultado FROM derivacao_execucao WHERE id=?", (did,)).fetchone()[0]
         verif = con.execute("SELECT descricao, escopo_json, verificados, falhas FROM verificacao WHERE derivacao_id=?",
                             (did,)).fetchall()
