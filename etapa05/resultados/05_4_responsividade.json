@@ -1,0 +1,43 @@
+{
+ "subetapa": "05.4",
+ "data": "2026-10-01",
+ "metodo": "navegador interno do app (Chromium), servidor local somente leitura (python rp.py interface --porta 8051) sobre o banco ativo; medicao por JavaScript de document.documentElement.scrollWidth x innerWidth, elementos fora da largura (exceto dentro do quadro .rolagem, que rola a tabela), altura das linhas das tabelas e menor fonte",
+ "criterio": "sem estouro horizontal da pagina; tabela larga rola dentro do proprio quadro; texto >= 11 px; nenhum elemento fora da largura",
+ "ajustes_feitos_durante_a_verificacao": [
+  "coluna 'Empenhos' da composicao: o link 'ver N empenhos' quebrava em duas linhas em 375 px e dobrava a altura das linhas (50 px -> 31 px); passou a nao quebrar (.composicao td:last-child a)",
+  "faixa: a dica por linha (total 'Processado (inscrito)' / 'Nao processado (inscrito)') levava as linhas a 109 px em 375 px; foi para a nota da secao (linhas de ate 70 px)",
+  "coluna 'Grupo': largura minima 16em (descricoes longas de fonte de recurso)",
+  "navegacao entre dimensoes: de .dica (12 px) para .dimensoes (14 px, entrelinha 2,1), para area de toque maior no celular"
+ ],
+ "medicoes": {
+  "375x812 (celular)": {
+   "composicao categoria (Municipio 31/12/2025)": {"scrollWidth": 375, "fora": 0, "tabela": "6 linhas, max 50 px (linhas de total/fechamento; grupos 31 px), 690 px rolando em quadro de 351 px", "menor_fonte_px": 11.5},
+   "composicao faixa": {"scrollWidth": 375, "fora": 0, "tabela": "6 linhas, max 70 px", "menor_fonte_px": 11.5},
+   "composicao tipo de credor": {"scrollWidth": 375, "fora": 0, "tabela": "5 linhas, max 50 px", "menor_fonte_px": 11.5},
+   "composicao fonte de recurso": {"scrollWidth": 375, "fora": 0, "tabela": "153 linhas, max 109 px (1 linha acima de 90 px: descricao de fonte com mais de 90 caracteres)", "menor_fonte_px": 11.5},
+   "composicao orgao": {"scrollWidth": 375, "fora": 0, "tabela": "30 linhas, max 50 px"},
+   "composicao elemento": {"scrollWidth": 375, "fora": 0, "tabela": "51 linhas, max 50 px"},
+   "composicao programa (entidade 1, 31/08/2026)": {"scrollWidth": 375, "fora": 0, "tabela": "66 linhas, max 50 px"},
+   "composicao indisponivel (Municipio 31/03/2026)": {"scrollWidth": 375, "fora": 0, "texto": "Municipio indisponivel ... Motivo: corte nao coletado para a(s) entidade(s) [4, 5, 8, 15]. Nenhum grupo e mostrado", "menor_fonte_px": 12},
+   "empenhos com faixa=g e orgao=09": {"scrollWidth": 375, "fora": 0, "mais_filtros_aberto": true, "largura_dos_campos_px": 325},
+   "tabela de fechamentos": {"linhas": 8, "max_px": 70}
+  },
+  "768x1024 (tablet)": {
+   "composicao categoria": {"scrollWidth": 753, "fora": 0, "tabela": "713 px = quadro (sem rolagem), linhas de 31 px"},
+   "composicao faixa": {"scrollWidth": 753, "fora": 0, "tabela": "linhas ate 50 px"},
+   "composicao fonte de recurso": {"scrollWidth": 753, "fora": 0, "tabela": "153 linhas, 1 acima de 90 px"},
+   "empenhos sem_classificacao=orgao": {"scrollWidth": 753, "fora": 0, "mais_filtros_aberto": true, "empenhos": 16}
+  },
+  "1280x800 (notebook)": {
+   "composicao categoria": {"scrollWidth": 1265, "fora": 0, "tabela": "linhas de 31 px"},
+   "composicao fonte de recurso": {"scrollWidth": 1265, "fora": 0, "tabela": "153 linhas de 31 px"},
+   "composicao faixa": {"scrollWidth": 1265, "fora": 0, "tabela": "linhas de 31 px"},
+   "empenhos faixa=a": {"scrollWidth": 1265, "fora": 0, "empenhos": 477, "total_processado": "R$ 2.707.117,16 (igual a faixa a da composicao: 270711716 centavos)"},
+   "resumo": {"scrollWidth": 1265, "link_novo": "Ver a composicao do saldo deste corte -> /composicao?exercicio=2025&data_final=2025-12-31"}
+  },
+  "716x686 (painel do app, desktop)": {
+   "composicao programa": {"scrollWidth": 701, "fora": 0, "tabela": "71 linhas, max 50 px"},
+   "composicao faixa": {"scrollWidth": 701, "fora": 0, "tabela": "max 70 px"}
+  }
+ }
+}
