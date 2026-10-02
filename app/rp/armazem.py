@@ -206,10 +206,33 @@ class Armazem:
         return itens
 
     def verificar(self):
-        """Problemas encontrados (lista vazia = integro)."""
+        """Problemas encontrados (lista vazia = integro). Alem de manifestos e objetos, relata objeto que nenhum
+        manifesto referencia e arquivo temporario abandonado: os dois sao o rastro de uma gravacao interrompida
+        (objetos sao gravados antes do manifesto) e nunca sao apagados automaticamente (auditoria ARM-01)."""
         itens, problemas = self.manifestos_e_erros()
         evid, erros_evid = self.evidencias_e_erros()
         problemas += erros_evid
+        referenciados = set()
+        for _, m in itens:
+            referenciados |= {r.get("sha256") for r in m.get("respostas", []) + m.get("segunda_leitura", [])
+                              if isinstance(r, dict)}
+        referenciados |= {m.get("sha256") for _, m in evid}
+        if (self.raiz / "objetos").exists():
+            for p in sorted((self.raiz / "objetos").rglob("*")):
+                if p.is_file() and ".tmp" in p.name:
+                    problemas.append(f"arquivo temporário abandonado: {p.relative_to(self.raiz).as_posix()}")
+                elif p.is_file() and p.suffix == ".zlib" and p.stem not in referenciados:
+                    problemas.append(f"objeto sem manifesto que o referencie: {p.relative_to(self.raiz).as_posix()}")
+        for p in sorted(self.raiz.glob("*/**/*.json.tmp*")):
+            problemas.append(f"arquivo temporário abandonado: {p.relative_to(self.raiz).as_posix()}")
+        for rel, m in itens:
+            for r in m.get("segunda_leitura", []):
+                try:
+                    self.ler_objeto(r["sha256"], r["tamanho"])
+                except FileNotFoundError:
+                    problemas.append(f"{rel}: objeto da segunda leitura ausente {str(r.get('sha256'))[:12]}")
+                except (ObjetoCorrompido, KeyError, TypeError) as e:
+                    problemas.append(f"{rel}: segunda leitura: {e}")
         for rel, m in evid:
             if m.get("formato") != FORMATO_EVIDENCIA:
                 problemas.append(f"{rel}: formato desconhecido {m.get('formato')!r}")
