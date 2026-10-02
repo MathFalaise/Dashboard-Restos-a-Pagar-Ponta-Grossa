@@ -84,29 +84,36 @@ def _entidades_do_catalogo(p):
 
 
 def _selecao(p, q, com_entidade=True):
-    """Exercicio, corte e entidade escolhidos (ou os padroes), so entre os cortes que existem no banco."""
+    """Exercicio, corte e entidade escolhidos. O padrao (nada pedido) sai dos cortes que existem no banco; o que foi
+    pedido nunca e trocado por outro: exercicio sem corte processado vira SemDados, e corte nao processado segue
+    para a camada painel, que devolve a situacao do dado de cada entidade (corte_processado = False)."""
     em = q.data("em")
     cortes = p.cortes(em)["cortes"]
+    ate = f" até {fm.data_br(em)}" if em else ""
     if not cortes:
-        raise SemDados("Nenhum corte processado" + (f" até {fm.data_br(em)}" if em else "") + ".")
+        raise SemDados(f"Nenhum corte processado{ate}.")
     exercicios = sorted({c["exercicio"] for c in cortes}, reverse=True)
     avisos = []
     ex = q.inteiro("exercicio", 1900, 2999)
-    if ex not in exercicios:
-        if ex is not None:
-            avisos.append(f"Exercício {ex} sem corte processado: mostrado o exercício mais recente.")
+    if ex is None:
         ex = exercicios[0]
+    elif ex not in exercicios:
+        raise SemDados(f"Exercício {ex} sem corte processado{ate}: nenhum valor é mostrado. Exercícios com corte "
+                       f"processado: {', '.join(str(x) for x in exercicios)}.")
     entidade = q.inteiro("entidade", 1, 10 ** 6) if com_entidade else None
     do_exercicio = [c for c in cortes if c["exercicio"] == ex]
+    processados = [c["data_final"] for c in do_exercicio]
     df = q.data("data_final")
-    if df not in [c["data_final"] for c in do_exercicio]:
-        if df is not None:
-            avisos.append(f"Corte {fm.data_br(df)} não disponível no exercício {ex}: mostrado outro corte.")
+    if df is None:
         candidatos = [c for c in do_exercicio if (c["municipio_disponivel"] if entidade is None
                                                    else entidade in c["entidades_com_snapshot"])]
         df = (candidatos or do_exercicio)[-1]["data_final"]
+    elif df not in processados:
+        avisos.append(f"Corte {fm.data_br(df)} não processado no exercício {ex}{ate}: nenhum outro corte é mostrado "
+                      "no lugar dele. Cortes processados deste exercício: "
+                      f"{', '.join(fm.data_br(x) for x in processados)}.")
     return {"em": em, "exercicio": ex, "data_final": df, "entidade": entidade, "exercicios": exercicios,
-            "cortes_do_exercicio": do_exercicio, "avisos": avisos}
+            "cortes_do_exercicio": do_exercicio, "corte_processado": df in processados, "avisos": avisos}
 
 
 def _quando(sel):
@@ -702,14 +709,20 @@ def variacao(p, q):
                           + fm.link("/historico", "Série entre exercícios", entidade=sel["entidade"], em=sel["em"])
                           + " (fechamento × abertura).</p></section>")
     posterior, anterior = sel["data_final"], q.data("anterior")
-    if posterior == cortes[0]:
-        sel["avisos"].append("Não há corte anterior ao primeiro do exercício: mostrado o par dos dois primeiros cortes.")
+    if posterior == cortes[0] and q.data("data_final") is None:   # padrao: o primeiro corte nao tem anterior
         posterior = cortes[1]
-    if anterior is None or anterior not in cortes or anterior >= posterior:
-        if anterior is not None:
-            sel["avisos"].append("O corte anterior precisa ser um corte do exercício anterior ao posterior: mostrado o "
-                                 "corte imediatamente anterior.")
-        anterior = cortes[cortes.index(posterior) - 1]
+    if anterior is None:   # padrao: o corte processado imediatamente anterior ao posterior
+        anteriores = [c for c in cortes if c < posterior]
+        anterior = anteriores[-1] if anteriores else None
+    if anterior is None or anterior >= posterior:   # par pedido impossivel: nunca e trocado por outro
+        motivo = (f"não há corte processado anterior a {fm.data_br(posterior)} neste exercício" if anterior is None else
+                  f"o corte anterior ({fm.data_br(anterior)}) precisa ser anterior ao posterior ({fm.data_br(posterior)})")
+        titulo = f"Variação entre cortes — {escopo}, exercício {sel['exercicio']} ({_quando(sel)})"
+        return titulo, (f"<h1>{esc(titulo)}</h1>{_avisos(sel['avisos'])}"
+                        + _formulario_variacao(sel, cortes, (anterior, posterior), metrica, _entidades_do_catalogo(p))
+                        + '<section class="indisponivel" id="indisponivel"><h2>Investigação indisponível para este par'
+                          f"</h2><p>{esc(motivo)}. Escolha os dois cortes no formulário.</p><p>Nenhuma contribuição é "
+                          "mostrada: ausência de dado não é zero.</p></section>")
     r = p.variacao(sel["exercicio"], anterior, posterior, sel["entidade"], metrica, sel["em"], TAMANHO_PAGINA,
                    (pagina - 1) * TAMANHO_PAGINA)
     titulo = (f"Variação entre cortes — {escopo}, exercício {sel['exercicio']}: {fm.data_br(anterior)} → "
@@ -1615,8 +1628,13 @@ def pares(p, q):
         sel = _selecao(p, q, com_entidade=False)
     except SemDados as e:
         return erro("Sem dados processados", str(e))
-    r = p.pares(sel["exercicio"], sel["data_final"], sel["em"])
     titulo = f"Técnico: pares espelhados — exercício {sel['exercicio']}, corte {fm.data_br(sel['data_final'])}"
+    if not sel["corte_processado"]:   # sem snapshot no corte, "0 pares" seria ausencia exibida como zero
+        return titulo, (f"<h1>{esc(titulo)}</h1>{_avisos(sel['avisos'])}" + _formulario("/pares", sel)
+                        + '<section class="indisponivel" id="indisponivel"><h2>Dados indisponíveis para este corte</h2>'
+                          "<p>Corte não processado: não há registros para identificar pares. Nenhuma contagem é "
+                          "mostrada: ausência de dado não é zero.</p></section>")
+    r = p.pares(sel["exercicio"], sel["data_final"], sel["em"])
     res = r.get("resumo", {})
     resumo_html = fm.lista_definicoes([
         ("Pares", fm.contagem(res.get("pares", 0), "pares-total")),
