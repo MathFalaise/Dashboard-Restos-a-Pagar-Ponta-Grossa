@@ -1,8 +1,8 @@
 """Banco SQLite: criacao, backup, registro da camada 0 e reconstrucao a partir do armazem.
 
 O banco e DERIVAVEL do armazem: `registrar_manifesto` e a unica forma de
-colocar um snapshot na camada 0, e `reconstruir` refaz o banco inteiro so
-com os manifestos e objetos do disco.
+colocar um snapshot na camada 0 (e `registrar_evidencia`, uma evidencia externa),
+e `reconstruir` refaz o banco inteiro so com os manifestos e objetos do disco.
 
 Seguranca:
   * o banco ATIVO nunca abre dentro de pasta sincronizada pelo OneDrive (SQLite em pasta
@@ -31,6 +31,46 @@ DESCRICAO_BASE = "esquema de produção v2 (objeto_bruto, manifesto, esquema_ver
 MIGRACOES = {
     3: ("derivação com data de vigência ('como estava em')",
         ["ALTER TABLE derivacao_execucao ADD COLUMN vigencia_em TEXT"]),
+    # v4 (revisao corretiva 01-04.4): so acrescenta; nenhuma linha existente muda.
+    4: ("revisao corretiva: parametros e governanca de regras, metadados da extracao do RREO, "
+        "evidencia externa com origem e manifesto, ultima coleta processada pela normalizacao",
+        [
+            # parametros estruturados de uma versao de regra (ex.: PAR-24 v1 = entidades 1/15, base 2.400.000)
+            "CREATE TABLE regra_parametro (regra_id INTEGER NOT NULL REFERENCES regra(id), nome TEXT NOT NULL, "
+            "valor_json TEXT NOT NULL, PRIMARY KEY (regra_id, nome))",
+            "CREATE TRIGGER regra_parametro_sem_update BEFORE UPDATE ON regra_parametro "
+            "BEGIN SELECT RAISE(ABORT, 'parametro de regra nao se edita: crie nova versao da regra'); END",
+            "CREATE TRIGGER regra_parametro_sem_delete BEFORE DELETE ON regra_parametro "
+            "BEGIN SELECT RAISE(ABORT, 'parametro de regra nao se apaga: crie nova versao da regra'); END",
+            # governanca: historico de decisoes sobre cada versao de regra (so acrescenta)
+            "CREATE TABLE regra_situacao (id INTEGER PRIMARY KEY, regra_id INTEGER NOT NULL REFERENCES regra(id), "
+            "situacao TEXT NOT NULL CHECK (situacao IN ('operacional','experimental','nao_recomendada','supersedida','aposentada')), "
+            "status_evidencia TEXT NOT NULL CHECK (status_evidencia IN ('CONFIRMADO','FORTE EVIDÊNCIA','HIPÓTESE','NÃO DETERMINADO')), "
+            "compoe_indicador_publicado INTEGER NOT NULL CHECK (compoe_indicador_publicado IN (0,1)), "
+            "supersedida_por INTEGER REFERENCES regra(id), motivo TEXT NOT NULL, fonte TEXT NOT NULL, "
+            "evidencia_externa_id INTEGER REFERENCES evidencia_externa(id), decidido_em TEXT NOT NULL, "
+            "origem_decisao TEXT NOT NULL, UNIQUE (regra_id, decidido_em), "
+            "CHECK (compoe_indicador_publicado = 0 OR situacao = 'operacional'))",
+            "CREATE TRIGGER regra_situacao_sem_update BEFORE UPDATE ON regra_situacao "
+            "BEGIN SELECT RAISE(ABORT, 'decisao de governanca nao se edita: registre uma decisao nova'); END",
+            "CREATE TRIGGER regra_situacao_sem_delete BEFORE DELETE ON regra_situacao "
+            "BEGIN SELECT RAISE(ABORT, 'decisao de governanca nao se apaga: registre uma decisao nova'); END",
+            # camada 1: como cada PDF de RREO foi transcrito nesta normalizacao (inclusive os que falharam)
+            "CREATE TABLE rreo_extracao (normalizacao_id INTEGER NOT NULL REFERENCES normalizacao_execucao(id), "
+            "resposta_id INTEGER NOT NULL REFERENCES resposta_bruta(id), coleta_id INTEGER NOT NULL REFERENCES coleta(id), "
+            "extrator_versao TEXT NOT NULL, biblioteca TEXT NOT NULL, biblioteca_versao TEXT NOT NULL, "
+            "sha256_pdf TEXT NOT NULL, id_arquivo INTEGER, rotulo TEXT, extraida_em TEXT NOT NULL, "
+            "valores INTEGER NOT NULL, erro TEXT, PRIMARY KEY (normalizacao_id, resposta_id))",
+            # evidencia externa: origem, observacao, manifesto no armazem e identidade estavel
+            "ALTER TABLE evidencia_externa ADD COLUMN origem TEXT",
+            "ALTER TABLE evidencia_externa ADD COLUMN observacao TEXT",
+            "ALTER TABLE evidencia_externa ADD COLUMN manifesto TEXT",
+            "ALTER TABLE evidencia_externa ADD COLUMN evidencia_uid TEXT",
+            "CREATE UNIQUE INDEX ux_evidencia_uid ON evidencia_externa (evidencia_uid)",
+            # maior id de coleta que a normalizacao leu: snapshot com 0 registros nao deixa linha nas tabelas da
+            # camada 1, entao so este registro diz se ele ja foi processado (NULL nas normalizacoes anteriores)
+            "ALTER TABLE normalizacao_execucao ADD COLUMN ultima_coleta_id INTEGER",
+        ]),
 }
 VERSAO_ESQUEMA = max(MIGRACOES)
 
@@ -96,6 +136,7 @@ def abrir(cfg, caminho=None):
             con.executescript(ESQUEMA.read_text(encoding="utf-8"))
             con.execute("INSERT INTO esquema_versao VALUES (?,?,?,NULL)", (VERSAO_BASE, DESCRICAO_BASE, agora()))
         _migrar(con, VERSAO_BASE, None)  # banco novo: nada a proteger
+        _semear_catalogo(con)
         log.info("banco criado em %s (esquema v%d)", caminho, VERSAO_ESQUEMA)
         return con
     atual = versao_esquema(con)
@@ -107,7 +148,15 @@ def abrir(cfg, caminho=None):
     if atual < VERSAO_ESQUEMA:
         arq = backup(con, cfg, f"antes-migracao-v{atual}-v{VERSAO_ESQUEMA}")
         _migrar(con, atual, arq)
+    _semear_catalogo(con)
     return con
+
+
+def _semear_catalogo(con):
+    """Regras, parametros de regra e decisoes de governanca do codigo vao para o banco (so INSERT OR IGNORE)."""
+    from . import regras
+    with con:
+        regras.semear(con)
 
 
 def backup(con, cfg, motivo, operacional=False, manter=3):
@@ -207,11 +256,34 @@ def corpo(con, sha):
     return b
 
 
+def registrar_evidencia(con, armazem, rel, m):
+    """Coloca uma evidencia externa (e-SIC, norma, nota...) na camada 0. Idempotente pelo evidencia_uid.
+    O arquivo em si fica no armazem e no banco (objeto_bruto), conferido pelo SHA-256 e pelo tamanho."""
+    ja = con.execute("SELECT id FROM evidencia_externa WHERE evidencia_uid=?", (m["evidencia_uid"],)).fetchone()
+    if ja:
+        return ja[0], False
+    comprimido = armazem.ler_comprimido(m["sha256"])
+    corpo_ = descomprimir(comprimido, m["tamanho"])
+    if sha256(corpo_) != m["sha256"]:
+        raise ValueError(f"arquivo da evidencia {m['evidencia_uid'][:8]} nao confere com o manifesto {rel}")
+    with con:
+        con.execute("INSERT OR IGNORE INTO objeto_bruto VALUES (?,?,?,?)", (m["sha256"], m["tamanho"], "zlib", comprimido))
+        eid = con.execute(
+            "INSERT INTO evidencia_externa (tipo, descricao, data_documento, caminho_arquivo, sha256, registrada_em, "
+            "origem, observacao, manifesto, evidencia_uid) VALUES (?,?,?,?,?,?,?,?,?,?)",
+            (m["tipo"], m["descricao"], m.get("data_documento"), m["arquivo_original"], m["sha256"], m["registrada_em"],
+             m["origem"], m.get("observacao"), rel, m["evidencia_uid"])).lastrowid
+    return eid, True
+
+
 def sincronizar(con, armazem):
-    """Registra no banco todo manifesto do armazem que ainda nao esta nele."""
+    """Registra no banco todo manifesto do armazem (coletas e evidencias) que ainda nao esta nele."""
     novos = 0
     for rel, m in armazem.manifestos():
         _, criado = registrar_manifesto(con, armazem, rel, m)
+        novos += criado
+    for rel, m in armazem.evidencias():
+        _, criado = registrar_evidencia(con, armazem, rel, m)
         novos += criado
     return novos
 
@@ -239,6 +311,18 @@ def verificar(con, armazem):
     for uid, rel in con.execute("SELECT snapshot_uid, manifesto FROM coleta"):
         if uid not in no_disco:
             problemas.append(f"coleta sem manifesto no armazém: {uid} ({rel})")
+    evid, _ = armazem.evidencias_e_erros()        # os ilegiveis ja vieram de armazem.verificar()
+    evid_no_disco = {m["evidencia_uid"]: rel for rel, m in evid}
+    evid_no_banco = dict(con.execute("SELECT evidencia_uid, manifesto FROM evidencia_externa WHERE evidencia_uid IS NOT NULL"))
+    for uid, rel in evid_no_disco.items():
+        if uid not in evid_no_banco:
+            problemas.append(f"evidencia fora do banco: {rel}")
+    for uid, rel in evid_no_banco.items():
+        if uid not in evid_no_disco:
+            problemas.append(f"evidencia sem manifesto no armazem: {uid} ({rel})")
+    for (sha,) in con.execute("SELECT e.sha256 FROM evidencia_externa e LEFT JOIN objeto_bruto o ON o.sha256=e.sha256 "
+                              "WHERE e.sha256 IS NOT NULL AND o.sha256 IS NULL"):
+        problemas.append(f"evidencia sem objeto no banco: {sha[:12]}")
     for sha, tam, comp in con.execute("SELECT sha256, tamanho, dados FROM objeto_bruto"):
         try:
             b = descomprimir(comp, tam)

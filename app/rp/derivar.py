@@ -23,8 +23,8 @@ from . import agora, regras
 log = logging.getLogger("rp.derivar")
 
 VERSAO = "rp-derivador/1"
-COPIA_BASE = 2_400_000
-ENT_COPIA, ENT_ORIGINAL = 1, 15
+# Entidades do par, base das copias e entidade do RREO por entidade NAO ficam aqui: sao parametros das regras
+# PAR-24 v1 e CONC-RREO v1 (regras.PARAMETROS -> tabela regra_parametro), lidos a cada derivacao.
 COMPONENTES = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "L", "S1", "S2", "S3"]
 AGREGACOES = (("RREO-COL", 1), ("RREO-COL", 2))
 CONSOLIDACOES = (("CONS-PAR", 1), ("CONS-PAR", 2))
@@ -51,19 +51,21 @@ def derivar(con, nid, em=None):
     ate essa data - 'como estava em'. Sem `em`, usa todos (o mais recente de cada corte e o vigente)."""
     regras.semear(con)
     R = regras.ids(con)
+    par = regras.parametros(con, "PAR-24", 1)
+    conc = regras.parametros(con, "CONC-RREO", 1)
     with con:
         did = con.execute("INSERT INTO derivacao_execucao (normalizacao_id, derivador_versao, regras_json, executada_em, "
                           "vigencia_em) VALUES (?,?,?,?,?)",
                           (nid, VERSAO, json.dumps(sorted(R.values())), agora(), em)).lastrowid
         uid = dict(con.execute("SELECT id, snapshot_uid FROM coleta"))
-        _registros(con, did, nid, R, em)
+        _registros(con, did, nid, R, par, em)
         _movimentacao(con, did, nid, em)
         vig = coletas_vigentes(con, em)
         ler = _Leitor(con, did, nid)
         _continuidade(con, did, nid, R, vig, uid, ler)
-        pares = _pareamento(con, did, nid, R, vig, uid, ler)
+        pares = _pareamento(con, did, nid, R, vig, uid, par, ler)
         _visoes(con, did, nid, R, vig, pares, uid, em, ler)
-        _conciliacao(con, did, nid, R, uid, em)
+        _conciliacao(con, did, nid, R, uid, conc, em)
         h = hash_resultado(con, did)
         con.execute("UPDATE derivacao_execucao SET hash_resultado=? WHERE id=?", (h, did))
     log.info("derivação %d sobre normalização %d (vigência %s): hash %s", did, nid, em or "atual", h[:16])
@@ -125,7 +127,7 @@ def _verif(con, did, regra, descricao, escopo, verificados, falhas):
 
 
 # --------------------------------------------------------------------------- por registro
-def _registros(con, did, nid, R, em=None):
+def _registros(con, did, nid, R, par, em=None):
     filtro, p = _ate(em)
     fonte = con.execute(
         "SELECT r.resposta_id, r.indice, r.coleta_id, r.entidade, r.anoempenho, r.empenho, c.exercicio, r.proc_c, "
@@ -157,7 +159,7 @@ def _registros(con, did, nid, R, em=None):
                 linha("PAGOPROC-SEM-PROC", cid, e, ano, emp, pago_proc_c=pproc)
             if cproc != 0:
                 linha("CANCPROC-NZ", cid, e, ano, emp, cancelado_proc_c=cproc)
-            if e == ENT_COPIA and emp >= COPIA_BASE:
+            if e == par["entidade_copia"] and emp >= par["base_empenho_copia"]:
                 linha("COPIA-24", cid, e, ano, emp)
             if ano >= ex:
                 linha("ANOEMP-FUTURO", cid, e, ano, emp, exercicio=ex)
@@ -231,20 +233,23 @@ def _execucao(r):
     return abs(r["pago_proc_c"]) + abs(r["pago_aproc_c"]) + abs(r["cancelado_aproc_c"]) + abs(r["liquidado_c"])
 
 
-def _pareamento(con, did, nid, R, vig, uid, ler=None):
+def _pareamento(con, did, nid, R, vig, uid, par, ler=None):
+    """Pares copia <-> original segundo os parametros da regra PAR-24 (entidades, base, campos de conferencia)."""
     ler = ler or _Leitor(con, did, nid)
     regra = R[("PAR-24", 1)]
+    ent_a, ent_b, base = par["entidade_copia"], par["entidade_original"], par["base_empenho_copia"]
+    conferir = par["campos_de_conferencia"]
     saida = {}
-    cortes = ({(ex, di, df) for (e, ex, di, df) in vig if e == ENT_COPIA}
-              & {(ex, di, df) for (e, ex, di, df) in vig if e == ENT_ORIGINAL})
+    cortes = ({(ex, di, df) for (e, ex, di, df) in vig if e == ent_a}
+              & {(ex, di, df) for (e, ex, di, df) in vig if e == ent_b})
     for ex, di, df in sorted(cortes):
-        ca, cb = vig[(ENT_COPIA, ex, di, df)], vig[(ENT_ORIGINAL, ex, di, df)]
-        copias = [r for r in ler(ca) if r["empenho"] >= COPIA_BASE]
+        ca, cb = vig[(ent_a, ex, di, df)], vig[(ent_b, ex, di, df)]
+        copias = [r for r in ler(ca) if r["empenho"] >= base]
         B = {(r["anoempenho"], r["empenho"]): r for r in ler(cb)}
         pares, sem_par = [], 0
         for a in copias:
-            b = B.get((a["anoempenho"], a["empenho"] - COPIA_BASE))
-            if not b or b["cnpj"] != a["cnpj"] or b["data_emissao"] != a["data_emissao"]:
+            b = B.get((a["anoempenho"], a["empenho"] - base))
+            if not b or any(b[c] != a[c] for c in conferir):
                 sem_par += 1
                 _anomalia(con, did, regra, "COPIA-SEM-PAR", ca, a["entidade"], a["anoempenho"], a["empenho"])
                 continue
@@ -371,8 +376,9 @@ def _visoes(con, did, nid, R, vig, pares, uid, em=None, ler=None):
 
 
 # --------------------------------------------------------------------------- conciliacao
-def _conciliacao(con, did, nid, R, uid, em=None):
+def _conciliacao(con, did, nid, R, uid, conc, em=None):
     regra = R[("CONC-RREO", 1)]
+    ent_rreo = conc["entidade_do_rreo_por_entidade"]   # o RREO "por entidade" e o desta entidade
     filtro, p = _ate(em)
     # PDF de RREO sem nenhum valor extraido nesta normalizacao (ex.: layout desconhecido): registrado, nunca ignorado
     for (cid,) in con.execute("SELECT c.id FROM coleta c WHERE c.tipo='rreo_pdf' AND c.status='completa'" + filtro +
@@ -387,10 +393,14 @@ def _conciliacao(con, did, nid, R, uid, em=None):
         for rc, escopo, ex, df in docs:
             rv = dict(con.execute("SELECT coluna, valor_c FROM rreo_valor WHERE normalizacao_id=? AND coleta_id=? "
                                   "AND linha='TOTAL (III)'", (nid, rc)).fetchall())
-            filtro_visao = "visao='entidade' AND entidade=1" if escopo == "entidade" else "visao='publicado'"
-            api = con.execute("SELECT componente, valor_c, coletas_json FROM visao_valor WHERE derivacao_id=? AND "
-                              f"{filtro_visao} AND regra_agregacao_id=? AND exercicio=? AND data_final=?",
-                              (did, ragg, ex, df)).fetchall()
+            if escopo == "entidade":
+                api = con.execute("SELECT componente, valor_c, coletas_json FROM visao_valor WHERE derivacao_id=? AND "
+                                  "visao='entidade' AND entidade=? AND regra_agregacao_id=? AND exercicio=? AND data_final=?",
+                                  (did, ent_rreo, ragg, ex, df)).fetchall()
+            else:
+                api = con.execute("SELECT componente, valor_c, coletas_json FROM visao_valor WHERE derivacao_id=? AND "
+                                  "visao='publicado' AND regra_agregacao_id=? AND exercicio=? AND data_final=?",
+                                  (did, ragg, ex, df)).fetchall()
             escopo_v = {"rreo_snapshot": uid[rc], "escopo": escopo, "exercicio": ex, "data_final": df, "rreo_col": versao}
             if not api:
                 _verif(con, did, regra, "RREO sem snapshot da API no mesmo corte", escopo_v, 0, 0)
@@ -401,7 +411,8 @@ def _conciliacao(con, did, nid, R, uid, em=None):
                 d = av[col] - vr
                 dif += d != 0
                 con.execute("INSERT INTO conciliacao_rreo VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-                            (did, rc, ragg, escopo, 1 if escopo == "entidade" else None, ex, df, api[0][2], col, vr, av[col], d))
+                            (did, rc, ragg, escopo, ent_rreo if escopo == "entidade" else None, ex, df, api[0][2], col, vr,
+                             av[col], d))
             _verif(con, did, regra, "conciliação RREO × API (colunas com diferença)", escopo_v, len(rv), dif)
 
 

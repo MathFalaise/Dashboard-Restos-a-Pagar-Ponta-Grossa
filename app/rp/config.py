@@ -30,6 +30,7 @@ class Config:
     entidades: tuple
     exercicios: tuple
     limite_resposta_bytes: int = LIMITE_RESPOSTA_PADRAO
+    entidade_rreo: int = 1          # entidade cujas publicacoes (grupo LRF) trazem o RREO Anexo VII
 
     def __post_init__(self):
         _validar(self)
@@ -65,6 +66,8 @@ def _validar(c):
         raise ConfiguracaoInvalida("limite_resposta_bytes precisa ser um inteiro >= 1")
     if not isinstance(c.user_agent, str) or not c.user_agent or any(ord(ch) < 32 or ord(ch) == 127 for ch in c.user_agent):
         raise ConfiguracaoInvalida("user_agent vazio ou com caractere de controle")
+    if isinstance(c.entidade_rreo, bool) or not isinstance(c.entidade_rreo, int) or c.entidade_rreo < 1:
+        raise ConfiguracaoInvalida("rreo.entidade_publicacoes precisa ser um inteiro >= 1")
 
 
 def _caminho(v, base):
@@ -89,6 +92,7 @@ def carregar(arquivo=None, **substituir):
         entidades=tuple(int(e) for e in c["escopo"]["entidades"]),
         exercicios=tuple(int(x) for x in c["escopo"]["exercicios"]),
         limite_resposta_bytes=int(c["api"].get("limite_resposta_bytes", LIMITE_RESPOSTA_PADRAO)),
+        entidade_rreo=int(c.get("rreo", {}).get("entidade_publicacoes", 1)),
     )
     valores.update(substituir)
     return Config(**valores)

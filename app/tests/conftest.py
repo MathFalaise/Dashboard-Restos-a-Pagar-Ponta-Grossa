@@ -1,14 +1,17 @@
+import hashlib
 import json
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import parse_qsl, urlsplit
+from urllib.parse import parse_qsl, urlencode, urlsplit
+from wsgiref.util import setup_testing_defaults
 
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from rp import banco  # noqa: E402
 from rp.armazem import Armazem  # noqa: E402
-from rp.coletor import Coletor  # noqa: E402
+from rp.coletor import EP_ENT, EP_EXE, EP_RP, Coletor  # noqa: E402
 from rp.config import carregar  # noqa: E402
 from rp.http import Cliente  # noqa: E402
 
@@ -88,3 +91,132 @@ def ambiente(tmp_path):
     cliente = Cliente(cfg, transporte=portal.get, dormir=relogio.dormir, monotonic=relogio.monotonic)
     return {"cfg": cfg, "con": con, "armazem": armazem, "portal": portal, "relogio": relogio,
             "coletor": Coletor(cfg, con, armazem, cliente)}
+
+
+# ------------------------------------------------------------------ banco montado a partir do ARMAZEM REAL
+ARMAZEM_REAL = RAIZ_PROJETO / "snapshots"
+EM_2909 = "2026-09-29T23:59:59-03:00"
+
+
+def retrato_do_armazem():
+    """(caminho, tamanho, sha256) de todo arquivo do armazem real."""
+    return sorted((p.relative_to(ARMAZEM_REAL).as_posix(), p.stat().st_size, hashlib.sha256(p.read_bytes()).hexdigest())
+                  for p in ARMAZEM_REAL.rglob("*") if p.is_file())
+
+
+@pytest.fixture(scope="session")
+def real(tmp_path_factory):
+    """Banco TEMPORARIO montado so com leitura do armazem real (466 snapshots): sincronizar -> normalizar ->
+    derivar atual e 'como estava em' 29/09/2026. Compartilhado pelos testes de casos reais."""
+    from rp import derivar
+    from rp.painel import Painel
+    antes = retrato_do_armazem()
+    base = tmp_path_factory.mktemp("real")
+    m = montar_producao(base, armazem_de=ARMAZEM_REAL)
+    m["did_2909"] = derivar.derivar(m["con"], m["nid"], EM_2909)
+    m["armazem_antes"], m["armazem_depois"] = antes, retrato_do_armazem()
+    m["painel"] = Painel.abrir(m["cfg"].banco)
+    yield m
+    m["painel"].fechar()
+    m["con"].close()
+
+
+# ------------------------------------------------------------------ mundo SINTETICO (registros inventados)
+COLETOR_SINTETICO = {"nome": "teste", "versao": "1", "sha256_codigo": None}
+
+
+def registro_sintetico(emp, ano=2024, entidade=1, **kw):
+    """Um item de content[] da listagem de RP, com valores inventados."""
+    from rp import normalizar
+    r = {k: 0 for k in normalizar.DINHEIRO}
+    r.update({"entidade": entidade, "anoempenho": ano, "empenho": emp, "empenhoExercicio": f"{emp}/{ano}",
+              "cnpj": "11.222.333/0001-44", "dataEmissao": f"{ano}-03-01", "nome": "11.222.333/0001-44 - EMPRESA LTDA",
+              "cnpjNome": "11.222.333/0001-44 - EMPRESA LTDA", "fornecedor": 7, "fonteRecurso": 1000, "aproc": 100.0})
+    r.update(kw)
+    return r
+
+
+class Mundo:
+    """Banco e armazem temporarios com catalogos e listagens inventados."""
+
+    def __init__(self, tmp_path):
+        self.cfg = carregar(dados_locais=tmp_path / "l", snapshots=tmp_path / "s", backups=tmp_path / "b")
+        self.con = banco.abrir(self.cfg)
+        self.armazem = Armazem(self.cfg.snapshots)
+
+    def _snap(self, tipo, endpoint, params, corpo, quando):
+        from rp.snapshots import gravar_snapshot
+        return gravar_snapshot(self.con, self.armazem, tipo=tipo, endpoint=endpoint, parametros=params, coletada_em=quando,
+                               origem_carimbo="relogio_coletor", status="completa", coletor=COLETOR_SINTETICO,
+                               respostas=[{"url": "sintetico", "http_status": 200, "corpo": json.dumps(corpo).encode()}])
+
+    def catalogos(self, exercicios, quando="2026-09-29T10:00:00-03:00"):
+        """`exercicios` = {entidade: [exercicios oficiais]}."""
+        self._snap("entidades", EP_ENT, {}, [{"id": e, "nome": f"ENTIDADE {e}", "cnpj": None, "tipo": "A"}
+                                             for e in exercicios], quando)
+        for e, anos in exercicios.items():
+            self._snap("exercicios", f"{EP_EXE}/{e}", {"entidade": e},
+                       [{"id": {"entidade": {"id": e}, "exercicio": x}, "aberto": False, "fechado": True} for x in anos],
+                       quando)
+
+    def listagem(self, entidade, exercicio, data_final, regs, quando):
+        p = {"entidade": entidade, "exercicio": exercicio, "dataInicial": f"{exercicio}-01-01", "dataFinal": data_final,
+             "size": 2000}
+        return self._snap("rp_listagem", EP_RP, p, {"content": regs, "last": True, "totalElements": len(regs)}, quando)
+
+    def processar(self, em=None):
+        from rp import derivar, normalizar
+        nid, _ = normalizar.normalizar(self.con)
+        return nid, derivar.derivar(self.con, nid, em)
+
+    def painel(self, nivel="publico"):
+        from rp.painel import Painel
+        return Painel.abrir(self.cfg.banco, nivel)
+
+
+@pytest.fixture
+def mundo(tmp_path):
+    m = Mundo(tmp_path)
+    yield m
+    m.con.close()
+
+
+# ------------------------------------------------------------------ chamada da interface (WSGI, sem servidor)
+def chamar(app, caminho, metodo="GET", **params):
+    env = {}
+    setup_testing_defaults(env)
+    env.update(PATH_INFO=caminho, QUERY_STRING=urlencode({k: v for k, v in params.items() if v is not None}),
+               REQUEST_METHOD=metodo)
+    r = {}
+
+    def start_response(status, headers, exc_info=None):
+        r["status"], r["headers"] = status, dict(headers)
+    corpo = b"".join(app(env, start_response)).decode("utf-8")
+    return r["status"], r["headers"], corpo
+
+
+class _Dados(HTMLParser):
+    """Valores <data value> (centavos) com id, na ordem em que aparecem."""
+
+    def __init__(self):
+        super().__init__()
+        self.por_id, self.todos = {}, []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "data":
+            a = dict(attrs)
+            self.todos.append(int(a["value"]))
+            if a.get("id"):
+                self.por_id[a["id"]] = int(a["value"])
+
+
+def dados(html):
+    d = _Dados()
+    d.feed(html)
+    return d.por_id
+
+
+def ok(app, caminho, **params):
+    status, _, corpo = chamar(app, caminho, **params)
+    assert status == "200 OK", (caminho, params, status, corpo[:400])
+    return corpo
