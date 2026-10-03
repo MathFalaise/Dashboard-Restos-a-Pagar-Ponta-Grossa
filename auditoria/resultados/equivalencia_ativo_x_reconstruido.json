@@ -1,0 +1,124 @@
+{
+ "equivalentes": false,
+ "camada0_igual": true,
+ "normalizacao_igual": false,
+ "normalizacao_por_tabela": {
+  "rp_registro": true,
+  "movimentacao_lancamento": true,
+  "rreo_extracao": false,
+  "rreo_valor": true,
+  "entidade_ref": true,
+  "exercicio_ref": true
+ },
+ "derivacao_igual_por_vigencia": {
+  "2026-09-29T23:59:59-03:00": true,
+  "atual": true
+ },
+ "hash_gravado_confere_nos_dois": true,
+ "a": {
+  "camada0": {
+   "coletas": 466,
+   "respostas": 536,
+   "objetos": 375,
+   "evidencias": 0,
+   "hash": "5c4c67b7a52e74f2a669b7aae83b30e12346b019eef574b94be3be3d9419a9e4"
+  },
+  "normalizacao": {
+   "normalizacao": 13,
+   "normalizador_versao": "rp-normalizador/1",
+   "tabelas": {
+    "rp_registro": {
+     "linhas": 228873,
+     "hash": "ee025ecc1d37cc9f1a8b5627229342b5863080b46ed1c0aed3cc72fbb023d8d7"
+    },
+    "movimentacao_lancamento": {
+     "linhas": 2352,
+     "hash": "07596be473d1d541f1ab9ff274ac3d1796b128e1d2c53011022408901c9812f8"
+    },
+    "rreo_extracao": {
+     "linhas": 36,
+     "hash": "c91912d6e1fc78c89c9577f6509865705f756110b1add5865d16ac37cff405c7"
+    },
+    "rreo_valor": {
+     "linhas": 1529,
+     "hash": "8f1ad5789c507f279d83ac4c19d7f88e6a64a48626cacd111152b3687c66578c"
+    },
+    "entidade_ref": {
+     "linhas": 40,
+     "hash": "7019a7f4b05c93c24203584d03b4a0a021d6f9a58de5643a475bc0c3841f2c5d"
+    },
+    "exercicio_ref": {
+     "linhas": 162,
+     "hash": "947f6d3a4aa3df05b33be7e0b2ac8d27173cdddb934513a71b40863305fc5d76"
+    }
+   }
+  },
+  "derivacoes": {
+   "atual": {
+    "derivacao": 23,
+    "derivador_versao": "rp-derivador/1",
+    "hash_gravado": "2f6b4e295ce795934f7051fba31d9d3c1b5bc42c8858d4622a3e89ec88e3f2a5",
+    "hash_recalculado": "2f6b4e295ce795934f7051fba31d9d3c1b5bc42c8858d4622a3e89ec88e3f2a5"
+   },
+   "2026-09-29T23:59:59-03:00": {
+    "derivacao": 24,
+    "derivador_versao": "rp-derivador/1",
+    "hash_gravado": "b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68",
+    "hash_recalculado": "b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68"
+   }
+  }
+ },
+ "b": {
+  "camada0": {
+   "coletas": 466,
+   "respostas": 536,
+   "objetos": 375,
+   "evidencias": 0,
+   "hash": "5c4c67b7a52e74f2a669b7aae83b30e12346b019eef574b94be3be3d9419a9e4"
+  },
+  "normalizacao": {
+   "normalizacao": 2,
+   "normalizador_versao": "rp-normalizador/1",
+   "tabelas": {
+    "rp_registro": {
+     "linhas": 228873,
+     "hash": "ee025ecc1d37cc9f1a8b5627229342b5863080b46ed1c0aed3cc72fbb023d8d7"
+    },
+    "movimentacao_lancamento": {
+     "linhas": 2352,
+     "hash": "07596be473d1d541f1ab9ff274ac3d1796b128e1d2c53011022408901c9812f8"
+    },
+    "rreo_extracao": {
+     "linhas": 36,
+     "hash": "b49e576f62f7d690f9f0db603549edb54518b779ce0ce8cd06cb3217dccba809"
+    },
+    "rreo_valor": {
+     "linhas": 1529,
+     "hash": "8f1ad5789c507f279d83ac4c19d7f88e6a64a48626cacd111152b3687c66578c"
+    },
+    "entidade_ref": {
+     "linhas": 40,
+     "hash": "7019a7f4b05c93c24203584d03b4a0a021d6f9a58de5643a475bc0c3841f2c5d"
+    },
+    "exercicio_ref": {
+     "linhas": 162,
+     "hash": "947f6d3a4aa3df05b33be7e0b2ac8d27173cdddb934513a71b40863305fc5d76"
+    }
+   }
+  },
+  "derivacoes": {
+   "atual": {
+    "derivacao": 3,
+    "derivador_versao": "rp-derivador/1",
+    "hash_gravado": "2f6b4e295ce795934f7051fba31d9d3c1b5bc42c8858d4622a3e89ec88e3f2a5",
+    "hash_recalculado": "2f6b4e295ce795934f7051fba31d9d3c1b5bc42c8858d4622a3e89ec88e3f2a5"
+   },
+   "2026-09-29T23:59:59-03:00": {
+    "derivacao": 2,
+    "derivador_versao": "rp-derivador/1",
+    "hash_gravado": "b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68",
+    "hash_recalculado": "b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68"
+   }
+  }
+ }
+}

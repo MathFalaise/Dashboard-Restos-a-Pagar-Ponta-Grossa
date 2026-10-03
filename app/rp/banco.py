@@ -107,18 +107,51 @@ def _conectar(caminho):
 
 
 def _migrar(con, de, backup_antes):
+    """Cada migracao e UMA transacao explicita: comandos + registro em esquema_versao, ou nada.
+    `with con:` nao bastaria: no sqlite3 do Python o BEGIN implicito so vem antes de INSERT/UPDATE/DELETE, e um
+    CREATE/ALTER fora de transacao e confirmado na hora (falha no meio deixaria o esquema pela metade)."""
     for v in range(de + 1, VERSAO_ESQUEMA + 1):
         descricao, comandos = MIGRACOES[v]
-        with con:
+        con.execute("BEGIN")
+        try:
             for sql in comandos:
                 con.execute(sql)
             con.execute("INSERT INTO esquema_versao VALUES (?,?,?,?)", (v, descricao, agora(),
                                                                          str(backup_antes) if backup_antes else None))
+        except BaseException:
+            con.rollback()
+            raise
+        con.commit()
         log.info("esquema migrado para v%d (%s)", v, descricao)
 
 
 def versao_esquema(con):
-    return con.execute("SELECT MAX(versao) FROM esquema_versao").fetchone()[0]
+    try:
+        return con.execute("SELECT MAX(versao) FROM esquema_versao").fetchone()[0]
+    except sqlite3.OperationalError:   # arquivo sem a tabela: nao e um banco do projeto (ou criacao interrompida)
+        return None
+
+
+def _criar(caminho):
+    """Banco novo montado num arquivo temporario ao lado do destino e publicado so no fim, sem sobrescrever:
+    uma falha no meio (esquema, migracoes, catalogo) nao deixa no destino um arquivo que pareca banco existente."""
+    from .armazem import _publicar_sem_sobrescrever
+    tmp = caminho.with_name(f"{caminho.name}.criando{os.getpid()}")
+    con = _conectar(tmp)
+    try:
+        con.executescript(ESQUEMA.read_text(encoding="utf-8"))
+        with con:
+            con.execute("INSERT INTO esquema_versao VALUES (?,?,?,NULL)", (VERSAO_BASE, DESCRICAO_BASE, agora()))
+        _migrar(con, VERSAO_BASE, None)  # banco novo: nada a proteger
+        _semear_catalogo(con)
+        con.close()
+        _publicar_sem_sobrescrever(tmp, caminho)
+    except BaseException:
+        con.close()
+        tmp.unlink(missing_ok=True)
+        raise
+    log.info("banco criado em %s (esquema v%d)", caminho, VERSAO_ESQUEMA)
+    return _conectar(caminho)
 
 
 def abrir(cfg, caminho=None):
@@ -129,17 +162,14 @@ def abrir(cfg, caminho=None):
                                        "Aponte [caminhos].dados_locais para uma pasta local.")
     caminho = Path(caminho or cfg.banco)
     caminho.parent.mkdir(parents=True, exist_ok=True)
-    novo = not caminho.exists()
+    if not caminho.exists():
+        return _criar(caminho)
     con = _conectar(caminho)
-    if novo:
-        with con:
-            con.executescript(ESQUEMA.read_text(encoding="utf-8"))
-            con.execute("INSERT INTO esquema_versao VALUES (?,?,?,NULL)", (VERSAO_BASE, DESCRICAO_BASE, agora()))
-        _migrar(con, VERSAO_BASE, None)  # banco novo: nada a proteger
-        _semear_catalogo(con)
-        log.info("banco criado em %s (esquema v%d)", caminho, VERSAO_ESQUEMA)
-        return con
     atual = versao_esquema(con)
+    if atual is None:
+        con.close()
+        raise MigracaoPendente(f"{caminho} não tem versão de esquema: não é um banco do projeto ou a criação foi "
+                               "interrompida. Nada foi alterado.")
     if atual > VERSAO_ESQUEMA:
         raise MigracaoPendente(f"banco na v{atual} é mais novo que o código (v{VERSAO_ESQUEMA})")
     if atual < VERSAO_BASE:
@@ -299,8 +329,45 @@ def reconstruir(cfg, armazem, destino):
     return con, n
 
 
+def _diferencas_do_manifesto(con, rel, m):
+    """Campos em que a camada 0 do banco nao e a do manifesto (auditoria REC-01): a presenca do snapshot_uid nao
+    basta; o banco precisa ter os mesmos parametros, status, datas e as mesmas respostas (ordem, URL, hash, tamanho)."""
+    try:
+        cid, manif, tipo, ep, pj, ent, ex, di, df, tp, ano, emp, arq, quando, origem, st, obs, cv = con.execute(
+            "SELECT id, manifesto, tipo, endpoint, parametros_json, entidade, exercicio, data_inicial, data_final, "
+            "tipo_pesquisa, anoempenho, empenho, id_arquivo, coletada_em, origem_carimbo, status, observacao, "
+            "coletor_versao_id FROM coleta WHERE snapshot_uid=?", (m["snapshot_uid"],)).fetchone()
+        p = m["parametros"]
+        esperado = {"manifesto": rel, "tipo": m["tipo"], "endpoint": m["endpoint"], "parametros": p,
+                    "entidade": p.get("entidade"), "exercicio": p.get("exercicio"), "data_inicial": p.get("dataInicial"),
+                    "data_final": p.get("dataFinal"), "tipo_pesquisa": p.get("tipoPesquisa"),
+                    "anoempenho": p.get("anoempenho"), "empenho": p.get("empenho"), "id_arquivo": p.get("id_arquivo"),
+                    "coletada_em": m["coletada_em"], "origem_carimbo": m["origem_carimbo"], "status": m["status"],
+                    "observacao": m.get("observacao")}
+        no_banco = {"manifesto": manif, "tipo": tipo, "endpoint": ep, "parametros": json.loads(pj), "entidade": ent,
+                    "exercicio": ex, "data_inicial": di, "data_final": df, "tipo_pesquisa": tp, "anoempenho": ano,
+                    "empenho": emp, "id_arquivo": arq, "coletada_em": quando, "origem_carimbo": origem, "status": st,
+                    "observacao": obs}
+        dif = [k for k in esperado if esperado[k] != no_banco[k]]
+        col = con.execute("SELECT nome, versao, sha256_codigo FROM coletor_versao WHERE id=?", (cv,)).fetchone()
+        if tuple(col) != (m["coletor"]["nome"], m["coletor"]["versao"], m["coletor"]["sha256_codigo"]):
+            dif.append("coletor")
+        resp = [(o, u, s, json.loads(c or "{}"), r, h, t) for o, u, s, c, r, h, t in con.execute(
+            "SELECT ordem, url, http_status, cabecalhos_json, recebida_em, sha256, tamanho FROM resposta_bruta "
+            "WHERE coleta_id=? ORDER BY ordem", (cid,))]
+        esperadas = [(r["ordem"], r["url"], r["http_status"], r.get("cabecalhos") or {}, r["recebida_em"], r["sha256"],
+                      r["tamanho"]) for r in sorted(m["respostas"], key=lambda r: r["ordem"])]
+        if resp != esperadas:
+            dif.append("respostas")
+        return dif
+    except (KeyError, TypeError, ValueError, AttributeError) as e:
+        return [f"manifesto sem campo esperado ({type(e).__name__}: {e})"]
+
+
 def verificar(con, armazem):
-    """Problemas de integridade entre banco e armazem (lista vazia = integro)."""
+    """Problemas de integridade entre banco e armazem (lista vazia = integro): objetos e manifestos do armazem, os
+    dois sentidos da presenca (manifesto x coleta, evidencia x banco), cada coleta igual ao seu manifesto campo a
+    campo e cada objeto do banco conferido pelo hash."""
     problemas = [f"armazém: {p}" for p in armazem.verificar()]
     registrados = {u for (u,) in con.execute("SELECT snapshot_uid FROM coleta")}
     no_disco = {}
@@ -312,6 +379,11 @@ def verificar(con, armazem):
     for uid, rel in con.execute("SELECT snapshot_uid, manifesto FROM coleta"):
         if uid not in no_disco:
             problemas.append(f"coleta sem manifesto no armazém: {uid} ({rel})")
+    for rel, m in itens:
+        if m["snapshot_uid"] in registrados:
+            dif = _diferencas_do_manifesto(con, rel, m)
+            if dif:
+                problemas.append(f"coleta difere do manifesto {rel}: {', '.join(dif)}")
     evid, _ = armazem.evidencias_e_erros()        # os ilegiveis ja vieram de armazem.verificar()
     evid_no_disco = {m["evidencia_uid"]: rel for rel, m in evid}
     evid_no_banco = dict(con.execute("SELECT evidencia_uid, manifesto FROM evidencia_externa WHERE evidencia_uid IS NOT NULL"))

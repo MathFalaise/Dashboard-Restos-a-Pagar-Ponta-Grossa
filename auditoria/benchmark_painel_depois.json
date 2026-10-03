@@ -1,0 +1,177 @@
+[
+ {
+  "chamada": "contexto",
+  "mediana_s": 0.0,
+  "max_s": 0.0,
+  "comandos_sql": 2,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "cortes",
+  "mediana_s": 0.027,
+  "max_s": 0.028,
+  "comandos_sql": 855,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "indicadores Municipio",
+  "mediana_s": 0.017,
+  "max_s": 0.018,
+  "comandos_sql": 83,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "indicadores entidade 1",
+  "mediana_s": 0.012,
+  "max_s": 0.012,
+  "comandos_sql": 39,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "evolucao Municipio",
+  "mediana_s": 0.126,
+  "max_s": 0.135,
+  "comandos_sql": 478,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "serie entre exercicios",
+  "mediana_s": 0.35,
+  "max_s": 0.363,
+  "comandos_sql": 2321,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "composicao Municipio",
+  "mediana_s": 0.071,
+  "max_s": 0.071,
+  "comandos_sql": 85,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao",
+   "SCAN espelhamento_par"
+  ]
+ },
+ {
+  "chamada": "variacao s1 (ultimo par)",
+  "mediana_s": 0.01,
+  "max_s": 0.013,
+  "comandos_sql": 90,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "empenhos pagina 1",
+  "mediana_s": 0.015,
+  "max_s": 0.016,
+  "comandos_sql": 71,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "empenhos busca por numero",
+  "mediana_s": 0.005,
+  "max_s": 0.005,
+  "comandos_sql": 70,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "detalhe de empenho",
+  "mediana_s": 0.003,
+  "max_s": 0.005,
+  "comandos_sql": 31,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao",
+   "SCAN espelhamento_par"
+  ]
+ },
+ {
+  "chamada": "historico de empenho",
+  "mediana_s": 0.005,
+  "max_s": 0.005,
+  "comandos_sql": 52,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "qualidade",
+  "mediana_s": 0.224,
+  "max_s": 0.249,
+  "comandos_sql": 1430,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao",
+   "SCAN v"
+  ]
+ },
+ {
+  "chamada": "anomalias COPIA-24 pagina 1",
+  "mediana_s": 0.008,
+  "max_s": 0.009,
+  "comandos_sql": 8,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "anomalias COPIA-24 filtradas",
+  "mediana_s": 0.008,
+  "max_s": 0.009,
+  "comandos_sql": 8,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "reconciliacao (todas as linhas)",
+  "mediana_s": 0.007,
+  "max_s": 0.008,
+  "comandos_sql": 140,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "coerencia entre publicacoes",
+  "mediana_s": 0.188,
+  "max_s": 0.197,
+  "comandos_sql": 1282,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "entidades do corte",
+  "mediana_s": 0.016,
+  "max_s": 0.017,
+  "comandos_sql": 72,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao"
+  ]
+ },
+ {
+  "chamada": "pares",
+  "mediana_s": 0.006,
+  "max_s": 0.007,
+  "comandos_sql": 1472,
+  "scans_de_tabela": [
+   "SCAN derivacao_execucao",
+   "SCAN espelhamento_par"
+  ]
+ }
+]

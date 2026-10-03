@@ -5,7 +5,7 @@ import logging
 import sys
 from datetime import datetime
 
-from . import BRT, VERSAO, banco
+from . import BRT, VERSAO, DataInvalida, banco, instante
 from .armazem import TIPOS_EVIDENCIA, Armazem, ManifestoInvalido, ObjetoCorrompido
 from .coletor import Coletor, ParametroInvalido
 from .comparador import CorteDiferente
@@ -17,7 +17,7 @@ from .painel.consulta import ErroDoPainel
 
 ERROS_ESPERADOS = (ParametroInvalido, CorteDiferente, ExclusaoRecusada, ConfiguracaoInvalida, banco.MigracaoPendente,
                    banco.BancoEmPastaSincronizada, ManifestoInvalido, ObjetoCorrompido, FileExistsError,
-                   FileNotFoundError, KeyError, EvidenciaInvalida, ErroDoPainel)
+                   FileNotFoundError, KeyError, EvidenciaInvalida, ErroDoPainel, DataInvalida)
 CONSULTAS_PAINEL = ("contexto", "cortes", "entidades", "indicadores", "evolucao", "dimensao", "empenhos", "empenho",
                     "fornecedores", "pares", "retratos", "comparar-retratos", "reconciliacao", "coerencia", "analitica",
                     "regras", "evidencias", "fontes", "metodologia", "dicionario")
@@ -127,6 +127,10 @@ def _main(argv=None):
     p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
     p.add_argument("--host", default="127.0.0.1", help="padrao 127.0.0.1 (so esta maquina)")
     p.add_argument("--porta", type=int, default=8050)
+    p = sub.add_parser("comparar-bancos", help="prova de equivalencia entre dois bancos, camada a camada, por "
+                                               "identificadores estaveis (somente leitura)")
+    p.add_argument("--outro", required=True, help="o outro banco (ex.: reconstruido do armazem)")
+    p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
     p = sub.add_parser("portoes", help="portoes de qualidade antes de disponibilizar uma carga nova (somente leitura)")
     p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
     p.add_argument("--referencia", help="JSON gravado antes da carga (--gravar-referencia): confere o bruto anterior")
@@ -141,6 +145,17 @@ def _main(argv=None):
         from .interface import servir
         servir(a.banco or cfg.banco, a.host, a.porta)
         return 0
+    if a.cmd == "comparar-bancos":   # idem: os dois bancos abertos so para leitura
+        from . import equivalencia
+        from .portoes import _abrir
+        con_a, con_b = _abrir(a.banco or cfg.banco), _abrir(a.outro)
+        try:
+            r = equivalencia.comparar(con_a, con_b)
+        finally:
+            con_a.close()
+            con_b.close()
+        print(json.dumps(r, ensure_ascii=False, indent=1))
+        return 0 if r["equivalentes"] else 1
     if a.cmd == "portoes":     # idem: so leitura do banco e do armazem
         from . import portoes
         if a.gravar_referencia:
@@ -227,11 +242,12 @@ def _main(argv=None):
         return 0
     if a.cmd == "processar":
         from . import derivar, normalizar
+        em = instante(a.em)   # mesma forma da camada painel; data invalida e recusada antes de normalizar (CLI-01)
         if a.normalizacao:
             nid, resumo = a.normalizacao, {"reusada": a.normalizacao}
         else:
             nid, resumo = normalizar.normalizar(con)
-        did = derivar.derivar(con, nid, a.em)
+        did = derivar.derivar(con, nid, em)
         h = con.execute("SELECT hash_resultado FROM derivacao_execucao WHERE id=?", (did,)).fetchone()[0]
         verif = con.execute("SELECT descricao, escopo_json, verificados, falhas FROM verificacao WHERE derivacao_id=?",
                             (did,)).fetchall()
