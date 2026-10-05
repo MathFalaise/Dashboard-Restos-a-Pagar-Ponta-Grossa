@@ -27,22 +27,38 @@ def _abrir(caminho):
     return con
 
 
-def _hash(con, sql, params=()):
+# Formato da referencia (revisao critica, item 44): v2 serializa cada linha em JSON canonico (especificado: UTF-8,
+# separadores fixos, bytes em hexadecimal), em vez de repr() do Python. Referencia sem "formato" e a v1 (repr) e
+# continua sendo conferida do jeito com que foi gravada.
+FORMATO_REFERENCIA = "rp-referencia/2"
+
+
+def _valor_canonico(v):
+    if isinstance(v, bytes):
+        return v.hex()
+    raise TypeError(f"tipo sem serialização canônica: {type(v).__name__}")
+
+
+def _hash(con, sql, params=(), canonico=False):
     h = hashlib.sha256()
     n = 0
     for row in con.execute(sql, params):
-        h.update(repr(row).encode())
+        if canonico:
+            h.update(json.dumps(list(row), ensure_ascii=False, separators=(",", ":"), default=_valor_canonico).encode()
+                     + b"\n")
+        else:
+            h.update(repr(row).encode())
         n += 1
     return n, h.hexdigest()
 
 
-def _referencia(con):
+def _referencia(con, canonico=True):
     ultima = con.execute("SELECT IFNULL(MAX(id), 0) FROM coleta").fetchone()[0]
-    nc, hc = _hash(con, "SELECT * FROM coleta WHERE id <= ? ORDER BY id", (ultima,))
-    nr, hr = _hash(con, "SELECT * FROM resposta_bruta WHERE coleta_id <= ? ORDER BY id", (ultima,))
-    nv, hv = _hash(con, "SELECT * FROM coletor_versao ORDER BY 1")
-    return {"max_coleta_id": ultima, "coletas": nc, "hash_coletas": hc, "respostas": nr, "hash_respostas": hr,
-            "coletor_versoes": nv, "hash_coletor_versoes": hv}
+    nc, hc = _hash(con, "SELECT * FROM coleta WHERE id <= ? ORDER BY id", (ultima,), canonico)
+    nr, hr = _hash(con, "SELECT * FROM resposta_bruta WHERE coleta_id <= ? ORDER BY id", (ultima,), canonico)
+    nv, hv = _hash(con, "SELECT * FROM coletor_versao ORDER BY 1", (), canonico)
+    return {**({"formato": FORMATO_REFERENCIA} if canonico else {}), "max_coleta_id": ultima, "coletas": nc,
+            "hash_coletas": hc, "respostas": nr, "hash_respostas": hr, "coletor_versoes": nv, "hash_coletor_versoes": hv}
 
 
 def gravar_referencia(caminho_banco, arquivo):
@@ -121,8 +137,9 @@ def avaliar(caminho_banco, armazem, referencia=None):
                    "não verificado: informe --referencia (gravada antes da carga com --gravar-referencia)")
         else:
             n = referencia["max_coleta_id"]
-            _, hc = _hash(con, "SELECT * FROM coleta WHERE id <= ? ORDER BY id", (n,))
-            _, hr = _hash(con, "SELECT * FROM resposta_bruta WHERE coleta_id <= ? ORDER BY id", (n,))
+            canonico = referencia.get("formato") == FORMATO_REFERENCIA    # sem formato: referencia v1 (repr)
+            _, hc = _hash(con, "SELECT * FROM coleta WHERE id <= ? ORDER BY id", (n,), canonico)
+            _, hr = _hash(con, "SELECT * FROM resposta_bruta WHERE coleta_id <= ? ORDER BY id", (n,), canonico)
             iguais = {"coletas": hc == referencia["hash_coletas"], "respostas": hr == referencia["hash_respostas"]}
             portao("camada_bruta_preservada", "linhas do bruto anteriores à carga continuam idênticas",
                    all(iguais.values()), {"ate_coleta_id": n, **iguais})
@@ -230,3 +247,37 @@ def _portoes_da_auditoria(con, portao, nid, did_atual):
                                 "efeito='desconhecido'", (did_atual,)).fetchone()[0]
     portao("lancamento_desconhecido", "nenhum tipo de lançamento sem efeito conhecido (MOV-REF: valeria 0)",
            desconhecidos == 0, {"lancamentos": desconhecidos, "derivacao": did_atual})
+
+    _portoes_da_revisao(con, portao, did_atual)
+
+
+def _portoes_da_revisao(con, portao, did_atual):
+    """Portoes da revisao critica de 05/10/2026 (itens 14 e 28). So leem."""
+    # item 14: chave repetida e portao, nao so anotacao. O retrato ambiguo ja nao e vigente (vigencia.coletas_vigentes),
+    # mas a carga nao e disponibilizada sem decisao: o painel mostraria o retrato anterior do corte.
+    naturezas, snapshots = {"exata": 0, "conflitante": 0, "não classificada": 0}, set()
+    for uid, detalhe in con.execute(
+            "SELECT c.snapshot_uid, a.detalhe_json FROM anomalia a LEFT JOIN coleta c ON c.id = a.coleta_id "
+            "WHERE a.derivacao_id=? AND a.tipo='CHAVE-DUP'", (did_atual,)):
+        try:
+            natureza = json.loads(detalhe or "{}").get("natureza", "não classificada")
+        except ValueError:
+            natureza = "não classificada"
+        naturezas[natureza if natureza in naturezas else "não classificada"] += 1
+        snapshots.add(uid)
+    portao("retrato_sem_chave_repetida", "nenhum retrato com a mesma chave (entidade, anoempenho, empenho) mais de uma "
+           "vez (CHAVE-DUP): exata = cópias idênticas; conflitante = conteúdo diferente",
+           sum(naturezas.values()) == 0,
+           {"chaves": sum(naturezas.values()), **naturezas, "snapshots": sorted(s for s in snapshots if s)[:10],
+            "derivacao": did_atual,
+            "nota": "retrato com chave repetida nunca é o vigente (vale o retrato válido anterior do corte); "
+                    "recolete o corte e processe de novo"})
+
+    # item 28: o esquema do banco e o da sua versao no codigo (estrutura, sem comentarios nem espacos)
+    versao = banco.versao_esquema(con)
+    esperado = banco.IMPRESSAO_ESQUEMA.get(versao)
+    atual = banco.impressao_esquema(con)
+    portao("esquema_confere", "o esquema do banco (tabelas, colunas, restrições, índices, gatilhos) é o da versão "
+           "registrada em esquema_versao", None if esperado is None else atual == esperado,
+           {"versao": versao, "impressao_banco": atual, "impressao_do_codigo": esperado}
+           if esperado is not None else f"não verificado: o código não tem a impressão do esquema v{versao}")
