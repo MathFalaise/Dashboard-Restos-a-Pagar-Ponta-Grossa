@@ -246,16 +246,19 @@ def test_objeto_adulterado_no_banco_e_detectado_sem_assert(tmp_path):
 # ------------------------------------------------------------------ coletor
 def test_servidor_que_ignora_page_nao_prende_o_coletor(ambiente):
     p = ambiente["portal"]
-    # a mesma pagina, sempre com last=false e sem totalPages: sem a trava, o coletor pediria paginas para sempre
-    p.rotas[(EP_RP, None)] = [(200, pagina([_registro(aproc=1)] * 2, 0, 5, False, None))]
+    # a mesma pagina, sempre com last=false e sem totalPages: sem a trava, o coletor pediria paginas para sempre.
+    # Dois registros DISTINTOS na pagina (revisao critica, item 2): com duas copias da mesma chave, a pagina 0 ja seria
+    # recusada pela chave repetida e o teste nao chegaria a trava que ele prova.
+    dois = [_registro(empenho=7, aproc=1), _registro(empenho=8, aproc=1)]
+    p.rotas[(EP_RP, None)] = [(200, pagina(dois, 0, 5, False, None))]
     s = ambiente["coletor"].listagem(998, 2026, "2026-12-31")
     # auditoria COL-02: a pagina 1 volta com number=0 e e recusada ja na segunda chamada (antes: 3 chamadas, pela soma)
     assert s["status"] == "incompleta" and len(p.chamadas) == 2
     assert "devolveu a página number=0" in s["observacao"]
     # sem `number` na resposta, a trava antiga continua valendo: 2 + 2 + 2 = 6 > 5 na terceira pagina
     p.chamadas.clear()
-    p.rotas[(EP_RP, None)] = [(200, json.dumps({"content": [_registro(aproc=1)] * 2, "totalElements": 5,
-                                                "last": False}).encode())]
+    dois = [dict(r, entidade=997) for r in dois]    # registros da entidade consultada (revisao critica, item 15)
+    p.rotas[(EP_RP, None)] = [(200, json.dumps({"content": dois, "totalElements": 5, "last": False}).encode())]
     s = ambiente["coletor"].listagem(997, 2026, "2026-12-31")
     assert s["status"] == "incompleta" and len(p.chamadas) <= 3
 
