@@ -12,13 +12,27 @@ Desempenho: as linhas (registro + derivado) de cada coleta sao lidas com as colu
 regras usam, por um leitor com cache LRU pequeno (o fechamento de um ano e a abertura do
 seguinte costumam ser a mesma coleta), e as visoes guardam so os componentes calculados,
 nao as linhas. Nada disso muda o resultado: a ordem de leitura e a mesma e o hash e conferido.
+
+Chave repetida (revisao critica, itens 1, 13 e 14). A chave de negocio (entidade, anoempenho, empenho) e unica num
+retrato; repetida, o retrato e AMBIGUO e:
+  * fica integro no bruto e na normalizacao (nenhum registro e apagado ou fundido) e tem rp_derivado como os demais;
+  * gera a anomalia CHAVE-DUP com a natureza da repeticao: "exata" (copias identicas no bruto) ou "conflitante"
+    (conteudo diferente), e as posicoes de origem estaveis (ordem da resposta, indice);
+  * NUNCA vira o retrato vigente do corte (coletas_vigentes): somar as copias contaria a mesma chave duas vezes, e
+    escolher uma delas seria decidir em silencio qual e a certa. Vale o retrato valido anterior do corte, e a
+    verificacao "retrato com chave repetida fora da vigência" registra a troca;
+  * por isso continuidade, pareamento e visoes nunca recebem retrato com chave repetida. O mapa por chave dessas
+    regras confere isso e para com erro de programa se acontecer (antes, {chave: linha} ficava com a ULTIMA copia
+    enquanto a soma contava as duas).
+Sem chave repetida (o caso de todos os 466 snapshots reais), o resultado e o hash sao os mesmos de antes.
 """
 import hashlib
 import json
 import logging
 from collections import OrderedDict, defaultdict
 
-from . import DataInvalida, agora, instante, regras
+from . import DataInvalida, agora, banco, instante, regras
+from .vigencia import VERIF_RETRATO_AMBIGUO, coletas_ambiguas, coletas_vigentes  # noqa: F401 (reexportados)
 
 log = logging.getLogger("rp.derivar")
 
@@ -62,9 +76,10 @@ def derivar(con, nid, em=None):
                           "vigencia_em) VALUES (?,?,?,?,?)",
                           (nid, VERSAO, json.dumps(sorted(R.values())), agora(), em)).lastrowid
         uid = dict(con.execute("SELECT id, snapshot_uid FROM coleta"))
-        _registros(con, did, nid, R, par, em)
+        ambiguas = _registros(con, did, nid, R, par, em)
         _movimentacao(con, did, nid, em)
-        vig = coletas_vigentes(con, em)
+        vig = coletas_vigentes(con, em, excluir=ambiguas)
+        _vigencia_recusada(con, did, R, em, ambiguas, vig, uid)
         ler = _Leitor(con, did, nid)
         _continuidade(con, did, nid, R, vig, uid, ler)
         pares = _pareamento(con, did, nid, R, vig, uid, par, ler)
@@ -82,16 +97,34 @@ def _ate(em, alias="c"):
 
 
 # --------------------------------------------------------------------------- selecao de snapshots
-def coletas_vigentes(con, em=None):
-    """Snapshot vigente de cada corte de listagem (sem tipo, completo): o mais recente ate `em`.
-    Chave (entidade, exercicio, data_inicial, data_final). Desempate estavel por snapshot_uid."""
-    sql = ("SELECT id, entidade, exercicio, data_inicial, data_final FROM coleta WHERE tipo='rp_listagem' "
-           "AND status='completa' AND tipo_pesquisa IS NULL" + (" AND coletada_em <= ?" if em else "")
-           + " ORDER BY coletada_em, snapshot_uid")
-    vig = {}
-    for cid, e, ex, di, df in con.execute(sql, (em,) if em else ()):
-        vig[(e, ex, di, df)] = cid
-    return vig
+def _vigencia_recusada(con, did, R, em, ambiguas, vig, uid):
+    """Verificacao para cada corte cujo retrato mais recente e ambiguo: ele nao e o vigente, e o vigente e o anterior
+    valido (ou nenhum). So existe quando ha chave repetida; sem ela, nada e gravado (o hash nao muda)."""
+    if not ambiguas:
+        return
+    for corte, cid in sorted(coletas_vigentes(con, em, excluir=frozenset()).items()):
+        if cid in ambiguas:
+            e, ex, di, df = corte
+            usado = vig.get(corte)
+            _verif(con, did, R[("ANOM-REG", 1)], VERIF_RETRATO_AMBIGUO,
+                   {"entidade": e, "exercicio": ex, "data_inicial": di, "data_final": df, "snapshot_recusado": uid[cid],
+                    "snapshot_vigente": uid[usado] if usado else None}, 1, 1)
+
+
+class ChaveAmbigua(RuntimeError):
+    """Retrato com chave repetida chegou a uma regra que o indexa por chave: defeito de programa (coletas_vigentes
+    devia te-lo excluido). Nunca se escolhe uma das copias."""
+
+
+def _por_chave(linhas, contexto):
+    """{(anoempenho, empenho): linha} de um retrato. Chave repetida -> ChaveAmbigua (nunca a ultima copia vence)."""
+    mapa = {}
+    for r in linhas:
+        k = (r["anoempenho"], r["empenho"])
+        if k in mapa:
+            raise ChaveAmbigua(f"{contexto}: chave {k} repetida no retrato (coleta {r['coleta_id']})")
+        mapa[k] = r
+    return mapa
 
 
 def _linhas(con, did, nid, cid):
@@ -139,6 +172,7 @@ def _registros(con, did, nid, R, par, em=None):
         "FROM rp_registro r JOIN coleta c ON c.id = r.coleta_id WHERE r.normalizacao_id = ? AND c.status = 'completa' "
         + filtro + " ORDER BY r.resposta_id, r.indice", (nid, *p)).fetchall()
     ocorrencias = defaultdict(int)
+    posicoes = defaultdict(list)
     anom = R[("ANOM-REG", 1)]
     anomalias = []
 
@@ -170,12 +204,32 @@ def _registros(con, did, nid, R, par, em=None):
             if proc == 0 and aproc == 0:
                 linha("SEM-SALDO-ABERTURA", cid, e, ano, emp)
             ocorrencias[(cid, e, ano, emp)] += 1
+            posicoes[(cid, e, ano, emp)].append((rid, i))
 
     con.executemany("INSERT INTO rp_derivado VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", derivados())
+    ambiguas = set()
     for (cid, e, ano, emp), n in sorted(ocorrencias.items()):
         if n > 1:
-            linha("CHAVE-DUP", cid, e, ano, emp, ocorrencias=n)
+            natureza, origem = _natureza_da_repeticao(con, posicoes[(cid, e, ano, emp)])
+            linha("CHAVE-DUP", cid, e, ano, emp, ocorrencias=n, natureza=natureza, posicoes=origem)
+            ambiguas.add(cid)
     con.executemany("INSERT INTO anomalia VALUES (?,?,?,?,?,?,?,?)", anomalias)
+    return frozenset(ambiguas)
+
+
+def _natureza_da_repeticao(con, posicoes):
+    """('exata' | 'conflitante', [[ordem da resposta, indice], ...]). Compara as ocorrencias NO BRUTO (bytes do
+    armazem, forma canonica): a normalizacao guarda o nome das chaves extras, nao o valor, entao so o bruto prova que
+    duas copias sao identicas. As posicoes usam a ordem da resposta (estavel), nunca o id interno."""
+    from .contrato import canonico
+    paginas, formas, origem = {}, set(), []
+    for rid, i in posicoes:
+        ordem, sha = con.execute("SELECT ordem, sha256 FROM resposta_bruta WHERE id=?", (rid,)).fetchone()
+        if rid not in paginas:
+            paginas[rid] = json.loads(banco.corpo(con, sha))["content"]
+        formas.add(canonico(paginas[rid][i]))
+        origem.append([ordem, i])
+    return ("exata" if len(formas) == 1 else "conflitante"), origem
 
 
 EFEITO = {20: ("empenho", 1), 21: ("cancelamento", -1), 22: ("estorno_cancelamento", 1), 30: ("liquidacao", 1),
@@ -217,8 +271,8 @@ def _continuidade(con, did, nid, R, vig, uid, ler=None):
         cb = aber.get((e, ex + 1))
         if not cb:
             continue
-        A = {(r["anoempenho"], r["empenho"]): r for r in ler(ca)}
-        B = {(r["anoempenho"], r["empenho"]): r for r in ler(cb)}
+        A = _por_chave(ler(ca), "continuidade (fechamento)")
+        B = _por_chave(ler(cb), "continuidade (abertura)")
         falhas = 0
         for k in sorted(A):
             r, s = A[k], B.get(k)
@@ -250,8 +304,10 @@ def _pareamento(con, did, nid, R, vig, uid, par, ler=None):
               & {(ex, di, df) for (e, ex, di, df) in vig if e == ent_b})
     for ex, di, df in sorted(cortes):
         ca, cb = vig[(ent_a, ex, di, df)], vig[(ent_b, ex, di, df)]
-        copias = [r for r in ler(ca) if r["empenho"] >= base]
-        B = {(r["anoempenho"], r["empenho"]): r for r in ler(cb)}
+        linhas_a = ler(ca)
+        _por_chave(linhas_a, "pareamento (lado A)")      # so confere: as copias sao percorridas como lista
+        copias = [r for r in linhas_a if r["empenho"] >= base]
+        B = _por_chave(ler(cb), "pareamento (lado B)")
         pares, sem_par = [], 0
         for a in copias:
             b = B.get((a["anoempenho"], a["empenho"] - base))
@@ -457,8 +513,27 @@ def resultado_estavel(con, did):
 
 
 def hash_resultado(con, did):
+    """Hash da EXECUCAO completa: valores, relacoes e diagnosticos (anomalia, verificacao). E o hash homologado."""
     h = hashlib.sha256()
     for tabela, linhas in resultado_estavel(con, did).items():
+        h.update(tabela.encode())
+        for linha in linhas:
+            h.update(json.dumps(linha, ensure_ascii=False, default=str).encode())
+    return h.hexdigest()
+
+
+# Tabelas que SAO o resultado (valores e relacoes). anomalia e verificacao sao diagnostico: texto de uma descricao ou
+# um detalhe a mais mudam o hash_resultado, mas nao o resultado financeiro (revisao critica, item 25).
+TABELAS_SEMANTICAS = ("rp_derivado", "movimentacao_interpretada", "espelhamento_par", "visao_valor", "conciliacao_rreo")
+
+
+def hash_semantico(con, did):
+    """Hash so do resultado (TABELAS_SEMANTICAS), com a mesma serializacao do hash_resultado. Calculado sob demanda,
+    nunca gravado: o hash_resultado homologado continua o mesmo. Igual em dois bancos = mesmos valores e relacoes."""
+    h = hashlib.sha256()
+    for tabela, linhas in resultado_estavel(con, did).items():
+        if tabela not in TABELAS_SEMANTICAS:
+            continue
         h.update(tabela.encode())
         for linha in linhas:
             h.update(json.dumps(linha, ensure_ascii=False, default=str).encode())

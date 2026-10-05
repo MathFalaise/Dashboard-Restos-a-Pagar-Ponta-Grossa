@@ -37,7 +37,13 @@ DINHEIRO = ["proc", "aproc", "canceladoProc", "pagoProc", "pagoProcEstornado", "
 
 SQL_RP = "INSERT INTO rp_registro VALUES (" + ",".join("?" * 37) + ")"
 SQL_MOV = "INSERT INTO movimentacao_lancamento VALUES (" + ",".join("?" * 18) + ")"
-SQL_RREO = "INSERT OR IGNORE INTO rreo_valor VALUES (?,?,?,?,?,?,?,?,?,?)"
+# Sem OR IGNORE (revisao critica, item 11): a celula repetida com o MESMO valor ja nao chega aqui (_rreo grava uma
+# linha so) e valor diferente vira LayoutDesconhecido; qualquer outro conflito de chave e erro, nunca ignorado.
+SQL_RREO = "INSERT INTO rreo_valor VALUES (?,?,?,?,?,?,?,?,?,?)"
+PAGINAS_RREO = 1          # layout conhecido do Anexo VII (Elotech): 1 pagina; os 36 PDFs do armazem tem 1
+# Erros de DADO ou de PDF que deixam um RREO sem transcricao, registrada em rreo_extracao. Erro de programa
+# (TypeError, AttributeError, NameError...) nao entra aqui: derruba o processamento (revisao critica, item 7).
+ERROS_DE_LAYOUT = (LookupError, ValueError, RuntimeError)   # LayoutDesconhecido e ValueError; PyMuPDF: RuntimeError
 SQL_EXTRACAO = ("INSERT INTO rreo_extracao (normalizacao_id, resposta_id, coleta_id, extrator_versao, biblioteca, "
                 "biblioteca_versao, sha256_pdf, id_arquivo, rotulo, extraida_em, valores, erro) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)")
 
@@ -114,7 +120,7 @@ def normalizar(con):
                 try:
                     n, erro = _rreo(con, nid, cid, meta, corpo), None
                     resumo["rreo_valor"] += n
-                except Exception as e:  # layout novo nao derruba o processamento; fica registrado
+                except ERROS_DE_LAYOUT as e:  # layout novo nao derruba o processamento; fica registrado
                     n, erro = 0, f"{type(e).__name__}: {e}"
                     resumo["problemas"].append({"coleta_id": cid, "extrator": EXTRATOR_RREO, "erro": erro})
                     log.warning("RREO da coleta %d não transcrito: %s", cid, e)
@@ -197,6 +203,11 @@ def _abrir_pdf(corpo):
 
 def _rreo(con, nid, cid, params, corpo):
     with _abrir_pdf(corpo) as doc:
+        # so a pagina 1 e lida: com outro numero de paginas o PDF nao e o layout conhecido, e transcrever so a
+        # primeira daria um RREO parcial sem aviso (revisao critica, item 12)
+        if doc.page_count != PAGINAS_RREO:
+            raise LayoutDesconhecido(f"PDF com {doc.page_count} página(s); o layout conhecido do Anexo VII tem "
+                                     f"{PAGINAS_RREO}")
         pg = doc[0]
         texto = pg.get_text()
         palavras = pg.get_text("words")
@@ -241,9 +252,12 @@ def _rreo(con, nid, cid, params, corpo):
             if vistos.setdefault(c, w) != w:
                 raise LayoutDesconhecido(f"dois números na coluna ({c}) da linha {linha!r}: {vistos[c]} e {w}")
         for c, w in vistos.items():
-            if celulas.setdefault((linha, c), w) != w:
-                raise LayoutDesconhecido(f"linha {linha!r} repetida com outro valor na coluna ({c}): "
-                                         f"{celulas[(linha, c)]} e {w}")
+            ja = celulas.get((linha, c))
+            if ja is not None and ja != w:
+                raise LayoutDesconhecido(f"linha {linha!r} repetida com outro valor na coluna ({c}): {ja} e {w}")
+            if ja is not None:          # mesma linha impressa de novo com o mesmo valor: uma linha so (antes, OR IGNORE)
+                continue
+            celulas[(linha, c)] = w
             valores.append((nid, cid, EXTRATOR_RREO, escopo, ano, data_final, emitido, linha, c,
                             int(Decimal(w.replace(".", "").replace(",", ".")) * 100)))
     return con.executemany(SQL_RREO, valores).rowcount if valores else 0

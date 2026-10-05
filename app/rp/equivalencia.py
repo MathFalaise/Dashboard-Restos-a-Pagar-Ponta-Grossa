@@ -88,13 +88,15 @@ def normalizacao(con, nid=None):
 
 
 def derivacoes(con):
-    """Ultima derivacao de cada vigencia: hash_resultado gravado e recalculado (ja e estavel por construcao)."""
+    """Ultima derivacao de cada vigencia: hash_resultado gravado e recalculado (ja e estavel por construcao) e o hash
+    semantico (so valores e relacoes, sem anomalia/verificacao; revisao critica, item 25)."""
     saida = {}
     for did, vig in con.execute("SELECT MAX(id), vigencia_em FROM derivacao_execucao GROUP BY IFNULL(vigencia_em, '')"):
         gravado, versao = con.execute("SELECT hash_resultado, derivador_versao FROM derivacao_execucao WHERE id=?",
                                       (did,)).fetchone()
         saida[vig or "atual"] = {"derivacao": did, "derivador_versao": versao, "hash_gravado": gravado,
-                                 "hash_recalculado": derivar.hash_resultado(con, did)}
+                                 "hash_recalculado": derivar.hash_resultado(con, did),
+                                 "hash_semantico": derivar.hash_semantico(con, did)}
     return saida
 
 
@@ -113,6 +115,10 @@ def comparar(con_a, con_b):
     der = {v: (a["derivacoes"].get(v, {}).get("hash_recalculado") == b["derivacoes"].get(v, {}).get("hash_recalculado")
                and a["derivacoes"].get(v, {}).get("hash_recalculado") is not None) for v in vigs}
     integras = all(d["hash_gravado"] == d["hash_recalculado"] for x in (a, b) for d in x["derivacoes"].values())
+    # resultado financeiro igual mesmo quando so o diagnostico difere (texto de verificacao, detalhe de anomalia)
+    semantica = {v: (a["derivacoes"].get(v, {}).get("hash_semantico") == b["derivacoes"].get(v, {}).get("hash_semantico")
+                     and a["derivacoes"].get(v, {}).get("hash_semantico") is not None) for v in vigs}
     return {"equivalentes": c0 and norm and all(der.values()) and integras,
             "camada0_igual": c0, "normalizacao_igual": norm, "normalizacao_por_tabela": tabelas,
-            "derivacao_igual_por_vigencia": der, "hash_gravado_confere_nos_dois": integras, "a": a, "b": b}
+            "derivacao_igual_por_vigencia": der, "resultado_semantico_igual_por_vigencia": semantica,
+            "hash_gravado_confere_nos_dois": integras, "a": a, "b": b}

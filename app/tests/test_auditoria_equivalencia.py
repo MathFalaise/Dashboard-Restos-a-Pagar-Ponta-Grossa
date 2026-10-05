@@ -26,8 +26,11 @@ def _reconstruido(mundo, tmp_path):
     return con
 
 
-def test_DET02_banco_reconstruido_e_equivalente_embora_hash_camada0_mude(mundo, tmp_path):
+def test_DET02_banco_reconstruido_e_equivalente_embora_hash_camada0_mude(mundo, tmp_path, monkeypatch):
     _mundo(mundo)
+    # reconstrucao "mais tarde": sem relogio fixo, o banco reconstruido podia cair no MESMO segundo do original e, com
+    # os uids aleatorios na mesma ordem, repetir ids e carimbos - e o hash antigo saia igual por acaso (teste instavel)
+    monkeypatch.setattr(banco, "agora", lambda: "2031-01-01T00:00:00-03:00")
     outro = _reconstruido(mundo, tmp_path)
     r = equivalencia.comparar(mundo.con, outro)
     assert r["equivalentes"] is True, {k: v for k, v in r.items() if k not in ("a", "b")}

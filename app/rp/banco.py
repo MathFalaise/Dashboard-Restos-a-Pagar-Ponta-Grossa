@@ -5,16 +5,25 @@ colocar um snapshot na camada 0 (e `registrar_evidencia`, uma evidencia externa)
 e `reconstruir` refaz o banco inteiro so com os manifestos e objetos do disco.
 
 Seguranca:
-  * o banco ATIVO nunca abre dentro de pasta sincronizada pelo OneDrive (SQLite em pasta
-    sincronizada pode corromper; decisao da Etapa 04);
+  * o banco ATIVO nunca abre em pasta sincronizada (OneDrive, Dropbox, Google Drive, iCloud, Box...) nem em
+    unidade de rede (SQLite fora de disco local pode corromper; decisao da Etapa 04, ampliada pela revisao critica,
+    item 46);
   * backup nunca sobrescreve outro backup, e o motivo informado nao consegue mudar a pasta de destino;
   * a conferencia de integridade dos objetos e explicita (nao usa `assert`, que some com `python -O`).
+
+Impressao do esquema (revisao critica, item 28): a versao em esquema_versao so diz o numero; dois bancos "v4" podem
+ter estruturas diferentes se alguem editar esquema.sql sem versao nova. IMPRESSAO_ESQUEMA guarda, por versao, o
+SHA-256 da estrutura (sqlite_master sem comentarios nem espacos: comentario e espaco nao sao estrutura - o banco
+ativo foi criado antes de os comentarios do esquema.sql perderem os acentos, e a estrutura e a mesma). Um teste
+exige que o esquema montado pelo codigo tenha a impressao da sua versao: mudou a estrutura, tem de mudar a versao.
 """
+import hashlib
 import json
 import logging
 import os
 import re
 import sqlite3
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -73,6 +82,11 @@ MIGRACOES = {
         ]),
 }
 VERSAO_ESQUEMA = max(MIGRACOES)
+# Impressao estrutural de cada versao do esquema (impressao_esquema). Versao nova = impressao nova aqui.
+IMPRESSAO_ESQUEMA = {
+    # v4: conferida em 05/10/2026 no banco ativo (criado em 29/09, migrado em 30/09) e no montado pelo codigo
+    4: "ad45413e4a5431eca73afebbf4640c995513203b9def9b38d8cbb83eaa3d3e5a",
+}
 
 # Cache de paginas por conexao (KiB, valor negativo = tamanho em KiB no SQLite). A derivacao percorre
 # ~100 MB de registros; com o cache padrao (~2 MB) a mesma pagina e relida do disco centenas de vezes.
@@ -89,14 +103,111 @@ class BancoEmPastaSincronizada(Exception):
     pass
 
 
+# Pastas-raiz conhecidas de servicos de sincronizacao (nome exato de uma parte do caminho, sem diferenciar
+# maiusculas). Lista conservadora: nome generico ("Box", "Sync") poderia ser uma pasta local comum.
+_SINCRONIZADAS = {"google drive", "googledrive", "my drive", "meu drive", "icloud drive", "iclouddrive",
+                  "mobile documents", "box sync", "box drive", "nextcloud", "owncloud", "pcloud drive"}
+_FS_DE_REDE = {"nfs", "nfs4", "cifs", "smb", "smbfs", "smb3", "afpfs", "9p", "fuse.sshfs", "fuse.rclone", "davfs",
+               "fuse.davfs"}
+
+
+def _unidade_de_rede(p):
+    """True se `p` esta em compartilhamento de rede: caminho UNC, unidade mapeada (Windows) ou sistema de arquivos
+    de rede montado (Linux, /proc/mounts). Melhor esforco: sem como saber, False."""
+    if str(p).startswith("\\\\") or p.drive.startswith("\\\\"):
+        return True
+    if sys.platform == "win32" and p.drive:
+        try:
+            import ctypes
+            return ctypes.windll.kernel32.GetDriveTypeW(f"{p.drive}\\") == 4      # DRIVE_REMOTE
+        except (AttributeError, OSError):
+            return False
+    montagens = Path("/proc/mounts")
+    if montagens.exists():
+        melhor, tipo = "", None
+        for linha in montagens.read_text(encoding="utf-8", errors="replace").splitlines():
+            partes = linha.split()
+            if len(partes) >= 3 and (str(p) == partes[1] or str(p).startswith(partes[1].rstrip("/") + "/")) \
+                    and len(partes[1]) > len(melhor):
+                melhor, tipo = partes[1], partes[2]
+        return tipo in _FS_DE_REDE
+    return False
+
+
 def em_pasta_sincronizada(caminho):
-    """True se `caminho` fica dentro de uma pasta do OneDrive."""
+    """True se `caminho` fica numa pasta sincronizada (OneDrive, Dropbox, Google Drive, iCloud, Box, Nextcloud...)
+    ou numa unidade de rede. O que importa nao e qual servico: e que o banco ativo fique em disco local."""
     p = Path(caminho).resolve()
     for var in ("OneDrive", "OneDriveConsumer", "OneDriveCommercial"):
         raiz = os.environ.get(var)
         if raiz and p.is_relative_to(Path(raiz).resolve()):
             return True
-    return any(parte.lower().startswith("onedrive") for parte in p.parts)
+    for parte in p.parts:
+        nome = parte.lower()
+        if nome.startswith("onedrive") or nome.startswith("dropbox") or nome in _SINCRONIZADAS:
+            return True
+    return _unidade_de_rede(p)
+
+
+_LITERAL_ABRE = ("'", '"')
+
+
+def _sql_normalizado(sql):
+    """Texto SQL sem comentarios (-- e /* */) e com os espacos colapsados FORA de literais; literal fica intacto
+    (um CHECK com 'FORTE EVIDÊNCIA' nao pode mudar)."""
+    sql = sql or ""
+    saida, codigo, i, n = [], [], 0, len(sql)
+
+    def fechar_codigo():
+        if codigo:
+            t = re.sub(r"\s+", " ", "".join(codigo))
+            saida.append(re.sub(r" ?([(),;]) ?", r"\1", t))
+            codigo.clear()
+    while i < n:
+        c = sql[i]
+        if c in _LITERAL_ABRE:
+            j = i + 1
+            while j < n:
+                if sql[j] == c:
+                    if j + 1 < n and sql[j + 1] == c:     # aspas duplicadas: escape dentro do literal
+                        j += 2
+                        continue
+                    break
+                j += 1
+            fechar_codigo()
+            saida.append(sql[i:j + 1])
+            i = j + 1
+        elif sql.startswith("--", i):
+            fim = sql.find("\n", i)
+            i = n if fim < 0 else fim
+            codigo.append(" ")
+        elif sql.startswith("/*", i):
+            fim = sql.find("*/", i + 2)
+            i = n if fim < 0 else fim + 2
+            codigo.append(" ")
+        else:
+            codigo.append(c)
+            i += 1
+    fechar_codigo()
+    return "".join(saida).strip()
+
+
+def impressao_esquema(con):
+    """SHA-256 da estrutura do banco: tipo, nome, tabela e SQL normalizado de cada objeto de sqlite_master (tabelas,
+    indices, gatilhos). Comentario e espaco nao contam; coluna, tipo, restricao, indice e gatilho contam."""
+    itens = sorted((t, nome, tabela, _sql_normalizado(sql)) for t, nome, tabela, sql in con.execute(
+        "SELECT type, name, tbl_name, sql FROM sqlite_master WHERE sql IS NOT NULL AND name NOT LIKE 'sqlite_%'"))
+    return hashlib.sha256(json.dumps(itens, ensure_ascii=False).encode()).hexdigest()
+
+
+def esquema_do_codigo():
+    """Conexao em memoria com o esquema completo montado pelo codigo (esquema.sql + migracoes), sem dados."""
+    con = sqlite3.connect(":memory:")
+    con.executescript(ESQUEMA.read_text(encoding="utf-8"))
+    for v in range(VERSAO_BASE + 1, VERSAO_ESQUEMA + 1):
+        for sql in MIGRACOES[v][1]:
+            con.execute(sql)
+    return con
 
 
 def _conectar(caminho):
@@ -156,9 +267,9 @@ def _criar(caminho):
 
 def abrir(cfg, caminho=None):
     """Abre (criando, se preciso) o banco. Toda mudanca estrutural de banco existente e precedida de backup.
-    Sem `caminho`, abre o banco ATIVO (cfg.banco), que e recusado dentro de pasta do OneDrive."""
+    Sem `caminho`, abre o banco ATIVO (cfg.banco), que e recusado em pasta sincronizada ou de rede."""
     if caminho is None and em_pasta_sincronizada(cfg.banco):
-        raise BancoEmPastaSincronizada(f"banco ativo em pasta do OneDrive: {cfg.banco}. "
+        raise BancoEmPastaSincronizada(f"banco ativo em pasta sincronizada ou de rede: {cfg.banco}. "
                                        "Aponte [caminhos].dados_locais para uma pasta local.")
     caminho = Path(caminho or cfg.banco)
     caminho.parent.mkdir(parents=True, exist_ok=True)
@@ -178,6 +289,10 @@ def abrir(cfg, caminho=None):
     if atual < VERSAO_ESQUEMA:
         arq = backup(con, cfg, f"antes-migracao-v{atual}-v{VERSAO_ESQUEMA}")
         _migrar(con, atual, arq)
+    esperado = IMPRESSAO_ESQUEMA.get(VERSAO_ESQUEMA)
+    if esperado and impressao_esquema(con) != esperado:     # aviso; o portao 'esquema_confere' reprova a carga
+        log.warning("esquema de %s difere do esquema v%d do código (impressão estrutural): ver portão "
+                    "'esquema_confere'", caminho, VERSAO_ESQUEMA)
     _semear_catalogo(con)
     return con
 

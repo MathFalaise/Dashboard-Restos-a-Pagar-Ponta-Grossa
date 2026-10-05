@@ -15,6 +15,9 @@ Fluxo:  API Elotech -> coleta -> snapshot imutavel -> normalizacao -> derivacao 
     entra no total do Municipio.
   * So entram snapshots que a normalizacao em uso processou: snapshot novo, ainda nao processado, vira aviso
     (nunca um corte com valor zero).
+  * Retrato com a mesma chave de empenho mais de uma vez (anomalia CHAVE-DUP) nunca e o vigente, como na derivacao:
+    nenhuma copia e somada duas vezes nem escolhida. Vale o retrato valido anterior do corte, com aviso; sem ele, o
+    dado fica 'ambiguo' (indisponivel). Revisao critica, itens 1, 13 e 14.
   * Nivel 'publico' (padrao) nunca devolve identificacao de credor em listas nem agregados (ver publico.py).
 """
 import json
@@ -22,7 +25,7 @@ import re
 import sqlite3
 from pathlib import Path
 
-from .. import DataInvalida, banco, governanca, regras
+from .. import DataInvalida, banco, governanca, regras, vigencia
 from .. import instante as _instante
 from ..comparador import comparar as _comparar
 from . import explicacoes, fontes, publico
@@ -44,6 +47,8 @@ SITUACOES_DO_DADO = {
     "sem_coleta": "corte não coletado",
     "nao_processado": "corte coletado, mas ainda não processado",
     "incompleto": "dado indisponível: só há coleta incompleta ou com falha deste corte",
+    "ambiguo": "dado indisponível: o retrato do corte tem a mesma chave de empenho mais de uma vez (CHAVE-DUP); "
+               "nenhuma ocorrência é escolhida",
     "divergente": "dado com diferença em relação ao RREO (a diferença é mostrada; o valor da API não muda)",
 }
 # Situacao de um PONTO de serie (etapa05/CONTRATO_ANALITICO.md secao 2): estende a taxonomia acima, sem outra
@@ -101,6 +106,10 @@ INTERPRETACOES_DE_VERIFICACAO = {
     "RREO sem valores extraídos (ver problemas da normalização)": {
         "regra": ("CONC-RREO", 1), "natureza": "pdfs_nao_lidos", "anomalias": (),
         "verificados": "PDFs do RREO", "falhas": "PDFs que o extrator de produção não leu"},
+    vigencia.VERIF_RETRATO_AMBIGUO: {
+        "regra": ("ANOM-REG", 1), "natureza": "conformidade", "anomalias": ("CHAVE-DUP",),
+        "verificados": "retrato mais recente de um corte com chave de empenho repetida",
+        "falhas": "retratos recusados como vigentes (vale o retrato válido anterior do corte, ou nenhum)"},
 }
 
 
@@ -301,16 +310,48 @@ class Painel:
                 "normalizacao": {"id": n[0], "versao": n[1], "executada_em": n[2]}, "limite_coleta": limite,
                 "painel": VERSAO}
 
+    def _ambiguas(self, ctx):
+        """Coletas com chave repetida (CHAVE-DUP) na derivacao do contexto: nunca sao o retrato vigente. A derivacao
+        atual cobre todas as coletas completas, inclusive as anteriores a qualquer `em`."""
+        did = ctx["derivacao"]["id"]
+        if getattr(self, "_ambiguas_de", None) != did:
+            self._ambiguas_de, self._ambiguas_cache = did, vigencia.coletas_ambiguas(self.con, did)
+        return self._ambiguas_cache
+
     def _vigentes(self, ctx, em):
-        """Snapshot vigente de cada corte de listagem: mesma regra de derivar.coletas_vigentes (o mais recente ate
-        `em`, desempate por snapshot_uid), restrita aos snapshots que a normalizacao do contexto processou."""
-        sql = ("SELECT id, entidade, exercicio, data_inicial, data_final FROM coleta WHERE tipo='rp_listagem' "
-               "AND status='completa' AND tipo_pesquisa IS NULL AND id <= ?" + (" AND coletada_em <= ?" if em else "")
-               + " ORDER BY coletada_em, snapshot_uid")
-        vig = {}
-        for cid, e, ex, di, df in self.con.execute(sql, (ctx["limite_coleta"], em) if em else (ctx["limite_coleta"],)):
-            vig[(e, ex, di, df)] = cid
-        return vig
+        """Snapshot vigente de cada corte de listagem: a regra unica de `vigencia.coletas_vigentes` (a mesma da
+        derivacao), restrita aos snapshots que a normalizacao do contexto processou."""
+        return vigencia.coletas_vigentes(self.con, em, excluir=self._ambiguas(ctx), limite_coleta=ctx["limite_coleta"])
+
+    def _cortes_ambiguos(self, ctx, em):
+        """Cortes (entidade, exercicio, data_inicial, data_final) com retrato processado ate `em` que tem chave
+        repetida. Entram no universo de cortes (R1: corte sem dado aparece com a situacao, nunca omitido), mas o
+        retrato ambiguo nunca e somado."""
+        amb = self._ambiguas(ctx)
+        if not amb:
+            return set()
+        filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        return {tuple(r) for r in self.con.execute(
+            f"SELECT entidade, exercicio, data_inicial, data_final FROM coleta WHERE id IN ({','.join('?' * len(amb))}) "
+            "AND tipo='rp_listagem' AND tipo_pesquisa IS NULL AND status='completa' AND id <= ?" + filtro,
+            (*sorted(amb), ctx["limite_coleta"], *p))}
+
+    def _retrato_recusado(self, ctx, e, exercicio, di, data_final, em, usado):
+        """Aviso quando o retrato mais novo do corte (processado, ate `em`) tem chave repetida e o painel usa o
+        anterior valido, ou None. So consulta o banco se houver coleta ambigua."""
+        if not self._ambiguas(ctx):
+            return None
+        filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        mais_novo = self.con.execute(
+            "SELECT id, snapshot_uid, coletada_em FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND "
+            "status='completa' AND entidade=? AND exercicio=? AND data_inicial=? AND data_final=? AND id <= ?" + filtro +
+            " ORDER BY coletada_em DESC, snapshot_uid DESC LIMIT 1",
+            (e, exercicio, di, data_final, ctx["limite_coleta"], *p)).fetchone()
+        if not mais_novo or mais_novo[0] == usado or mais_novo[0] not in self._ambiguas(ctx):
+            return None
+        return (f"entidade {e}: o retrato mais novo do corte (snapshot {mais_novo[1][:8]}, coletado em "
+                f"{_data_br(mais_novo[2])}) tem chave de empenho repetida (CHAVE-DUP) e não é usado"
+                + ("; vale o retrato válido anterior" if usado else "; não há retrato válido anterior"))
 
     def _pendentes(self, ctx):
         return self.con.execute("SELECT COUNT(*) FROM coleta WHERE tipo='rp_listagem' AND id > ?",
@@ -385,6 +426,8 @@ class Painel:
             "exercicio=? AND data_inicial=? AND data_final=?" + filtro_em, (e, exercicio, di, data_final, *p_em)).fetchall()
         if any(st == "completa" and cid > ctx["limite_coleta"] for cid, st in linhas):
             return "nao_processado"
+        if any(st == "completa" and cid in self._ambiguas(ctx) for cid, st in linhas):
+            return "ambiguo"
         if any(st != "completa" for _, st in linhas):
             return "incompleto"
         return "sem_coleta"
@@ -394,7 +437,9 @@ class Painel:
         vig = self._vigentes(ctx, em) if vig is None else vig
         cat = self._catalogo(ctx, em) if cat is None else cat
         com_snapshot = {e for (e, ex, d0, df) in vig if ex == exercicio and d0 == di and df == data_final}
-        universo = [entidade] if entidade is not None else sorted(set(cat["entidades"]) | com_snapshot)
+        ambiguas = {e for (e, ex, d0, df) in self._cortes_ambiguos(ctx, em) if ex == exercicio and d0 == di
+                    and df == data_final}
+        universo = [entidade] if entidade is not None else sorted(set(cat["entidades"]) | com_snapshot | ambiguas)
         itens, somar, faltam, fora, avisos = [], [], [], [], []
         filtro_em, p_em = (" AND coletada_em <= ?", (em,)) if em else ("", ())
         for e in universo:
@@ -415,6 +460,9 @@ class Painel:
                 n = self.con.execute("SELECT COUNT(*) FROM rp_registro WHERE normalizacao_id=? AND coleta_id=?",
                                      (ctx["normalizacao"]["id"], cid)).fetchone()[0]
                 item["snapshot"] = {"snapshot_uid": uid, "coletada_em": quando, "registros": n}
+            recusado = self._retrato_recusado(ctx, e, exercicio, di, data_final, em, cid)
+            if recusado:
+                avisos.append(recusado)
             if status == "fora do catálogo oficial":
                 fora.append(e)
                 estado = "inexistente"
@@ -472,6 +520,9 @@ class Painel:
         for (e, ex, di, df) in vig:
             if di == f"{ex}-01-01":
                 por_corte.setdefault((ex, df), set()).add(e)
+        for (e, ex, di, df) in self._cortes_ambiguos(ctx, em):     # so retrato ambiguo: aparece, indisponivel
+            if di == f"{ex}-01-01":
+                por_corte.setdefault((ex, df), set())
         saida = []
         for (ex, df), ents in sorted(por_corte.items()):
             c = self._corte(ctx, ex, df, None, em, vig, cat)
@@ -628,8 +679,7 @@ class Painel:
         * Diferenca para o ponto adjacente anterior: posterior - anterior, so quando os dois tem valor (nunca pula
           lacuna); natureza 'diferenca', com a proveniencia dos dois lados."""
         ctx, em = self.contexto(), instante(em)
-        di = f"{exercicio}-01-01"
-        universo = sorted({df for (e, ex, d0, df) in self._vigentes(ctx, em) if ex == exercicio and d0 == di})
+        universo = self._universo_do_exercicio(ctx, self._vigentes(ctx, em), exercicio, em)
         serie, anterior = [], None
         for df in universo:
             r = self.indicadores(exercicio, df, entidade, em)
@@ -681,8 +731,8 @@ class Painel:
                                     (exercicio, f"{exercicio}-01-01", *p)).fetchone()
 
     def _corte_representativo(self, ctx, vig, cat, exercicio, em):
-        di, fim = f"{exercicio}-01-01", f"{exercicio}-12-31"
-        cortes = sorted({df for (e, ex, d0, df) in vig if ex == exercicio and d0 == di})
+        fim = f"{exercicio}-12-31"
+        cortes = self._universo_do_exercicio(ctx, vig, exercicio, em)
         base = {"exercicio": exercicio, "data_final": None, "aberto": None, "motivo": None}
         if not cortes:
             return {**base, "motivo": ("exercício sem cobertura" if self._sem_cobertura(exercicio, em)
@@ -977,10 +1027,11 @@ class Painel:
         return {"ident": str(v), "chave": v, "rotulo": f"{nome} {v}", "filtro": {d: v}}
 
     # ------------------------------------------------------------------ investigacao de variacoes (05.5)
-    def _universo_do_exercicio(self, vig, exercicio):
-        """Cortes processados do exercicio, de qualquer entidade (contrato secao 2.4)."""
+    def _universo_do_exercicio(self, ctx, vig, exercicio, em):
+        """Cortes processados do exercicio, de qualquer entidade (contrato secao 2.4), inclusive o corte cujo unico
+        retrato tem chave repetida: ele aparece com a situacao 'ambiguo', sem valor."""
         di = f"{exercicio}-01-01"
-        return sorted({df for (e, ex, d0, df) in vig if ex == exercicio and d0 == di})
+        return sorted({df for (e, ex, d0, df) in set(vig) | self._cortes_ambiguos(ctx, em) if ex == exercicio and d0 == di})
 
     def _valores_por_chave(self, ctx, coletas, expr):
         """{(entidade, anoempenho, empenho): [ocorrencias]} com o valor de `expr` (expressao fixa deste modulo) e a
@@ -1030,7 +1081,7 @@ class Painel:
                  "disponivel": False, "motivo_indisponivel": None, "chaves_repetidas": [], "anterior": None,
                  "posterior": None, "variacao_c": None, "resumo": None, "classes": None, "fechamentos": None,
                  "lista": None, "chaves": None, "pares_espelhados": None, "proveniencia": None, "nota": None}
-        universo = self._universo_do_exercicio(vig, exercicio)
+        universo = self._universo_do_exercicio(ctx, vig, exercicio, em)
         faltam = [df for df in (anterior, posterior) if df not in universo]
         if faltam:
             saida["motivo_indisponivel"] = (f"corte sem processamento no exercício {exercicio}: "
@@ -1142,7 +1193,7 @@ class Painel:
         vig, cat = self._vigentes(ctx, em), self._catalogo(ctx, em)
         governo = self._naturezas_derivados()
         cortes = []
-        for df in self._universo_do_exercicio(vig, exercicio):
+        for df in self._universo_do_exercicio(ctx, vig, exercicio, em):
             corte = self._corte(ctx, exercicio, df, entidade, em, vig, cat)
             codigo = self._situacao_do_ponto(corte, entidade)
             ponto = {"data_final": df, "situacao": {"codigo": codigo, "texto": SITUACOES_DO_PONTO[codigo]},
