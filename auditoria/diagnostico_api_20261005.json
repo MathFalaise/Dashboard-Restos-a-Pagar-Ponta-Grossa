@@ -1,0 +1,69 @@
+{
+ "resultado": "ok",
+ "contrato": "rp-api-contrato/1",
+ "consultado_em": "2026-10-05T11:42:57-03:00",
+ "corte": {
+  "entidade": 1,
+  "exercicio": 2026,
+  "data_final": "2026-10-05",
+  "tamanho_amostra": 20
+ },
+ "portal": {
+  "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/actuator/info",
+  "http_status": 200,
+  "versao": "3.128.0",
+  "build": "2026-09-22T19:26:34.452Z"
+ },
+ "verificacoes": [
+  {
+   "alvo": "entidades",
+   "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/api/entidades/lista",
+   "http_status": 200,
+   "situacao": "ok",
+   "problemas": [],
+   "avisos": [],
+   "estrutura": {
+    "referencia": "2f021d5137de44bebbdbf37a94a38ebf",
+    "novos": [],
+    "removidos": [],
+    "tipo_diferente": [],
+    "registros_na_amostra": 10,
+    "igual": true
+   }
+  },
+  {
+   "alvo": "exercicios/1",
+   "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/api/exercicios/entidade/1",
+   "http_status": 200,
+   "situacao": "ok",
+   "problemas": [],
+   "avisos": [],
+   "estrutura": {
+    "referencia": "d9355729cdfd44028705044a808d03b7",
+    "novos": [],
+    "removidos": [],
+    "tipo_diferente": [],
+    "registros_na_amostra": 11,
+    "igual": true
+   }
+  },
+  {
+   "alvo": "rp_listagem",
+   "url": "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api/empenhos/restos-a-pagar?entidade=1&exercicio=2026&dataInicial=2026-01-01&dataFinal=2026-10-05&size=20&sort=anoempenho%2Casc&sort=empenho%2Casc&page=0",
+   "http_status": 200,
+   "situacao": "ok",
+   "problemas": [],
+   "avisos": [],
+   "estrutura": {
+    "referencia": "0721d7864c934566b0ba4a5fd65d6ae8",
+    "novos": [],
+    "removidos": [],
+    "tipo_diferente": [],
+    "registros_na_amostra": 20,
+    "igual": true
+   }
+  }
+ ],
+ "requisicoes": 4,
+ "nota": "Nada foi gravado: nenhum snapshot, nenhuma linha no banco, nenhum arquivo no armazém. 'mudou' pede revisão antes de coletar; a estrutura é comparada com o snapshot completo mais recente do mesmo tipo."
+}
