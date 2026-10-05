@@ -31,9 +31,10 @@ def _logs(cfg):
 
 
 def main(argv=None):
-    """Executa um comando. Codigos de saida: 0 ok; 1 `verificar` achou problema; 2 coleta incompleta ou com falha;
-    3 exclusao recusada; 4 comando recusado (parametro, configuracao, corte, arquivo existente...), com uma linha
-    JSON {"erro": ...} na saida e o detalhe completo no log.
+    """Executa um comando. Codigos de saida: 0 ok; 1 `verificar` achou problema (ou: `portoes` nao apto,
+    `comparar-bancos` diferentes, `diagnosticar-api` viu a API mudar); 2 coleta incompleta ou com falha (ou:
+    `diagnosticar-api` nao conseguiu consultar); 3 exclusao recusada; 4 comando recusado (parametro, configuracao,
+    corte, arquivo existente...), com uma linha JSON {"erro": ...} na saida e o detalhe completo no log.
     Caractere que a codificacao da saida nao representa (ex.: cp1252 com saida redirecionada para arquivo) sai
     como escape \\uXXXX, em vez de derrubar o programa depois do trabalho feito."""
     for fluxo in (sys.stdout, sys.stderr):
@@ -135,6 +136,13 @@ def _main(argv=None):
     p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
     p.add_argument("--referencia", help="JSON gravado antes da carga (--gravar-referencia): confere o bruto anterior")
     p.add_argument("--gravar-referencia", help="grava o retrato do bruto atual neste arquivo (nunca sobrescreve) e sai")
+    p = sub.add_parser("diagnosticar-api", help="confere se a API ainda responde como o coletor espera, sem gravar "
+                                                "nada (saida 0 ok, 1 a API mudou, 2 nao deu para conferir)")
+    p.add_argument("--entidade", type=int, help="padrao: a primeira entidade de [escopo] no config.toml")
+    p.add_argument("--exercicio", type=int, help="padrao: o ano corrente")
+    p.add_argument("--data-final", help="padrao: hoje (AAAA-MM-DD), no mesmo ano do exercicio")
+    p.add_argument("--tamanho", type=int, help="registros na amostra da listagem (padrao 20)")
+    p.add_argument("--banco", help="referencia da estrutura; padrao: banco ativo do config.toml (so leitura)")
     a = ap.parse_args(argv)
 
     cfg = carregar(a.config)
@@ -165,6 +173,8 @@ def _main(argv=None):
         r = portoes.avaliar(a.banco or cfg.banco, Armazem(cfg.snapshots), ref)
         print(json.dumps(r, ensure_ascii=False, indent=1, default=str))
         return 0 if r["apto"] else 1
+    if a.cmd == "diagnosticar-api":   # idem: consulta o portal, mas nao grava snapshot nem abre o banco para escrita
+        return _diagnosticar_api(a, cfg)
     armazem = Armazem(cfg.snapshots)
     if a.cmd == "reconstruir":
         con, n = banco.reconstruir(cfg, armazem, a.destino)
@@ -281,6 +291,29 @@ def _main(argv=None):
         r = [coletor.movimentacao(a.entidade, a.anoempenho, a.empenho)]
     print(json.dumps({"snapshots": r, "requisicoes": coletor.cliente.requisicoes}, ensure_ascii=False, indent=1))
     return 0 if all(s["status"] == "completa" for s in r) else 2
+
+
+def _diagnosticar_api(a, cfg):
+    """Diagnostico do contrato da API (diagnostico.py). Sem banco ativo ainda, so a estrutura deixa de ser comparada."""
+    from pathlib import Path
+
+    from . import diagnostico
+    from .portoes import _abrir
+    hoje = datetime.now(BRT).date()
+    exercicio = a.exercicio or hoje.year
+    data_final = a.data_final or (hoje.isoformat() if exercicio == hoje.year else f"{exercicio}-12-31")
+    caminho = Path(a.banco or cfg.banco).expanduser()
+    con = _abrir(caminho) if caminho.is_file() or a.banco else None
+    try:
+        r = diagnostico.diagnosticar(con, Cliente(cfg), a.entidade or cfg.entidades[0], exercicio, data_final,
+                                     a.tamanho or diagnostico.TAMANHO_AMOSTRA)
+    finally:
+        if con is not None:
+            con.close()
+    if con is None:
+        r["nota"] += f" Banco {caminho} não encontrado: estrutura não comparada."
+    print(json.dumps(r, ensure_ascii=False, indent=1))
+    return diagnostico.CODIGO_DE_SAIDA[r["resultado"]]
 
 
 def _exigir(a, *nomes):
