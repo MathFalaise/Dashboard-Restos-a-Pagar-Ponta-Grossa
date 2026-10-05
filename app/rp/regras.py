@@ -81,8 +81,56 @@ PARAMETROS = {
 }
 
 
+class CatalogoDivergente(Exception):
+    """O catalogo gravado no banco nao e o do codigo para uma versao que ja existe."""
+
+
+def conferir_catalogo(con):
+    """Divergencias entre o catalogo do codigo e o do banco (lista vazia = iguais). Como o semear usa INSERT OR IGNORE,
+    editar no codigo a definicao, o status, um parametro ou uma decisao de uma versao JA gravada nao chegaria ao banco
+    e ninguem saberia (auditoria DB-03). Decisao registrada so no banco (registrar_decisao) nao e divergencia."""
+    problemas = []
+    for codigo, versao, *resto in REGRAS:
+        row = con.execute("SELECT tipo, uso, status_evidencia, definicao, fonte FROM regra WHERE codigo=? AND versao=?",
+                          (codigo, versao)).fetchone()
+        if row is not None and tuple(row) != tuple(resto):
+            problemas.append(f"regra {codigo} v{versao}: banco {tuple(row)!r} × código {tuple(resto)!r}")
+    for codigo, *resto in ANOMALIAS:
+        row = con.execute("SELECT descricao, status_evidencia, fonte FROM anomalia_tipo WHERE codigo=?", (codigo,)).fetchone()
+        if row is not None and tuple(row) != tuple(resto):
+            problemas.append(f"tipo de anomalia {codigo}: banco {tuple(row)!r} × código {tuple(resto)!r}")
+    R = ids(con)
+    for (codigo, versao), valores in PARAMETROS.items():
+        if (codigo, versao) not in R:
+            continue
+        banco = {n: json.loads(v) for n, v in con.execute("SELECT nome, valor_json FROM regra_parametro WHERE regra_id=?",
+                                                          (R[(codigo, versao)],))}
+        if banco and banco != json.loads(json.dumps(valores)):
+            problemas.append(f"parâmetros de {codigo} v{versao}: banco {banco!r} × código {valores!r}")
+    for codigo, versao, situacao, status, compoe, sup, motivo, fonte, quando, origem in governanca.EVENTOS:
+        if (codigo, versao) not in R:
+            continue
+        row = con.execute("SELECT situacao, status_evidencia, compoe_indicador_publicado, supersedida_por, motivo, fonte, "
+                          "origem_decisao FROM regra_situacao WHERE regra_id=? AND decidido_em=? AND evidencia_externa_id "
+                          "IS NULL ORDER BY id LIMIT 1", (R[(codigo, versao)], quando)).fetchone()
+        esperado = (situacao, status, compoe, R.get(sup) if sup else None, motivo, fonte, origem)
+        if row is not None and tuple(row) != esperado:
+            problemas.append(f"decisão de {codigo} v{versao} em {quando}: banco {tuple(row)!r} × código {esperado!r}")
+    return problemas
+
+
 def semear(con):
-    """Catalogo de regras, tipos de anomalia, parametros de regra e decisoes de governanca (tudo idempotente)."""
+    """Catalogo de regras, tipos de anomalia, parametros de regra e decisoes de governanca (tudo idempotente).
+    Depois confere que o banco tem exatamente o catalogo do codigo; divergencia -> CatalogoDivergente (mudanca de
+    regra exige versao nova, nunca edicao)."""
+    _inserir(con)
+    problemas = conferir_catalogo(con)
+    if problemas:
+        raise CatalogoDivergente(f"{len(problemas)} divergência(s) entre o catálogo do código e o do banco "
+                                 f"(crie versão nova em vez de editar): {'; '.join(problemas[:3])}")
+
+
+def _inserir(con):
     for r in REGRAS:
         con.execute("INSERT OR IGNORE INTO regra (codigo, versao, tipo, uso, status_evidencia, definicao, fonte) "
                     "VALUES (?,?,?,?,?,?,?)", r)

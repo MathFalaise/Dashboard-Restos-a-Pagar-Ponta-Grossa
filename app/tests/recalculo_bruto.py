@@ -10,6 +10,9 @@ Generaliza registros_brutos / recalcular de test_homologacao_real.py (04.6) para
 dado (contrato secao 2), diferencas (posterior - anterior), composicao por dimensao (contrato M-05 a M-08),
 contribuicoes por empenho (contrato M-09 a M-11) e o historico de um empenho nos cortes (M-12).
 Anomalias e verificacoes NAO sao recalculadas aqui (regime "derivacao"): seria uma segunda implementacao das regras.
+A unica excecao e a elegibilidade do retrato (revisao critica, item 1): retrato com a mesma chave (entidade,
+anoempenho, empenho) mais de uma vez nunca e o vigente. Aqui ela e decidida lendo o bruto, nao a anomalia CHAVE-DUP
+gravada - e o que permite conferir a regra do painel em vez de repeti-la.
 So suporta o retrato atual (sem "como estava em").
 """
 import json
@@ -21,7 +24,7 @@ CAMPOS = {"proc": "proc", "aproc": "aproc", "pagoProc": "pago_proc", "pagoAProc"
           "retencao": "retencao", "pagoProcEstornado": "pago_proc_estornado",
           "pagoAProcEstornado": "pago_aproc_estornado"}
 TEM_VALOR = ("com_dados", "sem_rp")
-SEM_SNAPSHOT = ("nao_processado", "incompleto", "sem_coleta")
+SEM_SNAPSHOT = ("nao_processado", "ambiguo", "incompleto", "sem_coleta")
 
 
 def centavos(v):
@@ -166,6 +169,11 @@ class Bruto:
     def itens(self, coleta_id):
         return [r for corpo in self._json(coleta_id) for r in corpo["content"]]
 
+    def repetida(self, coleta_id):
+        """O retrato tem a mesma chave (entidade, anoempenho, empenho) mais de uma vez no bruto?"""
+        chaves = [(r["entidade"], r["anoempenho"], r["empenho"]) for r in self.itens(coleta_id)]
+        return len(chaves) != len(set(chaves))
+
     def uid(self, coleta_id):
         return self.con.execute("SELECT snapshot_uid FROM coleta WHERE id=?", (coleta_id,)).fetchone()[0]
 
@@ -202,9 +210,9 @@ class Bruto:
         return self.con.execute(sql + " ORDER BY coletada_em, snapshot_uid", p).fetchall()
 
     def vigente(self, entidade, exercicio, data_final):
-        """Coleta completa e processada mais recente do corte (ou None)."""
+        """Coleta completa e processada mais recente do corte sem chave repetida (ou None)."""
         ok = [cid for cid, st, _, _ in self._listagens(entidade, exercicio, data_final)
-              if st == "completa" and cid <= self.limite]
+              if st == "completa" and cid <= self.limite and not self.repetida(cid)]
         return ok[-1] if ok else None
 
     def cortes_do_exercicio(self, exercicio):
@@ -225,6 +233,8 @@ class Bruto:
         linhas = self._listagens(entidade, exercicio, data_final)
         if any(st == "completa" and c > self.limite for c, st, _, _ in linhas):
             return "nao_processado"
+        if any(st == "completa" for _, st, _, _ in linhas):      # processada, mas toda com chave repetida
+            return "ambiguo"
         if any(st != "completa" for _, st, _, _ in linhas):
             return "incompleto"
         return "sem_coleta"

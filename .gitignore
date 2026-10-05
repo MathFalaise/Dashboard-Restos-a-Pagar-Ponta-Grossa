@@ -8,3 +8,7 @@ __pycache__/
 # nunca sao apagados e nao vao para o repositorio. O banco inteiro e reconstruivel a partir de snapshots/
 # (python -m rp reconstruir --destino NOVO.sqlite). Um backup grande novo entra nesta lista pelo nome.
 backups/20260930-145737_antes-migracao-v3-v4.sqlite
+
+# Auditoria tecnica (REP-01): backup SQLite NOVO nao vai mais para o Git. O banco e reconstruivel do armazem
+# (snapshots/) e um backup de 100+ MB nao cabe no GitHub; os 4 backups ja versionados continuam versionados.
+backups/*.sqlite

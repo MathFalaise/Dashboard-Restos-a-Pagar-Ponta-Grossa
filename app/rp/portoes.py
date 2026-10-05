@@ -27,22 +27,38 @@ def _abrir(caminho):
     return con
 
 
-def _hash(con, sql, params=()):
+# Formato da referencia (revisao critica, item 44): v2 serializa cada linha em JSON canonico (especificado: UTF-8,
+# separadores fixos, bytes em hexadecimal), em vez de repr() do Python. Referencia sem "formato" e a v1 (repr) e
+# continua sendo conferida do jeito com que foi gravada.
+FORMATO_REFERENCIA = "rp-referencia/2"
+
+
+def _valor_canonico(v):
+    if isinstance(v, bytes):
+        return v.hex()
+    raise TypeError(f"tipo sem serialização canônica: {type(v).__name__}")
+
+
+def _hash(con, sql, params=(), canonico=False):
     h = hashlib.sha256()
     n = 0
     for row in con.execute(sql, params):
-        h.update(repr(row).encode())
+        if canonico:
+            h.update(json.dumps(list(row), ensure_ascii=False, separators=(",", ":"), default=_valor_canonico).encode()
+                     + b"\n")
+        else:
+            h.update(repr(row).encode())
         n += 1
     return n, h.hexdigest()
 
 
-def _referencia(con):
+def _referencia(con, canonico=True):
     ultima = con.execute("SELECT IFNULL(MAX(id), 0) FROM coleta").fetchone()[0]
-    nc, hc = _hash(con, "SELECT * FROM coleta WHERE id <= ? ORDER BY id", (ultima,))
-    nr, hr = _hash(con, "SELECT * FROM resposta_bruta WHERE coleta_id <= ? ORDER BY id", (ultima,))
-    nv, hv = _hash(con, "SELECT * FROM coletor_versao ORDER BY 1")
-    return {"max_coleta_id": ultima, "coletas": nc, "hash_coletas": hc, "respostas": nr, "hash_respostas": hr,
-            "coletor_versoes": nv, "hash_coletor_versoes": hv}
+    nc, hc = _hash(con, "SELECT * FROM coleta WHERE id <= ? ORDER BY id", (ultima,), canonico)
+    nr, hr = _hash(con, "SELECT * FROM resposta_bruta WHERE coleta_id <= ? ORDER BY id", (ultima,), canonico)
+    nv, hv = _hash(con, "SELECT * FROM coletor_versao ORDER BY 1", (), canonico)
+    return {**({"formato": FORMATO_REFERENCIA} if canonico else {}), "max_coleta_id": ultima, "coletas": nc,
+            "hash_coletas": hc, "respostas": nr, "hash_respostas": hr, "coletor_versoes": nv, "hash_coletor_versoes": hv}
 
 
 def gravar_referencia(caminho_banco, arquivo):
@@ -121,21 +137,147 @@ def avaliar(caminho_banco, armazem, referencia=None):
                    "não verificado: informe --referencia (gravada antes da carga com --gravar-referencia)")
         else:
             n = referencia["max_coleta_id"]
-            _, hc = _hash(con, "SELECT * FROM coleta WHERE id <= ? ORDER BY id", (n,))
-            _, hr = _hash(con, "SELECT * FROM resposta_bruta WHERE coleta_id <= ? ORDER BY id", (n,))
+            canonico = referencia.get("formato") == FORMATO_REFERENCIA    # sem formato: referencia v1 (repr)
+            _, hc = _hash(con, "SELECT * FROM coleta WHERE id <= ? ORDER BY id", (n,), canonico)
+            _, hr = _hash(con, "SELECT * FROM resposta_bruta WHERE coleta_id <= ? ORDER BY id", (n,), canonico)
             iguais = {"coletas": hc == referencia["hash_coletas"], "respostas": hr == referencia["hash_respostas"]}
             portao("camada_bruta_preservada", "linhas do bruto anteriores à carga continuam idênticas",
                    all(iguais.values()), {"ate_coleta_id": n, **iguais})
 
+        _portoes_da_auditoria(con, portao, norm and norm[0], der and der[0])
         portao("testes", "suítes de teste", None, f"não verificado por este comando: {TESTES}")
         verif = con.execute("SELECT descricao, COUNT(*), SUM(verificados), SUM(falhas) FROM verificacao "
                             "WHERE derivacao_id=? GROUP BY descricao ORDER BY descricao", (der and der[0],)).fetchall()
     finally:
         con.close()
     verificaveis = [p for p in portoes if p["ok"] is not None]
-    return {"apto": all(p["ok"] for p in verificaveis), "portoes": portoes,
+    nao_verificados = [p["id"] for p in portoes if p["ok"] is None]
+    apto = all(p["ok"] for p in verificaveis)
+    return {"apto": apto, "apto_sem_ressalvas": apto and not nao_verificados, "nao_verificados": nao_verificados,
+            "portoes": portoes,
             "verificacoes_da_derivacao": [{"descricao": d, "itens": n, "verificados": v, "falhas": f}
                                           for d, n, v, f in verif],
             "nota": ("'falhas' nas verificações da derivação incluem diferenças já conhecidas com o RREO (informativo, "
                      "não é portão). Portão com ok = null não é verificável por este comando e fica sob responsabilidade "
-                     "de quem disponibiliza a carga.")}
+                     "de quem disponibiliza a carga: 'apto' considera só os verificáveis; 'apto_sem_ressalvas' exige "
+                     "também que nenhum tenha ficado sem verificação (lista em 'nao_verificados').")}
+
+
+# Campos monetarios da API: ausencia vira 0 na normalizacao (registrada em chaves_ausentes). Enquanto a regra nao for
+# revista, uma carga com campo monetario ausente nao pode ser disponibilizada sem decisao (auditoria NORM-01).
+_MONETARIOS = ("proc", "aproc", "canceladoProc", "pagoProc", "pagoProcEstornado", "canceladoAProc", "pagoAProc",
+               "pagoAProcEstornado", "liquidado", "retencao")
+
+
+def _vigentes_por_vigencia(con):
+    """Ultima derivacao de cada vigencia (atual e cada 'como estava em'): as que a camada painel usa."""
+    return [r for r in con.execute(
+        "SELECT MAX(id), vigencia_em FROM derivacao_execucao GROUP BY IFNULL(vigencia_em, '') ORDER BY 1")]
+
+
+def _orfaos(con):
+    """Relacoes logicas que o esquema nao protege com FOREIGN KEY (auditoria DB-02): contagem de linhas sem par."""
+    q = lambda sql: con.execute(sql).fetchone()[0]
+    o = {
+        "rp_derivado_sem_registro_da_normalizacao": q(
+            "SELECT COUNT(*) FROM rp_derivado d JOIN derivacao_execucao e ON e.id = d.derivacao_id "
+            "LEFT JOIN rp_registro r ON r.normalizacao_id = e.normalizacao_id AND r.resposta_id = d.resposta_id "
+            "AND r.indice = d.indice WHERE r.resposta_id IS NULL OR r.coleta_id <> d.coleta_id"),
+        "movimentacao_sem_lancamento_da_normalizacao": q(
+            "SELECT COUNT(*) FROM movimentacao_interpretada m JOIN derivacao_execucao e ON e.id = m.derivacao_id "
+            "LEFT JOIN movimentacao_lancamento l ON l.normalizacao_id = e.normalizacao_id AND l.resposta_id = m.resposta_id "
+            "AND l.indice = m.indice WHERE l.resposta_id IS NULL"),
+        "anomalia_sem_coleta": q("SELECT COUNT(*) FROM anomalia a LEFT JOIN coleta c ON c.id = a.coleta_id "
+                                 "WHERE a.coleta_id IS NOT NULL AND c.id IS NULL"),
+        "par_sem_registro": q(
+            "SELECT COUNT(*) FROM espelhamento_par p JOIN derivacao_execucao e ON e.id = p.derivacao_id "
+            "LEFT JOIN rp_registro a ON a.normalizacao_id = e.normalizacao_id AND a.resposta_id = p.resposta_a_id "
+            "AND a.indice = p.indice_a AND a.coleta_id = p.coleta_a_id "
+            "LEFT JOIN rp_registro b ON b.normalizacao_id = e.normalizacao_id AND b.resposta_id = p.resposta_b_id "
+            "AND b.indice = p.indice_b AND b.coleta_id = p.coleta_b_id WHERE a.resposta_id IS NULL OR b.resposta_id IS NULL"),
+        "conciliacao_sem_pdf": q("SELECT COUNT(*) FROM conciliacao_rreo x LEFT JOIN coleta c ON c.id = x.rreo_coleta_id "
+                                 "AND c.tipo = 'rreo_pdf' WHERE c.id IS NULL"),
+        "normalizacao_com_ultima_coleta_inexistente": q(
+            "SELECT COUNT(*) FROM normalizacao_execucao n LEFT JOIN coleta c ON c.id = n.ultima_coleta_id "
+            "WHERE n.ultima_coleta_id IS NOT NULL AND n.ultima_coleta_id > 0 AND c.id IS NULL"),
+    }
+    uids = {u for (u,) in con.execute("SELECT snapshot_uid FROM coleta")}
+    sem = 0
+    for (texto,) in con.execute("SELECT DISTINCT coletas_json FROM visao_valor UNION "
+                                "SELECT DISTINCT coletas_api_json FROM conciliacao_rreo"):
+        try:
+            sem += sum(1 for u in json.loads(texto) if u not in uids)
+        except (ValueError, TypeError):
+            sem += 1
+    o["snapshot_em_coletas_json_inexistente"] = sem
+    regras = {i for (i,) in con.execute("SELECT id FROM regra")}
+    o["derivacao_com_regra_inexistente"] = sum(
+        1 for (texto,) in con.execute("SELECT regras_json FROM derivacao_execucao")
+        if not set(json.loads(texto)) <= regras)
+    return o
+
+
+def _portoes_da_auditoria(con, portao, nid, did_atual):
+    """Portoes acrescentados pela auditoria tecnica (DB-01, DB-02, NORM-01, DER-02). Todos so leem."""
+    from . import derivar
+    conferidos = []
+    for did, vig in _vigentes_por_vigencia(con):
+        gravado = con.execute("SELECT hash_resultado FROM derivacao_execucao WHERE id=?", (did,)).fetchone()[0]
+        try:
+            confere, erro = gravado is not None and derivar.hash_resultado(con, did) == gravado, None
+        except (KeyError, TypeError) as e:   # linha derivada que aponta para coleta/resposta/regra inexistente
+            confere, erro = False, f"hash nao recalculavel: {type(e).__name__} {e}"
+        conferidos.append({"derivacao": did, "vigencia": vig or "atual", "gravado": gravado, "confere": confere,
+                           **({"erro": erro} if erro else {})})
+    portao("hash_resultado_confere", "o hash_resultado gravado é o do conteúdo atual das tabelas derivadas "
+           "(recalculado; a última derivação de cada vigência)", bool(conferidos) and all(c["confere"] for c in conferidos),
+           conferidos)
+
+    fk = con.execute("PRAGMA foreign_key_check").fetchall()
+    orfaos = _orfaos(con)
+    portao("integridade_relacional", "FOREIGN KEY do esquema (foreign_key_check) e relações sem FK (órfãos)",
+           not fk and not any(orfaos.values()), {"foreign_key_check": [list(r) for r in fk[:10]], **orfaos})
+
+    cond = " OR ".join(f"chaves_ausentes LIKE '%\"{c}\"%'" for c in _MONETARIOS)
+    ausentes = con.execute(f"SELECT COUNT(*) FROM rp_registro WHERE normalizacao_id=? AND ({cond})", (nid,)).fetchone()[0]
+    portao("campos_monetarios_ausentes", "nenhum registro sem campo monetário (a normalização grava ausência como 0)",
+           ausentes == 0, {"registros": ausentes, "normalizacao": nid})
+
+    desconhecidos = con.execute("SELECT COUNT(*) FROM movimentacao_interpretada WHERE derivacao_id=? AND "
+                                "efeito='desconhecido'", (did_atual,)).fetchone()[0]
+    portao("lancamento_desconhecido", "nenhum tipo de lançamento sem efeito conhecido (MOV-REF: valeria 0)",
+           desconhecidos == 0, {"lancamentos": desconhecidos, "derivacao": did_atual})
+
+    _portoes_da_revisao(con, portao, did_atual)
+
+
+def _portoes_da_revisao(con, portao, did_atual):
+    """Portoes da revisao critica de 05/10/2026 (itens 14 e 28). So leem."""
+    # item 14: chave repetida e portao, nao so anotacao. O retrato ambiguo ja nao e vigente (vigencia.coletas_vigentes),
+    # mas a carga nao e disponibilizada sem decisao: o painel mostraria o retrato anterior do corte.
+    naturezas, snapshots = {"exata": 0, "conflitante": 0, "não classificada": 0}, set()
+    for uid, detalhe in con.execute(
+            "SELECT c.snapshot_uid, a.detalhe_json FROM anomalia a LEFT JOIN coleta c ON c.id = a.coleta_id "
+            "WHERE a.derivacao_id=? AND a.tipo='CHAVE-DUP'", (did_atual,)):
+        try:
+            natureza = json.loads(detalhe or "{}").get("natureza", "não classificada")
+        except ValueError:
+            natureza = "não classificada"
+        naturezas[natureza if natureza in naturezas else "não classificada"] += 1
+        snapshots.add(uid)
+    portao("retrato_sem_chave_repetida", "nenhum retrato com a mesma chave (entidade, anoempenho, empenho) mais de uma "
+           "vez (CHAVE-DUP): exata = cópias idênticas; conflitante = conteúdo diferente",
+           sum(naturezas.values()) == 0,
+           {"chaves": sum(naturezas.values()), **naturezas, "snapshots": sorted(s for s in snapshots if s)[:10],
+            "derivacao": did_atual,
+            "nota": "retrato com chave repetida nunca é o vigente (vale o retrato válido anterior do corte); "
+                    "recolete o corte e processe de novo"})
+
+    # item 28: o esquema do banco e o da sua versao no codigo (estrutura, sem comentarios nem espacos)
+    versao = banco.versao_esquema(con)
+    esperado = banco.IMPRESSAO_ESQUEMA.get(versao)
+    atual = banco.impressao_esquema(con)
+    portao("esquema_confere", "o esquema do banco (tabelas, colunas, restrições, índices, gatilhos) é o da versão "
+           "registrada em esquema_versao", None if esperado is None else atual == esperado,
+           {"versao": versao, "impressao_banco": atual, "impressao_do_codigo": esperado}
+           if esperado is not None else f"não verificado: o código não tem a impressão do esquema v{versao}")

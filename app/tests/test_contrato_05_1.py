@@ -181,9 +181,13 @@ def test_SINTETICO_contribuicoes_por_situacao_da_chave_e_fechamento(mundo):
 
 
 def test_SINTETICO_chave_duplicada_bloqueia_o_par(mundo):
+    # revisao critica (05/10/2026), item 1: o retrato com a chave repetida nunca e o vigente - o oraculo decide
+    # lendo o bruto. Sem retrato valido anterior o lado fica 'ambiguo', sem valor, e o par continua bloqueado sem
+    # escolher copia (antes o retrato era vigente e o bloqueio vinha de `chaves_repetidas`)
     b = _par_de_cortes(mundo, repetir=True)
     r = b.contribuicoes(2025, "2025-06-30", "2025-12-31", 1, "s1")
-    assert not r["disponivel"] and r["chaves_repetidas"] == [(1, 2024, 2)] and "linhas" not in r
+    assert not r["disponivel"] and "ambiguo" in r["motivo"] and "linhas" not in r
+    assert b.situacao(1, 2025, "2025-12-31") == "ambiguo" and b.repetida(b._listagens(1, 2025, "2025-12-31")[-1][0])
 
 
 def test_SINTETICO_par_com_lado_sem_valor_e_indisponivel(situacoes):
