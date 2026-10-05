@@ -5,16 +5,25 @@ colocar um snapshot na camada 0 (e `registrar_evidencia`, uma evidencia externa)
 e `reconstruir` refaz o banco inteiro so com os manifestos e objetos do disco.
 
 Seguranca:
-  * o banco ATIVO nunca abre dentro de pasta sincronizada pelo OneDrive (SQLite em pasta
-    sincronizada pode corromper; decisao da Etapa 04);
+  * o banco ATIVO nunca abre em pasta sincronizada (OneDrive, Dropbox, Google Drive, iCloud, Box...) nem em
+    unidade de rede (SQLite fora de disco local pode corromper; decisao da Etapa 04, ampliada pela revisao critica,
+    item 46);
   * backup nunca sobrescreve outro backup, e o motivo informado nao consegue mudar a pasta de destino;
   * a conferencia de integridade dos objetos e explicita (nao usa `assert`, que some com `python -O`).
+
+Impressao do esquema (revisao critica, item 28): a versao em esquema_versao so diz o numero; dois bancos "v4" podem
+ter estruturas diferentes se alguem editar esquema.sql sem versao nova. IMPRESSAO_ESQUEMA guarda, por versao, o
+SHA-256 da estrutura (sqlite_master sem comentarios nem espacos: comentario e espaco nao sao estrutura - o banco
+ativo foi criado antes de os comentarios do esquema.sql perderem os acentos, e a estrutura e a mesma). Um teste
+exige que o esquema montado pelo codigo tenha a impressao da sua versao: mudou a estrutura, tem de mudar a versao.
 """
+import hashlib
 import json
 import logging
 import os
 import re
 import sqlite3
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -73,6 +82,11 @@ MIGRACOES = {
         ]),
 }
 VERSAO_ESQUEMA = max(MIGRACOES)
+# Impressao estrutural de cada versao do esquema (impressao_esquema). Versao nova = impressao nova aqui.
+IMPRESSAO_ESQUEMA = {
+    # v4: conferida em 05/10/2026 no banco ativo (criado em 29/09, migrado em 30/09) e no montado pelo codigo
+    4: "ad45413e4a5431eca73afebbf4640c995513203b9def9b38d8cbb83eaa3d3e5a",
+}
 
 # Cache de paginas por conexao (KiB, valor negativo = tamanho em KiB no SQLite). A derivacao percorre
 # ~100 MB de registros; com o cache padrao (~2 MB) a mesma pagina e relida do disco centenas de vezes.
@@ -89,14 +103,111 @@ class BancoEmPastaSincronizada(Exception):
     pass
 
 
+# Pastas-raiz conhecidas de servicos de sincronizacao (nome exato de uma parte do caminho, sem diferenciar
+# maiusculas). Lista conservadora: nome generico ("Box", "Sync") poderia ser uma pasta local comum.
+_SINCRONIZADAS = {"google drive", "googledrive", "my drive", "meu drive", "icloud drive", "iclouddrive",
+                  "mobile documents", "box sync", "box drive", "nextcloud", "owncloud", "pcloud drive"}
+_FS_DE_REDE = {"nfs", "nfs4", "cifs", "smb", "smbfs", "smb3", "afpfs", "9p", "fuse.sshfs", "fuse.rclone", "davfs",
+               "fuse.davfs"}
+
+
+def _unidade_de_rede(p):
+    """True se `p` esta em compartilhamento de rede: caminho UNC, unidade mapeada (Windows) ou sistema de arquivos
+    de rede montado (Linux, /proc/mounts). Melhor esforco: sem como saber, False."""
+    if str(p).startswith("\\\\") or p.drive.startswith("\\\\"):
+        return True
+    if sys.platform == "win32" and p.drive:
+        try:
+            import ctypes
+            return ctypes.windll.kernel32.GetDriveTypeW(f"{p.drive}\\") == 4      # DRIVE_REMOTE
+        except (AttributeError, OSError):
+            return False
+    montagens = Path("/proc/mounts")
+    if montagens.exists():
+        melhor, tipo = "", None
+        for linha in montagens.read_text(encoding="utf-8", errors="replace").splitlines():
+            partes = linha.split()
+            if len(partes) >= 3 and (str(p) == partes[1] or str(p).startswith(partes[1].rstrip("/") + "/")) \
+                    and len(partes[1]) > len(melhor):
+                melhor, tipo = partes[1], partes[2]
+        return tipo in _FS_DE_REDE
+    return False
+
+
 def em_pasta_sincronizada(caminho):
-    """True se `caminho` fica dentro de uma pasta do OneDrive."""
+    """True se `caminho` fica numa pasta sincronizada (OneDrive, Dropbox, Google Drive, iCloud, Box, Nextcloud...)
+    ou numa unidade de rede. O que importa nao e qual servico: e que o banco ativo fique em disco local."""
     p = Path(caminho).resolve()
     for var in ("OneDrive", "OneDriveConsumer", "OneDriveCommercial"):
         raiz = os.environ.get(var)
         if raiz and p.is_relative_to(Path(raiz).resolve()):
             return True
-    return any(parte.lower().startswith("onedrive") for parte in p.parts)
+    for parte in p.parts:
+        nome = parte.lower()
+        if nome.startswith("onedrive") or nome.startswith("dropbox") or nome in _SINCRONIZADAS:
+            return True
+    return _unidade_de_rede(p)
+
+
+_LITERAL_ABRE = ("'", '"')
+
+
+def _sql_normalizado(sql):
+    """Texto SQL sem comentarios (-- e /* */) e com os espacos colapsados FORA de literais; literal fica intacto
+    (um CHECK com 'FORTE EVIDÊNCIA' nao pode mudar)."""
+    sql = sql or ""
+    saida, codigo, i, n = [], [], 0, len(sql)
+
+    def fechar_codigo():
+        if codigo:
+            t = re.sub(r"\s+", " ", "".join(codigo))
+            saida.append(re.sub(r" ?([(),;]) ?", r"\1", t))
+            codigo.clear()
+    while i < n:
+        c = sql[i]
+        if c in _LITERAL_ABRE:
+            j = i + 1
+            while j < n:
+                if sql[j] == c:
+                    if j + 1 < n and sql[j + 1] == c:     # aspas duplicadas: escape dentro do literal
+                        j += 2
+                        continue
+                    break
+                j += 1
+            fechar_codigo()
+            saida.append(sql[i:j + 1])
+            i = j + 1
+        elif sql.startswith("--", i):
+            fim = sql.find("\n", i)
+            i = n if fim < 0 else fim
+            codigo.append(" ")
+        elif sql.startswith("/*", i):
+            fim = sql.find("*/", i + 2)
+            i = n if fim < 0 else fim + 2
+            codigo.append(" ")
+        else:
+            codigo.append(c)
+            i += 1
+    fechar_codigo()
+    return "".join(saida).strip()
+
+
+def impressao_esquema(con):
+    """SHA-256 da estrutura do banco: tipo, nome, tabela e SQL normalizado de cada objeto de sqlite_master (tabelas,
+    indices, gatilhos). Comentario e espaco nao contam; coluna, tipo, restricao, indice e gatilho contam."""
+    itens = sorted((t, nome, tabela, _sql_normalizado(sql)) for t, nome, tabela, sql in con.execute(
+        "SELECT type, name, tbl_name, sql FROM sqlite_master WHERE sql IS NOT NULL AND name NOT LIKE 'sqlite_%'"))
+    return hashlib.sha256(json.dumps(itens, ensure_ascii=False).encode()).hexdigest()
+
+
+def esquema_do_codigo():
+    """Conexao em memoria com o esquema completo montado pelo codigo (esquema.sql + migracoes), sem dados."""
+    con = sqlite3.connect(":memory:")
+    con.executescript(ESQUEMA.read_text(encoding="utf-8"))
+    for v in range(VERSAO_BASE + 1, VERSAO_ESQUEMA + 1):
+        for sql in MIGRACOES[v][1]:
+            con.execute(sql)
+    return con
 
 
 def _conectar(caminho):
@@ -107,39 +218,69 @@ def _conectar(caminho):
 
 
 def _migrar(con, de, backup_antes):
+    """Cada migracao e UMA transacao explicita: comandos + registro em esquema_versao, ou nada.
+    `with con:` nao bastaria: no sqlite3 do Python o BEGIN implicito so vem antes de INSERT/UPDATE/DELETE, e um
+    CREATE/ALTER fora de transacao e confirmado na hora (falha no meio deixaria o esquema pela metade)."""
     for v in range(de + 1, VERSAO_ESQUEMA + 1):
         descricao, comandos = MIGRACOES[v]
-        with con:
+        con.execute("BEGIN")
+        try:
             for sql in comandos:
                 con.execute(sql)
             con.execute("INSERT INTO esquema_versao VALUES (?,?,?,?)", (v, descricao, agora(),
                                                                          str(backup_antes) if backup_antes else None))
+        except BaseException:
+            con.rollback()
+            raise
+        con.commit()
         log.info("esquema migrado para v%d (%s)", v, descricao)
 
 
 def versao_esquema(con):
-    return con.execute("SELECT MAX(versao) FROM esquema_versao").fetchone()[0]
+    try:
+        return con.execute("SELECT MAX(versao) FROM esquema_versao").fetchone()[0]
+    except sqlite3.OperationalError:   # arquivo sem a tabela: nao e um banco do projeto (ou criacao interrompida)
+        return None
+
+
+def _criar(caminho):
+    """Banco novo montado num arquivo temporario ao lado do destino e publicado so no fim, sem sobrescrever:
+    uma falha no meio (esquema, migracoes, catalogo) nao deixa no destino um arquivo que pareca banco existente."""
+    from .armazem import _publicar_sem_sobrescrever
+    tmp = caminho.with_name(f"{caminho.name}.criando{os.getpid()}")
+    con = _conectar(tmp)
+    try:
+        con.executescript(ESQUEMA.read_text(encoding="utf-8"))
+        with con:
+            con.execute("INSERT INTO esquema_versao VALUES (?,?,?,NULL)", (VERSAO_BASE, DESCRICAO_BASE, agora()))
+        _migrar(con, VERSAO_BASE, None)  # banco novo: nada a proteger
+        _semear_catalogo(con)
+        con.close()
+        _publicar_sem_sobrescrever(tmp, caminho)
+    except BaseException:
+        con.close()
+        tmp.unlink(missing_ok=True)
+        raise
+    log.info("banco criado em %s (esquema v%d)", caminho, VERSAO_ESQUEMA)
+    return _conectar(caminho)
 
 
 def abrir(cfg, caminho=None):
     """Abre (criando, se preciso) o banco. Toda mudanca estrutural de banco existente e precedida de backup.
-    Sem `caminho`, abre o banco ATIVO (cfg.banco), que e recusado dentro de pasta do OneDrive."""
+    Sem `caminho`, abre o banco ATIVO (cfg.banco), que e recusado em pasta sincronizada ou de rede."""
     if caminho is None and em_pasta_sincronizada(cfg.banco):
-        raise BancoEmPastaSincronizada(f"banco ativo em pasta do OneDrive: {cfg.banco}. "
+        raise BancoEmPastaSincronizada(f"banco ativo em pasta sincronizada ou de rede: {cfg.banco}. "
                                        "Aponte [caminhos].dados_locais para uma pasta local.")
     caminho = Path(caminho or cfg.banco)
     caminho.parent.mkdir(parents=True, exist_ok=True)
-    novo = not caminho.exists()
+    if not caminho.exists():
+        return _criar(caminho)
     con = _conectar(caminho)
-    if novo:
-        with con:
-            con.executescript(ESQUEMA.read_text(encoding="utf-8"))
-            con.execute("INSERT INTO esquema_versao VALUES (?,?,?,NULL)", (VERSAO_BASE, DESCRICAO_BASE, agora()))
-        _migrar(con, VERSAO_BASE, None)  # banco novo: nada a proteger
-        _semear_catalogo(con)
-        log.info("banco criado em %s (esquema v%d)", caminho, VERSAO_ESQUEMA)
-        return con
     atual = versao_esquema(con)
+    if atual is None:
+        con.close()
+        raise MigracaoPendente(f"{caminho} não tem versão de esquema: não é um banco do projeto ou a criação foi "
+                               "interrompida. Nada foi alterado.")
     if atual > VERSAO_ESQUEMA:
         raise MigracaoPendente(f"banco na v{atual} é mais novo que o código (v{VERSAO_ESQUEMA})")
     if atual < VERSAO_BASE:
@@ -148,6 +289,10 @@ def abrir(cfg, caminho=None):
     if atual < VERSAO_ESQUEMA:
         arq = backup(con, cfg, f"antes-migracao-v{atual}-v{VERSAO_ESQUEMA}")
         _migrar(con, atual, arq)
+    esperado = IMPRESSAO_ESQUEMA.get(VERSAO_ESQUEMA)
+    if esperado and impressao_esquema(con) != esperado:     # aviso; o portao 'esquema_confere' reprova a carga
+        log.warning("esquema de %s difere do esquema v%d do código (impressão estrutural): ver portão "
+                    "'esquema_confere'", caminho, VERSAO_ESQUEMA)
     _semear_catalogo(con)
     return con
 
@@ -299,8 +444,45 @@ def reconstruir(cfg, armazem, destino):
     return con, n
 
 
+def _diferencas_do_manifesto(con, rel, m):
+    """Campos em que a camada 0 do banco nao e a do manifesto (auditoria REC-01): a presenca do snapshot_uid nao
+    basta; o banco precisa ter os mesmos parametros, status, datas e as mesmas respostas (ordem, URL, hash, tamanho)."""
+    try:
+        cid, manif, tipo, ep, pj, ent, ex, di, df, tp, ano, emp, arq, quando, origem, st, obs, cv = con.execute(
+            "SELECT id, manifesto, tipo, endpoint, parametros_json, entidade, exercicio, data_inicial, data_final, "
+            "tipo_pesquisa, anoempenho, empenho, id_arquivo, coletada_em, origem_carimbo, status, observacao, "
+            "coletor_versao_id FROM coleta WHERE snapshot_uid=?", (m["snapshot_uid"],)).fetchone()
+        p = m["parametros"]
+        esperado = {"manifesto": rel, "tipo": m["tipo"], "endpoint": m["endpoint"], "parametros": p,
+                    "entidade": p.get("entidade"), "exercicio": p.get("exercicio"), "data_inicial": p.get("dataInicial"),
+                    "data_final": p.get("dataFinal"), "tipo_pesquisa": p.get("tipoPesquisa"),
+                    "anoempenho": p.get("anoempenho"), "empenho": p.get("empenho"), "id_arquivo": p.get("id_arquivo"),
+                    "coletada_em": m["coletada_em"], "origem_carimbo": m["origem_carimbo"], "status": m["status"],
+                    "observacao": m.get("observacao")}
+        no_banco = {"manifesto": manif, "tipo": tipo, "endpoint": ep, "parametros": json.loads(pj), "entidade": ent,
+                    "exercicio": ex, "data_inicial": di, "data_final": df, "tipo_pesquisa": tp, "anoempenho": ano,
+                    "empenho": emp, "id_arquivo": arq, "coletada_em": quando, "origem_carimbo": origem, "status": st,
+                    "observacao": obs}
+        dif = [k for k in esperado if esperado[k] != no_banco[k]]
+        col = con.execute("SELECT nome, versao, sha256_codigo FROM coletor_versao WHERE id=?", (cv,)).fetchone()
+        if tuple(col) != (m["coletor"]["nome"], m["coletor"]["versao"], m["coletor"]["sha256_codigo"]):
+            dif.append("coletor")
+        resp = [(o, u, s, json.loads(c or "{}"), r, h, t) for o, u, s, c, r, h, t in con.execute(
+            "SELECT ordem, url, http_status, cabecalhos_json, recebida_em, sha256, tamanho FROM resposta_bruta "
+            "WHERE coleta_id=? ORDER BY ordem", (cid,))]
+        esperadas = [(r["ordem"], r["url"], r["http_status"], r.get("cabecalhos") or {}, r["recebida_em"], r["sha256"],
+                      r["tamanho"]) for r in sorted(m["respostas"], key=lambda r: r["ordem"])]
+        if resp != esperadas:
+            dif.append("respostas")
+        return dif
+    except (KeyError, TypeError, ValueError, AttributeError) as e:
+        return [f"manifesto sem campo esperado ({type(e).__name__}: {e})"]
+
+
 def verificar(con, armazem):
-    """Problemas de integridade entre banco e armazem (lista vazia = integro)."""
+    """Problemas de integridade entre banco e armazem (lista vazia = integro): objetos e manifestos do armazem, os
+    dois sentidos da presenca (manifesto x coleta, evidencia x banco), cada coleta igual ao seu manifesto campo a
+    campo e cada objeto do banco conferido pelo hash."""
     problemas = [f"armazém: {p}" for p in armazem.verificar()]
     registrados = {u for (u,) in con.execute("SELECT snapshot_uid FROM coleta")}
     no_disco = {}
@@ -312,6 +494,11 @@ def verificar(con, armazem):
     for uid, rel in con.execute("SELECT snapshot_uid, manifesto FROM coleta"):
         if uid not in no_disco:
             problemas.append(f"coleta sem manifesto no armazém: {uid} ({rel})")
+    for rel, m in itens:
+        if m["snapshot_uid"] in registrados:
+            dif = _diferencas_do_manifesto(con, rel, m)
+            if dif:
+                problemas.append(f"coleta difere do manifesto {rel}: {', '.join(dif)}")
     evid, _ = armazem.evidencias_e_erros()        # os ilegiveis ja vieram de armazem.verificar()
     evid_no_disco = {m["evidencia_uid"]: rel for rel, m in evid}
     evid_no_banco = dict(con.execute("SELECT evidencia_uid, manifesto FROM evidencia_externa WHERE evidencia_uid IS NOT NULL"))

@@ -1,0 +1,95 @@
+# Testes automaticos (revisao critica, itens 34, 36, 37 e 38). Nenhum teste acessa a internet; so o pip baixa pacotes.
+#
+# * sinteticos: Linux e Windows, Python 3.11 a 3.14. So os testes com dados inventados (-m "not dados_reais"):
+#   e o que prova a portabilidade declarada no README.
+# * dados_reais: o ambiente homologado (requirements-lock.txt, Python 3.14) nos dois sistemas. Monta bancos
+#   temporarios a partir do armazem ../snapshots e do bruto das Etapas 01/02, confere os hashes homologados e roda os
+#   26 testes da investigacao (etapa03/validacao). Se um dia o bruto sair do repositorio, os passos sao pulados.
+# * pacote: instalacao editavel e o comando `rp`.
+name: testes
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: testes-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sinteticos:
+    name: sinteticos (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.11", "3.12", "3.13", "3.14"]
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -r requirements-dev.txt
+      - name: sintaxe de todo o codigo nesta versao do Python
+        run: python -m compileall -q rp tests ../rp.py ../etapa03/validacao
+      - run: python -m pytest tests -q -m "not dados_reais"
+
+  dados_reais:
+    name: dados reais (${{ matrix.os }}, ambiente homologado)
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: python -m pip install -r requirements-lock.txt
+      - name: testes com o armazem real e o bruto das Etapas 01/02
+        if: hashFiles('snapshots/coletas/**') != '' && hashFiles('etapa02/dados_brutos/**') != ''
+        run: python -m pytest tests -q -m dados_reais
+      - name: testes da investigacao (Etapa 03)
+        if: hashFiles('etapa02/dados_brutos/**') != ''
+        working-directory: etapa03/validacao
+        run: python -m pytest tests -q
+
+  pacote:
+    name: pacote instalavel (comando rp)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: python -m pip install -e .
+      - run: rp --help
+      - name: de outra pasta, o comando acha config.toml e o armazem do repositorio
+        working-directory: ${{ runner.temp }}
+        shell: bash
+        run: |
+          rp iniciar > iniciar.json
+          python - <<'EOF'
+          import json, os
+          d = json.load(open("iniciar.json", encoding="utf-8"))
+          assert os.path.samefile(d["snapshots"], os.path.join(os.environ["GITHUB_WORKSPACE"], "snapshots")), d
+          print(d)
+          EOF

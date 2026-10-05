@@ -15,6 +15,23 @@ from rp.coletor import EP_ENT, EP_EXE, EP_RP, Coletor  # noqa: E402
 from rp.config import carregar  # noqa: E402
 from rp.http import Cliente  # noqa: E402
 
+# Fixtures que leem dados REAIS: `real` monta um banco a partir do armazem ../snapshots e `producao`, a partir do bruto
+# das Etapas 01/02. Os dois tem dados de credores (nome, CNPJ, CPF mascarado). Todo teste que usa uma delas, direta ou
+# indiretamente, recebe o marcador `dados_reais` (revisao critica, item 34): `-m "not dados_reais"` roda so o que e
+# sintetico, num ambiente sem o bruto.
+FIXTURES_DE_DADOS_REAIS = {"real", "producao"}
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "dados_reais: usa o armazem real ou o bruto das Etapas 01/02 (dados de "
+                                       "credores); marcado sozinho pelo conftest")
+
+
+def pytest_collection_modifyitems(items):
+    for item in items:
+        if FIXTURES_DE_DADOS_REAIS & set(getattr(item, "fixturenames", ())):
+            item.add_marker(pytest.mark.dados_reais)
+
 
 class Relogio:
     """Relogio falso: dormir avanca o tempo e fica registrado."""

@@ -1,0 +1,23 @@
+........................................................................ [ 20%]
+........................................................................ [ 40%]
+........................................................................ [ 61%]
+........................................................................ [ 81%]
+.................................................................        [100%]
+============================ slowest 15 durations =============================
+20.83s call     tests/test_variacao_05_5.py::test_todos_os_pares_adjacentes_e_o_que_salta_lacuna_iguais_ao_bruto
+16.25s setup    tests/test_casos_reais.py::test_armazem_real_intacto_e_integro
+10.20s call     tests/test_composicao_05_4.py::test_toda_dimensao_fecha_e_e_igual_ao_bruto_em_todo_corte_disponivel
+7.64s setup    tests/test_comparador.py::test_REAL_snapshots_identicos_do_mesmo_corte
+6.84s call     tests/test_composicao_05_4.py::test_tela_igual_ao_painel_e_links_reais
+5.61s call     tests/test_etapa04_3.py::test_backups_operacionais_tem_retencao_e_os_demais_nao
+5.36s call     tests/test_processamento.py::test_mesmo_resultado_em_banco_reconstruido_do_armazem
+4.85s call     tests/test_contrato_05_1.py::test_recalculo_reproduz_o_painel_em_todo_ponto_dos_22_cortes
+4.73s call     tests/test_processamento.py::test_processar_nao_altera_a_camada_bruta
+4.42s call     tests/test_comparador.py::test_retencao_nunca_apaga_backups_preservados
+3.95s call     tests/test_processamento.py::test_resultado_nao_depende_do_relogio
+3.23s call     tests/test_historico_05_3.py::test_corte_representativo_real_igual_para_todos_os_escopos
+3.16s call     tests/test_homologacao_real.py::test_todo_corte_diz_exercicio_corte_coleta_tipo_e_snapshot
+3.14s call     tests/test_historico_05_3.py::test_serie_e_fechamento_iguais_ao_recalculo_do_bruto
+2.70s call     tests/test_processamento.py::test_fidelidade_campo_a_campo_de_todos_os_registros
+353 passed in 173.88s (0:02:53)
+exit=0 segundos=176

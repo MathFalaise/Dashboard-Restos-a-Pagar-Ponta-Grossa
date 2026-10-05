@@ -15,7 +15,8 @@ backups = "../backups"
 # So https: a validacao recusa http, credencial na URL, query ou fragmento.
 base = "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api"
 pausa_segundos = 1.5        # intervalo minimo entre duas requisicoes
-timeout_segundos = 120      # por leitura; o prazo total de uma resposta e 3x este valor
+timeout_segundos = 120      # por leitura (maior silencio aceito); o prazo total ABSOLUTO de uma requisicao e 3x este valor
+timeout_conexao_segundos = 30   # para estabelecer a conexao (nunca maior que timeout_segundos)
 tentativas = 3              # so para 5xx, 429 e erro de rede; 4xx nunca e repetido
 espera_base_segundos = 5    # espera antes de repetir: base x 2^(tentativa-1); Retry-After limitado a 300 s
 limite_resposta_bytes = 67108864   # 64 MiB: teto do corpo de uma resposta (a maior real tem poucos MB)

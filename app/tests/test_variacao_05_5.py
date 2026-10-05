@@ -141,6 +141,10 @@ def test_SINTETICO_par_indisponivel_e_zero_verdadeiro(variacao):
 
 
 def test_SINTETICO_chave_repetida_bloqueia_o_par(mundo):
+    """Revisao critica (05/10/2026), item 1: o retrato com a chave repetida nunca e o vigente. Sem retrato valido
+    anterior, o corte 30/04 aparece na serie como 'ambiguo', sem valor, e o par continua bloqueado - antes o retrato
+    ambiguo era um lado do par e o bloqueio vinha da lista de chaves repetidas. Nenhuma das duas ocorrencias e
+    escolhida; elas seguem no banco e na pagina de qualidade (anomalia CHAVE-DUP)."""
     mundo.catalogos({1: [2025]})
     mundo.listagem(1, 2025, "2025-02-28", [_reg(1, aproc=10.0)], T0)
     mundo.listagem(1, 2025, "2025-04-30", [_reg(1, aproc=10.0), _reg(1, aproc=5.0)], T0)
@@ -148,11 +152,16 @@ def test_SINTETICO_chave_repetida_bloqueia_o_par(mundo):
     with mundo.painel() as p:
         r = p.variacao(2025, "2025-02-28", "2025-04-30")
         assert not r["disponivel"] and r["lista"] is None and "mais de uma vez" in r["motivo_indisponivel"]
-        assert r["chaves_repetidas"] == [{"chave": {"entidade": 1, "anoempenho": 2024, "empenho": 1}, "anterior": 1,
-                                          "posterior": 2}]
+        assert "CHAVE-DUP" in r["motivo_indisponivel"] and r["posterior"]["situacao"]["codigo"] == "municipio_indisponivel"
+        assert p.variacao(2025, "2025-02-28", "2025-04-30", entidade=1)["posterior"]["situacao"]["codigo"] == "ambiguo"
+        assert r["chaves_repetidas"] == []          # o retrato recusado nao e lado do par
         h = p.historico_empenho(1, 2024, 1, 2025)
-        assert [len(c["ocorrencias"]) for c in h["cortes"]] == [1, 2] and h["nota"]   # mostra as duas, sem escolher
-    assert not rb.Bruto(mundo.con, mundo.armazem).contribuicoes(2025, "2025-02-28", "2025-04-30")["disponivel"]
+        assert [(c["situacao"]["codigo"], len(c["ocorrencias"])) for c in h["cortes"]] == [("com_dados", 1),
+                                                                                           ("ambiguo", 0)]
+        assert [c["data_final"] for c in p.evolucao(2025, 1)["serie"]] == ["2025-02-28", "2025-04-30"]   # R1
+    b = rb.Bruto(mundo.con, mundo.armazem)
+    assert not b.contribuicoes(2025, "2025-02-28", "2025-04-30")["disponivel"]
+    assert b.situacao(1, 2025, "2025-04-30") == "ambiguo"
 
 
 def test_SINTETICO_municipio_com_entidades_diferentes_bloqueia_o_par(mundo):

@@ -1,0 +1,151 @@
+{
+ "quando": "2026-10-05T10:51:39-03:00",
+ "endpoint": "/empenhos/restos-a-pagar",
+ "corte": "exercicio 2025, 01/01 a 31/12",
+ "casos": {
+  "ent5 sem sort": {
+   "http": 200,
+   "totalElements": 360,
+   "totalPages": 1,
+   "number": 0,
+   "numberOfElements": 360,
+   "size": 2000,
+   "sort_ecoado": [],
+   "registros": 360,
+   "sha256_content": "b521d7de53030cee252503ff080793ea920c0ba2002341ac42911837f583b51e",
+   "ordem_crescente": true,
+   "ordem_decrescente_por_empenho": false
+  },
+  "ent5 sort asc": {
+   "http": 200,
+   "totalElements": 360,
+   "totalPages": 1,
+   "number": 0,
+   "numberOfElements": 360,
+   "size": 2000,
+   "sort_ecoado": [
+    {
+     "property": "anoempenho",
+     "ascending": true,
+     "descending": false,
+     "direction": "ASC"
+    },
+    {
+     "property": "empenho",
+     "ascending": true,
+     "descending": false,
+     "direction": "ASC"
+    }
+   ],
+   "registros": 360,
+   "sha256_content": "b521d7de53030cee252503ff080793ea920c0ba2002341ac42911837f583b51e",
+   "ordem_crescente": true,
+   "ordem_decrescente_por_empenho": false
+  },
+  "ent5 sort empenho desc": {
+   "http": 200,
+   "totalElements": 360,
+   "totalPages": 1,
+   "number": 0,
+   "numberOfElements": 360,
+   "size": 2000,
+   "sort_ecoado": [
+    {
+     "property": "empenho",
+     "ascending": false,
+     "descending": true,
+     "direction": "DESC"
+    }
+   ],
+   "registros": 360,
+   "sha256_content": "2882b986b2bf8097efebf865cb1eb774ace743e86a7a5968026b9690be21c5f1",
+   "ordem_crescente": false,
+   "ordem_decrescente_por_empenho": true
+  },
+  "ent1 p0 sem sort": {
+   "http": 200,
+   "totalElements": 3990,
+   "totalPages": 2,
+   "number": 0,
+   "numberOfElements": 2000,
+   "size": 2000,
+   "sort_ecoado": [],
+   "registros": 2000,
+   "sha256_content": "dae016fab4b74c21fc5a34a021836f00fa546a841fda8b6b2e74b7c760bacb6a",
+   "ordem_crescente": true,
+   "ordem_decrescente_por_empenho": false
+  },
+  "ent1 p0 sort asc": {
+   "http": 200,
+   "totalElements": 3990,
+   "totalPages": 2,
+   "number": 0,
+   "numberOfElements": 2000,
+   "size": 2000,
+   "sort_ecoado": [
+    {
+     "property": "anoempenho",
+     "ascending": true,
+     "descending": false,
+     "direction": "ASC"
+    },
+    {
+     "property": "empenho",
+     "ascending": true,
+     "descending": false,
+     "direction": "ASC"
+    }
+   ],
+   "registros": 2000,
+   "sha256_content": "dae016fab4b74c21fc5a34a021836f00fa546a841fda8b6b2e74b7c760bacb6a",
+   "ordem_crescente": true,
+   "ordem_decrescente_por_empenho": false
+  },
+  "ent1 p1 sem sort": {
+   "http": 200,
+   "totalElements": 3990,
+   "totalPages": 2,
+   "number": 1,
+   "numberOfElements": 1990,
+   "size": 2000,
+   "sort_ecoado": [],
+   "registros": 1990,
+   "sha256_content": "4b268bfcdebe0a3494df001a163feaf5b3ea7a5b5f416b71bc95a7b8bad10a35",
+   "ordem_crescente": true,
+   "ordem_decrescente_por_empenho": false
+  },
+  "ent1 p1 sort asc": {
+   "http": 200,
+   "totalElements": 3990,
+   "totalPages": 2,
+   "number": 1,
+   "numberOfElements": 1990,
+   "size": 2000,
+   "sort_ecoado": [
+    {
+     "property": "anoempenho",
+     "ascending": true,
+     "descending": false,
+     "direction": "ASC"
+    },
+    {
+     "property": "empenho",
+     "ascending": true,
+     "descending": false,
+     "direction": "ASC"
+    }
+   ],
+   "registros": 1990,
+   "sha256_content": "4b268bfcdebe0a3494df001a163feaf5b3ea7a5b5f416b71bc95a7b8bad10a35",
+   "ordem_crescente": true,
+   "ordem_decrescente_por_empenho": false
+  }
+ },
+ "conclusoes": {
+  "ent5: sort asc devolve o mesmo content (mesmos bytes canonicos) que sem sort": true,
+  "ent5: sort empenho desc muda a ordem (o parametro e obedecido)": true,
+  "ent5: sort desc tem o mesmo conjunto de chaves": true,
+  "ent1 p0: sort asc = sem sort": true,
+  "ent1 p1: sort asc = sem sort": true
+ }
+}

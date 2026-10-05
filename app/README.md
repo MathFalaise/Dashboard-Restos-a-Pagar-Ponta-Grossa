@@ -15,6 +15,7 @@ Código de **produção**:
 - **05.6:** qualidade dos dados (`/qualidade`): anomalias da derivação por tipo, com as ocorrências e a ligação ao registro quando há chave de empenho; verificações de conjunto interpretadas pela descrição (catálogo do contrato); e as diferenças com o RREO contadas pelas cinco situações (sem diferença, explicada, parcialmente explicada, hipótese, não determinada).
 - **05.7:** homologação e encerramento da Etapa 05 (`../etapa05/RELATORIO_ETAPA05_FINAL.md`): regressão completa, valores homologados da 04.6 inalterados, 100.201 valores das telas novas conferidos com a camada painel, acessibilidade básica, interface sem rede e instalação limpa; tag `etapa-05-final` (commit `b38e884`).
 - **Pós-05:** encerramento formal e consolidação técnica (`../etapa05/CONSOLIDACAO_POS_05.md`): a seleção de exercício e corte nunca troca o que foi pedido. Corte não processado aparece como indisponível, com a situação do dado e os cortes processados do exercício. Inclui o mapa da dívida técnica, o procedimento da D1, a proposta de CI e as auditorias de dados e licenças.
+- **Revisão crítica (05/10/2026):** resposta item a item em `../auditoria/REVISAO_CRITICA_RESPOSTA.md`. Retrato com chave de empenho repetida nunca é o vigente; a coleta pede a ordem e confere o eco; catálogos com contrato mínimo; prazo total absoluto por requisição; contrato da API documentado (`../auditoria/CONTRATO_API_ELOTECH.md`) e comando `diagnosticar-api`; impressão do esquema; marcador de testes `dados_reais`; CI e pacote instalável.
 
 **Fontes** (detalhe em `../etapa04/ARQUITETURA_FONTES.md`):
 - API do Portal da Transparência de Ponta Grossa (Elotech/Oxy Transparência) → fonte primária dos dados operacionais de RP;
@@ -32,7 +33,7 @@ Código de **produção**:
 
 Testado num ambiente Python novo, sem pacotes, a partir de uma cópia do repositório fora do OneDrive (relatório da 04.6, seção 15). Nenhum caminho da máquina de desenvolvimento é necessário.
 
-1. Python 3.11 ou mais novo (desenvolvido e testado só em 3.14.3). Dentro de `app/`, crie o ambiente e instale as dependências fixadas (`requirements.txt` = execução; `requirements-dev.txt` = execução + `pytest`; a interface sozinha usa só a biblioteca padrão; em Linux/macOS o executável é `.venv/bin/python`):
+1. Python: **comprovado só no Windows 11 com Python 3.14.3**, onde o projeto foi desenvolvido e homologado. O código declara 3.11 ou mais novo, e o CI (`../.github/workflows/testes.yml`) roda os testes sintéticos em Linux e Windows com 3.11, 3.12, 3.13 e 3.14. Enquanto o CI não tiver rodado no GitHub, as outras combinações são só a intenção (até 05/10/2026 o importador nem carregava no 3.11). Dentro de `app/`, crie o ambiente e instale as dependências fixadas (`requirements.txt` = execução; `requirements-dev.txt` = execução + `pytest`; a interface sozinha usa só a biblioteca padrão; em Linux/macOS o executável é `.venv/bin/python`):
 
 ```bash
 python -m venv .venv
@@ -60,7 +61,11 @@ python -m rp processar
 python -m rp processar --normalizacao 1 --em 2026-09-29T23:59:59-03:00
 ```
 
-4. Confira: `python -m rp verificar` (sem problemas), `python -m rp portoes` (apto) e `python -m pytest tests`. Os hashes de resultado devem ser os do projeto (`2f6b4e29…` e `b8a0b2ed…`).
+4. Confira: `python -m rp verificar` (sem problemas), `python -m rp portoes` (apto) e `python -m pytest tests`. Os hashes de resultado devem ser os do projeto (`2f6b4e29…` e `b8a0b2ed…`). Para provar que o banco novo é equivalente a outro (ex.: o de outra máquina), camada a camada: `python -m rp comparar-bancos --banco NOVO.sqlite --outro OUTRO.sqlite` (código de saída 0 = equivalentes).
+
+Para reproduzir exatamente o ambiente homologado, inclusive as dependências transitivas, instale `requirements-lock.txt` em vez de `requirements-dev.txt`.
+
+Opcional: `python -m pip install -e .` (dentro de `app/`, sempre em modo editável) instala o comando `rp`, que funciona de qualquer pasta: `rp verificar` = `python -m rp verificar`. Instalado como cópia, o pacote não acharia `config.toml` nem o armazém.
 
 5. Abra a interface com `python -m rp interface` e acesse `http://127.0.0.1:8050/`.
 
@@ -74,7 +79,7 @@ Sempre COLETAR → VALIDAR → PROCESSAR → TESTAR → VERIFICAR → DISPONIBIL
 4. **Validar:** `python -m rp verificar`, e `comparar-snapshots` / `comparar` para ver o que mudou em relação ao retrato anterior.
 5. **Processar:** `python -m rp processar` (e `--em` para as datas históricas que se queira reconciliar).
 6. **Testar:** `python -m pytest tests` e, em `../etapa03/validacao`, os 26 testes da investigação.
-7. **Verificar os portões:** `python -m rp portoes --referencia ../etapa04/resultados/referencia_AAAAMMDD.json`. Só com `"apto": true` e os testes passando a carga é disponibilizada.
+7. **Verificar os portões:** `python -m rp portoes --referencia ../etapa04/resultados/referencia_AAAAMMDD.json`. Só com `"apto_sem_ressalvas": true` (apto e nenhum portão sem verificação, exceto os testes, conferidos à mão) e os testes passando a carga é disponibilizada. `"apto"` considera só os portões verificáveis; a lista do que não foi verificado sai em `"nao_verificados"`.
 8. **Disponibilizar:** reiniciar `python -m rp interface`. A interface lê a derivação atual mais recente; nenhum snapshot é substituído.
 
 Portões verificados por `portoes` (somente leitura):
@@ -84,19 +89,35 @@ Portões verificados por `portoes` (somente leitura):
 - normalização em dia (nenhum snapshot sem processar);
 - derivação atual sobre a normalização mais recente, cobrindo todo registro;
 - proveniência (todo registro → resposta HTTP → objeto bruto);
-- linhas do bruto anteriores à carga idênticas às da referência.
+- linhas do bruto anteriores à carga idênticas às da referência;
+- o `hash_resultado` gravado de cada vigência é o recalculado do conteúdo atual das tabelas derivadas (nada foi alterado depois da derivação);
+- integridade relacional: `PRAGMA foreign_key_check` e as relações que o esquema não protege com FOREIGN KEY (derivado → registro da mesma normalização, anomalia → coleta, par → registros, conciliação → PDF, snapshots citados em `coletas_json`);
+- nenhum registro com campo monetário ausente (a normalização grava a ausência como 0; a carga precisa de decisão);
+- nenhum tipo de lançamento de movimentação sem efeito conhecido;
+- nenhum retrato com a mesma chave (entidade, anoempenho, empenho) mais de uma vez, com a natureza da repetição (exata ou conflitante);
+- o esquema do banco é o da versão gravada (impressão digital de tabelas, colunas, restrições, índices e gatilhos).
 
 Os testes são conferidos por quem disponibiliza. Se um portão falhar, o retrato novo não é disponibilizado como válido (código de saída 1).
 
 ## Proteções
 
-- O banco ativo não abre dentro de uma pasta do OneDrive (erro `BancoEmPastaSincronizada`).
+- O banco ativo não abre em pasta sincronizada nem de rede (erro `BancoEmPastaSincronizada`): OneDrive, Dropbox, Google Drive, iCloud, Box, Nextcloud, caminho UNC ou unidade de rede mapeada. SQLite ativo precisa de disco local.
+- Ao abrir, o esquema do banco é conferido com a impressão digital da versão; diferença vai para o log (e reprova o portão `esquema_confere`).
 - `config.toml` é validado: a API só em `https`, sem credencial na URL; números fora de faixa e `user_agent` com quebra de linha são recusados.
-- HTTP: redirecionamento não é seguido (um 3xx fica registrado como falha); o corpo de cada resposta tem teto (`limite_resposta_bytes`, 64 MiB) e prazo total de leitura (3 × `timeout_segundos`); `Retry-After` do servidor é limitado a 300 s.
+- HTTP: redirecionamento não é seguido (um 3xx fica registrado como falha); o corpo de cada resposta tem teto (`limite_resposta_bytes`, 64 MiB); `Retry-After` do servidor é limitado a 300 s. Três prazos: conexão (`timeout_conexao_segundos`, 30 s), silêncio entre dois pedaços da resposta (`timeout_segundos`) e prazo total ABSOLUTO da requisição (3 × `timeout_segundos`), que vale mesmo contra um servidor que manda um byte por vez.
 - A paginação para quando a soma das páginas passa de `totalElements` ou chega a 10.000 páginas (servidor que ignore `page` não prende o coletor).
+- Soma = total não basta para dizer que a coleta está completa (auditoria técnica e revisão crítica, `../auditoria/`). A coleta de listagem PEDE a ordem (anoempenho, empenho) e só é `completa` se, além disso: cada página traz `number`, `numberOfElements`, `size`, `totalPages`, `first` e `empty` coerentes e ecoa a ordem pedida; nenhum registro idêntico reaparece em página seguinte; a ordem cresce na troca de página; nenhuma chave (entidade, anoempenho, empenho) se repete no retrato, dentro ou entre páginas; todo registro é da entidade pedida; e, com mais de uma página, uma segunda leitura de todas elas vem igual (os hashes vão para o manifesto, em `segunda_leitura`). Entidade ou exercício fora do catálogo vigente fica na observação: a API responde 200 vazio para entidade inexistente. O contrato observado da API está em `../auditoria/CONTRATO_API_ELOTECH.md`.
+- Catálogo (entidades, exercícios, publicações) só é `completa` se cumprir um contrato mínimo: JSON válido não basta, porque um objeto de erro com HTTP 200 também é JSON.
+- O manifesto de cada snapshot novo grava quando a coleta terminou (`coleta_finalizada_em`) e a estrutura da resposta (`contrato_api`: caminhos, tipos e o SHA-256 deles).
+- Retrato com a mesma chave de empenho mais de uma vez (anomalia CHAVE-DUP), exata ou conflitante, nunca é o vigente do corte: derivação, painel e consultas usam o retrato válido anterior (com aviso) ou mostram o dado como indisponível. Nada é apagado: as ocorrências ficam no banco e na tela de qualidade.
+- `importar-etapas-anteriores`: o mesmo snapshot com outro conteúdo (bytes ou parâmetros) é conflito, nunca "já existe, então ignora"; carimbo com fuso é convertido para Brasília, não sobrescrito.
+- HTTP: só falha transitória (tempo esgotado, conexão) é repetida; erro de TLS e URL inválida falham na hora; erro de programação no transporte não é tratado como rede.
+- Migração de esquema é uma transação única (falha no meio não deixa o esquema pela metade); banco novo é montado num temporário e publicado no fim.
+- O catálogo de regras gravado no banco precisa ser o do código: editar uma regra, parâmetro ou decisão já gravados é recusado (crie versão nova).
+- `verificar` confere cada coleta com o seu manifesto campo a campo e relata objeto sem manifesto e arquivo temporário abandonado (nunca apaga).
 - Hash de objeto é validado antes de virar caminho de arquivo; descompressão tem teto; manifesto nunca é sobrescrito, nem por duas gravações simultâneas.
 - Backup nunca sobrescreve outro backup (sufixo `-2`, `-3`... no mesmo segundo); o `--motivo` não escolhe pasta.
-- `comparar --saida` recusa arquivo existente. Erro de uso sai como uma linha JSON `{"erro": ...}` com código 4 (detalhe no log). Códigos de saída: 0 ok; 1 `verificar` achou problema; 2 coleta incompleta ou com falha; 3 exclusão recusada; 4 comando recusado.
+- `comparar --saida` recusa arquivo existente. Erro de uso sai como uma linha JSON `{"erro": ...}` com código 4 (detalhe no log). Códigos de saída: 0 ok; 1 `verificar` achou problema (também: `portoes` não apto, `comparar-bancos` diferentes, `diagnosticar-api` viu a API mudar); 2 coleta incompleta ou com falha (também: `diagnosticar-api` não conseguiu consultar); 3 exclusão recusada; 4 comando recusado.
 - Saída redirecionada para arquivo em cp1252 não derruba o programa: caractere que a codificação não representa (ex.: "→") sai como `→`.
 - `apagar-execucao` protege a derivação mais recente de cada vigência (a atual e a de cada data "como estava em").
 
@@ -206,6 +227,12 @@ Retratos do mesmo corte, comparando bytes e registros:
 python -m rp comparar-snapshots --entidade 1 --exercicio 2025 --data-final 2025-12-31
 ```
 
+Conferir se a API ainda responde como o coletor espera, antes de uma coleta. Consulta os catálogos e uma página pequena da listagem e compara a estrutura com a dos snapshots gravados; não grava nada (banco aberto só para leitura). Saída 0 = nada mudou, 1 = a API mudou, 2 = não deu para consultar:
+
+```bash
+python -m rp diagnosticar-api --entidade 1
+```
+
 Integridade do armazém × banco:
 
 ```bash
@@ -249,7 +276,7 @@ Abre em `http://127.0.0.1:8050/` (use `--porta` para outra porta e `--banco` par
 - **Telas:** Resumo (indicadores do corte, entidades abrangidas, retratos e conferência com o RREO), Evolução no exercício (todos os cortes, lacunas, diferenças e gráfico), Série entre exercícios (2016–2026, fechamento × abertura), Composição do saldo (por dimensão, com fechamento), Variação entre cortes (contribuição de cada empenho), Entidades, Empenhos (filtros, inclusive faixa e classificação orçamentária, busca por ano e número do empenho e paginação), detalhe de um empenho (valores, classificação, par espelhado, movimentação e origem do dado), o empenho em todos os cortes do exercício, Retratos e comparação de retratos, Reconciliação com o RREO (e coerência entre publicações), Qualidade dos dados (anomalias, verificações e situação das diferenças), Metodologia e fontes, e a área técnica de pares espelhados.
 - **Fonte e natureza:** todo valor mostra fonte (API Elotech ou RREO Anexo VII), natureza (`da_fonte`, `publicado`, `derivado`, `analitico`, `diferenca`) e regra; a origem (snapshot, derivação, resposta HTTP, hash do objeto bruto) fica num bloco "Origem do dado".
 - **Retrato:** toda tela de valores diz exercício, corte, data da coleta, tipo de retrato (atual ou "como estava em") e snapshots usados ("Estado atual da base para o exercício de 2024, corte 31/12/2024, coletado em 30/09/2026"). O campo "Como estava em" mostra o retrato vigente numa data.
-- **Situação do dado:** dado existente; entidade existente sem RP (o único zero); entidade inexistente no exercício; corte não coletado; corte coletado, mas ainda não processado; dado indisponível (só coleta incompleta ou com falha); diferença em relação ao RREO. Só as duas primeiras têm valor. Filtro sem registro mostra "Nenhum resultado encontrado", nunca R$ 0,00.
+- **Situação do dado:** dado existente; entidade existente sem RP (o único zero); entidade inexistente no exercício; corte não coletado; corte coletado, mas ainda não processado; dado indisponível (só coleta incompleta ou com falha); dado indisponível porque o retrato do corte repete uma chave de empenho (CHAVE-DUP); diferença em relação ao RREO. Só as duas primeiras têm valor. Filtro sem registro mostra "Nenhum resultado encontrado", nunca R$ 0,00.
 - **Dados pessoais:** listas e totais sem nome, código ou documento do credor (só o tipo); detalhe com nome de pessoa jurídica sem documento; nome de pessoa física omitido; filtro de credor só por CNPJ completo de pessoa jurídica. Não há modo interno na interface.
 - **Regras:** só regra operacional compõe indicador. Visões analíticas (CONS-PAR) não aparecem. Regras experimentais ou não recomendadas aparecem só rotuladas como ANÁLISE EXPERIMENTAL (ou análise de regra não recomendada): na reconciliação, na metodologia e numa seção própria do detalhe.
 
@@ -301,4 +328,10 @@ Testes (nenhum acessa a internet; os da interface bloqueiam qualquer conexão pa
 python -m pytest tests
 ```
 
-Dependências: Python 3.11+ (desenvolvido e testado em 3.14.3), `requests` e `pymupdf` (este só para transcrever o PDF do RREO), nas versões fixadas em `requirements.txt`: a transcrição do RREO depende das coordenadas de texto que o PyMuPDF devolve. Para os testes, `pytest` (`requirements-dev.txt`). A interface e a camada painel não importam nenhum pacote de terceiros.
+Os testes que usam dados reais (fixtures `real` e `producao`: armazém `../snapshots` e bruto das Etapas 01/02, com dados de credores) recebem sozinhos o marcador `dados_reais`. Só os sintéticos, num ambiente sem o bruto:
+
+```bash
+python -m pytest tests -m "not dados_reais"
+```
+
+Dependências: Python 3.11+ declarado (comprovado só em 3.14.3 no Windows; ver Instalação), `requests` e `pymupdf` (este só para transcrever o PDF do RREO), nas versões fixadas em `requirements.txt`: a transcrição do RREO depende das coordenadas de texto que o PyMuPDF devolve. Para os testes, `pytest` (`requirements-dev.txt`). A interface e a camada painel não importam nenhum pacote de terceiros.

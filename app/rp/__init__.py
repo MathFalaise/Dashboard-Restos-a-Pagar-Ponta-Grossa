@@ -16,6 +16,26 @@ def agora():
     return datetime.now(BRT).isoformat(timespec="seconds")
 
 
+class DataInvalida(ValueError):
+    pass
+
+
+def instante(em):
+    """'AAAA-MM-DD' (fim do dia) ou data/hora ISO -> ISO com fuso de Brasilia, no formato de coleta.coletada_em.
+    A vigencia 'como estava em' e comparada com coletada_em COMO TEXTO (derivacao e camada painel), por isso todo
+    instante passa por aqui: mesmo instante = mesmo texto (auditoria CLI-01)."""
+    if em is None:
+        return None
+    try:
+        d = datetime.fromisoformat(str(em))
+    except ValueError as e:
+        raise DataInvalida(f"data invalida para 'como estava em': {em!r} (use AAAA-MM-DD ou ISO com fuso)") from e
+    if len(str(em)) == 10:
+        d = d.replace(hour=23, minute=59, second=59, tzinfo=BRT)
+    d = d.replace(tzinfo=BRT) if d.tzinfo is None else d.astimezone(BRT)
+    return d.isoformat(timespec="seconds")
+
+
 def sha256(b):
     return hashlib.sha256(b).hexdigest()
 
