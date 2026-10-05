@@ -31,6 +31,7 @@ class Config:
     exercicios: tuple
     limite_resposta_bytes: int = LIMITE_RESPOSTA_PADRAO
     entidade_rreo: int = 1          # entidade cujas publicacoes (grupo LRF) trazem o RREO Anexo VII
+    timeout_conexao: float = 30.0   # prazo para estabelecer a conexao (o de leitura e `timeout`; ver http.py)
 
     def __post_init__(self):
         _validar(self)
@@ -58,8 +59,8 @@ def _validar(c):
     u = urlsplit(c.api_base)
     if u.scheme != "https" or not u.hostname or u.username or u.password or u.query or u.fragment:
         raise ConfiguracaoInvalida(f"api.base precisa ser https://host/caminho, sem credencial, query ou fragmento: {c.api_base!r}")
-    if not (c.pausa >= 0 and c.timeout > 0 and c.espera_base >= 0):
-        raise ConfiguracaoInvalida("pausa e espera_base precisam ser >= 0 e timeout > 0")
+    if not (c.pausa >= 0 and c.timeout > 0 and c.espera_base >= 0 and c.timeout_conexao > 0):
+        raise ConfiguracaoInvalida("pausa e espera_base precisam ser >= 0; timeout e timeout_conexao, > 0")
     if isinstance(c.tentativas, bool) or not isinstance(c.tentativas, int) or c.tentativas < 1:
         raise ConfiguracaoInvalida("tentativas precisa ser um inteiro >= 1")
     if isinstance(c.limite_resposta_bytes, bool) or not isinstance(c.limite_resposta_bytes, int) or c.limite_resposta_bytes < 1:
@@ -96,6 +97,7 @@ def carregar(arquivo=None, **substituir):
         exercicios=tuple(int(x) for x in c["escopo"]["exercicios"]),
         limite_resposta_bytes=int(c["api"].get("limite_resposta_bytes", LIMITE_RESPOSTA_PADRAO)),
         entidade_rreo=int(c.get("rreo", {}).get("entidade_publicacoes", 1)),
+        timeout_conexao=float(c["api"].get("timeout_conexao_segundos", 30)),
     )
     valores.update(substituir)
     return Config(**valores)

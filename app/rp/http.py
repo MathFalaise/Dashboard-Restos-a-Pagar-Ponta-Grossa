@@ -16,9 +16,23 @@ Seguranca:
   * corpo lido em blocos, com teto de bytes (`limite_resposta_bytes`) e prazo total de leitura;
     resposta recusada por esses limites nao e repetida (a mesma consulta daria o mesmo resultado);
   * o caminho da consulta so aceita segmentos simples: nada de outro host, "..", query ou fragmento.
+
+Tres prazos, cada um com uma funcao (revisao critica, item 8):
+  * conexao (`timeout_conexao`, padrao 30 s): estabelecer a conexao TCP/TLS;
+  * leitura (`timeout`): o maior silencio aceito entre dois pedacos recebidos;
+  * prazo TOTAL (timeout x FATOR_PRAZO_TOTAL): barreira absoluta da requisicao inteira, conexao + cabecalhos +
+    corpo. O prazo de leitura sozinho nao a garante: um servidor que mande 1 byte a cada poucos segundos nunca
+    deixa a leitura esgotar, e um bloco de 64 KiB so termina quando enche. Por isso a requisicao roda numa thread
+    de trabalho e quem chamou desiste no prazo, derrubando a conexao; o resultado tardio e descartado.
+
+Espera entre tentativas: base x 2^(tentativa-1), ou o Retry-After (segundos ou data HTTP) se for maior, com teto
+ESPERA_MAXIMA. Sem sorteio (jitter): o coletor e um unico cliente sequencial, com pausa minima entre requisicoes;
+jitter serve para espalhar muitos clientes que falharam juntos, e aqui so tiraria o determinismo dos testes.
 """
 import logging
 import re
+import socket
+import threading
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -31,7 +45,8 @@ log = logging.getLogger("rp.http")
 
 ESPERA_MAXIMA = 300              # teto (s) para o Retry-After informado pelo servidor
 BLOCO = 64 * 1024                # tamanho de cada leitura do corpo
-FATOR_PRAZO_TOTAL = 3            # prazo total de leitura = timeout x este fator
+FATOR_PRAZO_TOTAL = 3            # prazo total da requisicao = timeout x este fator
+TIMEOUT_CONEXAO = 30             # padrao (s) para estabelecer a conexao; nunca maior que o timeout de leitura
 _SEGMENTO = re.compile(r"[A-Za-z0-9_.\-]+")
 
 
@@ -80,17 +95,66 @@ def ler_limitado(blocos, limite, prazo, monotonic=time.monotonic):
     return b"".join(partes)
 
 
-def transporte_requests(user_agent, limite_bytes, prazo_total):
+def _socket_da_resposta(resposta):
+    """Socket por baixo de uma resposta do requests/urllib3, ou None. Dois caminhos: a conexao do urllib3 (HTTP/1.1
+    com keep-alive) e o arquivo do http.client (quando o servidor fecha a conexao, ela passa o socket a resposta)."""
+    raw = getattr(resposta, "raw", None)
+    sock = getattr(getattr(raw, "_connection", None), "sock", None)
+    if sock is None:
+        sock = getattr(getattr(getattr(getattr(raw, "_fp", None), "fp", None), "raw", None), "_sock", None)
+    return sock if isinstance(sock, socket.socket) else None
+
+
+def _derrubar(resposta):
+    """Derruba a conexao de uma resposta em andamento (prazo total vencido): `shutdown` faz a leitura bloqueada na
+    thread de trabalho voltar com erro em vez de continuar presa ao servidor. So o shutdown: `close()` daqui
+    esperaria a trava do buffer que a propria leitura bloqueada segura. Melhor esforco: sem resposta ainda (presa na
+    conexao ou nos cabecalhos), a thread termina pelo prazo de leitura; o resultado dela e descartado de todo jeito."""
+    sock = _socket_da_resposta(resposta) if resposta is not None else None
+    if sock is not None:
+        try:
+            sock.shutdown(socket.SHUT_RDWR)
+        except OSError:
+            pass
+
+
+def com_prazo_total(funcao, prazo, ao_vencer=None):
+    """Executa `funcao(estado)` numa thread de trabalho e espera no maximo `prazo` segundos. Vencido o prazo, chama
+    `ao_vencer(estado)` e levanta RespostaRecusada (nao repetida: a mesma consulta daria o mesmo resultado). A
+    excecao levantada pela funcao e repassada a quem chamou, com o tipo original."""
+    estado, feito = {}, threading.Event()
+
+    def trabalho():
+        try:
+            estado["resultado"] = funcao(estado)
+        except BaseException as e:        # noqa: BLE001 - repassada intacta a thread de quem chamou
+            estado["erro"] = e
+        finally:
+            feito.set()
+
+    threading.Thread(target=trabalho, name="rp-http", daemon=True).start()
+    if not feito.wait(prazo):
+        estado["vencido"] = True
+        if ao_vencer:
+            ao_vencer(estado)
+        raise RespostaRecusada(f"prazo total de {prazo:g} s excedido")
+    if "erro" in estado:
+        raise estado["erro"]
+    return estado["resultado"]
+
+
+def transporte_requests(user_agent, limite_bytes, prazo_total, timeout_conexao=TIMEOUT_CONEXAO):
     import requests
     sessao = requests.Session()
     sessao.headers["User-Agent"] = user_agent
 
     from requests import exceptions as rx
 
-    def get(url, timeout):
-        inicio = time.monotonic()
+    def _get(url, timeout, inicio, estado):
         try:
-            with sessao.get(url, timeout=timeout, stream=True, allow_redirects=False, verify=True) as r:
+            with sessao.get(url, timeout=(min(timeout_conexao, timeout), timeout), stream=True, allow_redirects=False,
+                            verify=True) as r:
+                estado["resposta"] = r
                 declarado = r.headers.get("Content-Length", "")
                 if declarado.isdigit() and int(declarado) > limite_bytes:
                     raise RespostaRecusada(f"Content-Length {declarado} maior que {limite_bytes} bytes")
@@ -103,7 +167,14 @@ def transporte_requests(user_agent, limite_bytes, prazo_total):
         except (rx.InvalidURL, rx.InvalidSchema, rx.MissingSchema, rx.InvalidHeader) as e:
             raise ErroDeRede(f"pedido invalido: {type(e).__name__}: {e}") from e
         except (rx.Timeout, rx.ConnectionError, rx.ChunkedEncodingError, rx.ContentDecodingError) as e:
+            if estado.get("vencido"):      # conexao derrubada pelo prazo total: quem chamou ja recebeu a recusa
+                raise RespostaRecusada("prazo total excedido") from e
             raise FalhaTransitoria(f"{type(e).__name__}: {e}") from e
+
+    def get(url, timeout):
+        inicio = time.monotonic()
+        return com_prazo_total(lambda estado: _get(url, timeout, inicio, estado), prazo_total,
+                               lambda estado: _derrubar(estado.get("resposta")))
     return get
 
 
@@ -137,14 +208,16 @@ class Cliente:
     def __init__(self, cfg, transporte=None, dormir=time.sleep, monotonic=time.monotonic):
         self.cfg = cfg
         self.transporte = transporte or transporte_requests(cfg.user_agent, cfg.limite_resposta_bytes,
-                                                             cfg.timeout * FATOR_PRAZO_TOTAL)
+                                                             cfg.timeout * FATOR_PRAZO_TOTAL, cfg.timeout_conexao)
         self.dormir = dormir
         self.monotonic = monotonic
         self._estado = _Estado()
         self.requisicoes = 0
 
     def url(self, caminho, params=None):
-        return f"{self.cfg.api_base}{validar_caminho(caminho)}" + (f"?{urlencode(params)}" if params else "")
+        """URL da consulta. Parametro com lista (ex.: sort em dois campos) vira o parametro repetido (doseq); valor
+        simples sai igual a antes."""
+        return f"{self.cfg.api_base}{validar_caminho(caminho)}" + (f"?{urlencode(params, doseq=True)}" if params else "")
 
     def _pausar(self):
         if self._estado.ultima is not None:
