@@ -1975,6 +1975,8 @@ class Painel:
                         "natureza": {"rreo": "publicado", "diferenca": "diferenca", "api": "derivado"},
                         "entre": "duas publicações (RREO × RREO)",
                         "pdfs": self._uids([fim["coleta_id"], prox["coleta_id"]]),
+                        "pdfs_arquivo": [self.con.execute("SELECT id_arquivo FROM coleta WHERE id=?", (c,)).fetchone()[0]
+                                         for c in (fim["coleta_id"], prox["coleta_id"])],
                         "api_s1_de_c": api_de and api_de["s1_c"], "api_a_mais_f_para_c": api_para and api_para["a_mais_f_c"],
                         "api_snapshots": {"de": api_de and api_de["snapshots"], "para": api_para and api_para["snapshots"]},
                         "api_regras": regs, "situacao_da_diferenca": situacao,

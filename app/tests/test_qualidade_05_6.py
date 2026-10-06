@@ -15,7 +15,7 @@ import time
 from collections import Counter
 
 import pytest
-from conftest import chamar, dados, ok, registro_sintetico as _reg
+from conftest import chamar, dados, ok, registro_sintetico as _reg, links_permitidos
 
 from rp import derivar
 from rp.interface import Aplicacao
@@ -126,7 +126,7 @@ def test_SINTETICO_tela_da_qualidade(qualidade):
     assert v["ocorr-sem-chave"] == 1 and 'id="sem-chave"' in oc
     assert "/empenho?" not in _secao(corpo, "verificacoes")                             # verificacao nao vira empenho
     assert NAO_CATALOGADA in _secao(corpo, "verificacoes")
-    assert all(h.startswith("/") for h in re.findall(r'href="([^"]*)"', corpo)) and "style=" not in corpo
+    assert links_permitidos(corpo) and "style=" not in corpo
     assert 'id="sem-ocorrencia"' in ok(app, "/qualidade", tipo="CHAVE-DUP")
     assert chamar(app, "/qualidade", tipo="NAO-EXISTE")[0] == "400 Bad Request"
 
