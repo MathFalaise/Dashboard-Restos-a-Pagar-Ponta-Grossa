@@ -81,12 +81,93 @@ MIGRACOES = {
             # camada 1, entao so este registro diz se ele ja foi processado (NULL nas normalizacoes anteriores)
             "ALTER TABLE normalizacao_execucao ADD COLUMN ultima_coleta_id INTEGER",
         ]),
+    # v5 (decisoes D4 e D7 da revisao critica, 06/10/2026): so acrescenta gatilhos e duas colunas; nenhuma tabela e
+    # recriada e nenhuma linha muda. Gera _gatilhos_v5().
+    5: ("integridade relacional por gatilhos na camada derivada (D4) e criterios de promocao de regra (D7)",
+        None),
 }
 VERSAO_ESQUEMA = max(MIGRACOES)
+# Data a partir da qual a promocao de regra a operacional segue os criterios da decisao D7 (governanca.py).
+POLITICA_PROMOCAO_DESDE = "2026-10-06"
+
+
+def _gatilho(nome, evento, tabela, quando, mensagem):
+    return (f"CREATE TRIGGER {nome} BEFORE {evento} ON {tabela} WHEN {quando} "
+            f"BEGIN SELECT RAISE(ABORT, '{mensagem}'); END")
+
+
+def _gatilhos_v5():
+    """Relacoes que o portao 'integridade_relacional' so conferia lendo (auditoria DB-02) passam a ser recusadas na
+    gravacao: linha derivada sem a origem na MESMA normalizacao, snapshot inexistente citado em JSON, regra
+    inexistente na derivacao, e apagar a camada 1 de uma normalizacao que ainda tem derivacoes. Cada relacao vale na
+    insercao e na alteracao das colunas de ligacao (UPDATE de valor nao e afetado)."""
+    rel = {
+        "rp_derivado": ("resposta_id, indice, coleta_id, derivacao_id",
+                        "NOT EXISTS (SELECT 1 FROM derivacao_execucao e JOIN rp_registro r ON r.normalizacao_id = "
+                        "e.normalizacao_id AND r.resposta_id = NEW.resposta_id AND r.indice = NEW.indice AND "
+                        "r.coleta_id = NEW.coleta_id WHERE e.id = NEW.derivacao_id)",
+                        "rp_derivado sem o registro da normalizacao da sua derivacao"),
+        "movimentacao_interpretada": ("resposta_id, indice, derivacao_id",
+                                      "NOT EXISTS (SELECT 1 FROM derivacao_execucao e JOIN movimentacao_lancamento l "
+                                      "ON l.normalizacao_id = e.normalizacao_id AND l.resposta_id = NEW.resposta_id "
+                                      "AND l.indice = NEW.indice WHERE e.id = NEW.derivacao_id)",
+                                      "movimentacao_interpretada sem o lancamento da normalizacao da sua derivacao"),
+        "anomalia": ("coleta_id",
+                     "NEW.coleta_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM coleta WHERE id = NEW.coleta_id)",
+                     "anomalia de coleta inexistente"),
+        "espelhamento_par": ("resposta_a_id, indice_a, coleta_a_id, resposta_b_id, indice_b, coleta_b_id, derivacao_id",
+                             "NOT EXISTS (SELECT 1 FROM derivacao_execucao e JOIN rp_registro a ON a.normalizacao_id = "
+                             "e.normalizacao_id AND a.resposta_id = NEW.resposta_a_id AND a.indice = NEW.indice_a AND "
+                             "a.coleta_id = NEW.coleta_a_id JOIN rp_registro b ON b.normalizacao_id = e.normalizacao_id "
+                             "AND b.resposta_id = NEW.resposta_b_id AND b.indice = NEW.indice_b AND b.coleta_id = "
+                             "NEW.coleta_b_id WHERE e.id = NEW.derivacao_id)",
+                             "par espelhado sem os dois registros da normalizacao da sua derivacao"),
+        "conciliacao_rreo": ("rreo_coleta_id, coletas_api_json",
+                             "NOT EXISTS (SELECT 1 FROM coleta WHERE id = NEW.rreo_coleta_id AND tipo = 'rreo_pdf') OR "
+                             "EXISTS (SELECT 1 FROM json_each(NEW.coletas_api_json) j WHERE NOT EXISTS "
+                             "(SELECT 1 FROM coleta c WHERE c.snapshot_uid = j.value))",
+                             "conciliacao com PDF ou snapshot inexistente"),
+        "visao_valor": ("coletas_json",
+                        "EXISTS (SELECT 1 FROM json_each(NEW.coletas_json) j WHERE NOT EXISTS "
+                        "(SELECT 1 FROM coleta c WHERE c.snapshot_uid = j.value))",
+                        "visao_valor cita snapshot inexistente"),
+        "normalizacao_execucao": ("ultima_coleta_id",
+                                  "NEW.ultima_coleta_id > 0 AND NOT EXISTS (SELECT 1 FROM coleta WHERE id = "
+                                  "NEW.ultima_coleta_id)",
+                                  "normalizacao com ultima coleta inexistente"),
+        "derivacao_execucao": ("regras_json",
+                               "EXISTS (SELECT 1 FROM json_each(NEW.regras_json) j WHERE NOT EXISTS "
+                               "(SELECT 1 FROM regra r WHERE r.id = j.value))",
+                               "derivacao com regra inexistente"),
+    }
+    cmds = []
+    for tabela, (colunas, quando, msg) in rel.items():
+        cmds.append(_gatilho(f"ri_{tabela}_insert", "INSERT", tabela, quando, msg))
+        cmds.append(_gatilho(f"ri_{tabela}_update", f"UPDATE OF {colunas}", tabela, quando, msg))
+    for tabela in ("rp_registro", "movimentacao_lancamento"):
+        cmds.append(_gatilho(f"ri_{tabela}_delete", "DELETE", tabela,
+                             "EXISTS (SELECT 1 FROM derivacao_execucao WHERE normalizacao_id = OLD.normalizacao_id)",
+                             f"{tabela} de normalizacao com derivacoes: apague antes as derivacoes"))
+    # D7: promocao a operacional depois da politica exige teste de regressao; se compoe indicador publicado, tambem
+    # conferencia independente (evidencia externa) ou ressalva documentada
+    cmds += ["ALTER TABLE regra_situacao ADD COLUMN teste_regressao TEXT",
+             "ALTER TABLE regra_situacao ADD COLUMN ressalva TEXT",
+             _gatilho("regra_situacao_promocao", "INSERT", "regra_situacao",
+                      f"NEW.situacao = 'operacional' AND NEW.decidido_em >= '{POLITICA_PROMOCAO_DESDE}' AND "
+                      "(IFNULL(TRIM(NEW.teste_regressao), '') = '' OR (NEW.compoe_indicador_publicado = 1 AND "
+                      "NEW.evidencia_externa_id IS NULL AND IFNULL(TRIM(NEW.ressalva), '') = ''))",
+                      "promocao a operacional sem os criterios da decisao D7: teste de regressao e, se compoe "
+                      "indicador publicado, evidencia externa ou ressalva")]
+    return cmds
+
+
+MIGRACOES[5] = (MIGRACOES[5][0], _gatilhos_v5())
 # Impressao estrutural de cada versao do esquema (impressao_esquema). Versao nova = impressao nova aqui.
 IMPRESSAO_ESQUEMA = {
     # v4: conferida em 05/10/2026 no banco ativo (criado em 29/09, migrado em 30/09) e no montado pelo codigo
     4: "ad45413e4a5431eca73afebbf4640c995513203b9def9b38d8cbb83eaa3d3e5a",
+    # v5: conferida em 06/10/2026 no montado pelo codigo e no banco ativo migrado da v4
+    5: "d80f1040f98fe0213388991b8f8b574b27ab0ef3a57ac61c4d8dc70bbb54e34e",
 }
 
 # Cache de paginas por conexao (KiB, valor negativo = tamanho em KiB no SQLite). A derivacao percorre
