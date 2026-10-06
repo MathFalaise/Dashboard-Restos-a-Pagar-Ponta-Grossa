@@ -1,13 +1,13 @@
-"""Teste (somente leitura) de uma HIPOTESE de divisao de cancelamento - nao e regra, nao grava nada.
-CANC v1 (em uso): registro com aproc>0 -> todo o cancelamento em (j); so processado -> (d).
-H-CANC-EXCEDENTE: registro 'ambos' -> (j) recebe ate aproc; o que exceder aproc vai para (d).
-Compara (d) e (j) das duas com o RREO por entidade (1) e consolidado."""
+"""Test (read-only) of a HYPOTHESIS for splitting cancellations - it is not a rule and writes nothing.
+CANC v1 (in use): a record with aproc>0 -> the whole cancellation in (j); processed only -> (d).
+H-CANC-EXCEDENTE: an 'ambos' record -> (j) gets up to aproc; whatever exceeds aproc goes to (d).
+Compares (d) and (j) of both against the RREO for entity 1 and consolidated."""
 import sqlite3, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "app"))
 from rp.config import carregar
 
-sys.stdout.reconfigure(errors="backslashreplace")   # saida em cp1252 (arquivo) nao derruba o script
+sys.stdout.reconfigure(errors="backslashreplace")   # cp1252 output (file) does not crash the script
 br = lambda c: f"{c/100:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 con = sqlite3.connect(f"file:{carregar().banco}?mode=ro", uri=True)
 nid = con.execute("SELECT MAX(id) FROM normalizacao_execucao").fetchone()[0]

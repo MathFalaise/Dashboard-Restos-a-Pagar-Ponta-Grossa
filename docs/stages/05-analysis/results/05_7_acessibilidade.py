@@ -1,15 +1,15 @@
-"""Acessibilidade basica e ausencia de recurso externo em todas as telas (Subetapa 05.7; somente leitura).
+"""Basic accessibility and absence of external resources on every screen (sub-stage 05.7; read-only).
 
-Uso (dentro de app/):  python ../docs/stages/05-analysis/results/05_7_acessibilidade.py SAIDA.json [--banco CAMINHO]
+Usage (inside app/):  python ../docs/stages/05-analysis/results/05_7_acessibilidade.py SAIDA.json [--banco CAMINHO]
 
-Por WSGI (sem servidor), confere em cada pagina:
-  * <html lang="pt-BR">; exatamente um <h1>; niveis de titulo sem salto (h2 depois de h1, h3 depois de h2...);
-  * ids unicos; todo <input> visivel e todo <select> dentro de um <label>;
-  * toda <table> com <thead> e todo <th> do cabecalho com scope="col"; todo <a> com texto; todo <details> com <summary>;
-  * todo <svg> com role="img" e nome acessivel (aria-label, ou aria-labelledby com ids que existem na pagina);
-  * nenhum atributo style, <style> ou <script>;
-  * nenhum href/src externo (http, https ou //): a interface funciona sem rede. Excecao desde 06/10/2026: link <a>
-    para o portal oficial (servicos.pontagrossa.pr.gov.br/portaltransparencia...), com rel="external" ('onde conferir').
+Through WSGI (no server), checks on each page:
+  * <html lang="pt-BR">; exactly one <h1>; heading levels without jumps (h2 after h1, h3 after h2...);
+  * unique ids; every visible <input> and every <select> inside a <label>;
+  * every <table> with <thead> and every header <th> with scope="col"; every <a> with text; every <details> with <summary>;
+  * every <svg> with role="img" and an accessible name (aria-label, or aria-labelledby with ids that exist on the page);
+  * no style attribute, <style> or <script>;
+  * no external href/src (http, https or //): the interface works without a network. Exception since 06/10/2026: an <a>
+    link to the official portal (servicos.pontagrossa.pr.gov.br/portaltransparencia...), with rel="external" ('onde conferir').
 """
 import argparse
 import json
@@ -69,7 +69,7 @@ class Leitor(HTMLParser):
             self.problemas.append(f"<{tag}>")
         for k in ("href", "src"):
             v = a.get(k) or ""
-            # desde 06/10/2026: so link (nunca src) para o portal oficial, marcado rel="external" ("onde conferir")
+            # since 06/10/2026: only a link (never src) to the official portal, marked rel="external" ("onde conferir")
             portal = (k == "href" and tag == "a" and v.startswith(PORTAL) and "external" in (a.get("rel") or ""))
             if v.startswith(("http:", "https:", "//")) and not portal:
                 self.problemas.append(f"recurso externo: {v}")

@@ -1,32 +1,32 @@
-# Configuracao do coletor. Caminhos relativos sao resolvidos a partir desta pasta (app/).
-# Outro arquivo pode ser indicado pela variavel de ambiente RP_CONFIG.
+# Collector configuration. Relative paths are resolved from this folder (app/).
+# Another file can be given through the RP_CONFIG environment variable.
 
 [caminhos]
-# Banco ATIVO e logs: pasta local FORA do OneDrive (SQLite em pasta sincronizada pode corromper).
-# O programa recusa abrir o banco ativo dentro de uma pasta do OneDrive.
-# "~" = pasta do usuario em qualquer sistema. Outra pasta: variavel de ambiente RP_DADOS_LOCAIS.
+# ACTIVE database and logs: a local folder OUTSIDE OneDrive (SQLite in a synced folder can get corrupted).
+# The program refuses to open the active database inside a OneDrive folder.
+# "~" = the user's folder on any system. Another folder: the RP_DADOS_LOCAIS environment variable.
 dados_locais = "~/RestosAPagar_local"
-# Bruto imutavel (objetos + manifestos) e copias do banco: arquivos gravados uma unica vez.
-# Ficam no projeto, no OneDrive, e a sincronizacao serve de copia fora da maquina.
+# Immutable raw data (objects + manifests) and database copies: files written only once.
+# They stay in the project, in OneDrive, and the sync serves as an off-machine copy.
 snapshots = "../data/snapshots"
 backups = "../data/backups"
 
 [api]
-# So https: a validacao recusa http, credencial na URL, query ou fragmento.
+# https only: validation refuses http, credentials in the URL, query or fragment.
 base = "https://servicos.pontagrossa.pr.gov.br/portaltransparencia-api"
-pausa_segundos = 1.5        # intervalo minimo entre duas requisicoes
-timeout_segundos = 120      # por leitura (maior silencio aceito); o prazo total ABSOLUTO de uma requisicao e 3x este valor
-timeout_conexao_segundos = 30   # para estabelecer a conexao (nunca maior que timeout_segundos)
-tentativas = 3              # so para 5xx, 429 e erro de rede; 4xx nunca e repetido
-espera_base_segundos = 5    # espera antes de repetir: base x 2^(tentativa-1); Retry-After limitado a 300 s
-limite_resposta_bytes = 67108864   # 64 MiB: teto do corpo de uma resposta (a maior real tem poucos MB)
+pausa_segundos = 1.5        # minimum interval between two requests
+timeout_segundos = 120      # per read (longest accepted silence); the ABSOLUTE total deadline of a request is 3x this value
+timeout_conexao_segundos = 30   # to establish the connection (never greater than timeout_segundos)
+tentativas = 3              # only for 5xx, 429 and network errors; a 4xx is never retried
+espera_base_segundos = 5    # wait before retrying: base x 2^(attempt-1); Retry-After capped at 300 s
+limite_resposta_bytes = 67108864   # 64 MiB: cap on a response body (the largest real one has a few MB)
 user_agent = "RestosAPagarPG-coletor (pesquisa sobre dados publicos de Restos a Pagar)"
 
 [rreo]
-# Entidade cujas publicacoes da LRF (grupo 1 do portal) trazem o RREO Anexo VII, por entidade e consolidado.
+# Entity whose LRF publications (portal group 1) carry RREO Annex VII, per entity and consolidated.
 entidade_publicacoes = 1
 
 [escopo]
-# Entidades da carga (Etapa 04). O coletor aceita qualquer entidade passada explicitamente.
+# Entities of the load (stage 04). The collector accepts any entity passed explicitly.
 entidades = [1, 15, 4, 5, 8]
 exercicios = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]

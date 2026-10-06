@@ -1,8 +1,8 @@
-"""Testes de integridade do MODELO sobre a carga descartável (dados reais das Etapas 01/02).
+"""Integrity tests of the MODEL over the disposable load (real data of stages 01/02).
 
-VALIDAÇÃO DO MODELO — Etapa 03. Não é código de produção. Nenhum teste faz requisição.
-Os testes marcados SINTÉTICO usam dados inventados, explicitamente, para simular
-uma alteração retroativa que os dados reais não contêm em duas coletas.
+MODEL VALIDATION - stage 03. Not production code. No test makes a request.
+The tests marked SINTETICO use invented data, explicitly, to simulate
+a retroactive change that the real data does not have across two collections.
 """
 import json
 import sqlite3
@@ -30,7 +30,7 @@ def vig(con, e, ex, di, df):
     return consultas.snapshot_em(con, e, ex, di, df)
 
 
-# ---------------------------------------------------------------- camada bruta
+# ---------------------------------------------------------------- raw layer
 def test_camada_bruta_imutavel(banco):
     con = banco["con"]
     for sql in ("UPDATE coleta SET status='falhou' WHERE id=1", "DELETE FROM coleta WHERE id=1",
@@ -51,9 +51,9 @@ def test_regra_nao_se_edita(banco):
         banco["con"].execute("UPDATE regra SET definicao='x' WHERE codigo='S1'")
 
 
-# ---------------------------------------------------------------- normalização
+# ---------------------------------------------------------------- normalization
 def test_paginacao_completa_e_nenhum_registro_perdido(banco):
-    """Regra 6: cada item de content[] vira exatamente uma linha; soma bate com totalElements."""
+    """Rule 6: each content[] item becomes exactly one row; the sum matches totalElements."""
     con, nid = banco["con"], banco["nid"]
     for cid, status in con.execute("SELECT id, status FROM coleta WHERE tipo='rp_listagem'").fetchall():
         corpos = [json.loads(c) for (c,) in con.execute("SELECT corpo FROM resposta_bruta WHERE coleta_id=? ORDER BY ordem", (cid,))]
@@ -63,7 +63,7 @@ def test_paginacao_completa_e_nenhum_registro_perdido(banco):
 
 
 def test_chaves_base_sempre_presentes(banco):
-    """Só as 7 chaves de programática detalhada podem faltar (Etapa 01 §8)."""
+    """Only the 7 detailed-programmatic keys may be missing (stage 01 section 8)."""
     opcionais = {"orgao", "unidade", "funcao", "subFuncao", "programa", "projeto", "elemento"}
     for (aus,) in banco["con"].execute("SELECT DISTINCT chaves_ausentes FROM rp_registro"):
         assert set(json.loads(aus)) <= opcionais
@@ -77,14 +77,14 @@ def test_centavos_recusa_mais_de_duas_casas():
 
 
 def test_movimentacao_guarda_rotulos_como_vieram(banco):
-    """5659/2025: no 1º pagamento de 2026 a API rotula (2026, 1089) em 'liquidação' e (2025, 1) em 'pagamento'."""
+    """5659/2025: on the first 2026 payment the API labels (2026, 1089) as 'liquidacao' and (2025, 1) as 'pagamento'."""
     con, nid = banco["con"], banco["nid"]
     r = um(con, "SELECT exercicio_liquidacao_rotulo, no_liquidacao_rotulo, exercicio_pagamento_rotulo, no_pagamento_rotulo "
                 "FROM movimentacao_lancamento WHERE normalizacao_id=? AND empenho=5659 AND anoempenho=2025 AND data='2026-01-19'", nid)
     assert r == (2026, 1089, 2025, 1)
 
 
-# ---------------------------------------------------------------- derivação
+# ---------------------------------------------------------------- derivation
 def test_mov_ref_resolve_rotulos_trocados(banco):
     con, did = banco["con"], banco["did"]
     refs = con.execute("SELECT DISTINCT i.liquidacao_exercicio, i.liquidacao_numero FROM movimentacao_interpretada i "
@@ -108,7 +108,7 @@ def test_caso_11963_2016(banco):
 def test_caso_5659_2025(banco):
     con, did = banco["con"], banco["did"]
     assert _derivado(con, did, vig(con, 1, 2026, "2026-01-01", "2026-12-31"), 2025, 5659) == ("processado", 86378534, 0, 86378534, 0, 0)
-    # proc é o saldo antes de dataInicial: 3.001.373,39 com início em 01/02
+    # proc is the balance before dataInicial: 3.001.373,39 starting on 01/02
     cid = vig(con, 1, 2026, "2026-02-01", "2026-03-31")
     assert um(con, "SELECT proc_c, pago_proc_c FROM rp_registro WHERE coleta_id=? AND anoempenho=2025 AND empenho=5659", cid) == (300137339, 88972602)
 
@@ -129,7 +129,7 @@ def test_empenhos_nas_duas_abas_tem_os_mesmos_valores_da_consulta_sem_tipo(banco
 
 
 def test_identidade_de_estoque_entre_periodos(banco):
-    """aproc[01/02] = aproc − liquidado − canceladoAProc de janeiro; total idem (Etapa 02 §8)."""
+    """aproc[01/02] = aproc - liquidated - canceladoAProc of January; total likewise (stage 02 section 8)."""
     con, nid = banco["con"], banco["nid"]
     jan = vig(con, 1, 2026, "2026-01-01", "2026-01-31")
     fev = vig(con, 1, 2026, "2026-02-01", "2026-03-31")
@@ -161,7 +161,7 @@ def test_anomalias_do_corte_2026(banco):
     assert um(con, "SELECT anoempenho, empenho FROM anomalia WHERE derivacao_id=? AND coleta_id=? AND tipo='PAGOPROC-SEM-PROC'", did, cid) == (2025, 2410946)
 
 
-# ---------------------------------------------------------------- espelhamento
+# ---------------------------------------------------------------- mirroring
 def test_espelhamento_2026_execucao_so_na_copia(banco):
     con, did = banco["con"], banco["did"]
     lados = dict(con.execute("SELECT lado_com_execucao, COUNT(*) FROM espelhamento_par WHERE derivacao_id=? AND exercicio=2026 GROUP BY 1", (did,)))
@@ -177,7 +177,7 @@ def test_espelhamento_2025_execucao_no_original_e_copia_e_saldo_remanescente(ban
 
 
 def test_nenhum_registro_espelhado_foi_removido(banco):
-    """Regra 6: os dois lados de cada par continuam no normalizado e no derivado."""
+    """Rule 6: both sides of each pair stay in the normalized and derived layers."""
     con, did = banco["con"], banco["did"]
     for ra, ia, rb, ib in con.execute("SELECT resposta_a_id, indice_a, resposta_b_id, indice_b FROM espelhamento_par WHERE derivacao_id=?", (did,)):
         for r, i in ((ra, ia), (rb, ib)):
@@ -197,14 +197,14 @@ def test_visoes_publicado_e_analiticas(banco):
     pub = _visao(con, did, "publicado", 2026, "2026-04-30")
     v1 = _visao(con, did, "analitico", 2026, "2026-04-30", 1)
     v2 = _visao(con, did, "analitico", 2026, "2026-04-30", 2)
-    assert pub["b"] == 3882432969 and pub["g"] == 14525037054          # = RREO consolidado 2º bim
+    assert pub["b"] == 3882432969 and pub["g"] == 14525037054          # = consolidated RREO 2nd bimester
     assert pub["b"] - v1["b"] == 1134582815 and pub["g"] - v1["g"] == 1954237470
-    for f in ("c", "d", "h", "i", "j"):                                    # fluxos não mudam
+    for f in ("c", "d", "h", "i", "j"):                                    # flows do not change
         assert v1[f] == pub[f] == v2[f]
-    assert v1 == v2                                                        # 2026: as duas regras coincidem
+    assert v1 == v2                                                        # 2026: both rules agree
     p25, a25_1, a25_2 = (_visao(con, did, "publicado", 2025, "2025-12-31"),
                          _visao(con, did, "analitico", 2025, "2025-12-31", 1), _visao(con, did, "analitico", 2025, "2025-12-31", 2))
-    assert a25_1["S1"] > a25_2["S1"]                                       # 2025: v2 consolida também os 9 remanescentes
+    assert a25_1["S1"] > a25_2["S1"]                                       # 2025: v2 also consolidates the 9 remainders
 
 
 def test_regras_de_consolidacao_sao_experimentais(banco):
@@ -230,7 +230,7 @@ def test_conciliacao_reproduz_etapa02(banco):
 
 
 def test_rreo_col_v2_fecha_c_e_i_de_2025_pela_categoria_do_registro(banco):
-    """v2: pagamento segue a categoria do registro (15863/2023: 462,00; entidade 15: 2.554,25; 2410946/2025: 49,50)."""
+    """v2: payment follows the record's category (15863/2023: 462,00; entity 15: 2.554,25; 2410946/2025: 49,50)."""
     con, did = banco["con"], banco["did"]
     assert _conc(con, did, "entidade", 2025, "2025-12-31", agregacao=1)["c"] == -46200
     assert _conc(con, did, "entidade", 2025, "2025-12-31", agregacao=2)["c"] == 0
@@ -252,10 +252,10 @@ def test_rreo_col_v2_torna_L_igual_a_S1_em_todas_as_visoes(banco):
 def test_rreo_sem_snapshot_correspondente_e_registrado_nao_inventado(banco):
     con, did = banco["con"], banco["did"]
     n = um(con, "SELECT COUNT(*) FROM verificacao WHERE derivacao_id=? AND descricao LIKE 'RREO sem snapshot%'", did)[0]
-    assert n == 2 * 2  # consolidados do 3º e 4º bim/2026 (sem coleta de todas as entidades), × 2 versões de RREO-COL
+    assert n == 2 * 2  # consolidated 3rd and 4th bimester/2026 (without a collection of all entities), x 2 versions of RREO-COL
 
 
-# ---------------------------------------------------------------- snapshots no tempo
+# ---------------------------------------------------------------- snapshots over time
 def test_mesmo_corte_em_datas_diferentes(banco):
     con, nid = banco["con"], banco["nid"]
     hist = consultas.historico(con, 1, 2026, "2026-01-01", "2026-08-31")
@@ -269,7 +269,7 @@ def test_mesmo_corte_em_datas_diferentes(banco):
 
 
 def test_SINTETICO_alteracao_retroativa_preserva_os_dois_retratos(tmp_path):
-    """SINTÉTICO: duas coletas do mesmo corte com um valor alterado entre elas (entidade fictícia 999)."""
+    """SINTETICO: two collections of the same cut-off with a value changed between them (fictitious entity 999)."""
     con = bruto.criar_banco(tmp_path / "sintetico.sqlite")
     col = bruto.coletor(con, "teste-sintetico", "1")
     def corpo(aproc):
@@ -291,10 +291,10 @@ def test_SINTETICO_alteracao_retroativa_preserva_os_dois_retratos(tmp_path):
     c_hoje = consultas.snapshot_em(con, 999, 2026, "2026-01-01", "2026-12-31")
     assert c_mar != c_hoje
     assert consultas.diferencas(con, nid, c_mar, c_hoje)["alterados"] == [((999, 2025, 1), "aproc_c", 10000, 8000)]
-    assert um(con, "SELECT COUNT(*) FROM coleta")[0] == 2  # nada foi sobrescrito
+    assert um(con, "SELECT COUNT(*) FROM coleta")[0] == 2  # nothing was overwritten
 
 
-# ---------------------------------------------------------------- reprocessamento
+# ---------------------------------------------------------------- reprocessing
 def test_reprocessamento_deterministico(banco):
     con, nid, did = banco["con"], banco["nid"], banco["did"]
     did2 = derivar.derivar(con, nid)

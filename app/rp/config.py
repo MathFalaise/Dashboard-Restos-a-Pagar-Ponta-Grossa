@@ -1,4 +1,4 @@
-"""Leitura e validacao de config.toml."""
+"""Reading and validation of config.toml."""
 import os
 import tomllib
 from dataclasses import dataclass
@@ -7,8 +7,8 @@ from urllib.parse import urlsplit
 
 RAIZ_APP = Path(__file__).resolve().parents[1]
 
-# Teto padrao do corpo de UMA resposta HTTP. A maior resposta real ate hoje tem poucos MB;
-# o teto so existe para que um servidor defeituoso ou hostil nao esgote a memoria.
+# Default cap on the body of ONE HTTP response. The largest real response so far is a few MB;
+# the cap only exists so that a faulty or hostile server cannot exhaust memory.
 LIMITE_RESPOSTA_PADRAO = 64 * 1024 * 1024
 
 
@@ -30,8 +30,8 @@ class Config:
     entidades: tuple
     exercicios: tuple
     limite_resposta_bytes: int = LIMITE_RESPOSTA_PADRAO
-    entidade_rreo: int = 1          # entidade cujas publicacoes (grupo LRF) trazem o RREO Anexo VII
-    timeout_conexao: float = 30.0   # prazo para estabelecer a conexao (o de leitura e `timeout`; ver http.py)
+    entidade_rreo: int = 1          # entity whose publications (LRF group) carry the RREO Annex VII
+    timeout_conexao: float = 30.0   # time limit to establish the connection (the read limit is `timeout`; see http.py)
 
     def __post_init__(self):
         _validar(self)
@@ -50,12 +50,12 @@ class Config:
 
     @property
     def backups_operacionais(self):
-        """Backups de rotina (ex.: antes de apagar uma execucao reprocessavel): locais, com retencao."""
+        """Routine backups (e.g. before deleting a reprocessable run): local, with retention."""
         return self.dados_locais / "backups_operacionais"
 
 
 def _validar(c):
-    """Recusa configuracao que enfraqueca a coleta: API sem TLS, numeros fora de faixa, cabecalho com quebra de linha."""
+    """Rejects a config that would weaken collection: API without TLS, numbers out of range, header with a line break."""
     u = urlsplit(c.api_base)
     if u.scheme != "https" or not u.hostname or u.username or u.password or u.query or u.fragment:
         raise ConfiguracaoInvalida(f"api.base precisa ser https://host/caminho, sem credencial, query ou fragmento: {c.api_base!r}")
@@ -72,14 +72,14 @@ def _validar(c):
 
 
 def _caminho(v, base):
-    """'~' = pasta do usuario (em qualquer sistema); relativo = a partir da pasta do arquivo de configuracao."""
+    """'~' = the user's folder (on any system); relative = from the config file's folder."""
     p = Path(v).expanduser()
     return p if p.is_absolute() else (base / p).resolve()
 
 
 def carregar(arquivo=None, **substituir):
-    """Le o config.toml (ou o arquivo de RP_CONFIG). RP_DADOS_LOCAIS, se definida, substitui caminhos.dados_locais:
-    permite apontar outra pasta local (banco ativo e logs) sem editar o arquivo versionado."""
+    """Reads config.toml (or the RP_CONFIG file). RP_DADOS_LOCAIS, if set, replaces caminhos.dados_locais: lets you
+    point to another local folder (active database and logs) without editing the versioned file."""
     arquivo = Path(arquivo or os.environ.get("RP_CONFIG") or RAIZ_APP / "config.toml")
     c = tomllib.loads(arquivo.read_text(encoding="utf-8"))
     base = arquivo.parent

@@ -1,17 +1,20 @@
-"""Onde conferir, no Portal da Transparencia de Ponta Grossa (Oxy/Elotech), o valor que a interface mostra.
+"""Where to check, on the Ponta Grossa Transparency Portal (Oxy/Elotech), the value the interface shows.
 
-Tres caminhos no portal, com condicoes diferentes (conferido no portal em 06/10/2026, versao 3.128.0):
-  * integra: a API do proprio portal (/portaltransparencia-api/empenhos/restos-a-pagar), o mesmo endereco que o coletor
-    consulta, com o corte (dataFinal) e, para um empenho, os filtros empenho/anoempenho. E o dado exato do corte (JSON),
-    mas como esta HOJE na fonte: lancamento com data anterior ao corte, feito depois da coleta, muda o resultado.
-  * tela "Consulta em Restos a Pagar" (/{entidade}/restos-a-pagar): o exercicio e escolhido no topo do portal e a busca
-    no formulario (nada disso vai no endereco). Mostra sempre o exercicio inteiro como esta hoje (equivale ao corte
-    31/12), separado em Processados e Nao Processados, sem totais, sem retencao e sem estorno.
-  * detalhe do empenho (/{entidade}/empenhos/detalhe): o empenho exato, com a aba Movimentacao (lancamentos com data),
-    que explica o valor em qualquer corte.
-Montante (soma de registros) nao existe no portal: e a soma do campo em todas as paginas da integra de cada entidade.
-RREO: o PDF tem endereco direto; a pagina do Anexo VII (grupo 1, subgrupo 15) usa o exercicio escolhido no topo.
-So ha link para o dominio oficial, marcado rel="external": a interface continua sem nenhum recurso externo carregado.
+Three paths on the portal, with different conditions (checked on the portal on 06/10/2026, version 3.128.0):
+  * full listing: the portal's own API (/portaltransparencia-api/empenhos/restos-a-pagar), the same address the
+    collector queries, with the cut-off (dataFinal) and, for one commitment, the empenho/anoempenho filters. It is the
+    exact data of the cut-off (JSON), but as it is TODAY at the source: an entry dated before the cut-off, made after
+    the collection, changes the result.
+  * "Consulta em Restos a Pagar" screen (/{entidade}/restos-a-pagar): the fiscal year is chosen at the top of the
+    portal and the search in the form (none of that goes in the address). It always shows the whole fiscal year as it
+    is today (equivalent to the 31/12 cut-off), split into Processados and Nao Processados, with no totals, no
+    withholding and no reversals.
+  * commitment detail (/{entidade}/empenhos/detalhe): the exact commitment, with the Movimentacao tab (dated
+    entries), which explains the value at any cut-off.
+An amount (sum of records) does not exist on the portal: it is the sum of the field over all pages of each entity's
+full listing. RREO: the PDF has a direct address; the Annex VII page (group 1, subgroup 15) uses the fiscal year
+chosen at the top.
+There are only links to the official domain, marked rel="external": the interface still loads no external resource.
 """
 from urllib.parse import urlencode
 
@@ -20,11 +23,11 @@ from .formato import esc
 DOMINIO = "https://servicos.pontagrossa.pr.gov.br"
 SITE = f"{DOMINIO}/portaltransparencia"
 API = f"{DOMINIO}/portaltransparencia-api"
-TAMANHO_PAGINA = 2000                       # maior pagina que a API devolve (contrato observado)
-ORDEM = ("anoempenho,asc", "empenho,asc")   # a mesma ordem que o coletor pede
+TAMANHO_PAGINA = 2000                       # largest page the API returns (observed contract)
+ORDEM = ("anoempenho,asc", "empenho,asc")   # the same order the collector requests
 GRUPO_LRF, SUBGRUPO_ANEXO_VII = 1, 15
 
-# campo da API -> (aba, coluna) na tela "Consulta em Restos a Pagar" (conferido empenho a empenho na prova real)
+# API field -> (tab, column) on the "Consulta em Restos a Pagar" screen (checked commitment by commitment in the source check)
 TELA = {
     "proc": ("Processados", "Valor Inscrito"),
     "canceladoProc": ("Processados", "Valor Cancelado"),
@@ -41,7 +44,8 @@ def link(url, texto):
 
 
 def url_integra(entidade, exercicio, data_final, pagina=0, empenho=None, anoempenho=None):
-    """Listagem de RP da entidade de 01/01 ate o corte, como o coletor pede (ou so um empenho, com os filtros)."""
+    """An entity's RP listing from 01/01 up to the cut-off, as the collector requests it (or a single commitment, with
+    the filters)."""
     params = [("entidade", entidade), ("exercicio", exercicio), ("dataInicial", f"{exercicio}-01-01"),
               ("dataFinal", data_final)]
     if empenho is not None:
@@ -55,7 +59,8 @@ def url_consulta(entidade):
 
 
 def url_empenho(entidade, anoempenho, empenho):
-    """Detalhe do empenho no portal: `exercicio` aqui e o ano do EMPENHO (anoempenho), como o proprio portal monta."""
+    """Commitment detail on the portal: `exercicio` here is the year of the COMMITMENT (anoempenho), as the portal itself
+    builds it."""
     e = int(entidade)
     return (f"{SITE}/{e}/empenhos/detalhe?search=id.entidade=={e}&entidade={e}&exercicio={int(anoempenho)}"
             f"&empenho={int(empenho)}")
@@ -80,7 +85,7 @@ def _lista_paginas(urls):
 
 
 def campos_na_tela(campos):
-    """Onde cada campo da API usado no valor aparece no portal."""
+    """Where each API field used in the value appears on the portal."""
     itens = []
     for c in campos:
         aba_col = TELA.get(c["campo_api"])
@@ -91,7 +96,7 @@ def campos_na_tela(campos):
 
 
 def como_conferir_montante(v):
-    """Bloco "Onde conferir no Portal" de um cartao de indicador (montante): campos, formula e o caminho."""
+    """"Onde conferir no Portal" block of an indicator card (amount): fields, formula and the path."""
     if v["id"] == "registros":
         corpo = ("<p>Número de registros: campo <code>totalElements</code> da íntegra de cada entidade, somado. "
                  "Na tela de consulta, os itens das abas Processados e Não Processados.</p>")
@@ -103,7 +108,7 @@ def como_conferir_montante(v):
 
 
 def secao_onde_conferir(entidades, exercicio, data_final, coleta):
-    """Secao da pagina com a integra de cada entidade que entra no total do corte e as condicoes de cada caminho."""
+    """Page section with the full listing of each entity in the cut-off total and the conditions of each path."""
     itens = []
     for e in entidades:
         if not e.get("entra_no_total") or not e.get("snapshot"):
@@ -120,7 +125,7 @@ def secao_onde_conferir(entidades, exercicio, data_final, coleta):
 
 
 def condicoes(data_final, coleta, montante=False):
-    """As condicoes de cada caminho, que nao sao as mesmas."""
+    """The conditions of each path, which are not the same."""
     partes = []
     if montante:
         partes.append("<li><strong>Montante:</strong> o portal não soma. Some o campo em todas as páginas da íntegra "
@@ -137,7 +142,8 @@ def condicoes(data_final, coleta, montante=False):
 
 
 def como_conferir_registro(s, chave, pv=None):
-    """Um empenho: a integra filtrada no corte, a pagina da integra da coleta, o detalhe e a tela de consulta."""
+    """One commitment: the full listing filtered at the cut-off, the collection's listing page, the detail and the query
+    screen."""
     ex, df = s["exercicio"], s["data_final"]
     e, ano, emp = chave["entidade"], chave["anoempenho"], chave["empenho"]
     itens = [f"<li>{link(url_integra(e, ex, df, 0, emp, ano), 'Este empenho no corte')} (íntegra filtrada)</li>"]

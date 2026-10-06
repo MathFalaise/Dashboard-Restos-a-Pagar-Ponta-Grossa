@@ -1,12 +1,13 @@
-"""Interface publica de consulta (Subetapa 04.5): aplicacao WSGI somente leitura sobre a camada rp.painel.
+"""Public query interface (sub-stage 04.5): read-only WSGI application over the rp.painel layer.
 
-  aplicacao.py  roteamento, validacao dos parametros, cabecalhos de seguranca e servidor local (wsgiref)
-  paginas.py    paginas: resumo, entidades, empenhos, detalhe de empenho, retratos, comparacao de retratos,
-                reconciliacao com o RREO, pares espelhados (tecnico) e metodologia
-  formato.py    escape de HTML, moeda em centavos (aritmetica inteira), rotulos de fonte, natureza e regra
-  estilo.css    folha de estilo local
+  aplicacao.py  routing, parameter validation, security headers and local server (wsgiref)
+  paginas.py    pages: summary, entities, commitments, commitment detail, snapshots, snapshot comparison,
+                reconciliation with the RREO, mirrored pairs (technical) and methodology
+  formato.py    HTML escaping, money in cents (integer arithmetic), source, nature and rule labels
+  portal.py     where to check each value on the Transparency Portal (links only, never a request)
+  estilo.css    local style sheet
 
-Uso: python -m rp interface [--porta 8050] (dentro de app/). Nenhuma pagina consulta a API da Elotech.
+Usage: python -m rp interface [--porta 8050] (inside app/). No page queries the Elotech API.
 """
 from .aplicacao import Aplicacao, criar_servidor, servir
 

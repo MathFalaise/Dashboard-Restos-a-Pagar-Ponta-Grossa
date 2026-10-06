@@ -1,11 +1,13 @@
-"""Prova real (05/10/2026), passo 1: recoleta da API, num armazem e banco TEMPORARIOS, de tudo o que o banco ativo tem.
+"""Source check (05/10/2026), step 1: re-collects from the API, into a TEMPORARY store and database, everything the
+active database has.
 
-Somente leitura no banco ativo. A lista do que coletar sai dele: cada corte de listagem (entidade, exercicio,
-dataFinal, sem tipoPesquisa), cada movimentacao, os catalogos e as publicacoes do RREO de cada exercicio (com os PDFs do
-Anexo VII que o banco ativo tem, pelo mesmo idArquivo). A coleta usa o proprio Coletor do projeto (mesma pausa, mesmas conferencias de pagina, segunda leitura).
+Read-only on the active database. The list of what to collect comes from it: each listing cut-off (entidade, exercicio,
+dataFinal, without tipoPesquisa), each movement, the catalogs and the RREO publications of each fiscal year (with the
+Annex VII PDFs the active database has, by the same idArquivo). The collection uses the project's own Coletor (same
+pause, same page checks, second read).
 
-Uso (dentro de app/):  python ../docs/audits/source-check/recoletar_tudo.py --config C:/rpaud/prova/config.toml
-O progresso vai para <dados_locais>/prova_progresso.jsonl; uma coleta ja feita (mesmos parametros) e pulada ao retomar.
+Usage (inside app/):  python ../docs/audits/source-check/recoletar_tudo.py --config C:/rpaud/prova/config.toml
+Progress goes to <dados_locais>/prova_progresso.jsonl; a collection already done (same parameters) is skipped on resume.
 """
 import argparse
 import json
@@ -78,7 +80,7 @@ def main():
             elif tipo == "movimentacao":
                 r = [coletor.movimentacao(*args)]
             else:
-                # so os PDFs que o banco ativo tem (os mesmos idArquivo): nada de baixar o resto do portal
+                # only the PDFs the active database has (the same idArquivo): nothing else is downloaded from the portal
                 r = coletor.rreo(args[0], ids=set(args[1]) or {-1})
             linha = {"passo": passo, "segundos": round(time.time() - t0, 1),
                      "requisicoes": coletor.cliente.requisicoes - antes,

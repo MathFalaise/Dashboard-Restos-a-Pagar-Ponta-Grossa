@@ -1,4 +1,4 @@
-"""Prova real: empenhos lidos na TELA do portal (tela_portal/*.json, sem nomes) x banco ativo. Uso: python comparar_tela.py tela_portal/*.json"""
+"""Source check: commitments read on the portal SCREEN (tela_portal/*.json, without names) x active database. Usage: python comparar_tela.py tela_portal/*.json"""
 import json,sqlite3,pathlib,sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[3] / "app"))
 from rp.painel import Painel

@@ -1,11 +1,11 @@
-"""INVESTIGAÇÃO — Etapa 02. NÃO é código de produção.
+"""INVESTIGATION - stage 02. NOT production code.
 
-Testes controlados de dataInicial/dataFinal (exercício 2026, entidade 1,
-consulta SemTipo). Para cada empenho, compara os campos entre períodos e
-conta em quantos registros cada relação candidata vale. Relação que falha em
-qualquer registro é reportada com exemplos: não é descartada em silêncio.
+Controlled tests of dataInicial/dataFinal (fiscal year 2026, entity 1,
+SemTipo query). For each commitment, compares the fields across periods and
+counts in how many records each candidate relation holds. A relation that fails in
+any record is reported with examples: it is not silently discarded.
 
-Períodos (todos já baixados por coletar.py):
+Periods (all already downloaded by coletar.py):
   A 01/01-31/12   B 01/01-31/01   C 01/02-31/03   D 01/01-31/03
   E 01/01-30/06   F 01/01-31/08   X 01/02-31/12
 """

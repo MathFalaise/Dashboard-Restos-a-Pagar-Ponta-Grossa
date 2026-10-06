@@ -1,9 +1,9 @@
-"""INVESTIGAÇÃO — Etapa 02. NÃO é código de produção.
+"""INVESTIGATION - stage 02. NOT production code.
 
-Compara, registro a registro, as três consultas (Processados, NaoProcessados,
-SemTipo) do mesmo período: quem está em cada aba, se os valores de um mesmo
-empenho coincidem entre as abas, qual regra separa as abas, e as somas por
-segmento. Nada é inferido: só contagens e somas.
+Compares, record by record, the three queries (Processados, NaoProcessados,
+SemTipo) of the same period: who is in each tab, whether the values of the same
+commitment match across the tabs, which rule separates the tabs, and the sums per
+segment. Nothing is inferred: only counts and sums.
 """
 import sys
 from collections import Counter
@@ -23,7 +23,7 @@ def main(ent, ex, di, df):
     print(f"   so P={len(so_p)} so N={len(so_n)} ambos={len(ambos)} | uniao={len(P.keys() | N.keys())}"
           f" | S - uniao={len(S.keys() - (P.keys() | N.keys()))} | uniao - S={len((P.keys() | N.keys()) - S.keys())}")
 
-    # o mesmo empenho traz os mesmos valores nas três consultas?
+    # does the same commitment bring the same values in the three queries?
     dif = Counter()
     for k in S:
         for fonte, D in (("P", P), ("N", N)):
@@ -33,7 +33,7 @@ def main(ent, ex, di, df):
                         dif[(fonte, c)] += 1
     print("   campos que diferem entre a aba e SemTipo para o mesmo empenho:", dict(dif) or "nenhum")
 
-    # regra de pertinência às abas
+    # rule of membership in the tabs
     def cond(r):
         return ("proc>0" if Decimal(r["proc"]) > 0 else "proc=0" if Decimal(r["proc"]) == 0 else "proc<0",
                 "aproc>0" if Decimal(r["aproc"]) > 0 else "aproc=0" if Decimal(r["aproc"]) == 0 else "aproc<0")
@@ -45,7 +45,7 @@ def main(ent, ex, di, df):
         soma = lambda ks: sum((Decimal(S.get(k, P.get(k, N.get(k)))[c]) for k in ks), Decimal(0))
         print(f"   {c:20s} {br(soma(so_p)):>16s} {br(soma(so_n)):>16s} {br(soma(ambos)):>16s} {br(soma(S.keys())):>16s}")
 
-    # sinais: valores negativos por campo
+    # signs: negative values per field
     neg = Counter(c for r in S.values() for c in CAMPOS if Decimal(r[c]) < 0)
     print("   registros com valor negativo por campo (SemTipo):", dict(neg))
 

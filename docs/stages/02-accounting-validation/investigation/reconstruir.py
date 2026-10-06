@@ -1,16 +1,16 @@
-"""INVESTIGAÇÃO — Etapa 02. NÃO é código de produção.
+"""INVESTIGATION - stage 02. NOT production code.
 
-Modelo de reconstrução (HIPÓTESE sob teste) dos campos da listagem de Restos a
-Pagar a partir da movimentação de cada empenho. Para cada caso e cada período
-já baixado, calcula o valor previsto e compara com o que a API devolveu.
-Só imprime divergências, mais um resumo por campo.
+Reconstruction model (a HYPOTHESIS under test) of the fields of the Restos a
+Pagar listing from each commitment's movement. For each case and each period
+already downloaded, computes the predicted value and compares it with what the API returned.
+Prints only divergences, plus a summary per field.
 
-Rótulos da movimentação, conforme observado (ver relatório):
+Movement labels, as observed (see the report):
   20 Empenho, 21 Cancelamento Empenho, 22 Estorno Cancelamento Empenho,
-  30 Liquidação, 31 Estorno Liquidação, 40 Pagamento, 41 Estorno Pagamento,
-  50 Retenção, 51 Est Retenção.
-  Em 40/41 a liquidação paga está em (exercicioPagamento, noPagamento) — os
-  rótulos vêm trocados; em 30/31/50/51 está em (exercicioLiquidacao, noLiquidacao).
+  30 Liquidacao, 31 Estorno Liquidacao, 40 Pagamento, 41 Estorno Pagamento,
+  50 Retencao, 51 Est Retencao.
+  In 40/41 the paid liquidation is in (exercicioPagamento, noPagamento) - the
+  labels come swapped; in 30/31/50/51 it is in (exercicioLiquidacao, noLiquidacao).
 """
 from collections import Counter
 from datetime import date
@@ -28,7 +28,7 @@ SINAL_RET = {50: 1, 51: -1}
 
 
 def ex_liq(m):
-    """Exercício da liquidação a que o lançamento se refere."""
+    """Fiscal year of the liquidation the entry refers to."""
     if m["tipoLancamento"] in (40, 41):
         return m["exercicioPagamento"]
     return m["exercicioLiquidacao"]
@@ -36,7 +36,7 @@ def ex_liq(m):
 
 def modelo(movs, di, df):
     di, df = date.fromisoformat(di), date.fromisoformat(df)
-    emp = liq = pag = ret = Z  # acumulados antes de di
+    emp = liq = pag = ret = Z  # accumulated before di
     o = Counter()
     for m in movs:
         t, d, v = m["tipoLancamento"], date.fromisoformat(m["data"]), Decimal(m["valor"])

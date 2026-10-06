@@ -1,17 +1,17 @@
-"""Consultas temporais sobre snapshots ("como estava em").
+"""Temporal queries over snapshots ("as it was on").
 
-VALIDAÇÃO DO MODELO — Etapa 03. Não é código de produção.
+MODEL VALIDATION - stage 03. Not production code.
 """
 from .derivar import coletas_vigentes
 
 
 def snapshot_em(con, entidade, exercicio, data_inicial, data_final, em=None):
-    """Id da coleta que o portal mostrava para o corte na data `em` (ou a mais recente)."""
+    """Id of the collection the portal showed for the cut-off on date `em` (or the most recent one)."""
     return coletas_vigentes(con, em).get((entidade, exercicio, data_inicial, data_final))
 
 
 def historico(con, entidade, exercicio, data_inicial, data_final):
-    """Todas as coletas do mesmo corte, em ordem de coleta."""
+    """All collections of the same cut-off, in collection order."""
     return con.execute(
         "SELECT id, coletada_em, origem_carimbo FROM coleta WHERE tipo='rp_listagem' AND status='completa' "
         "AND tipo_pesquisa IS NULL AND entidade=? AND exercicio=? AND data_inicial=? AND data_final=? "
@@ -23,7 +23,7 @@ CAMPOS = ["proc_c", "aproc_c", "cancelado_proc_c", "pago_proc_c", "pago_proc_est
 
 
 def diferencas(con, nid, coleta_1, coleta_2):
-    """O que mudou entre dois snapshots do mesmo corte: chaves novas, sumidas e campos alterados."""
+    """What changed between two snapshots of the same cut-off: new keys, missing keys and changed fields."""
     def carregar(cid):
         cur = con.execute(f"SELECT entidade, anoempenho, empenho, {','.join(CAMPOS)} FROM rp_registro "
                           "WHERE normalizacao_id=? AND coleta_id=?", (nid, cid))

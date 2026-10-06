@@ -1,8 +1,8 @@
-"""INVESTIGAÇÃO — Etapa 02. NÃO é código de produção.
+"""INVESTIGATION - stage 02. NOT production code.
 
-Valida o modelo de reconstrução (reconstruir.modelo) numa amostra aleatória
-estratificada (semente fixa) do exercício 2026, entidade 1, em todos os
-períodos baixados. Baixa a movimentação de cada empenho da amostra (1 req/emp.).
+Validates the reconstruction model (reconstruir.modelo) on a stratified random
+sample (fixed seed) of fiscal year 2026, entity 1, in every downloaded period.
+Downloads the movement of each commitment in the sample (1 request per commitment).
 """
 import random
 from collections import Counter

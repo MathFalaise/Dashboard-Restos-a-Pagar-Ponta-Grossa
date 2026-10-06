@@ -1,4 +1,4 @@
-"""Retrato do estado para os portoes da revisao corretiva (somente leitura). Uso: python estado.py <saida.json>"""
+"""Snapshot of the state for the corrective review gates (read-only). Usage: python estado.py <saida.json>"""
 import hashlib, json, sqlite3, subprocess, sys
 from pathlib import Path
 RAIZ = Path("C:/Users/maped/OneDrive/Área de Trabalho/Projeto Dashboard Restos a Pagar")

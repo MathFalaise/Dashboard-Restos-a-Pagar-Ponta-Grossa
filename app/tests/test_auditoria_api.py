@@ -1,7 +1,7 @@
-"""Regressao da auditoria tecnica, grupos G2 e G3: cliente HTTP e paginacao (fase 15 da auditoria).
+"""Regression of the technical audit, groups G2 and G3: HTTP client and pagination (phase 15 of the audit).
 
-Transporte simulado (fixture `ambiente`): nenhuma requisicao real. Cada teste cita o caso da fase 15 ou o ID do
-achado em auditoria/AUDITORIA_TECNICA_COMPLETA.md.
+Simulated transport (fixture `ambiente`): no real request. Each test cites the phase 15 case or the finding's ID in
+docs/audits/TECHNICAL_AUDIT.md.
 """
 import json
 from datetime import datetime, timezone
@@ -33,7 +33,7 @@ def test_API01_normal_varias_paginas_completa_com_segunda_leitura_no_manifesto(a
     assert s["status"] == "completa" and len(p.chamadas) == 4 and s["respostas"] == 2
     m = ambiente["armazem"].ler_manifesto(s["manifesto"])
     assert [x["igual"] for x in m["segunda_leitura"]] == [True, True]
-    for x in m["segunda_leitura"]:                                      # bytes guardados, fora das respostas
+    for x in m["segunda_leitura"]:                                      # bytes kept, outside the responses
         ambiente["armazem"].ler_objeto(x["sha256"], x["tamanho"])
     con = ambiente["con"]
     assert con.execute("SELECT COUNT(*) FROM resposta_bruta WHERE coleta_id=?", (s["coleta_id"],)).fetchone()[0] == 2
@@ -57,7 +57,7 @@ def test_API02_total_que_muda_entre_paginas(ambiente):
 
 
 def test_API03_mesma_pagina_repetida_com_number_ecoado_certo(ambiente):
-    p = ambiente["portal"]   # servidor ignora page mas ecoa o numero pedido: o registro identico denuncia
+    p = ambiente["portal"]   # the server ignores page but echoes the requested number: the identical record gives it away
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1), REG(2)], 0, 4, False, 2, size=2))]
     p.rotas[(EP_RP, "1")] = [(200, _pag([REG(1), REG(2)], 1, 4, True, 2, size=2))]
     s = _listar(ambiente)
@@ -65,13 +65,13 @@ def test_API03_mesma_pagina_repetida_com_number_ecoado_certo(ambiente):
 
 
 def test_API04_registro_duplicado_entre_paginas_com_soma_igual_ao_total(ambiente):
-    # o exemplo da auditoria: A B C | C D E, total 6 - a regra antiga (soma = total) aceitava
+    # the audit's example: A B C | C D E, total 6 - the old rule (sum = total) accepted it
     p = ambiente["portal"]
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1), REG(2), REG(3)], 0, 6, False, 2, size=3))]
     p.rotas[(EP_RP, "1")] = [(200, _pag([REG(3), REG(4), REG(5)], 1, 6, True, 2, size=3))]
     s = _listar(ambiente)
     assert s["status"] == "incompleta" and "registro idêntico" in s["observacao"]
-    # mesma chave com valor alterado na troca de pagina (registro deslocado e atualizado): a ordem denuncia
+    # same key with a changed value across the page change (record shifted and updated): the order gives it away
     p.chamadas.clear()
     p.rotas[(EP_RP, "1")] = [(200, _pag([REG(3, proc=9.0), REG(4), REG(5)], 1, 6, True, 2, size=3))]
     s = _listar(ambiente)
@@ -79,8 +79,8 @@ def test_API04_registro_duplicado_entre_paginas_com_soma_igual_ao_total(ambiente
 
 
 def test_API05_registro_que_some_entre_paginas_com_soma_igual_ao_total(ambiente):
-    # 1 2 3 | 5 6 7: o 2 foi excluido e o 7 incluido durante a paginacao; o 4 se perdeu. Soma, total e ordem
-    # passam; so a segunda leitura (pagina 0 agora diferente) mostra que a base mudou
+    # 1 2 3 | 5 6 7: 2 was deleted and 7 added during pagination; 4 was lost. Sum, total and order
+    # pass; only the second read (page 0 now different) shows that the base changed
     p = ambiente["portal"]
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1), REG(2), REG(3)], 0, 6, False, 2, size=3)),
                              (200, _pag([REG(1), REG(3), REG(4)], 0, 6, False, 2, size=3))]
@@ -88,11 +88,11 @@ def test_API05_registro_que_some_entre_paginas_com_soma_igual_ao_total(ambiente)
     s = _listar(ambiente)
     assert s["status"] == "incompleta" and "segunda leitura da página 0 diferente" in s["observacao"]
     m = ambiente["armazem"].ler_manifesto(s["manifesto"])
-    assert m["segunda_leitura"][-1]["igual"] is False                   # a evidencia fica no manifesto
+    assert m["segunda_leitura"][-1]["igual"] is False                   # the evidence stays in the manifest
 
 
 def test_API06_size_limitado_pelo_servidor_e_aceito_se_coerente(ambiente):
-    p = ambiente["portal"]   # pediu 2000, o servidor usa 2 (como a API real faz com 5000 -> 2000)
+    p = ambiente["portal"]   # asked for 2000, the server uses 2 (as the real API does with 5000 -> 2000)
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1), REG(2)], 0, 3, False, 2, size=2))]
     p.rotas[(EP_RP, "1")] = [(200, _pag([REG(3)], 1, 3, True, 2, size=2))]
     assert _listar(ambiente)["status"] == "completa"
@@ -114,21 +114,21 @@ def test_API07_page_ignorado(ambiente):
 
 def test_API08_last_incorreto_e_totais_inconsistentes(ambiente):
     p = ambiente["portal"]
-    # last=false na ultima pagina: para em totalPages, sem pedir pagina fora do intervalo (COL-04: 2 chamadas)
+    # last=false on the last page: stops at totalPages, without asking for a page out of range (COL-04: 2 calls)
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1), REG(2)], 0, 3, False, 2, size=2))]
     p.rotas[(EP_RP, "1")] = [(200, _pag([REG(3)], 1, 3, False, 2, size=2))]
     s = _listar(ambiente)
     assert s["status"] == "incompleta" and len(p.chamadas) == 2 and "não é a última" in s["observacao"]
-    # last=true cedo demais
+    # last=true too early
     p.chamadas.clear()
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1)], 0, 3, True, 2, size=2))]
     assert _listar(ambiente)["status"] == "incompleta"
-    # totalElements ausente (COL-03): falha na primeira pagina, sem seguir paginando
+    # totalElements missing (COL-03): fails on the first page, without paginating further
     p.chamadas.clear()
     p.rotas[(EP_RP, "0")] = [(200, json.dumps({"content": [REG(1)], "last": False}).encode())]
     s = _listar(ambiente)
     assert s["status"] == "incompleta" and len(p.chamadas) == 1 and "totalElements ausente" in s["observacao"]
-    # totalPages incoerente com total e size
+    # totalPages inconsistent with total and size
     p.chamadas.clear()
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1)], 0, 1, True, 7, size=2000))]
     assert "totalPages=7 incoerente" in _listar(ambiente)["observacao"]
@@ -139,7 +139,7 @@ def test_API09_429_respeita_retry_after_e_repete(ambiente):
     p.rotas[(EP_RP, "0")] = [(429, b"devagar"), (200, _pag([REG(1)], 0, 1, True, 1))]
     original = p.get
 
-    def get(url, timeout):   # o 429 vem com Retry-After no cabecalho
+    def get(url, timeout):   # the 429 comes with Retry-After in the header
         st, h, corpo = original(url, timeout)
         return st, ({**h, "Retry-After": "40"} if st == 429 else h), corpo
     ambiente["coletor"].cliente.transporte = get
@@ -194,7 +194,7 @@ def test_API15_erro_de_programacao_no_transporte_propaga_sem_repetir(ambiente):
     p.rotas[(EP_RP, "0")] = [TypeError("bug no transporte")]
     with pytest.raises(TypeError, match="bug no transporte"):
         _listar(ambiente)
-    assert len(p.chamadas) == 1                                         # nem repetido, nem virou "rede"
+    assert len(p.chamadas) == 1                                         # neither retried nor turned into "rede"
 
 
 def test_HTTP01_transporte_requests_classifica_as_excecoes(monkeypatch):

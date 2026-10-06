@@ -1,21 +1,22 @@
-"""Regra UNICA do retrato vigente de cada corte de listagem (revisao critica, itens 1 e 15). SOMENTE LEITURA.
+"""The SINGLE rule for the current snapshot of each listing cut-off (critical review, items 1 and 15). READ-ONLY.
 
-Derivacao, consultas e painel escolhem o vigente por estas funcoes. Moram fora de `derivar` porque a interface usa o
-painel e nao pode carregar o derivador (test_homologacao: a interface nao tem como processar); `derivar` reexporta os
-nomes.
+Derivation, queries and panel pick the current snapshot through these functions. They live outside `derivar`
+because the interface uses the panel and must not load the deriver (test_homologacao: the interface cannot
+process); `derivar` re-exports the names.
 
-Regra: o vigente de (entidade, exercicio, data_inicial, data_final) e o snapshot COMPLETO mais recente ate `em`
-(desempate estavel por snapshot_uid) que NAO tenha chave de negocio repetida. O retrato com repeticao (anomalia
-CHAVE-DUP) continua no banco e no armazem, so nao e usado: vale o retrato valido anterior do mesmo corte, ou nenhum.
+Rule: the current snapshot of (entidade, exercicio, data_inicial, data_final) is the most recent COMPLETE snapshot
+up to `em` (stable tie-break by snapshot_uid) that has NO repeated business key. A snapshot with a repetition
+(CHAVE-DUP anomaly) stays in the database and in the store, it is just not used: the previous valid snapshot of the
+same cut-off applies, or none.
 """
 
 VERIF_RETRATO_AMBIGUO = "retrato com chave repetida fora da vigência"
 
 
 def coletas_ambiguas(con, did=None):
-    """Coletas com chave de negocio repetida (anomalia CHAVE-DUP) na derivacao `did`; padrao: a derivacao atual mais
-    recente. A derivacao em curso passa o conjunto que acabou de calcular; o painel e quem consulta depois leem o
-    registrado - assim todos escolhem o mesmo retrato vigente."""
+    """Collections with a repeated business key (CHAVE-DUP anomaly) in derivation `did`; default: the most recent
+    current derivation. The derivation in progress passes the set it just computed; the panel and later readers use
+    what was recorded - so everyone picks the same current snapshot."""
     if did is None:
         did = con.execute("SELECT MAX(id) FROM derivacao_execucao WHERE vigencia_em IS NULL").fetchone()[0]
     if did is None:
@@ -26,10 +27,10 @@ def coletas_ambiguas(con, did=None):
 
 
 def coletas_vigentes(con, em=None, excluir=None, limite_coleta=None):
-    """Snapshot vigente de cada corte de listagem (sem tipo, completo, sem chave repetida): o mais recente ate `em`.
-    Chave (entidade, exercicio, data_inicial, data_final). Desempate estavel por snapshot_uid.
-    `excluir`: coletas ambiguas, que nunca sao vigentes; padrao: as registradas (coletas_ambiguas).
-    `limite_coleta`: so coletas com id ate ele (o painel considera so o que a normalizacao processou)."""
+    """Current snapshot of each listing cut-off (untyped, complete, no repeated key): the most recent up to `em`.
+    Key (entidade, exercicio, data_inicial, data_final). Stable tie-break by snapshot_uid.
+    `excluir`: ambiguous collections, never current; default: the recorded ones (coletas_ambiguas).
+    `limite_coleta`: only collections with id up to it (the panel only considers what the normalization processed)."""
     excluir = coletas_ambiguas(con) if excluir is None else excluir
     filtros, params = [], []
     if limite_coleta is not None:

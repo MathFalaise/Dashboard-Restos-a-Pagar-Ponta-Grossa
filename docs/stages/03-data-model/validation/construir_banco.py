@@ -1,8 +1,8 @@
-"""Constrói o banco DESCARTÁVEL de validação com os dados brutos das Etapas 01 e 02.
+"""Builds the DISPOSABLE validation database with the raw data of stages 01 and 02.
 
-VALIDAÇÃO DO MODELO — Etapa 03. Não é código de produção. Não faz nenhuma requisição.
+MODEL VALIDATION - stage 03. Not production code. It makes no request.
 
-Uso: python construir_banco.py CAMINHO_DO_BANCO.sqlite
+Usage: python construir_banco.py PATH_TO_DATABASE.sqlite
 """
 import sys
 import time
@@ -16,7 +16,7 @@ RAIZ = Path(__file__).resolve().parents[4]
 def construir(caminho):
     caminho = Path(caminho)
     if caminho.exists():
-        caminho.unlink()  # descartável por definição
+        caminho.unlink()  # disposable by definition
     t = time.time()
     con = bruto.criar_banco(caminho)
     resumo = bruto.carregar_etapas_anteriores(con, RAIZ)

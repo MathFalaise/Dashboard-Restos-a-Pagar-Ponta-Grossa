@@ -1,9 +1,9 @@
-"""Homologacao da interface (Subetapa 04.6): situacoes que os dados reais nao tem ou que nao dependem deles.
+"""Homologation of the interface (sub-stage 04.6): situations the real data does not have or that do not depend on it.
 
-* SINTETICO = registros inventados num banco temporario (fixture `mundo`).
-* Os testes sobre o armazem real ficam em test_homologacao_real.py.
-Secoes da especificacao: 9 e 10 (situacao dos dados e entidades), 11 e 12 (somente leitura), 4 (sem formula na
-interface), 22 (portabilidade), 27 (portoes de uma carga nova).
+* SINTETICO = invented records in a temporary database (fixture `mundo`).
+* The tests over the real store live in test_homologacao_real.py.
+Specification sections: 9 and 10 (data situation and entities), 11 and 12 (read-only), 4 (no formula in the
+interface), 22 (portability), 27 (gates of a new load).
 """
 import ast
 import hashlib
@@ -43,9 +43,9 @@ def _incompleta(mundo, entidade, exercicio, data_final, quando):
 
 
 def _mundo_com_todas_as_situacoes(mundo):
-    """Corte 2025-12-31 com uma entidade em cada situacao:
-    1 dado existente (e retrato mais novo nao processado); 3 fora do catalogo de 2025; 5 so coleta incompleta;
-    8 nunca coletada; 9 coletada depois do processamento; 15 existente com zero registros."""
+    """Cut-off 2025-12-31 with one entity in each situation:
+    1 existing data (and a newer unprocessed snapshot); 3 outside the 2025 catalog; 5 only an incomplete collection;
+    8 never collected; 9 collected after processing; 15 existing with zero records."""
     mundo.catalogos({1: [2025], 3: [2024], 5: [2025], 8: [2025], 9: [2025], 15: [2025]})
     mundo.listagem(1, 2025, "2025-12-31", [_reg(1, aproc=10.0)], T0)
     mundo.listagem(3, 2025, "2025-12-31", [_reg(7, entidade=3)], T0)
@@ -60,7 +60,7 @@ def _mundo_com_todas_as_situacoes(mundo):
 ESPERADO = {1: "com_dados", 3: "inexistente", 5: "incompleto", 8: "sem_coleta", 9: "nao_processado", 15: "sem_rp"}
 
 
-# ================================================================== secoes 9 e 10: situacao dos dados e entidades
+# ================================================================== sections 9 and 10: data situation and entities
 def test_SINTETICO_cada_situacao_do_dado_e_distinta_na_camada_painel(mundo):
     _mundo_com_todas_as_situacoes(mundo)
     with mundo.painel() as p:
@@ -70,7 +70,7 @@ def test_SINTETICO_cada_situacao_do_dado_e_distinta_na_camada_painel(mundo):
     for e, codigo in ESPERADO.items():
         assert linhas[e]["situacao_do_dado"]["texto"] == SITUACOES_DO_DADO[codigo]
         if codigo not in ("com_dados", "sem_rp"):
-            assert linhas[e]["valores"] is None, e                 # nunca zero
+            assert linhas[e]["valores"] is None, e                 # never zero
     assert linhas[15]["valores"]["inscricao_total"] == 0 and linhas[15]["valores"]["registros"] == 0
     assert linhas[1]["retrato_mais_novo_nao_processado"] and not linhas[15]["retrato_mais_novo_nao_processado"]
     assert not mun["disponivel"]
@@ -104,7 +104,7 @@ def test_SINTETICO_interface_mostra_cada_situacao_e_nunca_converte_em_zero(mundo
 
 def test_SINTETICO_entidade_existente_sem_rp_e_diferente_de_inexistente_e_de_sem_coleta(mundo):
     mundo.catalogos({1: [2024, 2025], 15: [2025]})
-    mundo.listagem(1, 2025, "2025-12-31", [], T0)          # existia em 2025 e nao tem RP
+    mundo.listagem(1, 2025, "2025-12-31", [], T0)          # existed in 2025 and has no RP
     mundo.listagem(1, 2024, "2024-12-31", [_reg(1)], T0)
     mundo.processar()
     with mundo.painel() as p:
@@ -113,7 +113,7 @@ def test_SINTETICO_entidade_existente_sem_rp_e_diferente_de_inexistente_e_de_sem
     assert a == {1: "sem_rp", 15: "sem_coleta"} and b == {1: "com_dados", 15: "inexistente"}
 
 
-# ================================================================== secoes 11 e 12: somente leitura
+# ================================================================== sections 11 and 12: read-only
 ESCRITAS = ["INSERT INTO evidencia_externa (tipo, descricao, registrada_em) VALUES ('nota', 'x', 'x')",
             "UPDATE rp_registro SET proc_c = 0", "DELETE FROM rp_derivado", "DELETE FROM coleta",
             "CREATE TABLE t (x)", "DROP TABLE rp_derivado", "ALTER TABLE rp_registro ADD COLUMN x INTEGER",
@@ -128,7 +128,7 @@ def test_SINTETICO_banco_da_interface_so_permite_leitura(mundo):
     antes, mtime = sha(arquivo), arquivo.stat().st_mtime_ns
     from rp.painel import Painel
     with Painel.abrir(arquivo) as p:
-        assert p.con.execute("SELECT COUNT(*) FROM rp_registro").fetchone()[0] > 0         # SELECT permitido
+        assert p.con.execute("SELECT COUNT(*) FROM rp_registro").fetchone()[0] > 0         # SELECT allowed
         for sql in ESCRITAS:
             with pytest.raises(sqlite3.DatabaseError):
                 p.con.execute(sql)
@@ -136,12 +136,12 @@ def test_SINTETICO_banco_da_interface_so_permite_leitura(mundo):
                             ("/retratos", {}), ("/reconciliacao", {}), ("/pares", {}), ("/metodologia", {})):
         chamar(app, caminho, **params)
     assert sha(arquivo) == antes and arquivo.stat().st_mtime_ns == mtime
-    assert not [x for x in arquivo.parent.iterdir() if x.name.startswith(arquivo.name + "-")]   # sem -wal/-journal
+    assert not [x for x in arquivo.parent.iterdir() if x.name.startswith(arquivo.name + "-")]   # no -wal/-journal
 
 
 def test_interface_nao_carrega_coleta_nem_processamento():
-    """Importar a interface nao carrega cliente HTTP, coletor, normalizador, derivador, importador nem a gravacao de
-    snapshot: a interface nao tem como coletar, processar, derivar ou escrever snapshot."""
+    """Importing the interface loads no HTTP client, collector, normalizer, deriver, importer nor snapshot writing: the
+    interface has no way to collect, process, derive or write a snapshot."""
     codigo = ("import sys, json; import rp.interface, rp.painel; "
               "print(json.dumps(sorted(m for m in sys.modules if m.split('.')[0] in ('rp', 'requests', 'pymupdf', 'fitz', "
               "'urllib3'))))")
@@ -152,10 +152,10 @@ def test_interface_nao_carrega_coleta_nem_processamento():
     assert not carregados & proibidos, carregados & proibidos
 
 
-# ================================================================== secao 4: a interface nao recria formula
+# ================================================================== section 4: the interface does not recreate formulas
 def test_interface_nao_soma_nem_subtrai_valores_monetarios():
-    """Toda soma ou diferenca de valores vem da camada painel: na interface nao ha operacao aritmetica sobre um campo
-    em centavos (chave terminada em _c) nem chamada de sum()."""
+    """Every sum or difference of values comes from the panel layer: the interface has no arithmetic operation on a field
+    in cents (key ending in _c) nor a call to sum()."""
     for arq in ("paginas.py", "formato.py", "aplicacao.py"):
         arvore = ast.parse((APP / "rp" / "interface" / arq).read_text(encoding="utf-8"))
         for no in ast.walk(arvore):
@@ -169,7 +169,7 @@ def test_interface_nao_soma_nem_subtrai_valores_monetarios():
         assert "SELECT" not in (APP / "rp" / "interface" / arq).read_text(encoding="utf-8")
 
 
-# ================================================================== secao 17: busca por empenho
+# ================================================================== section 17: search by commitment
 def test_SINTETICO_busca_por_empenho_e_parametros_invalidos(mundo):
     mundo.catalogos({1: [2025]})
     mundo.listagem(1, 2025, "2025-12-31", [_reg(1, ano=2024, aproc=10.0), _reg(2, ano=2023, aproc=20.0),
@@ -186,7 +186,7 @@ def test_SINTETICO_busca_por_empenho_e_parametros_invalidos(mundo):
         assert status == "400 Bad Request", params
 
 
-# ================================================================== secao 22: portabilidade
+# ================================================================== section 22: portability
 def test_configuracao_versionada_sem_caminho_da_maquina_do_desenvolvedor():
     c = tomllib.loads((APP / "config.toml").read_text(encoding="utf-8"))["caminhos"]
     for chave in ("dados_locais", "snapshots", "backups"):
@@ -204,16 +204,16 @@ def test_pasta_local_configuravel_por_variavel_de_ambiente(tmp_path, monkeypatch
     assert carregar().banco == tmp_path / "dados" / "banco" / "restos_a_pagar.sqlite"
     monkeypatch.delenv("RP_DADOS_LOCAIS")
     assert carregar().dados_locais == Path.home() / "RestosAPagar_local"
-    outro = tmp_path / "cfg" / "config.toml"            # caminho relativo: a partir da pasta do arquivo
+    outro = tmp_path / "cfg" / "config.toml"            # relative path: from the file's folder
     outro.parent.mkdir()
     outro.write_text((APP / "config.toml").read_text(encoding="utf-8").replace('"~/RestosAPagar_local"', '"local"'),
                      encoding="utf-8")
     cfg = carregar(outro)
     assert cfg.dados_locais == (tmp_path / "cfg" / "local").resolve()
-    assert cfg.snapshots == (tmp_path / "data" / "snapshots").resolve()     # "../data/snapshots" desde 06/10/2026
+    assert cfg.snapshots == (tmp_path / "data" / "snapshots").resolve()     # "../data/snapshots" since 06/10/2026
 
 
-# ================================================================== secao 27: portoes de uma carga nova
+# ================================================================== section 27: gates of a new load
 def test_SINTETICO_portoes_da_carga_nova(mundo, tmp_path):
     mundo.catalogos({1: [2025]})
     mundo.listagem(1, 2025, "2025-12-31", [_reg(1)], T0)
@@ -221,21 +221,21 @@ def test_SINTETICO_portoes_da_carga_nova(mundo, tmp_path):
     mundo.con.commit()
     arq = tmp_path / "referencia.json"
     ref = portoes.gravar_referencia(mundo.cfg.banco, arq)
-    with pytest.raises(FileExistsError):                 # a referencia nunca e sobrescrita
+    with pytest.raises(FileExistsError):                 # the reference is never overwritten
         portoes.gravar_referencia(mundo.cfg.banco, arq)
     antes = sha(mundo.cfg.banco)
     r = portoes.avaliar(mundo.cfg.banco, mundo.armazem, ref)
     assert r["apto"] and all(p["ok"] for p in r["portoes"] if p["ok"] is not None)
-    assert sha(mundo.cfg.banco) == antes                  # avaliar so le
+    assert sha(mundo.cfg.banco) == antes                  # avaliar only reads
     ok_ = lambda r: {p["id"]: p["ok"] for p in r["portoes"]}
 
-    mundo.listagem(1, 2025, "2025-12-31", [_reg(1, aproc=5.0)], T1)          # carga nova, ainda nao processada
+    mundo.listagem(1, 2025, "2025-12-31", [_reg(1, aproc=5.0)], T1)          # new load, not yet processed
     r = portoes.avaliar(mundo.cfg.banco, mundo.armazem, ref)
     assert not r["apto"] and ok_(r)["normalizacao"] is False and ok_(r)["camada_bruta_preservada"] is True
     mundo.processar()
     assert portoes.avaliar(mundo.cfg.banco, mundo.armazem, ref)["apto"]
 
-    _incompleta(mundo, 1, 2025, "2025-06-30", T1)                            # retrato mais novo incompleto
+    _incompleta(mundo, 1, 2025, "2025-06-30", T1)                            # newer snapshot incomplete
     mundo.processar()
     r = portoes.avaliar(mundo.cfg.banco, mundo.armazem, ref)
     assert not r["apto"] and ok_(r)["coleta_completa"] is False

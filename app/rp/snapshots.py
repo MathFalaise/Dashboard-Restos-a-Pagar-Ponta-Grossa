@@ -1,7 +1,7 @@
-"""Gravacao de um snapshot: o UNICO caminho de escrita da camada bruta.
+"""Writing a snapshot: the ONLY write path of the raw layer.
 
-Usado pelo coletor (respostas vindas do portal) e pelo importador (respostas
-baixadas nas Etapas 01/02). Ordem: objetos -> manifesto (imutavel) -> banco.
+Used by the collector (responses from the portal) and by the importer (responses downloaded in stages 01/02).
+Order: objects -> manifest (immutable) -> database.
 """
 import json
 import uuid
@@ -20,13 +20,14 @@ def _item(ordem, r, armazem):
 def gravar_snapshot(con, armazem, *, tipo, endpoint, parametros, coletada_em, origem_carimbo, status, coletor,
                     respostas, observacao=None, snapshot_uid=None, segunda_leitura=None, finalizada_em=None,
                     contrato_api=None):
-    """respostas: lista de dicts {url, http_status, cabecalhos, recebida_em, corpo(bytes), tentativas}.
-    segunda_leitura (auditoria COL-01): as mesmas paginas lidas de novo para conferir que a base nao mudou durante a
-    paginacao; os bytes vao para o armazem e o manifesto guarda a lista em "segunda_leitura" (com "igual" por
-    pagina). Ficam FORA de "respostas": nao entram no banco nem na normalizacao.
-    finalizada_em e contrato_api (revisao critica, itens 17, 18 e 50): quando a ultima resposta foi gravada
-    (`coletada_em` e o INICIO; entre os dois a base pode ter mudado) e a forma das respostas JSON. Os dois campos sao
-    aditivos, como "segunda_leitura": manifestos antigos continuam validos, e o banco e a normalizacao os ignoram."""
+    """respostas: list of dicts {url, http_status, cabecalhos, recebida_em, corpo(bytes), tentativas}.
+    segunda_leitura (audit COL-01): the same pages read again to check that the base did not change during
+    pagination; the bytes go to the store and the manifest keeps the list in "segunda_leitura" (with "igual" per
+    page). They stay OUT of "respostas": they enter neither the database nor the normalization.
+    finalizada_em and contrato_api (critical review, items 17, 18 and 50): when the last response was recorded
+    (`coletada_em` is the START; the base may have changed in between) and the shape of the JSON responses. Both
+    fields are additive, like "segunda_leitura": older manifests stay valid, and the database and the normalization
+    ignore them."""
     uid = snapshot_uid or uuid.uuid4().hex
     itens = [_item(ordem, r, armazem) for ordem, r in enumerate(respostas)]
     m = {"formato": FORMATO, "snapshot_uid": uid, "tipo": tipo, "endpoint": endpoint, "parametros": parametros,
@@ -45,9 +46,9 @@ def gravar_snapshot(con, armazem, *, tipo, endpoint, parametros, coletada_em, or
 
 
 def status_de_paginas(corpos, chave_unica=False):
-    """'completa' se a ultima pagina diz last=true e a soma de content = totalElements (mesma regra do coletor).
-    `chave_unica` (listagem de RP): a chave de negocio (entidade, anoempenho, empenho) nao pode repetir no retrato -
-    repetida, 'incompleta', como no coletor (revisao critica, itens 1 e 2)."""
+    """'completa' if the last page says last=true and the sum of content = totalElements (same rule as the collector).
+    `chave_unica` (RP listing): the business key (entidade, anoempenho, empenho) cannot repeat in the snapshot -
+    repeated means 'incompleta', as in the collector (critical review, items 1 and 2)."""
     from .contrato import chave_negocio
     try:
         ds = [json.loads(c) for c in corpos]

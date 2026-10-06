@@ -1,5 +1,5 @@
-# Sondagem CONTROLADA da API (auditoria): poucas requisicoes, pausa de 2 s, so GET, sem redirecionamento.
-# Grava so metadados (status, cabecalhos, campos da pagina, chaves, hash do conteudo) - nenhum nome de credor.
+# CONTROLLED probe of the API (audit): few requests, 2 s pause, GET only, no redirects.
+# Records only metadata (status, headers, page fields, keys, content hash) - no creditor name.
 import hashlib
 import json
 import sys
@@ -62,42 +62,42 @@ def get(rotulo, caminho, params=None, guardar=None):
 
 RP = "/empenhos/restos-a-pagar"
 c5 = {"entidade": 5, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-08-31"}
-# 1) corte completo da entidade 5 de uma vez e de novo (estabilidade entre consultas consecutivas)
+# 1) full cut-off of entity 5 at once and again (stability between consecutive queries)
 inteiro = []
 get("ent5 size=2000 p0 (1a)", RP, {**c5, "size": 2000, "page": 0}, inteiro)
 get("ent5 size=2000 p0 (2a)", RP, {**c5, "size": 2000, "page": 0}, inteiro)
-# 2) mesmo corte em paginas de 100 (ordem e estabilidade entre paginas)
+# 2) same cut-off in pages of 100 (order and stability across pages)
 paginas = []
 for p in range(5):
     get(f"ent5 size=100 p{p}", RP, {**c5, "size": 100, "page": p}, paginas)
 get("ent5 size=100 p0 repetida", RP, {**c5, "size": 100, "page": 0}, paginas)
-# 3) paginacao fora do intervalo e parametros limite
+# 3) pagination out of range and limit parameters
 get("ent5 size=100 p99 (fora)", RP, {**c5, "size": 100, "page": 99})
 get("ent5 size=100 page=-1", RP, {**c5, "size": 100, "page": -1})
 get("ent5 size=0", RP, {**c5, "size": 0, "page": 0})
 get("ent5 sem size/page", RP, c5)
-# 4) size acima de 2000: o servidor respeita, limita ou ignora?
+# 4) size above 2000: does the server honor, cap or ignore it?
 grande = []
 get("ent1 size=5000 p0", RP, {"entidade": 1, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-08-31",
                               "size": 5000, "page": 0}, grande)
-# 5) ordenacao: o Spring aceita sort? (descoberta; nao entra no coletor sem prova)
+# 5) ordering: does Spring accept sort? (discovery; does not go into the collector without proof)
 srt = []
 get("ent5 size=100 p0 sort=empenho,asc", RP, {**c5, "size": 100, "page": 0, "sort": "empenho,asc"}, srt)
-# 6) parametros invalidos
+# 6) invalid parameters
 get("exercicio invalido 1900", RP, {"entidade": 5, "exercicio": 1900, "dataInicial": "1900-01-01", "dataFinal": "1900-12-31", "size": 10, "page": 0})
 get("entidade inexistente 99999", RP, {**c5, "entidade": 99999, "size": 10, "page": 0})
 get("data invalida 2026-13-45", RP, {**c5, "dataFinal": "2026-13-45", "size": 10, "page": 0})
 get("sem dataFinal", RP, {"entidade": 5, "exercicio": 2026, "dataInicial": "2026-01-01", "size": 10, "page": 0})
 get("parametro desconhecido foo=bar", RP, {**c5, "size": 10, "page": 0, "foo": "bar"})
 get("dataFinal em outro ano", RP, {**c5, "dataFinal": "2027-02-28", "size": 10, "page": 0})
-# 7) demais endpoints usados pelo projeto
+# 7) other endpoints used by the project
 get("entidades/lista", "/api/entidades/lista")
 get("exercicios/entidade/5", "/api/exercicios/entidade/5")
 get("publicacoes/1 ent1 2026", "/api/publicacoes/1", {"entidade": 1, "exercicio": 2026})
 get("movimentacao ent1 2025 emp5659", "/empenhos/detalhe/movimentacao", {"entidade": 1, "exercicio": 2025, "empenho": 5659, "size": 500})
 get("caminho inexistente", "/empenhos/nao-existe")
 
-# analises locais (sem rede)
+# local analyses (no network)
 an = {}
 if len(inteiro) == 2:
     a, b = inteiro

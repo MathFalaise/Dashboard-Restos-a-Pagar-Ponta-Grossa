@@ -1,4 +1,4 @@
-"""Portoes especificos da Etapa 04.2 (processamento de producao)."""
+"""Specific gates of stage 04.2 (production processing)."""
 import hashlib
 import json
 from decimal import Decimal
@@ -21,9 +21,9 @@ DINHEIRO = {"proc": "proc_c", "aproc": "aproc_c", "canceladoProc": "cancelado_pr
             "pagoAProcEstornado": "pago_aproc_estornado_c", "liquidado": "liquidado_c", "retencao": "retencao_c"}
 
 
-# ------------------------------------------------------------ 1. bruto -> normalizado
+# ------------------------------------------------------------ 1. raw -> normalized
 def test_fidelidade_campo_a_campo_de_todos_os_registros(producao):
-    """Nenhum registro perdido nem inventado; cada campo igual ao bruto; dinheiro exato em centavos; origem preservada."""
+    """No record lost or invented; each field equal to the raw data; exact money in cents; origin preserved."""
     con, nid = producao["con"], producao["nid"]
     cur = con.execute("SELECT * FROM rp_registro WHERE normalizacao_id=?", (nid,))
     nomes = [c[0] for c in cur.description]
@@ -40,7 +40,7 @@ def test_fidelidade_campo_a_campo_de_todos_os_registros(producao):
                 assert Decimal(n[col]) == Decimal(str(bruto[k])) * 100, (rid, i, k)
             assert json.loads(n["chaves_ausentes"]) == [k for k in normalizar.BASE + normalizar.OPCIONAIS if k not in bruto]
             assert (n["resposta_id"], n["indice"]) == (rid, i)
-    assert vistos == len(norm) == 82988  # nenhum a mais, nenhum a menos
+    assert vistos == len(norm) == 82988  # not one more, not one less
 
 
 def _camada0(con, armazem):
@@ -61,13 +61,13 @@ def test_processar_nao_altera_a_camada_bruta(producao):
     assert _camada0(producao["con"], producao["armazem"]) == antes
 
 
-# ------------------------------------------------------------ 4. reprodutibilidade
+# ------------------------------------------------------------ 4. reproducibility
 def _hash(con, did):
     return con.execute("SELECT hash_resultado FROM derivacao_execucao WHERE id=?", (did,)).fetchone()[0]
 
 
 def test_mesmo_resultado_em_banco_reconstruido_do_armazem(producao, tmp_path):
-    """Outro banco, ids internos diferentes, montado so com os manifestos do armazem -> mesmo hash."""
+    """Another database, different internal ids, built only from the store's manifests -> same hash."""
     outro = montar_producao(tmp_path, armazem_de=producao["cfg"].snapshots)
     assert outro["importacao"]["sincronizados"] == 197
     assert _hash(outro["con"], outro["did"]) == _hash(producao["con"], producao["did"])
@@ -81,7 +81,7 @@ def test_resultado_nao_depende_do_relogio(producao, monkeypatch):
     assert _hash(producao["con"], did) == _hash(producao["con"], producao["did"])
 
 
-# ------------------------------------------------------------ 3. regras lado a lado
+# ------------------------------------------------------------ 3. rules side by side
 def test_todas_as_versoes_de_regra_calculadas_lado_a_lado_sem_promocao(producao):
     con, did = producao["con"], producao["did"]
     combos = set(con.execute(
@@ -95,7 +95,7 @@ def test_todas_as_versoes_de_regra_calculadas_lado_a_lado_sem_promocao(producao)
     assert usadas == {i for (i,) in con.execute("SELECT id FROM regra")}
 
 
-# ------------------------------------------------------------ robustez
+# ------------------------------------------------------------ robustness
 def _loja(tmp_path):
     cfg = carregar(dados_locais=tmp_path / "l", snapshots=tmp_path / "s", backups=tmp_path / "b")
     return banco.abrir(cfg), Armazem(cfg.snapshots)
@@ -117,7 +117,7 @@ def test_snapshot_com_falha_nao_e_processado(tmp_path):
 
 
 def test_chave_duplicada_mantem_as_duas_linhas_e_vira_anomalia(tmp_path):
-    """Regra 6: nada e descartado por parecer duplicado."""
+    """Rule 6: nothing is discarded for looking duplicated."""
     con, armazem = _loja(tmp_path)
     reg = {k: 0 for k in normalizar.DINHEIRO}
     reg.update({"entidade": 998, "anoempenho": 2025, "empenho": 7, "aproc": 10.5})

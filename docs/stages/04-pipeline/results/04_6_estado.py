@@ -1,15 +1,15 @@
-"""Retrato do estado para os portoes da 04.6 (somente leitura).
+"""Snapshot of the state for the 04.6 gates (read-only).
 
-Uso (dentro de app/):  python ../docs/stages/04-pipeline/results/04_6_estado.py SAIDA.json [--banco CAMINHO]
+Usage (inside app/):  python ../docs/stages/04-pipeline/results/04_6_estado.py SAIDA.json [--banco CAMINHO]
 
-Sem caminho fixo: o banco vem de --banco ou do config.toml (RP_CONFIG / RP_DADOS_LOCAIS), o armazem do config.
-Registra:
-  * git HEAD; hash da camada bruta (execucoes.hash_camada0) e de cada tabela do bruto; contagens;
-  * PRAGMA integrity_check; versoes do esquema; derivacoes com hash_resultado e hashes de visao/conciliacao;
-  * SHA-256 de cada manifesto e objeto do armazem (snapshots/);
-  * valores da camada painel: indicadores de todo corte (Municipio e cada entidade), entidades do corte,
-    reconciliacao, coerencia e pares;
-  * valores exibidos pela interface: todo <data id=... value=...> das telas de cada corte (sem servidor: WSGI direto).
+No fixed path: the database comes from --banco or from config.toml (RP_CONFIG / RP_DADOS_LOCAIS), the store from
+the config. Records:
+  * git HEAD; hash of the raw layer (execucoes.hash_camada0) and of each raw table; counts;
+  * PRAGMA integrity_check; schema versions; derivations with hash_resultado and view/reconciliation hashes;
+  * SHA-256 of each manifest and object of the store (snapshots/);
+  * panel layer values: indicators of every cut-off (Municipality and each entity), entities of the cut-off,
+    reconciliation, consistency and pairs;
+  * values shown by the interface: every <data id=... value=...> of each cut-off's screens (no server: WSGI directly).
 """
 import argparse
 import hashlib

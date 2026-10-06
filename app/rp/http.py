@@ -1,33 +1,33 @@
-"""Cliente HTTP do coletor: pausa minima, tempo limite e novas tentativas so quando faz sentido.
+"""The collector's HTTP client: minimum pause, timeouts and retries only when they make sense.
 
-Regras:
-  * intervalo minimo `pausa` entre duas requisicoes (cortesia com o portal);
-  * repete em 5xx, 429 e falha TRANSITORIA de rede (tempo esgotado, conexao recusada ou interrompida), com espera
-    crescente (respeita Retry-After em segundos ou em data HTTP, com teto);
-  * NUNCA repete 4xx (exceto 429): o pedido esta errado e repetir nao muda nada;
-  * NUNCA repete erro de TLS (certificado) nem URL invalida: viram ErroDeRede na hora;
-  * qualquer outra excecao do transporte (ex.: TypeError) e defeito de programa: propaga, nunca vira "rede";
-  * devolve sempre a ultima resposta; quem decide o que e sucesso e o coletor.
+Rules:
+  * minimum interval `pausa` between two requests (courtesy to the portal);
+  * retries on 5xx, 429 and TRANSIENT network failures (timeout, connection refused or interrupted), with a growing
+    wait (honors Retry-After in seconds or as an HTTP date, with a ceiling);
+  * NEVER retries 4xx (except 429): the request is wrong and repeating changes nothing;
+  * NEVER retries a TLS (certificate) error or an invalid URL: they become ErroDeRede at once;
+  * any other transport exception (e.g. TypeError) is a program bug: it propagates, it never becomes "network";
+  * always returns the last response; the collector decides what counts as success.
 
-Seguranca:
-  * TLS sempre verificado (a URL base e validada como https em config.py);
-  * redirecionamento NAO e seguido: um 3xx volta como resposta e o coletor o registra como falha,
-    em vez de buscar dados em outro endereco sem que ninguem perceba;
-  * corpo lido em blocos, com teto de bytes (`limite_resposta_bytes`) e prazo total de leitura;
-    resposta recusada por esses limites nao e repetida (a mesma consulta daria o mesmo resultado);
-  * o caminho da consulta so aceita segmentos simples: nada de outro host, "..", query ou fragmento.
+Security:
+  * TLS always verified (the base URL is validated as https in config.py);
+  * redirects are NOT followed: a 3xx comes back as a response and the collector records it as a failure, instead
+    of fetching data from another address without anyone noticing;
+  * the body is read in blocks, with a byte ceiling (`limite_resposta_bytes`) and a total read deadline; a response
+    rejected by these limits is not retried (the same query would give the same result);
+  * the query path only accepts simple segments: no other host, "..", query or fragment.
 
-Tres prazos, cada um com uma funcao (revisao critica, item 8):
-  * conexao (`timeout_conexao`, padrao 30 s): estabelecer a conexao TCP/TLS;
-  * leitura (`timeout`): o maior silencio aceito entre dois pedacos recebidos;
-  * prazo TOTAL (timeout x FATOR_PRAZO_TOTAL): barreira absoluta da requisicao inteira, conexao + cabecalhos +
-    corpo. O prazo de leitura sozinho nao a garante: um servidor que mande 1 byte a cada poucos segundos nunca
-    deixa a leitura esgotar, e um bloco de 64 KiB so termina quando enche. Por isso a requisicao roda numa thread
-    de trabalho e quem chamou desiste no prazo, derrubando a conexao; o resultado tardio e descartado.
+Three time limits, each with its own job (critical review, item 8):
+  * connection (`timeout_conexao`, default 30 s): establishing the TCP/TLS connection;
+  * read (`timeout`): the longest silence accepted between two received chunks;
+  * TOTAL deadline (timeout x FATOR_PRAZO_TOTAL): an absolute barrier for the whole request, connection + headers +
+    body. The read timeout alone does not guarantee it: a server that sends 1 byte every few seconds never lets the
+    read time out, and a 64 KiB block only completes when it fills. So the request runs in a worker thread and the
+    caller gives up at the deadline, dropping the connection; the late result is discarded.
 
-Espera entre tentativas: base x 2^(tentativa-1), ou o Retry-After (segundos ou data HTTP) se for maior, com teto
-ESPERA_MAXIMA. Sem sorteio (jitter): o coletor e um unico cliente sequencial, com pausa minima entre requisicoes;
-jitter serve para espalhar muitos clientes que falharam juntos, e aqui so tiraria o determinismo dos testes.
+Wait between attempts: base x 2^(attempt-1), or the Retry-After (seconds or HTTP date) if larger, capped at
+ESPERA_MAXIMA. No jitter: the collector is a single sequential client with a minimum pause between requests;
+jitter spreads many clients that failed together, and here it would only make the tests non-deterministic.
 """
 import logging
 import re
@@ -43,10 +43,10 @@ from . import agora
 
 log = logging.getLogger("rp.http")
 
-ESPERA_MAXIMA = 300              # teto (s) para o Retry-After informado pelo servidor
-BLOCO = 64 * 1024                # tamanho de cada leitura do corpo
-FATOR_PRAZO_TOTAL = 3            # prazo total da requisicao = timeout x este fator
-TIMEOUT_CONEXAO = 30             # padrao (s) para estabelecer a conexao; nunca maior que o timeout de leitura
+ESPERA_MAXIMA = 300              # ceiling (s) for the Retry-After sent by the server
+BLOCO = 64 * 1024                # size of each body read
+FATOR_PRAZO_TOTAL = 3            # total request deadline = timeout x this factor
+TIMEOUT_CONEXAO = 30             # default (s) to establish the connection; never larger than the read timeout
 _SEGMENTO = re.compile(r"[A-Za-z0-9_.\-]+")
 
 
@@ -61,19 +61,19 @@ class Resposta:
 
 
 class ErroDeRede(Exception):
-    """Nenhuma resposta HTTP utilizavel: tentativas esgotadas, ou falha que repetir nao resolve (TLS, URL invalida)."""
+    """No usable HTTP response: attempts exhausted, or a failure that retrying does not fix (TLS, invalid URL)."""
 
 
 class FalhaTransitoria(Exception):
-    """Falha de rede que pode passar sozinha (tempo esgotado, conexao recusada ou interrompida). So ela e repetida.
-    O transporte traduz as excecoes da biblioteca HTTP para esta; TimeoutError e ConnectionError nativos contam igual."""
+    """A network failure that may go away by itself (timeout, connection refused or interrupted). Only this is retried.
+    The transport translates the HTTP library's exceptions into this one; native TimeoutError and ConnectionError count too."""
 
 
 TRANSITORIAS = (FalhaTransitoria, TimeoutError, ConnectionError)
 
 
 class RespostaRecusada(Exception):
-    """Resposta descartada por limite de seguranca (tamanho ou prazo total). Nao e repetida."""
+    """Response discarded by a safety limit (size or total deadline). It is not retried."""
 
 
 @dataclass
@@ -82,8 +82,8 @@ class _Estado:
 
 
 def ler_limitado(blocos, limite, prazo, monotonic=time.monotonic):
-    """Junta `blocos` recusando corpo maior que `limite` bytes ou leitura que termine depois de `prazo`
-    (instante de `monotonic`)."""
+    """Joins `blocos`, refusing a body larger than `limite` bytes or a read that ends after `prazo`
+    (a `monotonic` instant)."""
     partes, total = [], 0
     for b in blocos:
         total += len(b)
@@ -96,8 +96,8 @@ def ler_limitado(blocos, limite, prazo, monotonic=time.monotonic):
 
 
 def _socket_da_resposta(resposta):
-    """Socket por baixo de uma resposta do requests/urllib3, ou None. Dois caminhos: a conexao do urllib3 (HTTP/1.1
-    com keep-alive) e o arquivo do http.client (quando o servidor fecha a conexao, ela passa o socket a resposta)."""
+    """Socket under a requests/urllib3 response, or None. Two paths: the urllib3 connection (HTTP/1.1 with
+    keep-alive) and the http.client file (when the server closes the connection, it hands the socket to the response)."""
     raw = getattr(resposta, "raw", None)
     sock = getattr(getattr(raw, "_connection", None), "sock", None)
     if sock is None:
@@ -106,10 +106,10 @@ def _socket_da_resposta(resposta):
 
 
 def _derrubar(resposta):
-    """Derruba a conexao de uma resposta em andamento (prazo total vencido): `shutdown` faz a leitura bloqueada na
-    thread de trabalho voltar com erro em vez de continuar presa ao servidor. So o shutdown: `close()` daqui
-    esperaria a trava do buffer que a propria leitura bloqueada segura. Melhor esforco: sem resposta ainda (presa na
-    conexao ou nos cabecalhos), a thread termina pelo prazo de leitura; o resultado dela e descartado de todo jeito."""
+    """Drops the connection of an ongoing response (total deadline expired): `shutdown` makes the blocked read in the
+    worker thread return with an error instead of staying stuck on the server. Only the shutdown: `close()` from here
+    would wait for the buffer lock that the blocked read itself holds. Best effort: with no response yet (stuck on
+    the connection or the headers), the thread ends by the read timeout; its result is discarded either way."""
     sock = _socket_da_resposta(resposta) if resposta is not None else None
     if sock is not None:
         try:
@@ -119,15 +119,15 @@ def _derrubar(resposta):
 
 
 def com_prazo_total(funcao, prazo, ao_vencer=None):
-    """Executa `funcao(estado)` numa thread de trabalho e espera no maximo `prazo` segundos. Vencido o prazo, chama
-    `ao_vencer(estado)` e levanta RespostaRecusada (nao repetida: a mesma consulta daria o mesmo resultado). A
-    excecao levantada pela funcao e repassada a quem chamou, com o tipo original."""
+    """Runs `funcao(estado)` in a worker thread and waits at most `prazo` seconds. When the deadline expires, calls
+    `ao_vencer(estado)` and raises RespostaRecusada (not retried: the same query would give the same result). An
+    exception raised by the function is passed to the caller with its original type."""
     estado, feito = {}, threading.Event()
 
     def trabalho():
         try:
             estado["resultado"] = funcao(estado)
-        except BaseException as e:        # noqa: BLE001 - repassada intacta a thread de quem chamou
+        except BaseException as e:        # noqa: BLE001 - passed intact to the caller's thread
             estado["erro"] = e
         finally:
             feito.set()
@@ -158,16 +158,16 @@ def transporte_requests(user_agent, limite_bytes, prazo_total, timeout_conexao=T
                 declarado = r.headers.get("Content-Length", "")
                 if declarado.isdigit() and int(declarado) > limite_bytes:
                     raise RespostaRecusada(f"Content-Length {declarado} maior que {limite_bytes} bytes")
-                # corpo ja descomprimido pelo requests (a API responde gzip, chunked, sem Content-Length): o teto vale
-                # para os bytes descomprimidos, que sao os gravados no armazem
+                # body already decompressed by requests (the API answers gzip, chunked, no Content-Length): the ceiling applies
+                # to the decompressed bytes, which are the ones written to the store
                 corpo = ler_limitado(r.iter_content(BLOCO), limite_bytes, inicio + prazo_total)
                 return r.status_code, dict(r.headers), corpo
-        except rx.SSLError as e:            # certificado/TLS: repetir nao resolve e nao deve ser contornado
+        except rx.SSLError as e:            # certificate/TLS: retrying does not fix it and must not be bypassed
             raise ErroDeRede(f"falha de TLS: {e}") from e
         except (rx.InvalidURL, rx.InvalidSchema, rx.MissingSchema, rx.InvalidHeader) as e:
             raise ErroDeRede(f"pedido invalido: {type(e).__name__}: {e}") from e
         except (rx.Timeout, rx.ConnectionError, rx.ChunkedEncodingError, rx.ContentDecodingError) as e:
-            if estado.get("vencido"):      # conexao derrubada pelo prazo total: quem chamou ja recebeu a recusa
+            if estado.get("vencido"):      # connection dropped by the total deadline: the caller already got the refusal
                 raise RespostaRecusada("prazo total excedido") from e
             raise FalhaTransitoria(f"{type(e).__name__}: {e}") from e
 
@@ -179,7 +179,7 @@ def transporte_requests(user_agent, limite_bytes, prazo_total, timeout_conexao=T
 
 
 def espera_retry_after(valor, agora_utc=None):
-    """Segundos pedidos pelo servidor em Retry-After (inteiro ou data HTTP), ou None se ausente/ilegivel."""
+    """Seconds requested by the server in Retry-After (integer or HTTP date), or None if absent/unreadable."""
     if not valor:
         return None
     v = str(valor).strip()
@@ -195,7 +195,7 @@ def espera_retry_after(valor, agora_utc=None):
 
 
 def validar_caminho(caminho):
-    """Caminho relativo a API: '/seg/seg/...', cada segmento so com letras, digitos, '_', '.' e '-'."""
+    """Path relative to the API: '/seg/seg/...', each segment only with letters, digits, '_', '.' and '-'."""
     if not isinstance(caminho, str) or not caminho.startswith("/") or caminho.startswith("//"):
         raise ValueError(f"caminho invalido para a API: {caminho!r}")
     for seg in caminho[1:].split("/"):
@@ -215,8 +215,8 @@ class Cliente:
         self.requisicoes = 0
 
     def url(self, caminho, params=None):
-        """URL da consulta. Parametro com lista (ex.: sort em dois campos) vira o parametro repetido (doseq); valor
-        simples sai igual a antes."""
+        """Query URL. A parameter with a list (e.g. sort on two fields) becomes a repeated parameter (doseq); a simple
+        value comes out as before."""
         return f"{self.cfg.api_base}{validar_caminho(caminho)}" + (f"?{urlencode(params, doseq=True)}" if params else "")
 
     def _pausar(self):
@@ -234,9 +234,9 @@ class Cliente:
                 self.requisicoes += 1
                 status, cab, corpo = self.transporte(url, self.cfg.timeout)
                 erro = None
-            except RespostaRecusada as e:   # limite de seguranca: repetir daria o mesmo resultado
+            except RespostaRecusada as e:   # safety limit: retrying would give the same result
                 raise ErroDeRede(f"{url}: resposta recusada: {e}") from e
-            except TRANSITORIAS as e:       # so falha de rede repete; ErroDeRede e defeitos de programa propagam
+            except TRANSITORIAS as e:       # only network failures are retried; ErroDeRede and program bugs propagate
                 status, cab, corpo, erro = None, {}, b"", e
             finally:
                 self._estado.ultima = self.monotonic()

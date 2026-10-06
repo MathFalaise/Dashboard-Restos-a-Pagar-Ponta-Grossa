@@ -1,14 +1,14 @@
-"""Executor de lotes da Etapa 04.4 - artefato operacional/validacao (nao e codigo de producao).
+"""Batch runner of stage 04.4 - operational/validation artifact (not production code).
 
-Fluxo obrigatorio de cada lote:
-    COLETA -> SNAPSHOT -> NORMALIZACAO -> DERIVACAO -> TESTES -> INTEGRIDADE -> VALIDACAO -> proximo lote
-Portoes (definidos ANTES de coletar; qualquer falha PARA o lote, com relatorio):
-    G1 coleta completa - G2 integridade armazemxbanco - G3 fidelidade/esquema do bruto normalizado
-    G4 continuidade fechamento->abertura - G5 regressao temporal ("como estava em 29/09" com o mesmo hash)
-    G6 sem efeito colateral em cortes nao tocados - G7 testes (producao + investigacao)
-    G8 anomalias estruturais (CHAVE-DUP, ANOEMP-FUTURO) - as demais sao relatadas, nao bloqueiam
+Mandatory flow of each batch:
+    COLLECTION -> SNAPSHOT -> NORMALIZATION -> DERIVATION -> TESTS -> INTEGRITY -> VALIDATION -> next batch
+Gates (defined BEFORE collecting; any failure STOPS the batch, with a report):
+    G1 complete collection - G2 store x database integrity - G3 fidelity/schema of the normalized raw data
+    G4 closing->opening continuity - G5 temporal regression ("as it was on 29/09" with the same hash)
+    G6 no side effect on untouched cut-offs - G7 tests (production + investigation)
+    G8 structural anomalies (CHAVE-DUP, ANOEMP-FUTURO) - the others are reported, they do not block
 
-Uso: python executar_lote.py LOTE        (LOTE em A, R, B, C, D, E, F, T)
+Usage: python executar_lote.py LOTE        (LOTE in A, R, B, C, D, E, F, T)
 """
 import json
 import subprocess
@@ -26,7 +26,7 @@ from rp.coletor import Coletor  # noqa: E402
 from rp.config import carregar  # noqa: E402
 from rp.http import Cliente  # noqa: E402
 
-TODAS = [1, 15, 4, 5, 8, 3, 6, 9, 10, 11]          # as 5 da carga + as 5 que completam o Municipio (catalogo de entidades)
+TODAS = [1, 15, 4, 5, 8, 3, 6, 9, 10, 11]          # the 5 of the load + the 5 that complete the Municipality (entity catalog)
 EM_29 = "2026-09-29T23:59:59-03:00"
 OPCIONAIS = {"orgao", "unidade", "funcao", "subFuncao", "programa", "projeto", "elemento"}
 ESTRUTURAIS = {"CHAVE-DUP", "ANOEMP-FUTURO"}
@@ -61,7 +61,7 @@ def br(c):
 
 
 def catalogo_exercicios(con):
-    """{entidade: {exercicios}} do snapshot de catalogo de exercicios mais recente de cada entidade (lido do bruto)."""
+    """{entidade: {exercicios}} from the most recent fiscal-year catalog snapshot of each entity (read from the raw data)."""
     cat = {}
     for e, cid in con.execute("SELECT entidade, id FROM coleta WHERE tipo='exercicios' AND status='completa' "
                               "ORDER BY coletada_em, snapshot_uid"):
@@ -71,8 +71,8 @@ def catalogo_exercicios(con):
 
 
 def faltantes_rreo(con):
-    """(entidade, exercicio, data_final) sem snapshot completo, para cada periodo de RREO armazenado.
-    Entidade 1 basta para o RREO por entidade; o consolidado exige as 10 do catalogo."""
+    """(entidade, exercicio, data_final) without a complete snapshot, for each stored RREO period.
+    Entity 1 is enough for the per-entity RREO; the consolidated one requires the 10 of the catalog."""
     periodos = con.execute("SELECT DISTINCT v.escopo, v.exercicio, v.data_final FROM rreo_valor v "
                            "WHERE v.normalizacao_id=(SELECT MAX(id) FROM normalizacao_execucao) ORDER BY 2,3,1").fetchall()
     tem = {(e, ex, df) for e, ex, df in con.execute(
@@ -122,7 +122,7 @@ def executar(nome):
             rel["parou_em"] = g
         return ok
 
-    # ---------------- COLETA -> SNAPSHOT
+    # ---------------- COLLECTION -> SNAPSHOT
     coletor = Coletor(cfg, con, armazem, Cliente(cfg))
     snaps = []
     if L.get("catalogos"):
@@ -150,8 +150,8 @@ def executar(nome):
             snaps.append(s)
     rel["requisicoes"] = coletor.cliente.requisicoes
     lote_ids = [s["coleta_id"] for s in snaps]
-    # Regra fixada antes dos Lotes C-F: combinacao entidadexexercicio FORA do catalogo oficial de exercicios
-    # e consultada e relatada a parte; nao entra no G1. Dentro do catalogo (ou entidade sem catalogo), tudo e exigido.
+    # Rule fixed before batches C-F: an entity x fiscal year combination OUTSIDE the official fiscal-year catalog
+    # is queried and reported separately; it does not enter G1. Inside the catalog (or an entity without a catalog), everything is required.
     cat = catalogo_exercicios(con)
     fora = {}
     for s_ in snaps:
@@ -179,14 +179,14 @@ def executar(nome):
     if rel["parou_em"]:
         return finalizar(rel, con)
 
-    # ---------------- NORMALIZACAO
+    # ---------------- NORMALIZATION
     nid, resumo = normalizar.normalizar(con)
     rel["normalizacao"] = {"id": nid, **{k: v for k, v in resumo.items() if k != "problemas"}, "problemas": resumo["problemas"]}
     ph = ",".join("?" * len(lote_ids))
     esperado = 0
     for cid in [c for c in lote_ids if con.execute("SELECT tipo FROM coleta WHERE id=?", (c,)).fetchone()[0] == "rp_listagem"]:
         for (sha,) in con.execute("SELECT sha256 FROM resposta_bruta WHERE coleta_id=?", (cid,)):
-            pag = normalizar._pagina(banco.corpo(con, sha))   # mesma leitura do normalizador: pagina invalida nao conta
+            pag = normalizar._pagina(banco.corpo(con, sha))   # same reading as the normalizer: an invalid page does not count
             esperado += len(pag) if pag is not None else 0
     obtidos = con.execute(f"SELECT COUNT(*) FROM rp_registro WHERE normalizacao_id=? AND coleta_id IN ({ph})", (nid, *lote_ids)).fetchone()[0]
     extras = con.execute(f"SELECT COUNT(*) FROM rp_registro WHERE normalizacao_id=? AND coleta_id IN ({ph}) AND chaves_extras<>'[]'", (nid, *lote_ids)).fetchone()[0]
@@ -199,7 +199,7 @@ def executar(nome):
          obtidos == esperado and extras == 0 and not base_faltando,
          {"esperado": esperado, "obtido": obtidos, "com_chaves_extras": extras, "chaves_base_faltando": base_faltando})
 
-    # ---------------- DERIVACAO
+    # ---------------- DERIVATION
     d_atual = derivar.derivar(con, nid)
     d_29 = derivar.derivar(con, nid, EM_29)
     h_atual, = con.execute("SELECT hash_resultado FROM derivacao_execucao WHERE id=?", (d_atual,)).fetchone()
@@ -221,19 +221,19 @@ def executar(nome):
     gate("G6 sem efeito colateral em cortes não tocados pelo lote", not colaterais and not (va.keys() - vn.keys()),
          {"alteradas_fora_do_lote": len(colaterais), "sumidas": len(va.keys() - vn.keys())})
 
-    # ---------------- TESTES
+    # ---------------- TESTS
     t_prod, t_inv = pytest(RAIZ / "app"), pytest(RAIZ / "docs/stages/03-data-model/validation")
     rel["testes"] = {"producao": t_prod, "investigacao": t_inv}
     gate("G7 testes (produção + investigação)", t_prod["ok"] and t_inv["ok"], f"{t_prod['resumo']} | {t_inv['resumo']}")
 
-    # ---------------- INTEGRIDADE
+    # ---------------- INTEGRITY
     gate("G2b integridade armazém×banco (após processamento)", not banco.verificar(con, armazem), "")
 
-    # ---------------- VALIDACAO
+    # ---------------- VALIDATION
     anom = Counter(t for (t,) in con.execute(f"SELECT tipo FROM anomalia WHERE derivacao_id=? AND coleta_id IN ({ph})", (d_atual, *lote_ids)))
     rel["anomalias_do_lote"] = dict(anom)
     gate("G8 sem anomalia estrutural", not (set(anom) & ESTRUTURAIS), {t: anom[t] for t in set(anom) & ESTRUTURAIS})
-    # comportamento x 2025/2026: presenca de chaves, tamanho da programatica, fontes
+    # behavior x 2025/2026: presence of keys, size of the programmatic field, sources
     perfil = defaultdict(Counter)
     for ex, prog, aus, fonte in con.execute(
             f"SELECT c.exercicio, LENGTH(r.programatica), r.chaves_ausentes, r.fonte_recurso FROM rp_registro r JOIN coleta c ON c.id=r.coleta_id "
@@ -262,9 +262,9 @@ def executar(nome):
                                                                                                   "novos": r["novos"][:20], "removidos": r["removidos"][:20]})
         rel["comparacoes_temporais"] = comparacoes
 
-    # ---------------- limpeza: so a execucao anterior (reprocessavel); as do lote ficam
+    # ---------------- cleanup: only the previous run (reprocessable); the batch's runs stay
     if not rel["parou_em"]:
-        # execucao que a protecao considera "em uso" (ex.: ultima de outra vigencia) fica e vai para o relatorio
+        # a run the protection considers "in use" (e.g. the last one of another validity) stays and goes to the report
         rel["execucoes_mantidas"] = []
         antigas = [d for (d,) in con.execute("SELECT id FROM derivacao_execucao WHERE id NOT IN (?,?) ORDER BY id", (d_atual, d_29))]
         for d in antigas:
@@ -286,7 +286,7 @@ def finalizar(rel, con):
     rel["fim"] = time.strftime("%Y-%m-%dT%H:%M:%S")
     pasta = RAIZ / "docs/stages/04-pipeline/batches"
     nome = f"LOTE_{rel['lote']}"
-    if (pasta / f"{nome}.md").exists():   # relatorio de lote nunca e sobrescrito (ex.: Lote T rodado de novo dias depois)
+    if (pasta / f"{nome}.md").exists():   # a batch report is never overwritten (e.g. batch T run again days later)
         nome += "_" + rel["inicio"].replace(":", "").replace("-", "")
     (pasta / f"{nome}.json").write_text(json.dumps(rel, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
     (pasta / f"{nome}.md").write_text(markdown(rel), encoding="utf-8")
@@ -347,10 +347,10 @@ def markdown(r):
     return "\n".join(m) + "\n"
 
 
-CORTE_T = "2026-09-30T00:00:00-03:00"   # Lote T: recoleta os cortes cuja 1a coleta e anterior a isto
+CORTE_T = "2026-09-30T00:00:00-03:00"   # batch T: re-collects the cut-offs whose 1st collection is before this
 
 if __name__ == "__main__":
-    sys.stdout.reconfigure(errors="backslashreplace")   # saida em cp1252 (arquivo) nao derruba o script
-    if len(sys.argv) > 2:   # ex.: python executar_lote.py T 2026-10-07T00:00:00-03:00
+    sys.stdout.reconfigure(errors="backslashreplace")   # cp1252 output (file) does not crash the script
+    if len(sys.argv) > 2:   # e.g. python executar_lote.py T 2026-10-07T00:00:00-03:00
         CORTE_T = sys.argv[2]
     sys.exit(executar(sys.argv[1]))

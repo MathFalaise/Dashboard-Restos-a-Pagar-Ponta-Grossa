@@ -1,14 +1,14 @@
-"""Testes da Subetapa 05.1: contrato analitico da Etapa 05 (etapa05/CONTRATO_ANALITICO.md) e a ferramenta de
-recalculo independente (recalculo_bruto.py).
+"""Tests of sub-stage 05.1: the analytical contract of stage 05 (docs/stages/05-analysis/ANALYTICAL_CONTRACT.md) and
+the independent recalculation tool (recalculo_bruto.py).
 
-A 05.1 nao muda codigo de producao. Estes testes fixam:
-  * a ferramenta reproduz Painel.indicadores, ao centavo, em todo ponto com valor dos 22 cortes reais (Municipio e
-    cada entidade), escolhendo snapshots e situacoes de forma independente;
-  * cada situacao do contrato de disponibilidade (secao 2) e representavel, e nenhuma vira zero;
-  * o universo de pontos de uma serie (R1), as diferencas (secao 2.6), as contribuicoes (M-09 a M-11) e o fechamento
-    (secao 4.2);
-  * o documento do contrato esta completo (14 respostas por metrica; catalogo das verificacoes reais).
-SINTETICO = banco temporario com registros inventados (fixture `mundo`).
+Sub-stage 05.1 does not change production code. These tests pin down:
+  * the tool reproduces Painel.indicadores, to the cent, at every point with a value of the 22 real cut-offs
+    (Municipality and each entity), choosing snapshots and situations independently;
+  * each situation of the availability contract (section 2) can be represented, and none becomes zero;
+  * the universe of points of a series (R1), the differences (section 2.6), the contributions (M-09 to M-11) and the
+    closing (section 4.2);
+  * the contract document is complete (14 answers per metric; catalog of the real checks).
+SINTETICO = temporary database with invented records (fixture `mundo`).
 """
 import ast
 import json
@@ -41,12 +41,12 @@ def _valores_nulos(ind):
     return all(v["valor_c"] is None for v in ind["valores"].values())
 
 
-# ================================================================== disponibilidade (SINTETICO)
+# ================================================================== availability (SINTETICO)
 @pytest.fixture
 def situacoes(mundo):
-    """Corte 2025-12-31 com uma entidade em cada situacao, e o exercicio 2023 sem nenhuma coleta:
-    1 com dados (2023 no catalogo, sem coleta); 3 fora do catalogo de 2025; 5 so coleta incompleta; 8 nunca coletada;
-    9 coletada depois do processamento; 15 existente com zero registros."""
+    """Cut-off 2025-12-31 with one entity in each situation, and the fiscal year 2023 without any collection:
+    1 with data (2023 in the catalog, no collection); 3 outside the 2025 catalog; 5 only an incomplete collection;
+    8 never collected; 9 collected after processing; 15 existing with zero records."""
     mundo.catalogos({1: [2023, 2025], 3: [2024], 5: [2025], 8: [2025], 9: [2025], 15: [2025]})
     mundo.listagem(1, 2025, "2025-12-31", [_reg(1, aproc=10.0), _reg(2, aproc=5.5, pagoAProc=1.25)], T0)
     mundo.listagem(3, 2025, "2025-12-31", [_reg(7, entidade=3)], T0)
@@ -71,11 +71,11 @@ def test_SINTETICO_cada_situacao_da_entidade_igual_no_painel_e_na_regra_independ
             ind = p.indicadores(2025, "2025-12-31", e)
             pt = b.ponto(2025, "2025-12-31", e)
             assert pt["situacao"] == codigo and pt["tem_valor"] == (codigo in rb.TEM_VALOR)
-            if codigo in SEM_VALOR:      # sem valor: nunca R$ 0,00
+            if codigo in SEM_VALOR:      # no value: never R$ 0,00
                 assert not ind["disponivel"] and _valores_nulos(ind) and pt["valores"] is None, e
             else:
                 assert ind["disponivel"] and {k: v["valor_c"] for k, v in ind["valores"].items()} == pt["valores"], e
-    assert b.ponto(2025, "2025-12-31", 15)["valores"]["inscricao_total"] == 0          # zero verdadeiro
+    assert b.ponto(2025, "2025-12-31", 15)["valores"]["inscricao_total"] == 0          # a true zero
 
 
 def test_SINTETICO_municipio_indisponivel_nunca_vira_zero(situacoes):
@@ -92,12 +92,12 @@ def test_SINTETICO_municipio_indisponivel_nunca_vira_zero(situacoes):
 
 
 def test_SINTETICO_exercicio_sem_cobertura(situacoes):
-    """Contrato secao 2.1: no painel atual o exercicio sem coleta aparece como indisponivel generico (o codigo proprio
-    e da 05.3); o que a 05.1 fixa e que ele e reconhecivel e nunca vira zero."""
+    """Contract section 2.1: in the current panel the year without a collection shows as a generic unavailable (its own
+    code belongs to 05.3); what 05.1 pins down is that it is recognizable and never becomes zero."""
     b = rb.Bruto(situacoes.con, situacoes.armazem)
     assert b.ponto(2023, "2023-12-31")["situacao"] == "exercicio_sem_cobertura"
-    assert b.situacao(1, 2023, "2023-12-31") == "exercicio_sem_cobertura"        # 2023 esta no catalogo da entidade 1
-    assert b.situacao(15, 2023, "2023-12-31") == "inexistente"                   # precedencia: inexistente primeiro
+    assert b.situacao(1, 2023, "2023-12-31") == "exercicio_sem_cobertura"        # 2023 is in entity 1's catalog
+    assert b.situacao(15, 2023, "2023-12-31") == "inexistente"                   # precedence: non-existent first
     assert b.cortes_do_exercicio(2023) == []
     with situacoes.painel() as p:
         for ent in (None, 1):
@@ -119,8 +119,8 @@ def test_SINTETICO_municipio_com_zero_verdadeiro(mundo):
 
 
 def test_SINTETICO_serie_lista_todos_os_cortes_e_nao_pula_lacuna(mundo):
-    """Contrato secoes 2.4 e 2.6: a serie de uma entidade tem todos os cortes do exercicio; corte sem a entidade e
-    lacuna com situacao; diferenca contra lacuna e None."""
+    """Contract sections 2.4 and 2.6: an entity's series has every cut-off of the fiscal year; a cut-off without the
+    entity is a gap with a situation; a difference against a gap is None."""
     mundo.catalogos({1: [2025], 15: [2025]})
     for df in ("2025-02-28", "2025-04-30", "2025-06-30"):
         mundo.listagem(1, 2025, df, [_reg(1, aproc=100.0, pagoAProc={"2025-02-28": 10.0, "2025-04-30": 30.0,
@@ -137,7 +137,7 @@ def test_SINTETICO_serie_lista_todos_os_cortes_e_nao_pula_lacuna(mundo):
     assert [x["situacao"] for x in mun] == ["com_dados", "municipio_indisponivel", "com_dados"]
     um = b.serie(2025, 1)
     assert [x["diferenca_saldo"] for x in um] == [None, -2000, -500]
-    with mundo.painel() as p:      # R1 corrigido na 05.2: o painel lista todos os cortes, com a situacao
+    with mundo.painel() as p:      # R1 fixed in 05.2: the panel lists every cut-off, with the situation
         ev = p.evolucao(2025, 15)["serie"]
         assert [x["data_final"] for x in ev] == ["2025-02-28", "2025-04-30", "2025-06-30"]
         assert [x["situacao"]["codigo"] for x in ev] == [x["situacao"] for x in serie]
@@ -145,7 +145,7 @@ def test_SINTETICO_serie_lista_todos_os_cortes_e_nao_pula_lacuna(mundo):
                 if l["entidade"] == 15] == ["sem_coleta"]
 
 
-# ================================================================== contribuicoes e fechamento (SINTETICO)
+# ================================================================== contributions and closing (SINTETICO)
 def _par_de_cortes(mundo, repetir=False):
     mundo.catalogos({1: [2025]})
     ant = [_reg(1, aproc=100.0, pagoAProc=10.0), _reg(2, aproc=50.0), _reg(3, aproc=40.0, pagoAProc=5.0),
@@ -169,7 +169,7 @@ def test_SINTETICO_contribuicoes_por_situacao_da_chave_e_fechamento(mundo):
     assert r["variacao_c"] == (10000 - 6000 + 5000 + 6300 + 1800 + 1800) - (9000 + 5000 + 3500 + 3000 + 3000)
     for f in ("fechamento_grupos", "fechamento_classes", "fechamento_linhas"):
         assert r[f]["fecha"] and r[f]["diferenca_c"] == 0, f
-    assert [x["chave"][2] for x in r["linhas"]] == [4, 2, 5, 6, 3, 1]    # decrescente; empate 5/6 pela chave
+    assert [x["chave"][2] for x in r["linhas"]] == [4, 2, 5, 6, 3, 1]    # descending; tie 5/6 broken by the key
     assert dict(r["grupos"]) == {"top_aumentos": 6300, "outros_aumentos": 0, "top_reducoes": -5000,
                                  "outras_reducoes": -5900, "sem_variacao": 0}
     assert r["sem_variacao"] == 1
@@ -181,9 +181,9 @@ def test_SINTETICO_contribuicoes_por_situacao_da_chave_e_fechamento(mundo):
 
 
 def test_SINTETICO_chave_duplicada_bloqueia_o_par(mundo):
-    # revisao critica (05/10/2026), item 1: o retrato com a chave repetida nunca e o vigente - o oraculo decide
-    # lendo o bruto. Sem retrato valido anterior o lado fica 'ambiguo', sem valor, e o par continua bloqueado sem
-    # escolher copia (antes o retrato era vigente e o bloqueio vinha de `chaves_repetidas`)
+    # critical review (05/10/2026), item 1: the snapshot with the repeated key is never the current one - the oracle
+    # decides by reading the raw data. Without a previous valid snapshot the side is 'ambiguo', without a value, and the
+    # pair stays blocked without picking a copy (before, the snapshot was current and the block came from `chaves_repetidas`)
     b = _par_de_cortes(mundo, repetir=True)
     r = b.contribuicoes(2025, "2025-06-30", "2025-12-31", 1, "s1")
     assert not r["disponivel"] and "ambiguo" in r["motivo"] and "linhas" not in r
@@ -192,7 +192,7 @@ def test_SINTETICO_chave_duplicada_bloqueia_o_par(mundo):
 
 def test_SINTETICO_par_com_lado_sem_valor_e_indisponivel(situacoes):
     b = rb.Bruto(situacoes.con, situacoes.armazem)
-    situacoes.listagem(1, 2025, "2025-06-30", [_reg(1, aproc=10.0)], T0)    # nao processado
+    situacoes.listagem(1, 2025, "2025-06-30", [_reg(1, aproc=10.0)], T0)    # not processed
     r = b.contribuicoes(2025, "2025-06-30", "2025-12-31", 1, "s1")
     assert not r["disponivel"] and "sem valor" in r["motivo"]
 
@@ -202,8 +202,8 @@ def test_fechamento_aprova_so_com_diferenca_zero_e_nunca_mascara():
     assert ok["fecha"] and ok["diferenca_c"] == 0
     for comps, dif in (([("a", 60), ("b", 39)], -1), ([("a", 150), ("b", -49)], 1), ([("a", 100), ("b", 1)], 1)):
         r = rb.fechamento(100, comps)
-        assert not r["fecha"] and r["diferenca_c"] == dif          # nem 1 centavo passa; sinal preservado
-    assert not rb.fechamento(-100, [("a", 100)])["fecha"]          # sem valor absoluto
+        assert not r["fecha"] and r["diferenca_c"] == dif          # not even 1 cent gets through; sign preserved
+    assert not rb.fechamento(-100, [("a", 100)])["fecha"]          # no absolute value
     for ruim in (100.0, True, "100"):
         with pytest.raises(TypeError):
             rb.fechamento(100, [("a", ruim)])
@@ -212,7 +212,7 @@ def test_fechamento_aprova_so_com_diferenca_zero_e_nunca_mascara():
         rb.diferenca(1.5, 2)
 
 
-# ================================================================== independencia da ferramenta
+# ================================================================== independence of the tool
 def test_ferramenta_de_recalculo_nao_reaproveita_a_producao_nem_reimplementa_a_derivacao():
     fonte = (Path(__file__).with_name("recalculo_bruto.py")).read_text(encoding="utf-8")
     modulos = {n.module if isinstance(n, ast.ImportFrom) else a.name
@@ -221,10 +221,10 @@ def test_ferramenta_de_recalculo_nao_reaproveita_a_producao_nem_reimplementa_a_d
     assert not [m for m in modulos if m and m.split(".")[0] == "rp"], modulos
     for codigo in ("LIQ-NEG", "COPIA-24", "SALDO-SEM-CONTINUIDADE", "DESCONTINUIDADE", "PAR-24", "verificacao",
                    "anomalia ("):
-        assert codigo not in fonte, codigo        # anomalias e verificacoes: regime "derivacao", nao recalculadas
+        assert codigo not in fonte, codigo        # anomalies and checks: "derivacao" regime, not recalculated
 
 
-# ================================================================== documento do contrato
+# ================================================================== contract document
 def _secoes(texto, prefixo):
     partes = re.split(rf"^### ({prefixo}-\d+)", texto, flags=re.M)
     return dict(zip(partes[1::2], partes[2::2]))
@@ -250,15 +250,15 @@ def test_contrato_cobre_taxonomia_regimes_e_grafico():
         assert trecho in texto, trecho
 
 
-# ================================================================== armazem real
+# ================================================================== real store
 @pytest.fixture(scope="module")
 def bruto_real(real):
     return rb.Bruto(real["con"], real["armazem"])
 
 
 def test_recalculo_reproduz_o_painel_em_todo_ponto_dos_22_cortes(real, bruto_real):
-    """Criterio de aceitacao da 05.1: bruto = painel ao centavo em todo ponto com valor; ponto sem valor tem valores
-    nulos nos dois; snapshots e situacao escolhidos de forma independente coincidem com os do painel."""
+    """05.1 acceptance criterion: raw = panel to the cent at every point with a value; a point without a value has
+    null values on both; snapshots and situation chosen independently match the panel's."""
     p, b = real["painel"], bruto_real
     cortes = p.cortes()["cortes"]
     assert len(cortes) == 22
@@ -295,7 +295,7 @@ def test_universo_da_serie_e_R1_no_dado_real(real, bruto_real):
         assert [x["situacao"] for x in serie] == ["sem_coleta", "com_dados", "sem_coleta", "com_dados", "com_dados",
                                                   "com_dados", "sem_coleta"]
         assert all(x["valores"] is None for x in serie if x["situacao"] == "sem_coleta")
-        ev = p.evolucao(2026, ent)["serie"]                 # R1 corrigido na 05.2: os 7 cortes, com situacao
+        ev = p.evolucao(2026, ent)["serie"]                 # R1 fixed in 05.2: the 7 cut-offs, with situation
         assert [x["situacao"]["codigo"] for x in ev] == [x["situacao"] for x in serie]
     assert [x["situacao"] for x in b.serie(2026)] == ["municipio_indisponivel", "com_dados", "municipio_indisponivel",
                                                      "com_dados", "com_dados", "com_dados", "municipio_indisponivel"]
@@ -312,15 +312,15 @@ def test_diferencas_adjacentes_no_dado_real(real, bruto_real):
     serie = b.serie(2025)
     saldos = [p.indicadores(2025, x["data_final"])["valores"]["saldo_total"]["valor_c"] for x in serie]
     assert [x["diferenca_saldo"] for x in serie] == [None] + [d - a for a, d in zip(saldos, saldos[1:])]
-    assert sum(x["diferenca_saldo"] for x in serie[1:]) == saldos[-1] - saldos[0]       # sem lacuna: identidade
+    assert sum(x["diferenca_saldo"] for x in serie[1:]) == saldos[-1] - saldos[0]       # no gap: identity
     s26 = {x["data_final"]: x["diferenca_saldo"] for x in b.serie(2026)}
-    assert s26["2026-03-31"] is None and s26["2026-04-30"] is None and s26["2026-02-28"] is None   # nao pula lacuna
+    assert s26["2026-03-31"] is None and s26["2026-04-30"] is None and s26["2026-02-28"] is None   # does not skip a gap
 
 
 @pytest.mark.parametrize("ent, ex, pares", [
     (None, 2025, [("2025-02-28", "2025-04-30"), ("2025-10-31", "2025-12-31")]),
     (1, 2026, [("2026-01-31", "2026-02-28"), ("2026-08-31", "2026-12-31")]),
-    (None, 2026, [("2026-02-28", "2026-04-30")]),             # par que salta a lacuna de 31/03 (escolha explicita)
+    (None, 2026, [("2026-02-28", "2026-04-30")]),             # a pair that jumps over the 31/03 gap (explicit choice)
 ])
 def test_contribuicoes_fecham_no_dado_real(real, bruto_real, ent, ex, pares):
     p = real["painel"]

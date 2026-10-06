@@ -1,9 +1,9 @@
-"""Percorre as telas da interface por HTTP (servidor local ja iniciado) e grava status, tamanho e tempo.
+"""Walks through the interface screens over HTTP (local server already started) and records status, size and time.
 
-Uso:  python 04_6_percorrer_telas.py http://127.0.0.1:PORTA SAIDA.json
+Usage:  python 04_6_percorrer_telas.py http://127.0.0.1:PORTA SAIDA.json
 
-So acessa o servidor local indicado (sem proxy). Cobre as operacoes da secao 14 da especificacao da 04.6:
-abertura, troca de exercicio, filtro de entidade, consulta detalhada, busca, navegacao e reconciliacao.
+It only accesses the given local server (no proxy). Covers the operations of section 14 of the 04.6 specification:
+opening, change of fiscal year, entity filter, detailed query, search, navigation and reconciliation.
 """
 import json
 import sys
