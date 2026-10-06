@@ -1,0 +1,116 @@
+"""Decisoes do responsavel sobre as pendencias da revisao critica (06/10/2026): D1, D2, D4, D5, D6 e D7.
+SINTETICO = banco temporario com registros inventados (fixture `mundo`) ou arquivos inventados em tmp_path."""
+import gzip
+import os
+import shutil
+import sqlite3
+import subprocess
+import time
+from datetime import date
+
+import pytest
+from conftest import RAIZ_PROJETO
+
+from rp import banco, cli
+from rp.config import carregar
+
+APP = RAIZ_PROJETO / "app"
+
+
+def _cfg(tmp_path):
+    return carregar(dados_locais=tmp_path / "l", snapshots=tmp_path / "s", backups=tmp_path / "b")
+
+
+# ------------------------------------------------------------------ D6: retencao sem apagar
+def test_D6_comprimir_backup_devolve_os_mesmos_bytes_e_nao_sobrescreve(tmp_path):
+    arq = tmp_path / "x.sqlite"
+    conteudo = os.urandom(3 << 20) + b"fim"            # SINTETICO, maior que um bloco de leitura
+    arq.write_bytes(conteudo)
+    gz = banco.comprimir_backup(arq)
+    assert gz.name == "x.sqlite.gz" and not arq.exists()
+    assert gzip.decompress(gz.read_bytes()) == conteudo
+    arq.write_bytes(b"outro")
+    with pytest.raises(FileExistsError):
+        banco.comprimir_backup(arq)
+    assert arq.read_bytes() == b"outro" and gzip.decompress(gz.read_bytes()) == conteudo   # nada foi tocado
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["x.sqlite", "x.sqlite.gz"]       # nem temporario
+
+
+def test_D6_retencao_comprime_o_backup_antigo_em_vez_de_apagar(tmp_path):
+    cfg = _cfg(tmp_path)
+    con = banco.abrir(cfg)
+    feitos = []
+    for i in range(5):
+        feitos.append(banco.backup(con, cfg, f"antes-apagar-{i}", operacional=True))
+        time.sleep(1.05)                                # carimbo por segundo
+    pasta = cfg.backups_operacionais
+    assert sorted(p.name for p in pasta.glob("*.sqlite")) == [p.name for p in feitos[2:]]
+    gz = sorted(pasta.glob("*.sqlite.gz"))
+    assert [p.name for p in gz] == [p.name + ".gz" for p in feitos[:2]]
+    restaurado = tmp_path / "restaurado.sqlite"
+    restaurado.write_bytes(gzip.decompress(gz[0].read_bytes()))
+    c = sqlite3.connect(restaurado)
+    assert c.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
+    assert c.execute("SELECT COUNT(*) FROM regra").fetchone()[0] == con.execute("SELECT COUNT(*) FROM regra").fetchone()[0]
+    c.close()
+
+
+def test_D6_comprimir_backups_lista_antes_e_mantem_os_recentes(tmp_path):
+    cfg = _cfg(tmp_path)
+    pasta = cfg.backups_operacionais
+    pasta.mkdir(parents=True)
+    nomes = [f"2026093{i}-000000_antes-apagar-{i}.sqlite" for i in range(6)]
+    for n in nomes:
+        (pasta / n).write_bytes(b"SQLite format 3\x00" + n.encode() * 1000)   # SINTETICO
+    (pasta / "PRESERVAR.txt").write_text(nomes[5] + "\n", encoding="utf-8")   # o mais novo, mas preservado
+    simulado = banco.comprimir_backups_operacionais(cfg, manter=3, simular=True)
+    assert [x["arquivo"] for x in simulado] == [nomes[0], nomes[1], nomes[5]]
+    assert sorted(p.name for p in pasta.glob("*.sqlite")) == sorted(nomes)       # simular nao toca em nada
+    feito = banco.comprimir_backups_operacionais(cfg, manter=3, simular=False)
+    assert [x["arquivo"] for x in feito] == [nomes[0] + ".gz", nomes[1] + ".gz", nomes[5] + ".gz"]
+    assert sorted(p.name for p in pasta.glob("*.sqlite")) == nomes[2:5]          # os 3 recentes da retencao
+    assert all(x["bytes_depois"] < x["bytes_antes"] for x in feito)
+    assert gzip.decompress((pasta / (nomes[5] + ".gz")).read_bytes()) == b"SQLite format 3\x00" + nomes[5].encode() * 1000
+
+
+def test_D6_logs_de_mais_de_90_dias_saem_e_o_resto_fica(tmp_path):
+    for n in ("rp-2026-01-01.log", "rp-2026-07-08.log", "rp-2026-07-07.log", "rp-2026-10-06.log", "outro.log",
+              "rp-sem-data.log"):
+        (tmp_path / n).write_text("x", encoding="utf-8")
+    removidos = cli.podar_logs(tmp_path, date(2026, 10, 6))
+    assert removidos == ["rp-2026-01-01.log", "rp-2026-07-07.log"]                 # 91 e 278 dias
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["outro.log", "rp-2026-07-08.log", "rp-2026-10-06.log",
+                                                         "rp-sem-data.log"]
+
+
+def test_D6_espaco_por_pasta(tmp_path):
+    cfg = _cfg(tmp_path)
+    con = banco.abrir(cfg)
+    banco.backup(con, cfg, "manual")
+    e = banco.espaco(cfg)
+    assert set(e) == {"banco", "armazem", "backups", "backups_operacionais", "logs"}
+    assert e["banco"] == cfg.banco.stat().st_size and e["backups"] > 0 and e["armazem"] == 0
+
+
+# ------------------------------------------------------------------ D2: bruto novo fora do Git
+@pytest.mark.skipif(shutil.which("git") is None or not (RAIZ_PROJETO / ".git").exists(), reason="sem git/repositorio")
+def test_D2_snapshot_novo_e_ignorado_e_os_versionados_continuam_no_git():
+    def git(*a):
+        return subprocess.run(["git", *a], cwd=RAIZ_PROJETO, capture_output=True, text=True, encoding="utf-8")
+    assert git("check-ignore", "-q", "--no-index", "snapshots/coletas/2099/01/novo.json").returncode == 0
+    assert git("check-ignore", "-q", "--no-index", "snapshots/objetos/ab/" + "a" * 64 + ".zlib").returncode == 0
+    versionados = git("ls-files", "snapshots/coletas").stdout.split()
+    assert len(versionados) >= 466        # a base homologada continua versionada
+
+
+# ------------------------------------------------------------------ D1: bloquear e dizer como recoletar
+def test_D1_portao_da_chave_repetida_diz_o_comando_de_recoleta_e_nao_recoleta_sozinho(mundo):
+    from test_revisao_duplicidade import R1, R2, T1, T2, _cenario, _portao
+    snaps, _, _ = _cenario(mundo, [(T1, [R1, R2]), (T2, [R1, R2, R2])])
+    coletas = mundo.con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0]
+    p, r = _portao(mundo, "retrato_sem_chave_repetida")
+    assert p["ok"] is False and not r["apto"]
+    uid = snaps[1]["snapshot_uid"]
+    assert p["detalhe"]["recoletar"] == [f"python -m rp recoletar --snapshot {uid}"]
+    assert "MAIS TARDE" in p["detalhe"]["nota"] and "segunda leitura" in p["detalhe"]["nota"]
+    assert mundo.con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0] == coletas    # nada foi coletado sozinho

@@ -23,7 +23,7 @@ Código de **produção**:
 
 ## Onde fica cada coisa (`config.toml`)
 
-- **Banco ativo e logs:** `~/RestosAPagar_local/` (pasta do usuário, em qualquer sistema), fora do OneDrive. Outra pasta: variável de ambiente `RP_DADOS_LOCAIS` (caminho relativo = a partir de `app/`). O banco fica em `<pasta>/banco/restos_a_pagar.sqlite` e os logs em `<pasta>/logs/`.
+- **Banco ativo e logs:** `~/RestosAPagar_local/` (pasta do usuário, em qualquer sistema), fora do OneDrive. Outra pasta: variável de ambiente `RP_DADOS_LOCAIS` (caminho relativo = a partir de `app/`). O banco fica em `<pasta>/banco/restos_a_pagar.sqlite` e os logs em `<pasta>/logs/` (um arquivo por dia; os de mais de 90 dias saem sozinhos).
 - **Outro arquivo de configuração:** variável `RP_CONFIG` ou `python -m rp --config ARQUIVO ...`.
 - **Snapshots brutos** (`../snapshots`) e **backups** (`../backups`): no projeto. São arquivos gravados uma única vez.
 - Se o banco se perder: `python -m rp reconstruir --destino NOVO.sqlite` refaz tudo a partir de `snapshots/` (depois, `python -m rp processar` recria normalização e derivação com os mesmos hashes).
@@ -109,7 +109,7 @@ Os testes são conferidos por quem disponibiliza. Se um portão falhar, o retrat
 - Soma = total não basta para dizer que a coleta está completa (auditoria técnica e revisão crítica, `../auditoria/`). A coleta de listagem PEDE a ordem (anoempenho, empenho) e só é `completa` se, além disso: cada página traz `number`, `numberOfElements`, `size`, `totalPages`, `first` e `empty` coerentes e ecoa a ordem pedida; nenhum registro idêntico reaparece em página seguinte; a ordem cresce na troca de página; nenhuma chave (entidade, anoempenho, empenho) se repete no retrato, dentro ou entre páginas; todo registro é da entidade pedida; e, com mais de uma página, uma segunda leitura de todas elas vem igual (os hashes vão para o manifesto, em `segunda_leitura`). Entidade ou exercício fora do catálogo vigente fica na observação: a API responde 200 vazio para entidade inexistente. O contrato observado da API está em `../auditoria/CONTRATO_API_ELOTECH.md`.
 - Catálogo (entidades, exercícios, publicações) só é `completa` se cumprir um contrato mínimo: JSON válido não basta, porque um objeto de erro com HTTP 200 também é JSON.
 - O manifesto de cada snapshot novo grava quando a coleta terminou (`coleta_finalizada_em`) e a estrutura da resposta (`contrato_api`: caminhos, tipos e o SHA-256 deles).
-- Retrato com a mesma chave de empenho mais de uma vez (anomalia CHAVE-DUP), exata ou conflitante, nunca é o vigente do corte: derivação, painel e consultas usam o retrato válido anterior (com aviso) ou mostram o dado como indisponível. Nada é apagado: as ocorrências ficam no banco e na tela de qualidade.
+- Retrato com a mesma chave de empenho mais de uma vez (anomalia CHAVE-DUP), exata ou conflitante, nunca é o vigente do corte: derivação, painel e consultas usam o retrato válido anterior (com aviso) ou mostram o dado como indisponível. Nada é apagado: as ocorrências ficam no banco e na tela de qualidade. O portão `retrato_sem_chave_repetida` traz o comando de recoleta de cada retrato; recolete **mais tarde** (a segunda leitura da coleta já releu as páginas na hora), sem recoleta automática.
 - `importar-etapas-anteriores`: o mesmo snapshot com outro conteúdo (bytes ou parâmetros) é conflito, nunca "já existe, então ignora"; carimbo com fuso é convertido para Brasília, não sobrescrito.
 - HTTP: só falha transitória (tempo esgotado, conexão) é repetida; erro de TLS e URL inválida falham na hora; erro de programação no transporte não é tratado como rede.
 - Migração de esquema é uma transação única (falha no meio não deixa o esquema pela metade); banco novo é montado num temporário e publicado no fim.
@@ -203,10 +203,16 @@ Ver o que seria apagado:
 python -m rp apagar-execucao --tipo derivacao --id 3 --simular
 ```
 
-Apagar UMA execução inteira (confirmação repetindo o id; faz backup operacional antes e verifica a integridade depois). A pasta `backups_operacionais/` mantém os 3 mais recentes; um arquivo listado em `backups_operacionais/PRESERVAR.txt` (um nome por linha) nunca é apagado pela retenção:
+Apagar UMA execução inteira (confirmação repetindo o id; faz backup operacional antes e verifica a integridade depois). A pasta `backups_operacionais/` mantém os 3 mais recentes como estão e **comprime** os mais antigos (`<nome>.gz`, conferido byte a byte antes de remover o original; nada é apagado). Um arquivo listado em `backups_operacionais/PRESERVAR.txt` (um nome por linha) não entra na retenção:
 
 ```bash
 python -m rp apagar-execucao --tipo derivacao --id 3 --confirmar 3
+```
+
+Comprimir os backups operacionais antigos que já existem, inclusive os preservados (sem `--confirmar`, só lista; os 3 mais recentes ficam como estão). Para voltar a um backup: `python -m gzip -d <nome>.sqlite.gz`:
+
+```bash
+python -m rp comprimir-backups --confirmar
 ```
 
 Devolver ao disco o espaço de execuções apagadas (VACUUM):
@@ -251,7 +257,7 @@ Cópia do banco para `backups/`:
 python -m rp backup --motivo manual
 ```
 
-Contagens:
+Contagens e espaço ocupado por pasta (banco, armazém, backups, backups operacionais, logs):
 
 ```bash
 python -m rp situacao
