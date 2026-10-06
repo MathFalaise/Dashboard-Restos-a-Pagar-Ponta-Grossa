@@ -118,7 +118,7 @@ def ambiente(tmp_path):
 
 
 # ------------------------------------------------------------------ banco montado a partir do ARMAZEM REAL
-ARMAZEM_REAL = RAIZ_PROJETO / "snapshots"
+ARMAZEM_REAL = RAIZ_PROJETO / "data" / "snapshots"
 EM_2909 = "2026-09-29T23:59:59-03:00"
 # Base HOMOLOGADA (Etapas 01-05): os 466 snapshots coletados de 29/09 19h56 a 30/09 01h27 de 2026. Uma carga nova
 # (D1) so ACRESCENTA snapshots ao armazem; os testes de casos reais continuam provando a base homologada, e a carga

@@ -97,9 +97,9 @@ def test_D6_espaco_por_pasta(tmp_path):
 def test_D2_snapshot_novo_e_ignorado_e_os_versionados_continuam_no_git():
     def git(*a):
         return subprocess.run(["git", *a], cwd=RAIZ_PROJETO, capture_output=True, text=True, encoding="utf-8")
-    assert git("check-ignore", "-q", "--no-index", "snapshots/coletas/2099/01/novo.json").returncode == 0
-    assert git("check-ignore", "-q", "--no-index", "snapshots/objetos/ab/" + "a" * 64 + ".zlib").returncode == 0
-    versionados = git("ls-files", "snapshots/coletas").stdout.split()
+    assert git("check-ignore", "-q", "--no-index", "data/snapshots/coletas/2099/01/novo.json").returncode == 0
+    assert git("check-ignore", "-q", "--no-index", "data/snapshots/objetos/ab/" + "a" * 64 + ".zlib").returncode == 0
+    versionados = git("ls-files", "data/snapshots/coletas").stdout.split()
     assert len(versionados) >= 466        # a base homologada continua versionada
 
 

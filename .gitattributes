@@ -1,9 +1,9 @@
 # Dados brutos e bancos: versionados byte a byte, sem conversao de fim de linha.
-# O SHA-256 de cada arquivo (manifestos do armazem, listas *_SHA256.txt) tem de conferir depois de um clone.
-snapshots/** -text
-backups/** -text
-etapa01/amostras_brutas/** -text
-etapa02/dados_brutos/** -text
+# O SHA-256 de cada arquivo (manifestos do armazem, listas *.SHA256.txt) tem de conferir depois de um clone.
+data/snapshots/** -text
+data/backups/** -text
+data/stage01-samples/** -text
+data/stage02-raw/** -text
 *.sqlite binary
 *.zlib binary
 *.pdf binary

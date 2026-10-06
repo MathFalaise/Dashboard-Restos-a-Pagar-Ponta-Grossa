@@ -5,15 +5,15 @@ __pycache__/
 .pytest_cache/
 
 # Backups SQLite acima do limite de 100 MB por arquivo do GitHub: ficam so na copia local (pasta do OneDrive),
-# nunca sao apagados e nao vao para o repositorio. O banco inteiro e reconstruivel a partir de snapshots/
+# nunca sao apagados e nao vao para o repositorio. O banco inteiro e reconstruivel a partir de data/snapshots/
 # (python -m rp reconstruir --destino NOVO.sqlite). Um backup grande novo entra nesta lista pelo nome.
-backups/20260930-145737_antes-migracao-v3-v4.sqlite
+data/backups/20260930-145737_antes-migracao-v3-v4.sqlite
 
 # Auditoria tecnica (REP-01): backup SQLite NOVO nao vai mais para o Git. O banco e reconstruivel do armazem
-# (snapshots/) e um backup de 100+ MB nao cabe no GitHub; os 4 backups ja versionados continuam versionados.
-backups/*.sqlite
+# (data/snapshots/) e um backup de 100+ MB nao cabe no GitHub; os 4 backups ja versionados continuam versionados.
+data/backups/*.sqlite
 
 # Revisao critica, D2 (06/10/2026): bruto NOVO nao entra no Git sem decisao expressa. Os 466 snapshots da base
 # homologada (e os objetos deles) continuam versionados: ignorar uma pasta nao tira do Git o que ja esta nele.
 # Para versionar um snapshot novo de proposito: git add -f <arquivo>.
-snapshots/
+data/snapshots/

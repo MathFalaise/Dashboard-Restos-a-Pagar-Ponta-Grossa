@@ -16,8 +16,8 @@ ELOTECH = {
                   "entidades": "/api/entidades/lista", "exercicios": "/api/exercicios/entidade/{id}"},
     "evidencia_da_atribuicao": [
         "Etapa 01: GET /portaltransparencia-api/actuator/info identificou a plataforma como Oxy Transparência, da Elotech "
-        "Gestão Pública, versão 3.128.0 (registrado em etapa01/RELATORIO_ETAPA01.md; a resposta não foi guardada no bruto).",
-        "etapa01/amostras_brutas/openapi_v3_api-docs.json: especificação OpenAPI da API, com contato 'Elotech Gestão Pública'.",
+        "Gestão Pública, versão 3.128.0 (registrado em docs/stages/01-source-discovery/REPORT.md; a resposta não foi guardada no bruto).",
+        "data/stage01-samples/openapi_v3_api-docs.json: especificação OpenAPI da API, com contato 'Elotech Gestão Pública'.",
         "O endpoint de RP usado pelo projeto (/empenhos/restos-a-pagar) não consta dessa especificação; foi identificado "
         "na Etapa 01 pelo funcionamento do próprio portal.",
     ],
@@ -52,7 +52,7 @@ NATUREZAS = {
     "diferenca": "Diferença — divergência entre duas fontes ou dois retratos",
 }
 
-# Colunas do RREO Anexo VII (rotulos transcritos na Etapa 02, etapa02/RELATORIO_ETAPA02.md secao 5)
+# Colunas do RREO Anexo VII (rotulos transcritos na Etapa 02, docs/stages/02-accounting-validation/REPORT.md secao 5)
 COLUNAS_RREO = {
     "a": "Processados — inscritos em exercícios anteriores",
     "b": "Processados — inscritos em 31/dez do exercício anterior",
@@ -150,7 +150,7 @@ METODOLOGIA = {
                    "necessariamente o estado que estava disponível ao público naquele ano. A Etapa 04.4 registrou "
                    "alterações retroativas na base (lançamentos com data no passado feitos depois e registros inseridos "
                    "depois que aparecem em cortes antigos)."),
-    "arquitetura": "etapa04/ARQUITETURA_FONTES.md",
+    "arquitetura": "docs/stages/04-pipeline/SOURCE_ARCHITECTURE.md",
     "snapshots": ("Cada consulta à API vira um snapshot: as respostas HTTP são guardadas byte a byte, com SHA-256, "
                   "num armazém onde nada é sobrescrito nem apagado. Coletar de novo o mesmo corte cria outro snapshot "
                   "(outro retrato); o anterior continua disponível."),

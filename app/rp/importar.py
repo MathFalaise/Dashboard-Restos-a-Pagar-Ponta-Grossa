@@ -84,11 +84,11 @@ def _gravar(con, armazem, chave, **kw):
 
 def importar_etapas_anteriores(con, armazem, raiz_projeto):
     raiz = Path(raiz_projeto)
-    e2 = raiz / "etapa02" / "dados_brutos"
+    e2 = raiz / "data" / "stage02-raw"
     novos = {}
 
     # 1) listagens da Etapa 02 (MANIFESTO.jsonl agrupado por consulta)
-    col = _coletor("etapa02-investigacao/coletar.py", raiz / "etapa02/investigacao/coletar.py", "investigação da Etapa 02")
+    col = _coletor("etapa02-investigacao/coletar.py", raiz / "docs/stages/02-accounting-validation/investigation/coletar.py", "investigação da Etapa 02")
     grupos = {}
     for linha in (e2 / "api" / "MANIFESTO.jsonl").read_text(encoding="utf-8").splitlines():
         m = json.loads(linha)
@@ -123,7 +123,7 @@ def importar_etapas_anteriores(con, armazem, raiz_projeto):
         coletor=col, respostas=resp, observacao="recoleta do mesmo corte ~13 min depois; horário aproximado (mtime)")
 
     # 3) movimentacoes
-    col = _coletor("etapa02-investigacao/casos.py", raiz / "etapa02/investigacao/casos.py")
+    col = _coletor("etapa02-investigacao/casos.py", raiz / "docs/stages/02-accounting-validation/investigation/casos.py")
     n = 0
     for a in sorted((e2 / "movimentacao").glob("mov_ent*_ex*_emp*.json")):
         e, ano, emp = map(int, re.match(r"mov_ent(\d+)_ex(\d+)_emp(\d+)\.json", a.name).groups())
@@ -172,7 +172,7 @@ def importar_etapas_anteriores(con, armazem, raiz_projeto):
 
     # 5) catalogos da Etapa 01
     col = _coletor("etapa01-curl-manual", None, "downloads com curl durante a Etapa 01")
-    e1 = raiz / "etapa01" / "amostras_brutas"
+    e1 = raiz / "data" / "stage01-samples"
     n = 0
     for tipo, arq, endpoint, q in (("entidades", "api_entidades_lista.json", "/api/entidades/lista", {}),
                                    ("exercicios", "api_exercicios_entidade_1.json", "/api/exercicios/entidade/1", {"entidade": 1})):

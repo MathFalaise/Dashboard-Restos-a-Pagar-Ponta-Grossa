@@ -1,6 +1,6 @@
 # Pacote instalavel com o comando `rp` (revisao critica, item 38). Instalar SEMPRE em modo editavel, de dentro de
 # app/:  python -m pip install -e .
-# O pacote acha config.toml, o armazem (../snapshots) e os backups a partir da pasta app/ (rp/config.py, RAIZ_APP);
+# O pacote acha config.toml, o armazem (../data/snapshots) e os backups a partir da pasta app/ (rp/config.py, RAIZ_APP);
 # instalado como copia em site-packages, ele nao os encontraria. Os testes continuam com `python -m pytest tests`.
 # Sem [tool.pytest]: a configuracao dos testes mora em tests/conftest.py.
 [build-system]

@@ -3,8 +3,8 @@
 # * sinteticos: Linux e Windows, Python 3.11 a 3.14. So os testes com dados inventados (-m "not dados_reais"):
 #   e o que prova a portabilidade declarada no README.
 # * dados_reais: o ambiente homologado (requirements-lock.txt com hashes, Python 3.14) nos dois sistemas. Monta bancos
-#   temporarios a partir do armazem ../snapshots e do bruto das Etapas 01/02, confere os hashes homologados e roda os
-#   26 testes da investigacao (etapa03/validacao). Se um dia o bruto sair do repositorio, os passos sao pulados.
+#   temporarios a partir do armazem ../data/snapshots e do bruto das Etapas 01/02, confere os hashes homologados e roda os
+#   26 testes da investigacao (docs/stages/03-data-model/validation). Se um dia o bruto sair do repositorio, os passos sao pulados.
 # * dependencias: pip-audit sobre a trava com hashes (decisao D5): versao travada com vulnerabilidade conhecida reprova.
 # * pacote: instalacao editavel e o comando `rp`.
 name: testes
@@ -41,7 +41,7 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: python -m pip install -r requirements-dev.txt
       - name: sintaxe de todo o codigo nesta versao do Python
-        run: python -m compileall -q rp tests ../rp.py ../etapa03/validacao
+        run: python -m compileall -q rp tests ../rp.py ../docs/stages/03-data-model/validation
       - run: python -m pytest tests -q -m "not dados_reais"
 
   dados_reais:
@@ -63,11 +63,11 @@ jobs:
       - name: ambiente homologado, cada arquivo conferido pelo hash da trava
         run: python -m pip install --require-hashes -r requirements-lock.txt
       - name: testes com o armazem real e o bruto das Etapas 01/02
-        if: hashFiles('snapshots/coletas/**') != '' && hashFiles('etapa02/dados_brutos/**') != ''
+        if: hashFiles('data/snapshots/coletas/**') != '' && hashFiles('data/stage02-raw/**') != ''
         run: python -m pytest tests -q -m dados_reais
       - name: testes da investigacao (Etapa 03)
-        if: hashFiles('etapa02/dados_brutos/**') != ''
-        working-directory: etapa03/validacao
+        if: hashFiles('data/stage02-raw/**') != ''
+        working-directory: docs/stages/03-data-model/validation
         run: python -m pytest tests -q
 
   dependencias:

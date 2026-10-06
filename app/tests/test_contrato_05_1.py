@@ -22,7 +22,7 @@ import recalculo_bruto as rb
 from rp.coletor import EP_RP
 from rp.snapshots import gravar_snapshot
 
-CONTRATO = RAIZ_PROJETO / "etapa05" / "CONTRATO_ANALITICO.md"
+CONTRATO = RAIZ_PROJETO / "docs/stages/05-analysis/ANALYTICAL_CONTRACT.md"
 T0, T1 = "2026-09-29T20:00:00-03:00", "2026-09-30T10:00:00-03:00"
 SEM_VALOR = ("inexistente", "sem_coleta", "nao_processado", "incompleto", "municipio_indisponivel",
              "exercicio_sem_cobertura")
