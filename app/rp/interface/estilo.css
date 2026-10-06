@@ -97,6 +97,12 @@ dd { margin: 0; }
 .natureza-diferenca { color: var(--roxo); border-color: rgba(185, 162, 255, .5); }
 details.origem, details.explicacao, details.dicionario, .origem-dado details { margin-top: 6px; font-size: 12.5px; }
 details summary { cursor: pointer; color: var(--suave); }
+details.origem > ul, details.origem > p { margin: 6px 0; }
+details.registro-tecnico { margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--borda-forte); }
+#onde-conferir, .origem-dado { background: var(--superficie); border: 1px solid var(--borda); border-radius: var(--raio); padding: 12px 16px; }
+#onde-conferir h2, .origem-dado h2 { margin-top: 0; }
+#onde-conferir li, .origem-dado li, details.origem li { margin: 3px 0; }
+a[rel~="external"]::after { content: " ↗"; font-size: .85em; color: var(--suave); }
 details summary:hover, details[open] > summary { color: var(--texto); }
 
 /* ------------------------------------------------------------------ tabelas */

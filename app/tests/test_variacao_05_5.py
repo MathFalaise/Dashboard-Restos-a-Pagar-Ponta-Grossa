@@ -13,7 +13,7 @@ import re
 import time
 
 import pytest
-from conftest import chamar, dados, ok, registro_sintetico as _reg
+from conftest import chamar, dados, ok, registro_sintetico as _reg, links_permitidos
 
 import recalculo_bruto as rb
 from rp.interface import Aplicacao
@@ -218,7 +218,7 @@ def test_SINTETICO_tela_da_variacao_e_do_empenho(variacao):
     assert (v["lst-subtotal"], v["lst-acumulado"]) == (-1500, -1500)
     linha = re.search(r"<tr><td>5</td>.*?</tr>", corpo, re.S).group(0)            # emp 2: ausente no posterior
     assert "ausente do corte posterior" in linha and "R$ 0,00" not in linha
-    assert all(h.startswith("/") for h in re.findall(r'href="([^"]*)"', corpo)) and "style=" not in corpo
+    assert links_permitidos(corpo) and "style=" not in corpo
     corpo = ok(app, "/variacao", exercicio=2025, anterior="2025-04-30", data_final="2025-06-30")
     assert 'id="indisponivel"' in corpo and not any(k.startswith(("lst-", "grp-", "cls-", "fech-")) for k in dados(corpo))
     assert dados(corpo)["var-anterior"] == 18500 and "var-posterior" not in dados(corpo)
