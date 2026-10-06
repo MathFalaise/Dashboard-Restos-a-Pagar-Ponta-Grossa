@@ -142,7 +142,9 @@ def _formulario(acao, sel, entidades=None, extra="", com_corte=True):
 
 
 def _retrato(ret):
-    """Bloco obrigatorio: exercicio, corte e coleta, com o texto do retrato."""
+    """Bloco obrigatorio: exercicio, corte e coleta, com o texto do retrato. Hierarquia (CONSOLIDACAO_POS_05 secao 7):
+    no topo so a frase do retrato (exercicio, corte e data da coleta) e o aviso de corte posterior a coleta; o detalhe
+    de auditoria (tipo, definicoes, snapshots usados e a nota longa) fica em "Origem do retrato", recolhido."""
     if not ret:
         return ""
     ex, df = ret["exercicio"], ret["data_final"]
@@ -168,9 +170,10 @@ def _retrato(ret):
     if ret.get("corte_posterior_a_coleta"):
         nota = ('<p class="nota">O corte é posterior à data da coleta: os valores vão só até o dia em que a API foi '
                 "consultada.</p>")
-    return (f'<section class="retrato"><p class="retrato-texto" id="retrato">{esc(ret["texto"])}</p>'
-            f"{fm.lista_definicoes(definicoes)}{nota}"
-            f'<p class="nota">{esc(ret["nota"])}</p></section>')
+    return (f'<section class="retrato"><p class="retrato-texto" id="retrato">{esc(ret["texto"])}</p>{nota}'
+            '<details class="origem-retrato"><summary>Origem do retrato: tipo, corte, coleta e snapshots usados'
+            f"</summary>{fm.lista_definicoes(definicoes)}"
+            f'<p class="nota">{esc(ret["nota"])}</p></details></section>')
 
 
 def _origem_indicador(v):
