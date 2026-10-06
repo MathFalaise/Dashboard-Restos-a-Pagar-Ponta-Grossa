@@ -63,7 +63,7 @@ python -m rp processar --normalizacao 1 --em 2026-09-29T23:59:59-03:00
 
 4. Confira: `python -m rp verificar` (sem problemas), `python -m rp portoes` (apto) e `python -m pytest tests`. Os hashes de resultado devem ser os do projeto (`2f6b4e29…` e `b8a0b2ed…`). Para provar que o banco novo é equivalente a outro (ex.: o de outra máquina), camada a camada: `python -m rp comparar-bancos --banco NOVO.sqlite --outro OUTRO.sqlite` (código de saída 0 = equivalentes).
 
-Para reproduzir exatamente o ambiente homologado, inclusive as dependências transitivas, instale `requirements-lock.txt` em vez de `requirements-dev.txt`.
+Para reproduzir exatamente o ambiente homologado, inclusive as dependências transitivas, instale `requirements-lock.txt` em vez de `requirements-dev.txt` (Python 3.14, Windows ou Linux de 64 bits). A trava tem o SHA-256 de cada arquivo: o pip recusa qualquer pacote que não seja exatamente o conferido. Atualizar uma versão exige gerar os hashes de novo (`pip download` do pacote para `win_amd64` e `manylinux` x86_64, Python 3.14, conferindo com os publicados no PyPI). O CI roda o `pip-audit` sobre a trava: versão travada com vulnerabilidade conhecida reprova.
 
 Opcional: `python -m pip install -e .` (dentro de `app/`, sempre em modo editável) instala o comando `rp`, que funciona de qualquer pasta: `rp verificar` = `python -m rp verificar`. Instalado como cópia, o pacote não acharia `config.toml` nem o armazém.
 

@@ -2,9 +2,10 @@
 #
 # * sinteticos: Linux e Windows, Python 3.11 a 3.14. So os testes com dados inventados (-m "not dados_reais"):
 #   e o que prova a portabilidade declarada no README.
-# * dados_reais: o ambiente homologado (requirements-lock.txt, Python 3.14) nos dois sistemas. Monta bancos
+# * dados_reais: o ambiente homologado (requirements-lock.txt com hashes, Python 3.14) nos dois sistemas. Monta bancos
 #   temporarios a partir do armazem ../snapshots e do bruto das Etapas 01/02, confere os hashes homologados e roda os
 #   26 testes da investigacao (etapa03/validacao). Se um dia o bruto sair do repositorio, os passos sao pulados.
+# * dependencias: pip-audit sobre a trava com hashes (decisao D5): versao travada com vulnerabilidade conhecida reprova.
 # * pacote: instalacao editavel e o comando `rp`.
 name: testes
 
@@ -59,7 +60,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.14"
-      - run: python -m pip install -r requirements-lock.txt
+      - name: ambiente homologado, cada arquivo conferido pelo hash da trava
+        run: python -m pip install --require-hashes -r requirements-lock.txt
       - name: testes com o armazem real e o bruto das Etapas 01/02
         if: hashFiles('snapshots/coletas/**') != '' && hashFiles('etapa02/dados_brutos/**') != ''
         run: python -m pytest tests -q -m dados_reais
@@ -67,6 +69,20 @@ jobs:
         if: hashFiles('etapa02/dados_brutos/**') != ''
         working-directory: etapa03/validacao
         run: python -m pytest tests -q
+
+  dependencias:
+    # Decisao D5 da revisao critica (06/10/2026): vulnerabilidade conhecida numa versao travada reprova o CI.
+    # A trava tem hashes: o pip-audit confere os mesmos arquivos que o ambiente homologado instala.
+    name: dependencias sem vulnerabilidade conhecida (pip-audit)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: python -m pip install pip-audit==2.10.1
+      - run: python -m pip_audit -r app/requirements-lock.txt --require-hashes --disable-pip
 
   pacote:
     name: pacote instalavel (comando rp)
