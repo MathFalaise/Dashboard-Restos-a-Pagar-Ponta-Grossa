@@ -270,8 +270,13 @@ def _portoes_da_revisao(con, portao, did_atual):
            sum(naturezas.values()) == 0,
            {"chaves": sum(naturezas.values()), **naturezas, "snapshots": sorted(s for s in snapshots if s)[:10],
             "derivacao": did_atual,
-            "nota": "retrato com chave repetida nunca é o vigente (vale o retrato válido anterior do corte); "
-                    "recolete o corte e processe de novo"})
+            # decisao D1 (06/10/2026): bloquear e dizer o que fazer. Nada de recoleta automatica: a segunda leitura
+            # da propria coleta ja releu as paginas na hora; a recoleta vale MAIS TARDE, quando a API pode ter mudado
+            "recoletar": [f"python -m rp recoletar --snapshot {s}" for s in sorted(s for s in snapshots if s)[:10]],
+            "nota": "retrato com chave repetida nunca é o vigente (vale o retrato válido anterior do corte). "
+                    "A segunda leitura da coleta já releu as páginas na hora: recolete o corte MAIS TARDE com o "
+                    "comando em 'recoletar', confira com 'python -m rp verificar' e processe de novo "
+                    "('python -m rp processar')"})
 
     # item 28: o esquema do banco e o da sua versao no codigo (estrutura, sem comentarios nem espacos)
     versao = banco.versao_esquema(con)

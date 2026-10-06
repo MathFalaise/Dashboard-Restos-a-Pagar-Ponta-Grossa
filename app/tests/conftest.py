@@ -255,3 +255,17 @@ def ok(app, caminho, **params):
     status, _, corpo = chamar(app, caminho, **params)
     assert status == "200 OK", (caminho, params, status, corpo[:400])
     return corpo
+
+
+def links_permitidos(corpo):
+    """Todo href e interno ('/' ou '#') ou, desde 06/10/2026 ('onde conferir no Portal'), link para o portal oficial
+    marcado rel="external". Nenhum recurso externo e carregado: isso e conferido a parte (sem src)."""
+    import re
+    from rp.interface import portal
+    for tag in re.findall(r"<a\s[^>]*>", corpo):
+        href = (re.search(r'href="([^"]*)"', tag) or [None, ""])[1]
+        if href.startswith(("/", "#")):
+            continue
+        if not (href.startswith((portal.SITE + "/", portal.API + "/")) and 'rel="external' in tag):
+            return False
+    return all(h.startswith(("/", "#", portal.DOMINIO + "/")) for h in re.findall(r'href="([^"]*)"', corpo))

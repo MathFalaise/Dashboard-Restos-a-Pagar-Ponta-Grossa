@@ -150,6 +150,36 @@ Legenda: **CORRIGIDO** nesta revisão · **JÁ ESTAVA** corrigido na auditoria t
 | D7 | Critérios de promoção de regra | experimental → evidência → regressão → reconciliação independente → operacional | — |
 | D8 | Reprocessar o banco ativo | `python -m rp processar` cria uma normalização e uma derivação novas; os hashes ficam os mesmos e só a mensagem DET-01 muda | rodar na próxima carga, depois do backup |
 
+### 5.1 Decisões tomadas em 06/10/2026
+
+O responsável pediu os pontos negativos de cada escolha e, depois, alternativas. Ficou o seguinte:
+
+| | Decisão | O que foi feito |
+|---|---|---|
+| D1 | Bloquear e orientar, **sem recoleta automática**: a segunda leitura da coleta já relê as páginas na hora | O portão `retrato_sem_chave_repetida` traz o comando `python -m rp recoletar --snapshot <uid>` de cada retrato e diz para recoletar mais tarde |
+| D2 | **Nada no repositório publicado.** Análise dos dados: ver abaixo | `snapshots/` no `.gitignore`: bruto novo só entra com `git add -f`. Os 466 snapshots homologados continuam versionados |
+| D3 | **Não implementar por ora** (0 casos; o portão impede publicar). Se aparecer, preferir a quarentena do registro ao bloqueio do corte | — |
+| D4 | **Gatilhos**, sem recriar tabelas | Esquema v5: gatilhos `ri_*` na camada derivada. Banco ativo migrado com backup (`backups/20261006-135543_antes-migracao-v4-v5.sqlite`); `comparar-bancos` com o backup: equivalentes em todas as camadas |
+| D5 | Hashes **só no ambiente homologado** + `pip-audit` | Trava com 17 hashes (Python 3.14, Windows e Linux x86_64); job de CI `dependencias`. O `pip-audit` acusou 3 vulnerabilidades no urllib3 2.7.0 (corrigidas na 2.8.0): atualizar é decisão do responsável |
+| D6 | **Não apagar nada**: logs por dia com retenção de 90 dias, backups antigos comprimidos | Retenção comprime em vez de apagar; comando `comprimir-backups`; `situacao` mostra o espaço. Backups operacionais: 1,4 GB → 873 MB (7 arquivos, 742 → 215 MB) |
+| D7 | **Dois trilhos + saída documentada** | Colunas `teste_regressao` e `ressalva`; critérios em `registrar_decisao` e por gatilho no banco; comando `decidir-regra`; "operacional com ressalva" na metodologia |
+| D8 | Resolvida na carga de 06/10 (normalização 14 com a mensagem determinística) | — |
+
+**Análise da D2 (dados pessoais no bruto versionado; só leitura, só contagens):**
+
+| Dado | No repositório | Origem |
+|---|---|---|
+| CPF completo | nenhum | — |
+| CPF mascarado (`****NNN****`) | 141.901 ocorrências | mascarado pela própria API |
+| Pessoa física com nome | 70.438 registros, cerca de 5.700 pessoas | campo `nome` da API, exibido pelo portal |
+| Endereços e telefones | só das 10 entidades públicas | catálogo da API |
+| Dados bancários | 13 lançamentos de 1 empenho; credor: Caixa Econômica Federal (pessoa jurídica) | amostra da Etapa 01 |
+
+Tudo veio da API aberta do portal (sem login, a mesma que o site usa); nada vai além do que o portal mostra. Riscos que permanecem com o repositório público:
+- nome de credor corrigido no portal continua antigo no histórico (a prova real achou 16 registros com nome alterado);
+- o bruto fica num arquivo único, baixável e indexável;
+- republicar o bruto é tratamento novo de dado pessoal (LGPD, art. 7º, §§ 3º, 4º e 7º).
+
 ## 6. Como conferir
 
 Dentro de `app/`:

@@ -17,6 +17,7 @@ SHA-256 da estrutura (sqlite_master sem comentarios nem espacos: comentario e es
 ativo foi criado antes de os comentarios do esquema.sql perderem os acentos, e a estrutura e a mesma). Um teste
 exige que o esquema montado pelo codigo tenha a impressao da sua versao: mudou a estrutura, tem de mudar a versao.
 """
+import gzip
 import hashlib
 import json
 import logging
@@ -80,12 +81,93 @@ MIGRACOES = {
             # camada 1, entao so este registro diz se ele ja foi processado (NULL nas normalizacoes anteriores)
             "ALTER TABLE normalizacao_execucao ADD COLUMN ultima_coleta_id INTEGER",
         ]),
+    # v5 (decisoes D4 e D7 da revisao critica, 06/10/2026): so acrescenta gatilhos e duas colunas; nenhuma tabela e
+    # recriada e nenhuma linha muda. Gera _gatilhos_v5().
+    5: ("integridade relacional por gatilhos na camada derivada (D4) e criterios de promocao de regra (D7)",
+        None),
 }
 VERSAO_ESQUEMA = max(MIGRACOES)
+# Data a partir da qual a promocao de regra a operacional segue os criterios da decisao D7 (governanca.py).
+POLITICA_PROMOCAO_DESDE = "2026-10-06"
+
+
+def _gatilho(nome, evento, tabela, quando, mensagem):
+    return (f"CREATE TRIGGER {nome} BEFORE {evento} ON {tabela} WHEN {quando} "
+            f"BEGIN SELECT RAISE(ABORT, '{mensagem}'); END")
+
+
+def _gatilhos_v5():
+    """Relacoes que o portao 'integridade_relacional' so conferia lendo (auditoria DB-02) passam a ser recusadas na
+    gravacao: linha derivada sem a origem na MESMA normalizacao, snapshot inexistente citado em JSON, regra
+    inexistente na derivacao, e apagar a camada 1 de uma normalizacao que ainda tem derivacoes. Cada relacao vale na
+    insercao e na alteracao das colunas de ligacao (UPDATE de valor nao e afetado)."""
+    rel = {
+        "rp_derivado": ("resposta_id, indice, coleta_id, derivacao_id",
+                        "NOT EXISTS (SELECT 1 FROM derivacao_execucao e JOIN rp_registro r ON r.normalizacao_id = "
+                        "e.normalizacao_id AND r.resposta_id = NEW.resposta_id AND r.indice = NEW.indice AND "
+                        "r.coleta_id = NEW.coleta_id WHERE e.id = NEW.derivacao_id)",
+                        "rp_derivado sem o registro da normalizacao da sua derivacao"),
+        "movimentacao_interpretada": ("resposta_id, indice, derivacao_id",
+                                      "NOT EXISTS (SELECT 1 FROM derivacao_execucao e JOIN movimentacao_lancamento l "
+                                      "ON l.normalizacao_id = e.normalizacao_id AND l.resposta_id = NEW.resposta_id "
+                                      "AND l.indice = NEW.indice WHERE e.id = NEW.derivacao_id)",
+                                      "movimentacao_interpretada sem o lancamento da normalizacao da sua derivacao"),
+        "anomalia": ("coleta_id",
+                     "NEW.coleta_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM coleta WHERE id = NEW.coleta_id)",
+                     "anomalia de coleta inexistente"),
+        "espelhamento_par": ("resposta_a_id, indice_a, coleta_a_id, resposta_b_id, indice_b, coleta_b_id, derivacao_id",
+                             "NOT EXISTS (SELECT 1 FROM derivacao_execucao e JOIN rp_registro a ON a.normalizacao_id = "
+                             "e.normalizacao_id AND a.resposta_id = NEW.resposta_a_id AND a.indice = NEW.indice_a AND "
+                             "a.coleta_id = NEW.coleta_a_id JOIN rp_registro b ON b.normalizacao_id = e.normalizacao_id "
+                             "AND b.resposta_id = NEW.resposta_b_id AND b.indice = NEW.indice_b AND b.coleta_id = "
+                             "NEW.coleta_b_id WHERE e.id = NEW.derivacao_id)",
+                             "par espelhado sem os dois registros da normalizacao da sua derivacao"),
+        "conciliacao_rreo": ("rreo_coleta_id, coletas_api_json",
+                             "NOT EXISTS (SELECT 1 FROM coleta WHERE id = NEW.rreo_coleta_id AND tipo = 'rreo_pdf') OR "
+                             "EXISTS (SELECT 1 FROM json_each(NEW.coletas_api_json) j WHERE NOT EXISTS "
+                             "(SELECT 1 FROM coleta c WHERE c.snapshot_uid = j.value))",
+                             "conciliacao com PDF ou snapshot inexistente"),
+        "visao_valor": ("coletas_json",
+                        "EXISTS (SELECT 1 FROM json_each(NEW.coletas_json) j WHERE NOT EXISTS "
+                        "(SELECT 1 FROM coleta c WHERE c.snapshot_uid = j.value))",
+                        "visao_valor cita snapshot inexistente"),
+        "normalizacao_execucao": ("ultima_coleta_id",
+                                  "NEW.ultima_coleta_id > 0 AND NOT EXISTS (SELECT 1 FROM coleta WHERE id = "
+                                  "NEW.ultima_coleta_id)",
+                                  "normalizacao com ultima coleta inexistente"),
+        "derivacao_execucao": ("regras_json",
+                               "EXISTS (SELECT 1 FROM json_each(NEW.regras_json) j WHERE NOT EXISTS "
+                               "(SELECT 1 FROM regra r WHERE r.id = j.value))",
+                               "derivacao com regra inexistente"),
+    }
+    cmds = []
+    for tabela, (colunas, quando, msg) in rel.items():
+        cmds.append(_gatilho(f"ri_{tabela}_insert", "INSERT", tabela, quando, msg))
+        cmds.append(_gatilho(f"ri_{tabela}_update", f"UPDATE OF {colunas}", tabela, quando, msg))
+    for tabela in ("rp_registro", "movimentacao_lancamento"):
+        cmds.append(_gatilho(f"ri_{tabela}_delete", "DELETE", tabela,
+                             "EXISTS (SELECT 1 FROM derivacao_execucao WHERE normalizacao_id = OLD.normalizacao_id)",
+                             f"{tabela} de normalizacao com derivacoes: apague antes as derivacoes"))
+    # D7: promocao a operacional depois da politica exige teste de regressao; se compoe indicador publicado, tambem
+    # conferencia independente (evidencia externa) ou ressalva documentada
+    cmds += ["ALTER TABLE regra_situacao ADD COLUMN teste_regressao TEXT",
+             "ALTER TABLE regra_situacao ADD COLUMN ressalva TEXT",
+             _gatilho("regra_situacao_promocao", "INSERT", "regra_situacao",
+                      f"NEW.situacao = 'operacional' AND NEW.decidido_em >= '{POLITICA_PROMOCAO_DESDE}' AND "
+                      "(IFNULL(TRIM(NEW.teste_regressao), '') = '' OR (NEW.compoe_indicador_publicado = 1 AND "
+                      "NEW.evidencia_externa_id IS NULL AND IFNULL(TRIM(NEW.ressalva), '') = ''))",
+                      "promocao a operacional sem os criterios da decisao D7: teste de regressao e, se compoe "
+                      "indicador publicado, evidencia externa ou ressalva")]
+    return cmds
+
+
+MIGRACOES[5] = (MIGRACOES[5][0], _gatilhos_v5())
 # Impressao estrutural de cada versao do esquema (impressao_esquema). Versao nova = impressao nova aqui.
 IMPRESSAO_ESQUEMA = {
     # v4: conferida em 05/10/2026 no banco ativo (criado em 29/09, migrado em 30/09) e no montado pelo codigo
     4: "ad45413e4a5431eca73afebbf4640c995513203b9def9b38d8cbb83eaa3d3e5a",
+    # v5: conferida em 06/10/2026 no montado pelo codigo e no banco ativo migrado da v4
+    5: "d80f1040f98fe0213388991b8f8b574b27ab0ef3a57ac61c4d8dc70bbb54e34e",
 }
 
 # Cache de paginas por conexao (KiB, valor negativo = tamanho em KiB no SQLite). A derivacao percorre
@@ -309,8 +391,9 @@ def backup(con, cfg, motivo, operacional=False, manter=3):
 
     * padrao (antes de mudanca estrutural, importacao, manual): `backups/`, NUNCA apagado automaticamente;
     * operacional (antes de apagar uma execucao, que e reprocessavel do bruto): pasta local
-      `backups_operacionais/`, fora do OneDrive, mantendo so os `manter` mais recentes desse tipo.
-      Arquivo listado em `backups_operacionais/PRESERVAR.txt` (um nome por linha) nunca e apagado.
+      `backups_operacionais/`, fora do OneDrive. Os `manter` mais recentes desse tipo ficam como estao; os mais
+      antigos sao COMPRIMIDOS (<nome>.gz, conferido byte a byte), nunca apagados (revisao critica, D6).
+      Arquivo listado em `backups_operacionais/PRESERVAR.txt` (um nome por linha) nao entra na retencao.
     O nome nunca repete o de um backup existente (sufixo -2, -3... no mesmo segundo)."""
     carimbo = datetime.now(BRT).strftime("%Y%m%d-%H%M%S")
     motivo = _MOTIVO.sub("-", str(motivo)).strip(".-") or "sem-motivo"
@@ -334,12 +417,86 @@ def backup(con, cfg, motivo, operacional=False, manter=3):
         tmp.unlink(missing_ok=True)
     log.info("backup gravado em %s", destino)
     if operacional:
-        lista = pasta / "PRESERVAR.txt"
-        preservar = set(lista.read_text(encoding="utf-8").split()) if lista.exists() else set()
-        for velho in sorted(p for p in pasta.glob("*.sqlite") if p.name not in preservar)[:-manter]:
-            velho.unlink()
-            log.info("backup operacional antigo removido (retenção %d): %s", manter, velho.name)
+        for velho in _fora_da_retencao(pasta, manter):
+            comprimido = comprimir_backup(velho)
+            log.info("backup operacional antigo comprimido (retenção %d): %s", manter, comprimido.name)
     return destino
+
+
+def _na_retencao(pasta):
+    """Backups operacionais .sqlite sujeitos a retencao (sem os listados em PRESERVAR.txt), do mais antigo ao mais
+    novo (o nome comeca pelo carimbo)."""
+    lista = pasta / "PRESERVAR.txt"
+    preservar = set(lista.read_text(encoding="utf-8").split()) if lista.exists() else set()
+    return sorted(p for p in pasta.glob("*.sqlite") if p.name not in preservar)
+
+
+def _fora_da_retencao(pasta, manter):
+    """Os da retencao alem dos `manter` mais recentes."""
+    return _na_retencao(pasta)[:-manter] if manter else _na_retencao(pasta)
+
+
+def comprimir_backup(arquivo, bloco=1 << 20):
+    """Comprime um backup em <nome>.gz SEM perder nada (revisao critica, D6): grava num temporario, confere que a
+    descompressao devolve os mesmos bytes (SHA-256) e so entao remove o original. Recusa sobrescrever um .gz
+    existente. Para voltar ao arquivo original: python -m gzip -d <nome>.gz"""
+    arquivo = Path(arquivo)
+    destino = arquivo.with_name(arquivo.name + ".gz")
+    if destino.exists():
+        raise FileExistsError(f"{destino} já existe: nada foi comprimido")
+    tmp = arquivo.with_name(f"{destino.name}.tmp{os.getpid()}")
+    h = hashlib.sha256()
+    try:
+        with open(arquivo, "rb") as ent, gzip.open(tmp, "wb", compresslevel=6) as sai:
+            while b := ent.read(bloco):
+                h.update(b)
+                sai.write(b)
+        conferido = hashlib.sha256()
+        with gzip.open(tmp, "rb") as ent:
+            while b := ent.read(bloco):
+                conferido.update(b)
+        if conferido.hexdigest() != h.hexdigest():
+            raise ObjetoCorrompido(f"{tmp}: a descompressão não devolve os bytes de {arquivo.name}")
+        from .armazem import _publicar_sem_sobrescrever
+        _publicar_sem_sobrescrever(tmp, destino)
+    finally:
+        tmp.unlink(missing_ok=True)
+    arquivo.unlink()
+    return destino
+
+
+def comprimir_backups_operacionais(cfg, manter=3, simular=True):
+    """Comprime os backups operacionais fora da janela dos `manter` mais recentes, INCLUSIVE os preservados
+    (PRESERVAR.txt protege contra apagar; comprimir nao apaga nada). Os mais recentes ficam como estao, prontos para
+    restaurar. `simular` so lista."""
+    pasta = cfg.backups_operacionais
+    if not pasta.exists():
+        return []
+    recentes = set(_na_retencao(pasta)[-manter:]) if manter else set()
+    saida = []
+    for arq in sorted(pasta.glob("*.sqlite")):
+        if arq in recentes:
+            continue
+        antes = arq.stat().st_size
+        if simular:
+            saida.append({"arquivo": arq.name, "bytes": antes, "simulado": True})
+            continue
+        gz = comprimir_backup(arq)
+        saida.append({"arquivo": gz.name, "bytes_antes": antes, "bytes_depois": gz.stat().st_size})
+        log.info("backup operacional comprimido: %s (%d -> %d bytes)", gz.name, antes, gz.stat().st_size)
+    return saida
+
+
+def espaco(cfg):
+    """Bytes ocupados por pasta (banco ativo, armazem, backups, backups operacionais, logs): para acompanhar o
+    crescimento (revisao critica, D6)."""
+    def total(p):
+        p = Path(p)
+        if p.is_file():
+            return p.stat().st_size
+        return sum(f.stat().st_size for f in p.rglob("*") if f.is_file()) if p.exists() else 0
+    return {"banco": total(cfg.banco), "armazem": total(cfg.snapshots), "backups": total(cfg.backups),
+            "backups_operacionais": total(cfg.backups_operacionais), "logs": total(cfg.logs)}
 
 
 def compactar(con, caminho):
