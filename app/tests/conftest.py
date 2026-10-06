@@ -1,6 +1,7 @@
 import hashlib
 import json
 import sys
+from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import parse_qsl, urlencode, urlsplit
@@ -76,9 +77,10 @@ def pagina(conteudo, pagina, total, ultima, total_paginas):
 RAIZ_PROJETO = Path(__file__).resolve().parents[2]
 
 
-def montar_producao(base, armazem_de=None):
+def montar_producao(base, armazem_de=None, so_homologados=False):
     """Armazem + banco TEMPORARIOS de producao com os dados brutos das Etapas 01/02, processados
-    pelo pipeline de producao. `armazem_de`: reaproveita um armazem existente (reconstrucao)."""
+    pelo pipeline de producao. `armazem_de`: reaproveita um armazem existente (reconstrucao).
+    `so_homologados`: registra so os snapshots da base homologada (ver BASE_HOMOLOGADA_ATE)."""
     from rp import derivar, importar, normalizar
     cfg = carregar(dados_locais=base / "local", snapshots=armazem_de or base / "snapshots", backups=base / "backups")
     con = banco.abrir(cfg)
@@ -86,7 +88,12 @@ def montar_producao(base, armazem_de=None):
     if armazem_de is None:
         resumo_import = importar.importar_etapas_anteriores(con, armazem, RAIZ_PROJETO)
     else:
-        resumo_import = {"sincronizados": banco.sincronizar(con, armazem)}
+        if so_homologados:
+            novos = sum(banco.registrar_manifesto(con, armazem, rel, m)[1] for rel, m in manifestos_homologados(armazem))
+            novos += sum(banco.registrar_evidencia(con, armazem, rel, m)[1] for rel, m in armazem.evidencias())
+            resumo_import = {"sincronizados": novos}
+        else:
+            resumo_import = {"sincronizados": banco.sincronizar(con, armazem)}
     nid, resumo_norm = normalizar.normalizar(con)
     did = derivar.derivar(con, nid)
     return {"cfg": cfg, "con": con, "armazem": armazem, "nid": nid, "did": did,
@@ -113,6 +120,17 @@ def ambiente(tmp_path):
 # ------------------------------------------------------------------ banco montado a partir do ARMAZEM REAL
 ARMAZEM_REAL = RAIZ_PROJETO / "snapshots"
 EM_2909 = "2026-09-29T23:59:59-03:00"
+# Base HOMOLOGADA (Etapas 01-05): os 466 snapshots coletados de 29/09 19h56 a 30/09 01h27 de 2026. Uma carga nova
+# (D1) so ACRESCENTA snapshots ao armazem; os testes de casos reais continuam provando a base homologada, e a carga
+# nova e validada pelos portoes (procedimento da D1, etapa05/CONSOLIDACAO_POS_05.md, secao 8).
+BASE_HOMOLOGADA_ATE = "2026-09-30T01:27:56-03:00"
+SNAPSHOTS_HOMOLOGADOS = 466
+
+
+def manifestos_homologados(armazem):
+    """(caminho, manifesto) dos snapshots da base homologada: coletados ate BASE_HOMOLOGADA_ATE."""
+    limite = datetime.fromisoformat(BASE_HOMOLOGADA_ATE)
+    return [(rel, m) for rel, m in armazem.manifestos() if datetime.fromisoformat(m["coletada_em"]) <= limite]
 
 
 def retrato_do_armazem():
@@ -123,13 +141,13 @@ def retrato_do_armazem():
 
 @pytest.fixture(scope="session")
 def real(tmp_path_factory):
-    """Banco TEMPORARIO montado so com leitura do armazem real (466 snapshots): sincronizar -> normalizar ->
+    """Banco TEMPORARIO montado so com leitura do armazem real (os 466 snapshots da base homologada) -> normalizar ->
     derivar atual e 'como estava em' 29/09/2026. Compartilhado pelos testes de casos reais."""
     from rp import derivar
     from rp.painel import Painel
     antes = retrato_do_armazem()
     base = tmp_path_factory.mktemp("real")
-    m = montar_producao(base, armazem_de=ARMAZEM_REAL)
+    m = montar_producao(base, armazem_de=ARMAZEM_REAL, so_homologados=True)
     m["did_2909"] = derivar.derivar(m["con"], m["nid"], EM_2909)
     m["armazem_antes"], m["armazem_depois"] = antes, retrato_do_armazem()
     m["painel"] = Painel.abrir(m["cfg"].banco)

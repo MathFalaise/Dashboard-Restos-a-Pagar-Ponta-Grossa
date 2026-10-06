@@ -1,0 +1,3653 @@
+{
+ "identicos": {
+  "integrity_check": true,
+  "hash_camada0": false,
+  "bruto": false,
+  "contagens": false,
+  "esquema_versao": true,
+  "derivacoes": false,
+  "regra_situacao": true,
+  "armazem_manifestos": false,
+  "armazem_objetos": false,
+  "cortes": false,
+  "derivacao_21": true,
+  "derivacao_22": true,
+  "derivacao_23": true,
+  "derivacao_24": true
+ },
+ "valores_painel_diferentes": [
+  {
+   "chave": ".entidades|2026|2026-04-30[0].valores.cancelamentos",
+   "antes": 349877983,
+   "depois": 476945908
+  },
+  {
+   "chave": ".entidades|2026|2026-04-30[0].valores.saldo_a_liquidar",
+   "antes": 6235718365,
+   "depois": 6108650440
+  },
+  {
+   "chave": ".entidades|2026|2026-04-30[0].valores.saldo_total",
+   "antes": 7097440561,
+   "depois": 6970372636
+  },
+  {
+   "chave": ".entidades|2026|2026-06-30[0].valores.cancelamentos",
+   "antes": 426223222,
+   "depois": 553291147
+  },
+  {
+   "chave": ".entidades|2026|2026-06-30[0].valores.liquidacoes",
+   "antes": 7977769726,
+   "depois": 7970353326
+  },
+  {
+   "chave": ".entidades|2026|2026-06-30[0].valores.pagamentos",
+   "antes": 10216178112,
+   "depois": 10208761712
+  },
+  {
+   "chave": ".entidades|2026|2026-06-30[0].valores.pago_nao_processado",
+   "antes": 7765527083,
+   "depois": 7758110683
+  },
+  {
+   "chave": ".entidades|2026|2026-06-30[0].valores.retencoes",
+   "antes": 358946917,
+   "depois": 358636846
+  },
+  {
+   "chave": ".entidades|2026|2026-06-30[0].valores.saldo_a_liquidar",
+   "antes": 5307214929,
+   "depois": 5187563404
+  },
+  {
+   "chave": ".entidades|2026|2026-06-30[0].valores.saldo_total",
+   "antes": 5956556976,
+   "depois": 5836905451
+  },
+  {
+   "chave": ".entidades|2026|2026-08-31[0].valores.cancelamentos",
+   "antes": 809431543,
+   "depois": 934617570
+  },
+  {
+   "chave": ".entidades|2026|2026-08-31[0].valores.liquidacoes",
+   "antes": 8515089090,
+   "depois": 8481047174
+  },
+  {
+   "chave": ".entidades|2026|2026-08-31[0].valores.pagamentos",
+   "antes": 10921279775,
+   "depois": 10889870865
+  },
+  {
+   "chave": ".entidades|2026|2026-08-31[0].valores.pago_nao_processado",
+   "antes": 8365541766,
+   "depois": 8334132856
+  },
+  {
+   "chave": ".entidades|2026|2026-08-31[0].valores.retencoes",
+   "antes": 373753303,
+   "depois": 371353112
+  },
+  {
+   "chave": ".entidades|2026|2026-08-31[0].valores.saldo_a_liquidar",
+   "antes": 4386687244,
+   "depois": 4295543133
+  },
+  {
+   "chave": ".entidades|2026|2026-08-31[0].valores.saldo_liquidado_a_pagar",
+   "antes": 481559748,
+   "depois": 478926742
+  },
+  {
+   "chave": ".entidades|2026|2026-08-31[0].valores.saldo_total",
+   "antes": 4868246992,
+   "depois": 4774469875
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|1.conferencia.diferenca_c",
+   "antes": 0,
+   "depois": -127067925
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|1.valores.cancelamentos",
+   "antes": 349877983,
+   "depois": 476945908
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|1.valores.saldo_a_liquidar",
+   "antes": 6235718365,
+   "depois": 6108650440
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|1.valores.saldo_total",
+   "antes": 7097440561,
+   "depois": 6970372636
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|None.conferencia.diferenca_c",
+   "antes": 0,
+   "depois": -127067925
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|None.valores.cancelamentos",
+   "antes": 353954047,
+   "depois": 481021972
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|None.valores.saldo_a_liquidar",
+   "antes": 8412283292,
+   "depois": 8285215367
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|None.valores.saldo_total",
+   "antes": 10413529567,
+   "depois": 10286461642
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|1.conferencia.diferenca_c",
+   "antes": 10911243,
+   "depois": -108740282
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|1.valores.cancelamentos",
+   "antes": 426223222,
+   "depois": 553291147
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|1.valores.liquidacoes",
+   "antes": 7977769726,
+   "depois": 7970353326
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|1.valores.pagamentos",
+   "antes": 10216178112,
+   "depois": 10208761712
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|1.valores.pago_nao_processado",
+   "antes": 7765527083,
+   "depois": 7758110683
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|1.valores.retencoes",
+   "antes": 358946917,
+   "depois": 358636846
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|1.valores.saldo_a_liquidar",
+   "antes": 5307214929,
+   "depois": 5187563404
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|1.valores.saldo_total",
+   "antes": 5956556976,
+   "depois": 5836905451
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|None.conferencia.diferenca_c",
+   "antes": 10911243,
+   "depois": -108740282
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|None.valores.cancelamentos",
+   "antes": 432224078,
+   "depois": 559292003
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|None.valores.liquidacoes",
+   "antes": 8635020310,
+   "depois": 8627603910
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|None.valores.pagamentos",
+   "antes": 10880395165,
+   "depois": 10872978765
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|None.valores.pago_nao_processado",
+   "antes": 8420232933,
+   "depois": 8412816533
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|None.valores.retencoes",
+   "antes": 409306636,
+   "depois": 408996565
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|None.valores.saldo_a_liquidar",
+   "antes": 7435370077,
+   "depois": 7315718552
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|None.valores.saldo_total",
+   "antes": 9221568208,
+   "depois": 9101916683
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|1.conferencia.diferenca_c",
+   "antes": 23767875,
+   "depois": -70009242
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|1.valores.cancelamentos",
+   "antes": 809431543,
+   "depois": 934617570
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|1.valores.liquidacoes",
+   "antes": 8515089090,
+   "depois": 8481047174
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|1.valores.pagamentos",
+   "antes": 10921279775,
+   "depois": 10889870865
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|1.valores.pago_nao_processado",
+   "antes": 8365541766,
+   "depois": 8334132856
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|1.valores.retencoes",
+   "antes": 373753303,
+   "depois": 371353112
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|1.valores.saldo_a_liquidar",
+   "antes": 4386687244,
+   "depois": 4295543133
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|1.valores.saldo_liquidado_a_pagar",
+   "antes": 481559748,
+   "depois": 478926742
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|1.valores.saldo_total",
+   "antes": 4868246992,
+   "depois": 4774469875
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|None.conferencia.diferenca_c",
+   "antes": 23767875,
+   "depois": -70009242
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|None.valores.cancelamentos",
+   "antes": 829871634,
+   "depois": 955057661
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|None.valores.liquidacoes",
+   "antes": 9207358003,
+   "depois": 9173316087
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|None.valores.pagamentos",
+   "antes": 11619906788,
+   "depois": 11588497878
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|None.valores.pago_nao_processado",
+   "antes": 9054657576,
+   "depois": 9023248666
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|None.valores.retencoes",
+   "antes": 425289299,
+   "depois": 422889108
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|None.valores.saldo_a_liquidar",
+   "antes": 6465384828,
+   "depois": 6374240717
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|None.valores.saldo_liquidado_a_pagar",
+   "antes": 1619024201,
+   "depois": 1616391195
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|None.valores.saldo_total",
+   "antes": 8084409029,
+   "depois": 7990631912
+  },
+  {
+   "chave": ".reconciliacao[633][5]",
+   "antes": 346504315,
+   "depois": 473572240
+  },
+  {
+   "chave": ".reconciliacao[633][7]",
+   "antes": 0,
+   "depois": 127067925
+  },
+  {
+   "chave": ".reconciliacao[634][5]",
+   "antes": 8628828513,
+   "depois": 8501760588
+  },
+  {
+   "chave": ".reconciliacao[634][7]",
+   "antes": 0,
+   "depois": -127067925
+  },
+  {
+   "chave": ".reconciliacao[635][5]",
+   "antes": 10413529567,
+   "depois": 10286461642
+  },
+  {
+   "chave": ".reconciliacao[635][7]",
+   "antes": 0,
+   "depois": -127067925
+  },
+  {
+   "chave": ".reconciliacao[645][5]",
+   "antes": 346504315,
+   "depois": 473572240
+  },
+  {
+   "chave": ".reconciliacao[645][7]",
+   "antes": 0,
+   "depois": 127067925
+  },
+  {
+   "chave": ".reconciliacao[646][5]",
+   "antes": 8628828513,
+   "depois": 8501760588
+  },
+  {
+   "chave": ".reconciliacao[646][7]",
+   "antes": 0,
+   "depois": -127067925
+  },
+  {
+   "chave": ".reconciliacao[647][5]",
+   "antes": 10413529567,
+   "depois": 10286461642
+  },
+  {
+   "chave": ".reconciliacao[647][7]",
+   "antes": 0,
+   "depois": -127067925
+  },
+  {
+   "chave": ".reconciliacao[657][5]",
+   "antes": 342428251,
+   "depois": 469496176
+  },
+  {
+   "chave": ".reconciliacao[657][7]",
+   "antes": 0,
+   "depois": 127067925
+  },
+  {
+   "chave": ".reconciliacao[658][5]",
+   "antes": 6447421880,
+   "depois": 6320353955
+  },
+  {
+   "chave": ".reconciliacao[658][7]",
+   "antes": 0,
+   "depois": -127067925
+  },
+  {
+   "chave": ".reconciliacao[659][5]",
+   "antes": 7097440561,
+   "depois": 6970372636
+  },
+  {
+   "chave": ".reconciliacao[659][7]",
+   "antes": 0,
+   "depois": -127067925
+  },
+  {
+   "chave": ".reconciliacao[669][5]",
+   "antes": 342428251,
+   "depois": 469496176
+  },
+  {
+   "chave": ".reconciliacao[669][7]",
+   "antes": 0,
+   "depois": 127067925
+  },
+  {
+   "chave": ".reconciliacao[670][5]",
+   "antes": 6447421880,
+   "depois": 6320353955
+  },
+  {
+   "chave": ".reconciliacao[670][7]",
+   "antes": 0,
+   "depois": -127067925
+  },
+  {
+   "chave": ".reconciliacao[671][5]",
+   "antes": 7097440561,
+   "depois": 6970372636
+  },
+  {
+   "chave": ".reconciliacao[671][7]",
+   "antes": 0,
+   "depois": -127067925
+  },
+  {
+   "chave": ".reconciliacao[679][5]",
+   "antes": 8645273154,
+   "depois": 8637856754
+  },
+  {
+   "chave": ".reconciliacao[679][7]",
+   "antes": -21691324,
+   "depois": -29107724
+  },
+  {
+   "chave": ".reconciliacao[680][5]",
+   "antes": 8420232933,
+   "depois": 8412816533
+  },
+  {
+   "chave": ".reconciliacao[680][7]",
+   "antes": -11282266,
+   "depois": -18698666
+  },
+  {
+   "chave": ".reconciliacao[681][5]",
+   "antes": 424387894,
+   "depois": 551455819
+  },
+  {
+   "chave": ".reconciliacao[681][7]",
+   "antes": 0,
+   "depois": 127067925
+  },
+  {
+   "chave": ".reconciliacao[682][5]",
+   "antes": 7657993638,
+   "depois": 7538342113
+  },
+  {
+   "chave": ".reconciliacao[682][7]",
+   "antes": 11282266,
+   "depois": -108369259
+  },
+  {
+   "chave": ".reconciliacao[683][5]",
+   "antes": 9221570006,
+   "depois": 9101918481
+  },
+  {
+   "chave": ".reconciliacao[683][7]",
+   "antes": 10913041,
+   "depois": -108738484
+  },
+  {
+   "chave": ".reconciliacao[691][5]",
+   "antes": 8645273154,
+   "depois": 8637856754
+  },
+  {
+   "chave": ".reconciliacao[691][7]",
+   "antes": -21691324,
+   "depois": -29107724
+  },
+  {
+   "chave": ".reconciliacao[692][5]",
+   "antes": 8420234731,
+   "depois": 8412818331
+  },
+  {
+   "chave": ".reconciliacao[692][7]",
+   "antes": -11280468,
+   "depois": -18696868
+  },
+  {
+   "chave": ".reconciliacao[693][5]",
+   "antes": 424387894,
+   "depois": 551455819
+  },
+  {
+   "chave": ".reconciliacao[693][7]",
+   "antes": 0,
+   "depois": 127067925
+  },
+  {
+   "chave": ".reconciliacao[694][5]",
+   "antes": 7657991840,
+   "depois": 7538340315
+  },
+  {
+   "chave": ".reconciliacao[694][7]",
+   "antes": 11280468,
+   "depois": -108371057
+  },
+  {
+   "chave": ".reconciliacao[695][5]",
+   "antes": 9221568208,
+   "depois": 9101916683
+  },
+  {
+   "chave": ".reconciliacao[695][7]",
+   "antes": 10911243,
+   "depois": -108740282
+  },
+  {
+   "chave": ".reconciliacao[703][5]",
+   "antes": 7988022570,
+   "depois": 7980606170
+  },
+  {
+   "chave": ".reconciliacao[703][7]",
+   "antes": -21691324,
+   "depois": -29107724
+  },
+  {
+   "chave": ".reconciliacao[704][5]",
+   "antes": 7765527083,
+   "depois": 7758110683
+  },
+  {
+   "chave": ".reconciliacao[704][7]",
+   "antes": -10911243,
+   "depois": -18327643
+  },
+  {
+   "chave": ".reconciliacao[705][5]",
+   "antes": 418387038,
+   "depois": 545454963
+  },
+  {
+   "chave": ".reconciliacao[705][7]",
+   "antes": 0,
+   "depois": 127067925
+  },
+  {
+   "chave": ".reconciliacao[706][5]",
+   "antes": 5527293756,
+   "depois": 5407642231
+  },
+  {
+   "chave": ".reconciliacao[706][7]",
+   "antes": 10911243,
+   "depois": -108740282
+  },
+  {
+   "chave": ".reconciliacao[707][5]",
+   "antes": 5956556976,
+   "depois": 5836905451
+  },
+  {
+   "chave": ".reconciliacao[707][7]",
+   "antes": 10911243,
+   "depois": -108740282
+  },
+  {
+   "chave": ".reconciliacao[715][5]",
+   "antes": 7988022570,
+   "depois": 7980606170
+  },
+  {
+   "chave": ".reconciliacao[715][7]",
+   "antes": -21691324,
+   "depois": -29107724
+  },
+  {
+   "chave": ".reconciliacao[716][5]",
+   "antes": 7765527083,
+   "depois": 7758110683
+  },
+  {
+   "chave": ".reconciliacao[716][7]",
+   "antes": -10911243,
+   "depois": -18327643
+  },
+  {
+   "chave": ".reconciliacao[717][5]",
+   "antes": 418387038,
+   "depois": 545454963
+  },
+  {
+   "chave": ".reconciliacao[717][7]",
+   "antes": 0,
+   "depois": 127067925
+  },
+  {
+   "chave": ".reconciliacao[718][5]",
+   "antes": 5527293756,
+   "depois": 5407642231
+  },
+  {
+   "chave": ".reconciliacao[718][7]",
+   "antes": 10911243,
+   "depois": -108740282
+  },
+  {
+   "chave": ".reconciliacao[719][5]",
+   "antes": 5956556976,
+   "depois": 5836905451
+  },
+  {
+   "chave": ".reconciliacao[719][7]",
+   "antes": 10911243,
+   "depois": -108740282
+  },
+  {
+   "chave": ".reconciliacao[727][5]",
+   "antes": 9217631762,
+   "depois": 9183589846
+  },
+  {
+   "chave": ".reconciliacao[727][7]",
+   "antes": -34547956,
+   "depois": -68589872
+  },
+  {
+   "chave": ".reconciliacao[728][5]",
+   "antes": 9054657576,
+   "depois": 9023248666
+  },
+  {
+   "chave": ".reconciliacao[728][7]",
+   "antes": -24143848,
+   "depois": -55552758
+  },
+  {
+   "chave": ".reconciliacao[729][5]",
+   "antes": 822014535,
+   "depois": 947200562
+  },
+  {
+   "chave": ".reconciliacao[729][7]",
+   "antes": 0,
+   "depois": 125186027
+  },
+  {
+   "chave": ".reconciliacao[730][5]",
+   "antes": 6625942354,
+   "depois": 6532165237
+  },
+  {
+   "chave": ".reconciliacao[730][7]",
+   "antes": 24143848,
+   "depois": -69633269
+  },
+  {
+   "chave": ".reconciliacao[731][5]",
+   "antes": 8084415777,
+   "depois": 7990638660
+  },
+  {
+   "chave": ".reconciliacao[731][7]",
+   "antes": 23774623,
+   "depois": -70002494
+  },
+  {
+   "chave": ".reconciliacao[739][5]",
+   "antes": 9217631762,
+   "depois": 9183589846
+  },
+  {
+   "chave": ".reconciliacao[739][7]",
+   "antes": -34547956,
+   "depois": -68589872
+  },
+  {
+   "chave": ".reconciliacao[740][5]",
+   "antes": 9054664324,
+   "depois": 9023255414
+  },
+  {
+   "chave": ".reconciliacao[740][7]",
+   "antes": -24137100,
+   "depois": -55546010
+  },
+  {
+   "chave": ".reconciliacao[741][5]",
+   "antes": 822014535,
+   "depois": 947200562
+  },
+  {
+   "chave": ".reconciliacao[741][7]",
+   "antes": 0,
+   "depois": 125186027
+  },
+  {
+   "chave": ".reconciliacao[742][5]",
+   "antes": 6625935606,
+   "depois": 6532158489
+  },
+  {
+   "chave": ".reconciliacao[742][7]",
+   "antes": 24137100,
+   "depois": -69640017
+  },
+  {
+   "chave": ".reconciliacao[743][5]",
+   "antes": 8084409029,
+   "depois": 7990631912
+  },
+  {
+   "chave": ".reconciliacao[743][7]",
+   "antes": 23767875,
+   "depois": -70009242
+  },
+  {
+   "chave": ".reconciliacao[751][5]",
+   "antes": 8525362849,
+   "depois": 8491320933
+  },
+  {
+   "chave": ".reconciliacao[751][7]",
+   "antes": -34547956,
+   "depois": -68589872
+  },
+  {
+   "chave": ".reconciliacao[752][5]",
+   "antes": 8365541766,
+   "depois": 8334132856
+  },
+  {
+   "chave": ".reconciliacao[752][7]",
+   "antes": -23772825,
+   "depois": -55181735
+  },
+  {
+   "chave": ".reconciliacao[753][5]",
+   "antes": 801574444,
+   "depois": 926760471
+  },
+  {
+   "chave": ".reconciliacao[753][7]",
+   "antes": 0,
+   "depois": 125186027
+  },
+  {
+   "chave": ".reconciliacao[754][5]",
+   "antes": 4544091667,
+   "depois": 4450314550
+  },
+  {
+   "chave": ".reconciliacao[754][7]",
+   "antes": 23772825,
+   "depois": -70004292
+  },
+  {
+   "chave": ".reconciliacao[755][5]",
+   "antes": 4868251942,
+   "depois": 4774474825
+  },
+  {
+   "chave": ".reconciliacao[755][7]",
+   "antes": 23772825,
+   "depois": -70004292
+  },
+  {
+   "chave": ".reconciliacao[763][5]",
+   "antes": 8525362849,
+   "depois": 8491320933
+  },
+  {
+   "chave": ".reconciliacao[763][7]",
+   "antes": -34547956,
+   "depois": -68589872
+  },
+  {
+   "chave": ".reconciliacao[764][5]",
+   "antes": 8365546716,
+   "depois": 8334137806
+  },
+  {
+   "chave": ".reconciliacao[764][7]",
+   "antes": -23767875,
+   "depois": -55176785
+  },
+  {
+   "chave": ".reconciliacao[765][5]",
+   "antes": 801574444,
+   "depois": 926760471
+  },
+  {
+   "chave": ".reconciliacao[765][7]",
+   "antes": 0,
+   "depois": 125186027
+  },
+  {
+   "chave": ".reconciliacao[766][5]",
+   "antes": 4544086717,
+   "depois": 4450309600
+  },
+  {
+   "chave": ".reconciliacao[766][7]",
+   "antes": 23767875,
+   "depois": -70009242
+  },
+  {
+   "chave": ".reconciliacao[767][5]",
+   "antes": 4868246992,
+   "depois": 4774469875
+  },
+  {
+   "chave": ".reconciliacao[767][7]",
+   "antes": 23767875,
+   "depois": -70009242
+  }
+ ],
+ "textos_painel_diferentes": [
+  {
+   "chave": ".entidades|2026|2026-09-30[0].entidade",
+   "antes": "<ausente>",
+   "depois": 1
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].situacao",
+   "antes": "<ausente>",
+   "depois": "valores do snapshot"
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": 939872259
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": 212459647
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": 13711207877
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": 2887750433
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": 16598958310
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": 8663903143
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": 11007732999
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": 8451994990
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": 2555738009
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.registros",
+   "antes": "<ausente>",
+   "depois": 4557
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.retencoes",
+   "antes": "<ausente>",
+   "depois": 380769441
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": 4107432475
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": 543920577
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[0].valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": 4651353052
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[1].entidade",
+   "antes": "<ausente>",
+   "depois": 3
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[1].situacao",
+   "antes": "<ausente>",
+   "depois": "não existia no exercício (fora do catálogo oficial)"
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[1].valores",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].entidade",
+   "antes": "<ausente>",
+   "depois": 4
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].situacao",
+   "antes": "<ausente>",
+   "depois": "valores do snapshot"
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": 8000000
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": 25453053
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": 143982396
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": 143982396
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": 127146320
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": 127146320
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": 127146320
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.registros",
+   "antes": "<ausente>",
+   "depois": 14
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.retencoes",
+   "antes": "<ausente>",
+   "depois": 4127503
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": 8836076
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[2].valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": 8836076
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].entidade",
+   "antes": "<ausente>",
+   "depois": 5
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].situacao",
+   "antes": "<ausente>",
+   "depois": "valores do snapshot"
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": 11554691
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": 2009149
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": 598046163
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": 6605120
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": 604651283
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": 564602504
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": 570108000
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": 563231415
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": 6876585
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.registros",
+   "antes": "<ausente>",
+   "depois": 448
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.retencoes",
+   "antes": "<ausente>",
+   "depois": 47378668
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": 21888968
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": 1099624
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[3].valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": 22988592
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[4].entidade",
+   "antes": "<ausente>",
+   "depois": 6
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[4].situacao",
+   "antes": "<ausente>",
+   "depois": "não existia no exercício (fora do catálogo oficial)"
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[4].valores",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].entidade",
+   "antes": "<ausente>",
+   "depois": 8
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].situacao",
+   "antes": "<ausente>",
+   "depois": "valores do snapshot"
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": 885400
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": 2570297
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": 2634618
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": 5204915
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": 1037558
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": 3672176
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": 1037558
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": 2634618
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.registros",
+   "antes": "<ausente>",
+   "depois": 10
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.retencoes",
+   "antes": "<ausente>",
+   "depois": 36541
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": 647339
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[5].valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": 647339
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[6].entidade",
+   "antes": "<ausente>",
+   "depois": 9
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[6].situacao",
+   "antes": "<ausente>",
+   "depois": "não existia no exercício (fora do catálogo oficial)"
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[6].valores",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[7].entidade",
+   "antes": "<ausente>",
+   "depois": 10
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[7].situacao",
+   "antes": "<ausente>",
+   "depois": "não existia no exercício (fora do catálogo oficial)"
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[7].valores",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[8].entidade",
+   "antes": "<ausente>",
+   "depois": 11
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[8].situacao",
+   "antes": "<ausente>",
+   "depois": "não existia no exercício (fora do catálogo oficial)"
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[8].valores",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].entidade",
+   "antes": "<ausente>",
+   "depois": 15
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].situacao",
+   "antes": "<ausente>",
+   "depois": "valores do snapshot"
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": 2046807732
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": 1134582815
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": 3181390547
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.registros",
+   "antes": "<ausente>",
+   "depois": 731
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.retencoes",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": 2046807732
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": 1134582815
+  },
+  {
+   "chave": ".entidades|2026|2026-09-30[9].valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": 3181390547
+  },
+  {
+   "chave": ".indicadores|2026|2026-01-31|1.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 31/01/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 31/01/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-01-31|None.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 31/01/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 31/01/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-02-28|1.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 28/02/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 28/02/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-02-28|15.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 28/02/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 28/02/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-02-28|4.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 28/02/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 28/02/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-02-28|5.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 28/02/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 28/02/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-02-28|8.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 28/02/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 28/02/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-02-28|None.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 28/02/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 28/02/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-03-31|1.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 31/03/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 31/03/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-03-31|None.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 31/03/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 31/03/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|1.conferencia.situacao_da_diferenca",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|1.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 30/04/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/04/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|15.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 30/04/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/04/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|4.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 30/04/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/04/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|5.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 30/04/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/04/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|8.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 30/04/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/04/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|None.conferencia.situacao_da_diferenca",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".indicadores|2026|2026-04-30|None.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 30/04/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/04/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|1.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 30/06/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/06/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|15.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 30/06/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/06/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|4.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 30/06/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/06/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|5.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 30/06/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/06/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|8.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 30/06/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/06/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-06-30|None.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 30/06/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/06/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|1.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 31/08/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 31/08/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|15.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 31/08/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 31/08/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|4.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 31/08/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 31/08/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|5.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 31/08/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 31/08/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|8.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 31/08/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 31/08/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-08-31|None.retrato",
+   "antes": "Estado atual da base para o exercício de 2026, corte 31/08/2026, coletado em 30/09/2026",
+   "depois": "Estado atual da base para o exercício de 2026, corte 31/08/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.conferencia",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.disponivel",
+   "antes": "<ausente>",
+   "depois": true
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.motivo",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.retrato",
+   "antes": "<ausente>",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/09/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": 939872259
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": 212459647
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": 13711207877
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": 2887750433
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": 16598958310
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": 8663903143
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": 11007732999
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": 8451994990
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": 2555738009
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.registros",
+   "antes": "<ausente>",
+   "depois": 4557
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.retencoes",
+   "antes": "<ausente>",
+   "depois": 380769441
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": 4107432475
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": 543920577
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|1.valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": 4651353052
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.conferencia",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.disponivel",
+   "antes": "<ausente>",
+   "depois": false
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.motivo",
+   "antes": "<ausente>",
+   "depois": "entidade fora do catálogo oficial do exercício: não existia; não é RP zero"
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.retrato",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.registros",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.retencoes",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|10.valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.conferencia",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.disponivel",
+   "antes": "<ausente>",
+   "depois": false
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.motivo",
+   "antes": "<ausente>",
+   "depois": "entidade fora do catálogo oficial do exercício: não existia; não é RP zero"
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.retrato",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.registros",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.retencoes",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|11.valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.conferencia",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.disponivel",
+   "antes": "<ausente>",
+   "depois": true
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.motivo",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.retrato",
+   "antes": "<ausente>",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/09/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": 2046807732
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": 1134582815
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": 3181390547
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.registros",
+   "antes": "<ausente>",
+   "depois": 731
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.retencoes",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": 2046807732
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": 1134582815
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|15.valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": 3181390547
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.conferencia",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.disponivel",
+   "antes": "<ausente>",
+   "depois": false
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.motivo",
+   "antes": "<ausente>",
+   "depois": "entidade fora do catálogo oficial do exercício: não existia; não é RP zero"
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.retrato",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.registros",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.retencoes",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|3.valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.conferencia",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.disponivel",
+   "antes": "<ausente>",
+   "depois": true
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.motivo",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.retrato",
+   "antes": "<ausente>",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/09/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": 8000000
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": 25453053
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": 143982396
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": 143982396
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": 127146320
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": 127146320
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": 127146320
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.registros",
+   "antes": "<ausente>",
+   "depois": 14
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.retencoes",
+   "antes": "<ausente>",
+   "depois": 4127503
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": 8836076
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|4.valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": 8836076
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.conferencia",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.disponivel",
+   "antes": "<ausente>",
+   "depois": true
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.motivo",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.retrato",
+   "antes": "<ausente>",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/09/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": 11554691
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": 2009149
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": 598046163
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": 6605120
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": 604651283
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": 564602504
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": 570108000
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": 563231415
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": 6876585
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.registros",
+   "antes": "<ausente>",
+   "depois": 448
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.retencoes",
+   "antes": "<ausente>",
+   "depois": 47378668
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": 21888968
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": 1099624
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|5.valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": 22988592
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.conferencia",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.disponivel",
+   "antes": "<ausente>",
+   "depois": false
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.motivo",
+   "antes": "<ausente>",
+   "depois": "entidade fora do catálogo oficial do exercício: não existia; não é RP zero"
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.retrato",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.registros",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.retencoes",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|6.valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.conferencia",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.disponivel",
+   "antes": "<ausente>",
+   "depois": true
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.motivo",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.retrato",
+   "antes": "<ausente>",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/09/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": 885400
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": 2570297
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": 2634618
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": 5204915
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": 1037558
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": 3672176
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": 1037558
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": 2634618
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.registros",
+   "antes": "<ausente>",
+   "depois": 10
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.retencoes",
+   "antes": "<ausente>",
+   "depois": 36541
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": 647339
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": 0
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|8.valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": 647339
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.conferencia",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.disponivel",
+   "antes": "<ausente>",
+   "depois": false
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.motivo",
+   "antes": "<ausente>",
+   "depois": "entidade fora do catálogo oficial do exercício: não existia; não é RP zero"
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.retrato",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.registros",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.retencoes",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|9.valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.conferencia",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.disponivel",
+   "antes": "<ausente>",
+   "depois": true
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.motivo",
+   "antes": "<ausente>",
+   "depois": null
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.retrato",
+   "antes": "<ausente>",
+   "depois": "Estado atual da base para o exercício de 2026, corte 30/09/2026, coletado em 06/10/2026"
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.cancelamentos",
+   "antes": "<ausente>",
+   "depois": 960312350
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.estornos_de_pagamento",
+   "antes": "<ausente>",
+   "depois": 239921849
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.inscricao_nao_processada",
+   "antes": "<ausente>",
+   "depois": 16502614465
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.inscricao_processada",
+   "antes": "<ausente>",
+   "depois": 4031572986
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.inscricao_total",
+   "antes": "<ausente>",
+   "depois": 20534187451
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.liquidacoes",
+   "antes": "<ausente>",
+   "depois": 9356689525
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.pagamentos",
+   "antes": "<ausente>",
+   "depois": 11708659495
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.pago_nao_processado",
+   "antes": "<ausente>",
+   "depois": 9143410283
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.pago_processado",
+   "antes": "<ausente>",
+   "depois": 2565249212
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.registros",
+   "antes": "<ausente>",
+   "depois": 5760
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.retencoes",
+   "antes": "<ausente>",
+   "depois": 432312153
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.saldo_a_liquidar",
+   "antes": "<ausente>",
+   "depois": 6185612590
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.saldo_liquidado_a_pagar",
+   "antes": "<ausente>",
+   "depois": 1679603016
+  },
+  {
+   "chave": ".indicadores|2026|2026-09-30|None.valores.saldo_total",
+   "antes": "<ausente>",
+   "depois": 7865215606
+  },
+  {
+   "chave": ".pares|2026|2026-09-30.anoempenho.2023",
+   "antes": "<ausente>",
+   "depois": 1
+  },
+  {
+   "chave": ".pares|2026|2026-09-30.anoempenho.2024",
+   "antes": "<ausente>",
+   "depois": 19
+  },
+  {
+   "chave": ".pares|2026|2026-09-30.anoempenho.2025",
+   "antes": "<ausente>",
+   "depois": 711
+  },
+  {
+   "chave": ".pares|2026|2026-09-30.lado_com_execucao.A",
+   "antes": "<ausente>",
+   "depois": 571
+  },
+  {
+   "chave": ".pares|2026|2026-09-30.lado_com_execucao.nenhum",
+   "antes": "<ausente>",
+   "depois": 160
+  },
+  {
+   "chave": ".pares|2026|2026-09-30.pares",
+   "antes": "<ausente>",
+   "depois": 731
+  },
+  {
+   "chave": ".pares|2026|2026-09-30.relacao.igual",
+   "antes": "<ausente>",
+   "depois": 731
+  },
+  {
+   "chave": ".reconciliacao[633][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[634][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[635][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[645][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[646][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[647][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[657][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[658][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[659][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[669][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[670][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[671][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[681][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[693][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[705][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[717][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[729][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[741][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[753][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  },
+  {
+   "chave": ".reconciliacao[765][8]",
+   "antes": "sem diferença",
+   "depois": "não determinada"
+  }
+ ],
+ "valores_tela_diferentes": [
+  {
+   "pagina": "entidades|2026|2026-04-30",
+   "id": "ent-1-s1",
+   "antes": "7097440561",
+   "depois": "6970372636"
+  },
+  {
+   "pagina": "entidades|2026|2026-06-30",
+   "id": "ent-1-s1",
+   "antes": "5956556976",
+   "depois": "5836905451"
+  },
+  {
+   "pagina": "entidades|2026|2026-08-31",
+   "id": "ent-1-s1",
+   "antes": "4868246992",
+   "depois": "4774469875"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|consolidado",
+   "id": "rec-v1-L-api",
+   "antes": "10413529567",
+   "depois": "10286461642"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|consolidado",
+   "id": "rec-v1-L-dif",
+   "antes": "0",
+   "depois": "-127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|consolidado",
+   "id": "rec-v1-j-api",
+   "antes": "346504315",
+   "depois": "473572240"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|consolidado",
+   "id": "rec-v1-j-dif",
+   "antes": "0",
+   "depois": "127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|consolidado",
+   "id": "rec-v1-k-api",
+   "antes": "8628828513",
+   "depois": "8501760588"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|consolidado",
+   "id": "rec-v1-k-dif",
+   "antes": "0",
+   "depois": "-127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|consolidado",
+   "id": "rec-v2-L-api",
+   "antes": "10413529567",
+   "depois": "10286461642"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|consolidado",
+   "id": "rec-v2-L-dif",
+   "antes": "0",
+   "depois": "-127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|consolidado",
+   "id": "rec-v2-j-api",
+   "antes": "346504315",
+   "depois": "473572240"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|consolidado",
+   "id": "rec-v2-j-dif",
+   "antes": "0",
+   "depois": "127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|consolidado",
+   "id": "rec-v2-k-api",
+   "antes": "8628828513",
+   "depois": "8501760588"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|consolidado",
+   "id": "rec-v2-k-dif",
+   "antes": "0",
+   "depois": "-127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|entidade",
+   "id": "rec-v1-L-api",
+   "antes": "7097440561",
+   "depois": "6970372636"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|entidade",
+   "id": "rec-v1-L-dif",
+   "antes": "0",
+   "depois": "-127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|entidade",
+   "id": "rec-v1-j-api",
+   "antes": "342428251",
+   "depois": "469496176"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|entidade",
+   "id": "rec-v1-j-dif",
+   "antes": "0",
+   "depois": "127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|entidade",
+   "id": "rec-v1-k-api",
+   "antes": "6447421880",
+   "depois": "6320353955"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|entidade",
+   "id": "rec-v1-k-dif",
+   "antes": "0",
+   "depois": "-127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|entidade",
+   "id": "rec-v2-L-api",
+   "antes": "7097440561",
+   "depois": "6970372636"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|entidade",
+   "id": "rec-v2-L-dif",
+   "antes": "0",
+   "depois": "-127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|entidade",
+   "id": "rec-v2-j-api",
+   "antes": "342428251",
+   "depois": "469496176"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|entidade",
+   "id": "rec-v2-j-dif",
+   "antes": "0",
+   "depois": "127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|entidade",
+   "id": "rec-v2-k-api",
+   "antes": "6447421880",
+   "depois": "6320353955"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-04-30|entidade",
+   "id": "rec-v2-k-dif",
+   "antes": "0",
+   "depois": "-127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v1-L-api",
+   "antes": "9221570006",
+   "depois": "9101918481"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v1-L-dif",
+   "antes": "10913041",
+   "depois": "-108738484"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v1-h-api",
+   "antes": "8645273154",
+   "depois": "8637856754"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v1-h-dif",
+   "antes": "-21691324",
+   "depois": "-29107724"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v1-i-api",
+   "antes": "8420232933",
+   "depois": "8412816533"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v1-i-dif",
+   "antes": "-11282266",
+   "depois": "-18698666"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v1-j-api",
+   "antes": "424387894",
+   "depois": "551455819"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v1-j-dif",
+   "antes": "0",
+   "depois": "127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v1-k-api",
+   "antes": "7657993638",
+   "depois": "7538342113"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v1-k-dif",
+   "antes": "11282266",
+   "depois": "-108369259"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v2-L-api",
+   "antes": "9221568208",
+   "depois": "9101916683"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v2-L-dif",
+   "antes": "10911243",
+   "depois": "-108740282"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v2-h-api",
+   "antes": "8645273154",
+   "depois": "8637856754"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v2-h-dif",
+   "antes": "-21691324",
+   "depois": "-29107724"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v2-i-api",
+   "antes": "8420234731",
+   "depois": "8412818331"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v2-i-dif",
+   "antes": "-11280468",
+   "depois": "-18696868"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v2-j-api",
+   "antes": "424387894",
+   "depois": "551455819"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v2-j-dif",
+   "antes": "0",
+   "depois": "127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v2-k-api",
+   "antes": "7657991840",
+   "depois": "7538340315"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|consolidado",
+   "id": "rec-v2-k-dif",
+   "antes": "11280468",
+   "depois": "-108371057"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v1-L-api",
+   "antes": "5956556976",
+   "depois": "5836905451"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v1-L-dif",
+   "antes": "10911243",
+   "depois": "-108740282"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v1-h-api",
+   "antes": "7988022570",
+   "depois": "7980606170"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v1-h-dif",
+   "antes": "-21691324",
+   "depois": "-29107724"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v1-i-api",
+   "antes": "7765527083",
+   "depois": "7758110683"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v1-i-dif",
+   "antes": "-10911243",
+   "depois": "-18327643"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v1-j-api",
+   "antes": "418387038",
+   "depois": "545454963"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v1-j-dif",
+   "antes": "0",
+   "depois": "127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v1-k-api",
+   "antes": "5527293756",
+   "depois": "5407642231"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v1-k-dif",
+   "antes": "10911243",
+   "depois": "-108740282"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v2-L-api",
+   "antes": "5956556976",
+   "depois": "5836905451"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v2-L-dif",
+   "antes": "10911243",
+   "depois": "-108740282"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v2-h-api",
+   "antes": "7988022570",
+   "depois": "7980606170"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v2-h-dif",
+   "antes": "-21691324",
+   "depois": "-29107724"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v2-i-api",
+   "antes": "7765527083",
+   "depois": "7758110683"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v2-i-dif",
+   "antes": "-10911243",
+   "depois": "-18327643"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v2-j-api",
+   "antes": "418387038",
+   "depois": "545454963"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v2-j-dif",
+   "antes": "0",
+   "depois": "127067925"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v2-k-api",
+   "antes": "5527293756",
+   "depois": "5407642231"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-06-30|entidade",
+   "id": "rec-v2-k-dif",
+   "antes": "10911243",
+   "depois": "-108740282"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v1-L-api",
+   "antes": "8084415777",
+   "depois": "7990638660"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v1-L-dif",
+   "antes": "23774623",
+   "depois": "-70002494"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v1-h-api",
+   "antes": "9217631762",
+   "depois": "9183589846"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v1-h-dif",
+   "antes": "-34547956",
+   "depois": "-68589872"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v1-i-api",
+   "antes": "9054657576",
+   "depois": "9023248666"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v1-i-dif",
+   "antes": "-24143848",
+   "depois": "-55552758"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v1-j-api",
+   "antes": "822014535",
+   "depois": "947200562"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v1-j-dif",
+   "antes": "0",
+   "depois": "125186027"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v1-k-api",
+   "antes": "6625942354",
+   "depois": "6532165237"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v1-k-dif",
+   "antes": "24143848",
+   "depois": "-69633269"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v2-L-api",
+   "antes": "8084409029",
+   "depois": "7990631912"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v2-L-dif",
+   "antes": "23767875",
+   "depois": "-70009242"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v2-h-api",
+   "antes": "9217631762",
+   "depois": "9183589846"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v2-h-dif",
+   "antes": "-34547956",
+   "depois": "-68589872"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v2-i-api",
+   "antes": "9054664324",
+   "depois": "9023255414"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v2-i-dif",
+   "antes": "-24137100",
+   "depois": "-55546010"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v2-j-api",
+   "antes": "822014535",
+   "depois": "947200562"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v2-j-dif",
+   "antes": "0",
+   "depois": "125186027"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v2-k-api",
+   "antes": "6625935606",
+   "depois": "6532158489"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|consolidado",
+   "id": "rec-v2-k-dif",
+   "antes": "24137100",
+   "depois": "-69640017"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v1-L-api",
+   "antes": "4868251942",
+   "depois": "4774474825"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v1-L-dif",
+   "antes": "23772825",
+   "depois": "-70004292"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v1-h-api",
+   "antes": "8525362849",
+   "depois": "8491320933"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v1-h-dif",
+   "antes": "-34547956",
+   "depois": "-68589872"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v1-i-api",
+   "antes": "8365541766",
+   "depois": "8334132856"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v1-i-dif",
+   "antes": "-23772825",
+   "depois": "-55181735"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v1-j-api",
+   "antes": "801574444",
+   "depois": "926760471"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v1-j-dif",
+   "antes": "0",
+   "depois": "125186027"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v1-k-api",
+   "antes": "4544091667",
+   "depois": "4450314550"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v1-k-dif",
+   "antes": "23772825",
+   "depois": "-70004292"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v2-L-api",
+   "antes": "4868246992",
+   "depois": "4774469875"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v2-L-dif",
+   "antes": "23767875",
+   "depois": "-70009242"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v2-h-api",
+   "antes": "8525362849",
+   "depois": "8491320933"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v2-h-dif",
+   "antes": "-34547956",
+   "depois": "-68589872"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v2-i-api",
+   "antes": "8365546716",
+   "depois": "8334137806"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v2-i-dif",
+   "antes": "-23767875",
+   "depois": "-55176785"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v2-j-api",
+   "antes": "801574444",
+   "depois": "926760471"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v2-j-dif",
+   "antes": "0",
+   "depois": "125186027"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v2-k-api",
+   "antes": "4544086717",
+   "depois": "4450309600"
+  },
+  {
+   "pagina": "reconciliacao|2026|2026-08-31|entidade",
+   "id": "rec-v2-k-dif",
+   "antes": "23767875",
+   "depois": "-70009242"
+  },
+  {
+   "pagina": "resumo|2026|2026-04-30|1",
+   "id": "conf-api",
+   "antes": "7097440561",
+   "depois": "6970372636"
+  },
+  {
+   "pagina": "resumo|2026|2026-04-30|1",
+   "id": "conf-dif",
+   "antes": "0",
+   "depois": "-127067925"
+  },
+  {
+   "pagina": "resumo|2026|2026-04-30|1",
+   "id": "ind-cancelamentos",
+   "antes": "349877983",
+   "depois": "476945908"
+  },
+  {
+   "pagina": "resumo|2026|2026-04-30|1",
+   "id": "ind-saldo_a_liquidar",
+   "antes": "6235718365",
+   "depois": "6108650440"
+  },
+  {
+   "pagina": "resumo|2026|2026-04-30|1",
+   "id": "ind-saldo_total",
+   "antes": "7097440561",
+   "depois": "6970372636"
+  },
+  {
+   "pagina": "resumo|2026|2026-04-30|None",
+   "id": "conf-api",
+   "antes": "10413529567",
+   "depois": "10286461642"
+  },
+  {
+   "pagina": "resumo|2026|2026-04-30|None",
+   "id": "conf-dif",
+   "antes": "0",
+   "depois": "-127067925"
+  },
+  {
+   "pagina": "resumo|2026|2026-04-30|None",
+   "id": "ind-cancelamentos",
+   "antes": "353954047",
+   "depois": "481021972"
+  },
+  {
+   "pagina": "resumo|2026|2026-04-30|None",
+   "id": "ind-saldo_a_liquidar",
+   "antes": "8412283292",
+   "depois": "8285215367"
+  },
+  {
+   "pagina": "resumo|2026|2026-04-30|None",
+   "id": "ind-saldo_total",
+   "antes": "10413529567",
+   "depois": "10286461642"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|1",
+   "id": "conf-api",
+   "antes": "5956556976",
+   "depois": "5836905451"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|1",
+   "id": "conf-dif",
+   "antes": "10911243",
+   "depois": "-108740282"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|1",
+   "id": "ind-cancelamentos",
+   "antes": "426223222",
+   "depois": "553291147"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|1",
+   "id": "ind-liquidacoes",
+   "antes": "7977769726",
+   "depois": "7970353326"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|1",
+   "id": "ind-pagamentos",
+   "antes": "10216178112",
+   "depois": "10208761712"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|1",
+   "id": "ind-pago_nao_processado",
+   "antes": "7765527083",
+   "depois": "7758110683"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|1",
+   "id": "ind-retencoes",
+   "antes": "358946917",
+   "depois": "358636846"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|1",
+   "id": "ind-saldo_a_liquidar",
+   "antes": "5307214929",
+   "depois": "5187563404"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|1",
+   "id": "ind-saldo_total",
+   "antes": "5956556976",
+   "depois": "5836905451"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|None",
+   "id": "conf-api",
+   "antes": "9221568208",
+   "depois": "9101916683"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|None",
+   "id": "conf-dif",
+   "antes": "10911243",
+   "depois": "-108740282"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|None",
+   "id": "ind-cancelamentos",
+   "antes": "432224078",
+   "depois": "559292003"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|None",
+   "id": "ind-liquidacoes",
+   "antes": "8635020310",
+   "depois": "8627603910"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|None",
+   "id": "ind-pagamentos",
+   "antes": "10880395165",
+   "depois": "10872978765"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|None",
+   "id": "ind-pago_nao_processado",
+   "antes": "8420232933",
+   "depois": "8412816533"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|None",
+   "id": "ind-retencoes",
+   "antes": "409306636",
+   "depois": "408996565"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|None",
+   "id": "ind-saldo_a_liquidar",
+   "antes": "7435370077",
+   "depois": "7315718552"
+  },
+  {
+   "pagina": "resumo|2026|2026-06-30|None",
+   "id": "ind-saldo_total",
+   "antes": "9221568208",
+   "depois": "9101916683"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|1",
+   "id": "conf-api",
+   "antes": "4868246992",
+   "depois": "4774469875"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|1",
+   "id": "conf-dif",
+   "antes": "23767875",
+   "depois": "-70009242"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|1",
+   "id": "ind-cancelamentos",
+   "antes": "809431543",
+   "depois": "934617570"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|1",
+   "id": "ind-liquidacoes",
+   "antes": "8515089090",
+   "depois": "8481047174"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|1",
+   "id": "ind-pagamentos",
+   "antes": "10921279775",
+   "depois": "10889870865"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|1",
+   "id": "ind-pago_nao_processado",
+   "antes": "8365541766",
+   "depois": "8334132856"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|1",
+   "id": "ind-retencoes",
+   "antes": "373753303",
+   "depois": "371353112"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|1",
+   "id": "ind-saldo_a_liquidar",
+   "antes": "4386687244",
+   "depois": "4295543133"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|1",
+   "id": "ind-saldo_liquidado_a_pagar",
+   "antes": "481559748",
+   "depois": "478926742"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|1",
+   "id": "ind-saldo_total",
+   "antes": "4868246992",
+   "depois": "4774469875"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|None",
+   "id": "conf-api",
+   "antes": "8084409029",
+   "depois": "7990631912"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|None",
+   "id": "conf-dif",
+   "antes": "23767875",
+   "depois": "-70009242"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|None",
+   "id": "ind-cancelamentos",
+   "antes": "829871634",
+   "depois": "955057661"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|None",
+   "id": "ind-liquidacoes",
+   "antes": "9207358003",
+   "depois": "9173316087"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|None",
+   "id": "ind-pagamentos",
+   "antes": "11619906788",
+   "depois": "11588497878"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|None",
+   "id": "ind-pago_nao_processado",
+   "antes": "9054657576",
+   "depois": "9023248666"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|None",
+   "id": "ind-retencoes",
+   "antes": "425289299",
+   "depois": "422889108"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|None",
+   "id": "ind-saldo_a_liquidar",
+   "antes": "6465384828",
+   "depois": "6374240717"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|None",
+   "id": "ind-saldo_liquidado_a_pagar",
+   "antes": "1619024201",
+   "depois": "1616391195"
+  },
+  {
+   "pagina": "resumo|2026|2026-08-31|None",
+   "id": "ind-saldo_total",
+   "antes": "8084409029",
+   "depois": "7990631912"
+  }
+ ],
+ "ids_de_tela_novos": {
+  "entidades|2026|2026-09-30": [
+   "ent-1-aproc",
+   "ent-1-proc",
+   "ent-1-registros",
+   "ent-1-s1",
+   "ent-1-total",
+   "ent-15-aproc",
+   "ent-15-proc",
+   "ent-15-registros",
+   "ent-15-s1",
+   "ent-15-total",
+   "ent-4-aproc",
+   "ent-4-proc",
+   "ent-4-registros",
+   "ent-4-s1",
+   "ent-4-total",
+   "ent-5-aproc",
+   "ent-5-proc",
+   "ent-5-registros",
+   "ent-5-s1",
+   "ent-5-total",
+   "ent-8-aproc",
+   "ent-8-proc",
+   "ent-8-registros",
+   "ent-8-s1",
+   "ent-8-total"
+  ],
+  "resumo|2026|2026-09-30|1": [
+   "ind-cancelamentos",
+   "ind-inscricao_nao_processada",
+   "ind-inscricao_processada",
+   "ind-inscricao_total",
+   "ind-liquidacoes",
+   "ind-pagamentos",
+   "ind-pago_nao_processado",
+   "ind-pago_processado",
+   "ind-registros",
+   "ind-retencoes",
+   "ind-saldo_a_liquidar",
+   "ind-saldo_liquidado_a_pagar",
+   "ind-saldo_total"
+  ],
+  "resumo|2026|2026-09-30|15": [
+   "ind-cancelamentos",
+   "ind-inscricao_nao_processada",
+   "ind-inscricao_processada",
+   "ind-inscricao_total",
+   "ind-liquidacoes",
+   "ind-pagamentos",
+   "ind-pago_nao_processado",
+   "ind-pago_processado",
+   "ind-registros",
+   "ind-retencoes",
+   "ind-saldo_a_liquidar",
+   "ind-saldo_liquidado_a_pagar",
+   "ind-saldo_total"
+  ],
+  "resumo|2026|2026-09-30|4": [
+   "ind-cancelamentos",
+   "ind-inscricao_nao_processada",
+   "ind-inscricao_processada",
+   "ind-inscricao_total",
+   "ind-liquidacoes",
+   "ind-pagamentos",
+   "ind-pago_nao_processado",
+   "ind-pago_processado",
+   "ind-registros",
+   "ind-retencoes",
+   "ind-saldo_a_liquidar",
+   "ind-saldo_liquidado_a_pagar",
+   "ind-saldo_total"
+  ],
+  "resumo|2026|2026-09-30|5": [
+   "ind-cancelamentos",
+   "ind-inscricao_nao_processada",
+   "ind-inscricao_processada",
+   "ind-inscricao_total",
+   "ind-liquidacoes",
+   "ind-pagamentos",
+   "ind-pago_nao_processado",
+   "ind-pago_processado",
+   "ind-registros",
+   "ind-retencoes",
+   "ind-saldo_a_liquidar",
+   "ind-saldo_liquidado_a_pagar",
+   "ind-saldo_total"
+  ],
+  "resumo|2026|2026-09-30|8": [
+   "ind-cancelamentos",
+   "ind-inscricao_nao_processada",
+   "ind-inscricao_processada",
+   "ind-inscricao_total",
+   "ind-liquidacoes",
+   "ind-pagamentos",
+   "ind-pago_nao_processado",
+   "ind-pago_processado",
+   "ind-registros",
+   "ind-retencoes",
+   "ind-saldo_a_liquidar",
+   "ind-saldo_liquidado_a_pagar",
+   "ind-saldo_total"
+  ],
+  "resumo|2026|2026-09-30|None": [
+   "ind-cancelamentos",
+   "ind-inscricao_nao_processada",
+   "ind-inscricao_processada",
+   "ind-inscricao_total",
+   "ind-liquidacoes",
+   "ind-pagamentos",
+   "ind-pago_nao_processado",
+   "ind-pago_processado",
+   "ind-registros",
+   "ind-retencoes",
+   "ind-saldo_a_liquidar",
+   "ind-saldo_liquidado_a_pagar",
+   "ind-saldo_total"
+  ]
+ },
+ "ids_de_tela_removidos": {},
+ "resumo": {
+  "bruto_armazem_derivacoes_identicos": false,
+  "valores_painel_diferentes": 164,
+  "valores_tela_diferentes": 155,
+  "textos_painel_diferentes": 350,
+  "paginas_com_ids_novos": 7,
+  "paginas_com_ids_removidos": 0,
+  "valores_de_tela_comparados": 5575
+ }
+}

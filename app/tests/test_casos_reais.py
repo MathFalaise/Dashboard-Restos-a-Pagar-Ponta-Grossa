@@ -1,14 +1,15 @@
 """Casos reais obrigatorios (secao 24 da especificacao da revisao corretiva) sobre o ARMAZEM REAL do projeto.
 
-O banco e montado num diretorio temporario a partir de snapshots/ (os 466 snapshots das Etapas 01-04.4), so com
-leitura do armazem: sincronizar -> normalizar -> derivar (atual e 'como estava em' 29/09/2026). O teste confere
-que nenhum arquivo do armazem muda e que os hashes de resultado sao os registrados na 04.4.
+O banco e montado num diretorio temporario a partir de snapshots/ (os 466 snapshots da base homologada, Etapas
+01-04.4; snapshots de cargas posteriores ficam de fora), so com leitura do armazem: sincronizar -> normalizar ->
+derivar (atual e 'como estava em' 29/09/2026). O teste confere que nenhum arquivo do armazem muda e que os
+hashes de resultado sao os registrados na 04.4.
 Valores esperados: etapa02/RELATORIO_ETAPA02.md secao 4, etapa03/RELATORIO_ETAPA03.md, etapa04/RELATORIO_04_3.md,
 etapa04/RELATORIO_04_4.md secoes 7-13 e etapa04/lotes/consistencia_rreo.md.
 """
 import re
 
-from conftest import ARMAZEM_REAL, RAIZ_PROJETO
+from conftest import ARMAZEM_REAL, RAIZ_PROJETO, SNAPSHOTS_HOMOLOGADOS, manifestos_homologados
 
 from rp import banco
 
@@ -18,8 +19,13 @@ HASH_EM_2909 = "b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68
 
 def test_armazem_real_intacto_e_integro(real):
     assert real["armazem_antes"] == real["armazem_depois"]
-    assert real["importacao"]["sincronizados"] == len([p for p in (ARMAZEM_REAL / "coletas").rglob("*.json")])
-    assert banco.verificar(real["con"], real["armazem"]) == []
+    homologados = manifestos_homologados(real["armazem"])
+    assert real["importacao"]["sincronizados"] == len(homologados) == SNAPSHOTS_HOMOLOGADOS
+    # a base homologada inteira esta integra; o armazem so pode ter A MAIS os snapshots de cargas posteriores (D1)
+    todos = {p.relative_to(ARMAZEM_REAL).as_posix() for p in (ARMAZEM_REAL / "coletas").rglob("*.json")}
+    posteriores = todos - {rel for rel, _ in homologados}
+    assert sorted(banco.verificar(real["con"], real["armazem"])) == sorted(
+        f"manifesto fora do banco: {rel}" for rel in posteriores)
 
 
 def test_hashes_de_resultado_iguais_aos_da_04_4(real):
