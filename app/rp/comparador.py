@@ -1,17 +1,17 @@
-"""Comparador de dois snapshots do MESMO corte. Somente leitura: nunca escreve no banco nem no armazem.
+"""Comparison of two snapshots of the SAME cut-off. Read-only: never writes to the database or the store.
 
-Relata fatos, nao causas:
-  * registros novos, removidos, comuns e alterados, pela chave (entidade, anoempenho, empenho);
-  * cada campo alterado com valor ANTERIOR e POSTERIOR (e a diferenca, se monetario);
-  * impacto financeiro por campo e por grupo (inscricao, pagamentos, cancelamentos, liquidacoes...);
-  * mudancas de classificacao e de saldos derivados (categoria, faixas, S1-S3), se houver derivacao;
-  * registros ligados a pares espelhados (entidade 1 <-> 15).
-Nenhuma alteracao e chamada de "cancelamento", "correcao" ou "erro": isso exige evidencia adicional.
+It reports facts, not causes:
+  * new, removed, common and changed records, by the key (entidade, anoempenho, empenho);
+  * each changed field with its PREVIOUS and LATER value (and the difference, if monetary);
+  * financial impact per field and per group (inscription, payments, cancellations, liquidations...);
+  * changes in classification and in derived balances (category, bands, S1-S3), if there is a derivation;
+  * records linked to mirrored pairs (entity 1 <-> 15).
+No change is called "cancellation", "correction" or "error": that requires additional evidence.
 
-Chave repetida no mesmo snapshot nao e descartada: da segunda ocorrencia em diante, a chave ganha um
-quarto elemento com o numero da ocorrencia.
-Os valores derivados sao ligados a cada registro pela posicao de origem (resposta, indice), nunca
-pela chave de negocio - assim duas ocorrencias da mesma chave nao se confundem.
+A key repeated within the same snapshot is not discarded: from the second occurrence on, the key gets a fourth
+element with the occurrence number.
+Derived values are linked to each record by its source position (response, index), never by the business key -
+so two occurrences of the same key are never mixed up.
 """
 from collections import defaultdict
 
@@ -28,8 +28,8 @@ GRUPOS = {"inscricao_processada": ["proc_c"], "inscricao_nao_processada": ["apro
 DERIVADOS = ["categoria", "faixa_processado", "faixa_nao_processado", "s1_saldo_total_c", "s2_a_liquidar_c",
              "s3_liquidado_a_pagar_c", "cancel_processado_c", "cancel_nao_processado_c"]
 CORTE = ["tipo", "entidade", "exercicio", "data_inicial", "data_final", "tipo_pesquisa"]
-# A identificacao de copia 24xxxxx usa os parametros da regra PAR-24 v1 (tabela regra_parametro), nao constantes.
-# respostas da coleta como lista: a consulta usa a chave primaria (id da execucao, resposta_id, indice)
+# Identifying a 24xxxxx copy uses the parameters of rule PAR-24 v1 (regra_parametro table), not constants.
+# the collection's responses as a list: the query uses the primary key (run id, resposta_id, indice)
 _DA_COLETA = "resposta_id IN (SELECT id FROM resposta_bruta WHERE coleta_id=?) AND coleta_id=?"
 
 
@@ -53,13 +53,13 @@ def _registros(con, nid, cid):
     for row in cur:
         k = tuple(row[2:5])
         dup[k] += 1
-        chave = k if dup[k] == 1 else (*k, f"ocorrência {dup[k]}")  # chave repetida nao e descartada
+        chave = k if dup[k] == 1 else (*k, f"ocorrência {dup[k]}")  # a repeated key is not discarded
         por_chave[chave] = {"posicao": tuple(row[0:2]), **dict(zip(DINHEIRO + OUTROS, row[5:]))}
     return por_chave, sorted(k for k, n in dup.items() if n > 1)
 
 
 def _derivados(con, did, cid):
-    """{(resposta_id, indice): valores derivados} da coleta na derivacao `did`."""
+    """{(resposta_id, indice): derived values} of the collection in derivation `did`."""
     if not did:
         return {}
     cur = con.execute(f"SELECT resposta_id, indice, {', '.join(DERIVADOS)} FROM rp_derivado "
@@ -68,7 +68,7 @@ def _derivados(con, did, cid):
 
 
 def _em_par(con, did, cids):
-    """Chaves de registros que participam de um par espelhado na derivacao `did` (qualquer lado)."""
+    """Keys of records that take part in a mirrored pair in derivation `did` (either side)."""
     if not did:
         return set()
     out = set()
@@ -89,7 +89,7 @@ def _espelhamento(chave, pares, par):
 
 
 def comparar(con, ref_a, ref_b, nid=None, did=None):
-    """Compara o snapshot A (anterior) com o B (posterior). Nao escreve nada."""
+    """Compares snapshot A (previous) with B (later). Writes nothing."""
     a, b = _coleta(con, ref_a), _coleta(con, ref_b)
     if a["corte"] != b["corte"]:
         raise CorteDiferente(f"cortes diferentes: {a['corte']} × {b['corte']}")

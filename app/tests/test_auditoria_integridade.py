@@ -1,5 +1,5 @@
-"""Regressao da auditoria tecnica, grupo G6: verificacao e portoes que antes deixavam passar corrupcao.
-SINTETICO = banco temporario com registros inventados (fixture `mundo`)."""
+"""Regression of the technical audit, group G6: verification and gates that used to let corruption through.
+SINTETICO = temporary database with invented records (fixture `mundo`)."""
 import json
 
 from conftest import registro_sintetico as _reg
@@ -38,14 +38,14 @@ def test_DB01_alteracao_direta_em_tabela_derivada_reprova_o_portao(mundo):
     r = portoes.avaliar(mundo.cfg.banco, mundo.armazem)
     p = _portao(r, "hash_resultado_confere")
     assert p["ok"] is False and r["apto"] is False and p["detalhe"][0]["confere"] is False
-    assert banco.verificar(mundo.con, mundo.armazem) == []               # a camada 0 continua integra
+    assert banco.verificar(mundo.con, mundo.armazem) == []               # layer 0 is still intact
 
 
 def test_DB02_linha_orfa_nas_tabelas_sem_FK_reprova_o_portao(mundo):
     _, did = _mundo_processado(mundo)
     regra = mundo.con.execute("SELECT id FROM regra WHERE codigo='ANOM-REG'").fetchone()[0]
-    # desde o esquema v5 (decisao D4) os gatilhos ri_* recusam essas linhas na gravacao; sem eles (banco v4 ou
-    # esquema adulterado) o portao continua sendo a defesa que le
+    # since schema v5 (decision D4) the ri_* triggers refuse these rows on write; without them (a v4 database or
+    # a tampered schema) the gate is still the defense that reads
     for (nome,) in mundo.con.execute("SELECT name FROM sqlite_master WHERE type='trigger' AND name LIKE 'ri_%'").fetchall():
         mundo.con.execute(f"DROP TRIGGER {nome}")
     with mundo.con:
@@ -65,7 +65,7 @@ def test_NORM01_campo_monetario_ausente_reprova_o_portao(mundo):
     nid, _ = _mundo_processado(mundo, [sem])
     valor, ausentes = mundo.con.execute("SELECT pago_proc_c, chaves_ausentes FROM rp_registro WHERE normalizacao_id=?",
                                         (nid,)).fetchone()
-    assert valor == 0 and "pagoProc" in json.loads(ausentes)               # o comportamento homologado continua
+    assert valor == 0 and "pagoProc" in json.loads(ausentes)               # the homologated behavior is kept
     p = _portao(portoes.avaliar(mundo.cfg.banco, mundo.armazem), "campos_monetarios_ausentes")
     assert p["ok"] is False and p["detalhe"]["registros"] == 1
 
@@ -105,4 +105,4 @@ def test_ARM01_objeto_orfao_e_temporario_abandonado_sao_relatados(mundo):
     problemas = mundo.armazem.verificar()
     assert any("objeto sem manifesto" in x and h in x for x in problemas)
     assert any("temporário abandonado" in x for x in problemas)
-    assert mundo.armazem.caminho_objeto(h).exists()                       # relatado, nunca apagado
+    assert mundo.armazem.caminho_objeto(h).exists()                       # reported, never deleted

@@ -1,21 +1,22 @@
-"""Banco SQLite: criacao, backup, registro da camada 0 e reconstrucao a partir do armazem.
+"""SQLite database: creation, backup, recording of layer 0 and rebuilding from the store.
 
-O banco e DERIVAVEL do armazem: `registrar_manifesto` e a unica forma de
-colocar um snapshot na camada 0 (e `registrar_evidencia`, uma evidencia externa),
-e `reconstruir` refaz o banco inteiro so com os manifestos e objetos do disco.
+The database is DERIVABLE from the store: `registrar_manifesto` is the only way to put a snapshot into layer 0
+(and `registrar_evidencia`, an external evidence), and `reconstruir` rebuilds the whole database from the
+manifests and objects on disk alone.
 
-Seguranca:
-  * o banco ATIVO nunca abre em pasta sincronizada (OneDrive, Dropbox, Google Drive, iCloud, Box...) nem em
-    unidade de rede (SQLite fora de disco local pode corromper; decisao da Etapa 04, ampliada pela revisao critica,
+Security:
+  * the ACTIVE database never opens in a synced folder (OneDrive, Dropbox, Google Drive, iCloud, Box...) nor on a
+    network drive (SQLite off a local disk can get corrupted; stage 04 decision, extended by the critical review,
     item 46);
-  * backup nunca sobrescreve outro backup, e o motivo informado nao consegue mudar a pasta de destino;
-  * a conferencia de integridade dos objetos e explicita (nao usa `assert`, que some com `python -O`).
+  * a backup never overwrites another backup, and the given reason cannot change the target folder;
+  * the object integrity check is explicit (it does not use `assert`, which disappears with `python -O`).
 
-Impressao do esquema (revisao critica, item 28): a versao em esquema_versao so diz o numero; dois bancos "v4" podem
-ter estruturas diferentes se alguem editar esquema.sql sem versao nova. IMPRESSAO_ESQUEMA guarda, por versao, o
-SHA-256 da estrutura (sqlite_master sem comentarios nem espacos: comentario e espaco nao sao estrutura - o banco
-ativo foi criado antes de os comentarios do esquema.sql perderem os acentos, e a estrutura e a mesma). Um teste
-exige que o esquema montado pelo codigo tenha a impressao da sua versao: mudou a estrutura, tem de mudar a versao.
+Schema fingerprint (critical review, item 28): the version in esquema_versao only says the number; two "v4"
+databases may have different structures if someone edits esquema.sql without a new version. IMPRESSAO_ESQUEMA
+keeps, per version, the SHA-256 of the structure (sqlite_master without comments or whitespace: comments and
+whitespace are not structure - the active database was created before the esquema.sql comments lost their
+accents, and the structure is the same). A test requires the schema built by the code to have its version's
+fingerprint: if the structure changed, the version must change.
 """
 import gzip
 import hashlib
@@ -33,26 +34,26 @@ from .armazem import ObjetoCorrompido, descomprimir
 
 log = logging.getLogger("rp.banco")
 
-ESQUEMA = Path(__file__).with_name("esquema.sql")   # cria a versao BASE (v2)
+ESQUEMA = Path(__file__).with_name("esquema.sql")   # creates the BASE version (v2)
 VERSAO_BASE = 2
 DESCRICAO_BASE = "esquema de produção v2 (objeto_bruto, manifesto, esquema_versao)"
-# Migracoes a partir da base. Cada uma e aplicada numa transacao e registrada em esquema_versao
-# com o arquivo de backup feito ANTES dela (banco existente). Nunca se edita uma migracao publicada.
+# Migrations from the base. Each one is applied in a transaction and recorded in esquema_versao
+# with the backup file made BEFORE it (existing database). A published migration is never edited.
 MIGRACOES = {
     3: ("derivação com data de vigência ('como estava em')",
         ["ALTER TABLE derivacao_execucao ADD COLUMN vigencia_em TEXT"]),
-    # v4 (revisao corretiva 01-04.4): so acrescenta; nenhuma linha existente muda.
+    # v4 (corrective review 01-04.4): additions only; no existing row changes.
     4: ("revisao corretiva: parametros e governanca de regras, metadados da extracao do RREO, "
         "evidencia externa com origem e manifesto, ultima coleta processada pela normalizacao",
         [
-            # parametros estruturados de uma versao de regra (ex.: PAR-24 v1 = entidades 1/15, base 2.400.000)
+            # structured parameters of a rule version (e.g. PAR-24 v1 = entities 1/15, base 2,400,000)
             "CREATE TABLE regra_parametro (regra_id INTEGER NOT NULL REFERENCES regra(id), nome TEXT NOT NULL, "
             "valor_json TEXT NOT NULL, PRIMARY KEY (regra_id, nome))",
             "CREATE TRIGGER regra_parametro_sem_update BEFORE UPDATE ON regra_parametro "
             "BEGIN SELECT RAISE(ABORT, 'parametro de regra nao se edita: crie nova versao da regra'); END",
             "CREATE TRIGGER regra_parametro_sem_delete BEFORE DELETE ON regra_parametro "
             "BEGIN SELECT RAISE(ABORT, 'parametro de regra nao se apaga: crie nova versao da regra'); END",
-            # governanca: historico de decisoes sobre cada versao de regra (so acrescenta)
+            # governance: history of decisions about each rule version (append-only)
             "CREATE TABLE regra_situacao (id INTEGER PRIMARY KEY, regra_id INTEGER NOT NULL REFERENCES regra(id), "
             "situacao TEXT NOT NULL CHECK (situacao IN ('operacional','experimental','nao_recomendada','supersedida','aposentada')), "
             "status_evidencia TEXT NOT NULL CHECK (status_evidencia IN ('CONFIRMADO','FORTE EVIDÊNCIA','HIPÓTESE','NÃO DETERMINADO')), "
@@ -65,29 +66,29 @@ MIGRACOES = {
             "BEGIN SELECT RAISE(ABORT, 'decisao de governanca nao se edita: registre uma decisao nova'); END",
             "CREATE TRIGGER regra_situacao_sem_delete BEFORE DELETE ON regra_situacao "
             "BEGIN SELECT RAISE(ABORT, 'decisao de governanca nao se apaga: registre uma decisao nova'); END",
-            # camada 1: como cada PDF de RREO foi transcrito nesta normalizacao (inclusive os que falharam)
+            # layer 1: how each RREO PDF was transcribed in this normalization (including the ones that failed)
             "CREATE TABLE rreo_extracao (normalizacao_id INTEGER NOT NULL REFERENCES normalizacao_execucao(id), "
             "resposta_id INTEGER NOT NULL REFERENCES resposta_bruta(id), coleta_id INTEGER NOT NULL REFERENCES coleta(id), "
             "extrator_versao TEXT NOT NULL, biblioteca TEXT NOT NULL, biblioteca_versao TEXT NOT NULL, "
             "sha256_pdf TEXT NOT NULL, id_arquivo INTEGER, rotulo TEXT, extraida_em TEXT NOT NULL, "
             "valores INTEGER NOT NULL, erro TEXT, PRIMARY KEY (normalizacao_id, resposta_id))",
-            # evidencia externa: origem, observacao, manifesto no armazem e identidade estavel
+            # external evidence: origin, note, manifest in the store and a stable identity
             "ALTER TABLE evidencia_externa ADD COLUMN origem TEXT",
             "ALTER TABLE evidencia_externa ADD COLUMN observacao TEXT",
             "ALTER TABLE evidencia_externa ADD COLUMN manifesto TEXT",
             "ALTER TABLE evidencia_externa ADD COLUMN evidencia_uid TEXT",
             "CREATE UNIQUE INDEX ux_evidencia_uid ON evidencia_externa (evidencia_uid)",
-            # maior id de coleta que a normalizacao leu: snapshot com 0 registros nao deixa linha nas tabelas da
-            # camada 1, entao so este registro diz se ele ja foi processado (NULL nas normalizacoes anteriores)
+            # highest collection id the normalization read: a snapshot with 0 records leaves no row in the layer 1
+            # tables, so only this column says whether it was already processed (NULL in older normalizations)
             "ALTER TABLE normalizacao_execucao ADD COLUMN ultima_coleta_id INTEGER",
         ]),
-    # v5 (decisoes D4 e D7 da revisao critica, 06/10/2026): so acrescenta gatilhos e duas colunas; nenhuma tabela e
-    # recriada e nenhuma linha muda. Gera _gatilhos_v5().
+    # v5 (critical review decisions D4 and D7, 06/10/2026): only adds triggers and two columns; no table is
+    # recreated and no row changes. Built by _gatilhos_v5().
     5: ("integridade relacional por gatilhos na camada derivada (D4) e criterios de promocao de regra (D7)",
         None),
 }
 VERSAO_ESQUEMA = max(MIGRACOES)
-# Data a partir da qual a promocao de regra a operacional segue os criterios da decisao D7 (governanca.py).
+# Date from which promoting a rule to operational follows the criteria of decision D7 (governanca.py).
 POLITICA_PROMOCAO_DESDE = "2026-10-06"
 
 
@@ -97,10 +98,10 @@ def _gatilho(nome, evento, tabela, quando, mensagem):
 
 
 def _gatilhos_v5():
-    """Relacoes que o portao 'integridade_relacional' so conferia lendo (auditoria DB-02) passam a ser recusadas na
-    gravacao: linha derivada sem a origem na MESMA normalizacao, snapshot inexistente citado em JSON, regra
-    inexistente na derivacao, e apagar a camada 1 de uma normalizacao que ainda tem derivacoes. Cada relacao vale na
-    insercao e na alteracao das colunas de ligacao (UPDATE de valor nao e afetado)."""
+    """Relations that the 'integridade_relacional' gate only checked by reading (audit DB-02) are now refused on
+    write: a derived row without its origin in the SAME normalization, a non-existent snapshot cited in JSON, a
+    non-existent rule in the derivation, and deleting layer 1 of a normalization that still has derivations. Each
+    relation applies on insert and on update of the link columns (an UPDATE of a value is not affected)."""
     rel = {
         "rp_derivado": ("resposta_id, indice, coleta_id, derivacao_id",
                         "NOT EXISTS (SELECT 1 FROM derivacao_execucao e JOIN rp_registro r ON r.normalizacao_id = "
@@ -148,8 +149,8 @@ def _gatilhos_v5():
         cmds.append(_gatilho(f"ri_{tabela}_delete", "DELETE", tabela,
                              "EXISTS (SELECT 1 FROM derivacao_execucao WHERE normalizacao_id = OLD.normalizacao_id)",
                              f"{tabela} de normalizacao com derivacoes: apague antes as derivacoes"))
-    # D7: promocao a operacional depois da politica exige teste de regressao; se compoe indicador publicado, tambem
-    # conferencia independente (evidencia externa) ou ressalva documentada
+    # D7: promotion to operational after the policy requires a regression test; if it makes up a published indicator,
+    # also an independent check (external evidence) or a documented caveat
     cmds += ["ALTER TABLE regra_situacao ADD COLUMN teste_regressao TEXT",
              "ALTER TABLE regra_situacao ADD COLUMN ressalva TEXT",
              _gatilho("regra_situacao_promocao", "INSERT", "regra_situacao",
@@ -162,17 +163,17 @@ def _gatilhos_v5():
 
 
 MIGRACOES[5] = (MIGRACOES[5][0], _gatilhos_v5())
-# Impressao estrutural de cada versao do esquema (impressao_esquema). Versao nova = impressao nova aqui.
+# Structural fingerprint of each schema version (impressao_esquema). New version = new fingerprint here.
 IMPRESSAO_ESQUEMA = {
-    # v4: conferida em 05/10/2026 no banco ativo (criado em 29/09, migrado em 30/09) e no montado pelo codigo
+    # v4: checked on 05/10/2026 on the active database (created 29/09, migrated 30/09) and on the one built by the code
     4: "ad45413e4a5431eca73afebbf4640c995513203b9def9b38d8cbb83eaa3d3e5a",
-    # v5: conferida em 06/10/2026 no montado pelo codigo e no banco ativo migrado da v4
+    # v5: checked on 06/10/2026 on the one built by the code and on the active database migrated from v4
     5: "d80f1040f98fe0213388991b8f8b574b27ab0ef3a57ac61c4d8dc70bbb54e34e",
 }
 
-# Cache de paginas por conexao (KiB, valor negativo = tamanho em KiB no SQLite). A derivacao percorre
-# ~100 MB de registros; com o cache padrao (~2 MB) a mesma pagina e relida do disco centenas de vezes.
-# A memoria so e ocupada conforme as paginas sao lidas.
+# Per-connection page cache (KiB, negative value = size in KiB in SQLite). The derivation scans ~100 MB of
+# records; with the default cache (~2 MB) the same page is re-read from disk hundreds of times.
+# Memory is only used as pages are read.
 CACHE_KIB = 256 * 1024
 _MOTIVO = re.compile(r"[^A-Za-z0-9._-]+")
 
@@ -185,8 +186,8 @@ class BancoEmPastaSincronizada(Exception):
     pass
 
 
-# Pastas-raiz conhecidas de servicos de sincronizacao (nome exato de uma parte do caminho, sem diferenciar
-# maiusculas). Lista conservadora: nome generico ("Box", "Sync") poderia ser uma pasta local comum.
+# Known root folders of sync services (exact name of a path part, case-insensitive).
+# Conservative list: a generic name ("Box", "Sync") could be an ordinary local folder.
 _SINCRONIZADAS = {"google drive", "googledrive", "my drive", "meu drive", "icloud drive", "iclouddrive",
                   "mobile documents", "box sync", "box drive", "nextcloud", "owncloud", "pcloud drive"}
 _FS_DE_REDE = {"nfs", "nfs4", "cifs", "smb", "smbfs", "smb3", "afpfs", "9p", "fuse.sshfs", "fuse.rclone", "davfs",
@@ -194,8 +195,8 @@ _FS_DE_REDE = {"nfs", "nfs4", "cifs", "smb", "smbfs", "smb3", "afpfs", "9p", "fu
 
 
 def _unidade_de_rede(p):
-    """True se `p` esta em compartilhamento de rede: caminho UNC, unidade mapeada (Windows) ou sistema de arquivos
-    de rede montado (Linux, /proc/mounts). Melhor esforco: sem como saber, False."""
+    """True if `p` is on a network share: UNC path, mapped drive (Windows) or a mounted network file system (Linux,
+    /proc/mounts). Best effort: when there is no way to know, False."""
     if str(p).startswith("\\\\") or p.drive.startswith("\\\\"):
         return True
     if sys.platform == "win32" and p.drive:
@@ -217,8 +218,8 @@ def _unidade_de_rede(p):
 
 
 def em_pasta_sincronizada(caminho):
-    """True se `caminho` fica numa pasta sincronizada (OneDrive, Dropbox, Google Drive, iCloud, Box, Nextcloud...)
-    ou numa unidade de rede. O que importa nao e qual servico: e que o banco ativo fique em disco local."""
+    """True if `caminho` is in a synced folder (OneDrive, Dropbox, Google Drive, iCloud, Box, Nextcloud...) or on a
+    network drive. What matters is not which service: it is that the active database stays on a local disk."""
     p = Path(caminho).resolve()
     for var in ("OneDrive", "OneDriveConsumer", "OneDriveCommercial"):
         raiz = os.environ.get(var)
@@ -235,8 +236,8 @@ _LITERAL_ABRE = ("'", '"')
 
 
 def _sql_normalizado(sql):
-    """Texto SQL sem comentarios (-- e /* */) e com os espacos colapsados FORA de literais; literal fica intacto
-    (um CHECK com 'FORTE EVIDÊNCIA' nao pode mudar)."""
+    """SQL text without comments (-- and /* */) and with whitespace collapsed OUTSIDE literals; a literal stays intact
+    (a CHECK with 'FORTE EVIDÊNCIA' must not change)."""
     sql = sql or ""
     saida, codigo, i, n = [], [], 0, len(sql)
 
@@ -251,7 +252,7 @@ def _sql_normalizado(sql):
             j = i + 1
             while j < n:
                 if sql[j] == c:
-                    if j + 1 < n and sql[j + 1] == c:     # aspas duplicadas: escape dentro do literal
+                    if j + 1 < n and sql[j + 1] == c:     # doubled quotes: escape inside the literal
                         j += 2
                         continue
                     break
@@ -275,15 +276,15 @@ def _sql_normalizado(sql):
 
 
 def impressao_esquema(con):
-    """SHA-256 da estrutura do banco: tipo, nome, tabela e SQL normalizado de cada objeto de sqlite_master (tabelas,
-    indices, gatilhos). Comentario e espaco nao contam; coluna, tipo, restricao, indice e gatilho contam."""
+    """SHA-256 of the database structure: type, name, table and normalized SQL of every sqlite_master object (tables,
+    indexes, triggers). Comments and whitespace do not count; columns, types, constraints, indexes and triggers do."""
     itens = sorted((t, nome, tabela, _sql_normalizado(sql)) for t, nome, tabela, sql in con.execute(
         "SELECT type, name, tbl_name, sql FROM sqlite_master WHERE sql IS NOT NULL AND name NOT LIKE 'sqlite_%'"))
     return hashlib.sha256(json.dumps(itens, ensure_ascii=False).encode()).hexdigest()
 
 
 def esquema_do_codigo():
-    """Conexao em memoria com o esquema completo montado pelo codigo (esquema.sql + migracoes), sem dados."""
+    """In-memory connection with the full schema built by the code (esquema.sql + migrations), without data."""
     con = sqlite3.connect(":memory:")
     con.executescript(ESQUEMA.read_text(encoding="utf-8"))
     for v in range(VERSAO_BASE + 1, VERSAO_ESQUEMA + 1):
@@ -300,9 +301,9 @@ def _conectar(caminho):
 
 
 def _migrar(con, de, backup_antes):
-    """Cada migracao e UMA transacao explicita: comandos + registro em esquema_versao, ou nada.
-    `with con:` nao bastaria: no sqlite3 do Python o BEGIN implicito so vem antes de INSERT/UPDATE/DELETE, e um
-    CREATE/ALTER fora de transacao e confirmado na hora (falha no meio deixaria o esquema pela metade)."""
+    """Each migration is ONE explicit transaction: commands + row in esquema_versao, or nothing.
+    `with con:` would not do: in Python's sqlite3 the implicit BEGIN only comes before INSERT/UPDATE/DELETE, and a
+    CREATE/ALTER outside a transaction is committed at once (a failure midway would leave the schema half done)."""
     for v in range(de + 1, VERSAO_ESQUEMA + 1):
         descricao, comandos = MIGRACOES[v]
         con.execute("BEGIN")
@@ -321,13 +322,14 @@ def _migrar(con, de, backup_antes):
 def versao_esquema(con):
     try:
         return con.execute("SELECT MAX(versao) FROM esquema_versao").fetchone()[0]
-    except sqlite3.OperationalError:   # arquivo sem a tabela: nao e um banco do projeto (ou criacao interrompida)
+    except sqlite3.OperationalError:   # file without the table: not a project database (or an interrupted creation)
         return None
 
 
 def _criar(caminho):
-    """Banco novo montado num arquivo temporario ao lado do destino e publicado so no fim, sem sobrescrever:
-    uma falha no meio (esquema, migracoes, catalogo) nao deixa no destino um arquivo que pareca banco existente."""
+    """New database built in a temporary file next to the target and published only at the end, without
+    overwriting: a failure midway (schema, migrations, catalog) leaves no file at the target that looks like an
+    existing database."""
     from .armazem import _publicar_sem_sobrescrever
     tmp = caminho.with_name(f"{caminho.name}.criando{os.getpid()}")
     con = _conectar(tmp)
@@ -335,7 +337,7 @@ def _criar(caminho):
         con.executescript(ESQUEMA.read_text(encoding="utf-8"))
         with con:
             con.execute("INSERT INTO esquema_versao VALUES (?,?,?,NULL)", (VERSAO_BASE, DESCRICAO_BASE, agora()))
-        _migrar(con, VERSAO_BASE, None)  # banco novo: nada a proteger
+        _migrar(con, VERSAO_BASE, None)  # new database: nothing to protect
         _semear_catalogo(con)
         con.close()
         _publicar_sem_sobrescrever(tmp, caminho)
@@ -348,8 +350,8 @@ def _criar(caminho):
 
 
 def abrir(cfg, caminho=None):
-    """Abre (criando, se preciso) o banco. Toda mudanca estrutural de banco existente e precedida de backup.
-    Sem `caminho`, abre o banco ATIVO (cfg.banco), que e recusado em pasta sincronizada ou de rede."""
+    """Opens (creating it if needed) the database. Every structural change to an existing database is preceded by a
+    backup. Without `caminho`, opens the ACTIVE database (cfg.banco), which is refused in a synced or network folder."""
     if caminho is None and em_pasta_sincronizada(cfg.banco):
         raise BancoEmPastaSincronizada(f"banco ativo em pasta sincronizada ou de rede: {cfg.banco}. "
                                        "Aponte [caminhos].dados_locais para uma pasta local.")
@@ -372,7 +374,7 @@ def abrir(cfg, caminho=None):
         arq = backup(con, cfg, f"antes-migracao-v{atual}-v{VERSAO_ESQUEMA}")
         _migrar(con, atual, arq)
     esperado = IMPRESSAO_ESQUEMA.get(VERSAO_ESQUEMA)
-    if esperado and impressao_esquema(con) != esperado:     # aviso; o portao 'esquema_confere' reprova a carga
+    if esperado and impressao_esquema(con) != esperado:     # warning; the 'esquema_confere' gate fails the load
         log.warning("esquema de %s difere do esquema v%d do código (impressão estrutural): ver portão "
                     "'esquema_confere'", caminho, VERSAO_ESQUEMA)
     _semear_catalogo(con)
@@ -380,21 +382,21 @@ def abrir(cfg, caminho=None):
 
 
 def _semear_catalogo(con):
-    """Regras, parametros de regra e decisoes de governanca do codigo vao para o banco (so INSERT OR IGNORE)."""
+    """Rules, rule parameters and governance decisions from the code go into the database (INSERT OR IGNORE only)."""
     from . import regras
     with con:
         regras.semear(con)
 
 
 def backup(con, cfg, motivo, operacional=False, manter=3):
-    """Copia consistente (API de backup do SQLite), gravada num temporario e depois movida.
+    """Consistent copy (SQLite backup API), written to a temporary file and then moved.
 
-    * padrao (antes de mudanca estrutural, importacao, manual): `backups/`, NUNCA apagado automaticamente;
-    * operacional (antes de apagar uma execucao, que e reprocessavel do bruto): pasta local
-      `backups_operacionais/`, fora do OneDrive. Os `manter` mais recentes desse tipo ficam como estao; os mais
-      antigos sao COMPRIMIDOS (<nome>.gz, conferido byte a byte), nunca apagados (revisao critica, D6).
-      Arquivo listado em `backups_operacionais/PRESERVAR.txt` (um nome por linha) nao entra na retencao.
-    O nome nunca repete o de um backup existente (sufixo -2, -3... no mesmo segundo)."""
+    * default (before a structural change, an import, manual): `backups/`, NEVER deleted automatically;
+    * operational (before deleting a run, which can be reprocessed from the raw data): local folder
+      `backups_operacionais/`, outside OneDrive. The `manter` most recent of this kind stay as they are; older ones
+      are COMPRESSED (<name>.gz, checked byte for byte), never deleted (critical review, D6).
+      A file listed in `backups_operacionais/PRESERVAR.txt` (one name per line) is left out of the retention.
+    The name never repeats an existing backup's (suffix -2, -3... within the same second)."""
     carimbo = datetime.now(BRT).strftime("%Y%m%d-%H%M%S")
     motivo = _MOTIVO.sub("-", str(motivo)).strip(".-") or "sem-motivo"
     pasta = cfg.backups_operacionais if operacional else cfg.backups
@@ -424,22 +426,22 @@ def backup(con, cfg, motivo, operacional=False, manter=3):
 
 
 def _na_retencao(pasta):
-    """Backups operacionais .sqlite sujeitos a retencao (sem os listados em PRESERVAR.txt), do mais antigo ao mais
-    novo (o nome comeca pelo carimbo)."""
+    """Operational .sqlite backups subject to retention (without the ones in PRESERVAR.txt), from oldest to newest
+    (the name starts with the timestamp)."""
     lista = pasta / "PRESERVAR.txt"
     preservar = set(lista.read_text(encoding="utf-8").split()) if lista.exists() else set()
     return sorted(p for p in pasta.glob("*.sqlite") if p.name not in preservar)
 
 
 def _fora_da_retencao(pasta, manter):
-    """Os da retencao alem dos `manter` mais recentes."""
+    """The ones under retention beyond the `manter` most recent."""
     return _na_retencao(pasta)[:-manter] if manter else _na_retencao(pasta)
 
 
 def comprimir_backup(arquivo, bloco=1 << 20):
-    """Comprime um backup em <nome>.gz SEM perder nada (revisao critica, D6): grava num temporario, confere que a
-    descompressao devolve os mesmos bytes (SHA-256) e so entao remove o original. Recusa sobrescrever um .gz
-    existente. Para voltar ao arquivo original: python -m gzip -d <nome>.gz"""
+    """Compresses a backup into <name>.gz WITHOUT losing anything (critical review, D6): writes to a temporary file,
+    checks that decompressing returns the same bytes (SHA-256) and only then removes the original. Refuses to
+    overwrite an existing .gz. To get the original file back: python -m gzip -d <name>.gz"""
     arquivo = Path(arquivo)
     destino = arquivo.with_name(arquivo.name + ".gz")
     if destino.exists():
@@ -466,9 +468,9 @@ def comprimir_backup(arquivo, bloco=1 << 20):
 
 
 def comprimir_backups_operacionais(cfg, manter=3, simular=True):
-    """Comprime os backups operacionais fora da janela dos `manter` mais recentes, INCLUSIVE os preservados
-    (PRESERVAR.txt protege contra apagar; comprimir nao apaga nada). Os mais recentes ficam como estao, prontos para
-    restaurar. `simular` so lista."""
+    """Compresses the operational backups outside the window of the `manter` most recent, INCLUDING the preserved ones
+    (PRESERVAR.txt protects against deletion; compressing deletes nothing). The most recent stay as they are, ready
+    to restore. `simular` only lists."""
     pasta = cfg.backups_operacionais
     if not pasta.exists():
         return []
@@ -488,8 +490,8 @@ def comprimir_backups_operacionais(cfg, manter=3, simular=True):
 
 
 def espaco(cfg):
-    """Bytes ocupados por pasta (banco ativo, armazem, backups, backups operacionais, logs): para acompanhar o
-    crescimento (revisao critica, D6)."""
+    """Bytes used per folder (active database, store, backups, operational backups, logs): to follow the growth
+    (critical review, D6)."""
     def total(p):
         p = Path(p)
         if p.is_file():
@@ -500,7 +502,7 @@ def espaco(cfg):
 
 
 def compactar(con, caminho):
-    """VACUUM: devolve ao disco o espaco de execucoes apagadas. Nao altera nenhum dado."""
+    """VACUUM: returns to the disk the space of deleted runs. It changes no data."""
     antes = Path(caminho).stat().st_size
     con.execute("VACUUM")
     return antes, Path(caminho).stat().st_size
@@ -515,7 +517,7 @@ def coletor_versao_id(con, coletor):
 
 
 def registrar_manifesto(con, armazem, rel, m):
-    """Coloca um snapshot na camada 0 (numa transacao). Idempotente pelo snapshot_uid."""
+    """Puts a snapshot into layer 0 (in a transaction). Idempotent by snapshot_uid."""
     ja = con.execute("SELECT id FROM coleta WHERE snapshot_uid=?", (m["snapshot_uid"],)).fetchone()
     if ja:
         return ja[0], False
@@ -531,7 +533,7 @@ def registrar_manifesto(con, armazem, rel, m):
              p.get("anoempenho"), p.get("empenho"), p.get("id_arquivo"), m["coletada_em"], m["origem_carimbo"],
              m["status"], cvid, m.get("observacao"))).lastrowid
         for r in m["respostas"]:
-            comprimido = armazem.ler_comprimido(r["sha256"])       # valida o formato do hash
+            comprimido = armazem.ler_comprimido(r["sha256"])       # validates the hash format
             try:
                 corpo = descomprimir(comprimido, r["tamanho"])
             except ObjetoCorrompido as e:
@@ -547,7 +549,7 @@ def registrar_manifesto(con, armazem, rel, m):
 
 
 def corpo(con, sha):
-    """Bytes originais de um objeto da camada 0, conferidos pelo tamanho e pelo hash."""
+    """Original bytes of a layer 0 object, checked against size and hash."""
     linha = con.execute("SELECT dados, tamanho FROM objeto_bruto WHERE sha256=?", (sha,)).fetchone()
     if linha is None:
         raise KeyError(f"objeto {sha} nao esta no banco")
@@ -559,8 +561,8 @@ def corpo(con, sha):
 
 
 def registrar_evidencia(con, armazem, rel, m):
-    """Coloca uma evidencia externa (e-SIC, norma, nota...) na camada 0. Idempotente pelo evidencia_uid.
-    O arquivo em si fica no armazem e no banco (objeto_bruto), conferido pelo SHA-256 e pelo tamanho."""
+    """Puts an external evidence (e-SIC, regulation, note...) into layer 0. Idempotent by evidencia_uid.
+    The file itself lives in the store and in the database (objeto_bruto), checked against SHA-256 and size."""
     ja = con.execute("SELECT id FROM evidencia_externa WHERE evidencia_uid=?", (m["evidencia_uid"],)).fetchone()
     if ja:
         return ja[0], False
@@ -579,7 +581,7 @@ def registrar_evidencia(con, armazem, rel, m):
 
 
 def sincronizar(con, armazem):
-    """Registra no banco todo manifesto do armazem (coletas e evidencias) que ainda nao esta nele."""
+    """Records in the database every manifest of the store (collections and evidence) not yet in it."""
     novos = 0
     for rel, m in armazem.manifestos():
         _, criado = registrar_manifesto(con, armazem, rel, m)
@@ -591,8 +593,8 @@ def sincronizar(con, armazem):
 
 
 def reconstruir(cfg, armazem, destino):
-    """Banco NOVO em `destino`, so a partir do armazem. Recusa sobrescrever arquivo existente.
-    '~' vira a pasta do usuario tambem quando o shell nao expande (PowerShell)."""
+    """NEW database at `destino`, from the store only. Refuses to overwrite an existing file.
+    '~' becomes the user's folder even when the shell does not expand it (PowerShell)."""
     destino = Path(destino).expanduser()
     if destino.exists():
         raise FileExistsError(f"{destino} já existe: a reconstrução nunca sobrescreve um banco")
@@ -602,8 +604,9 @@ def reconstruir(cfg, armazem, destino):
 
 
 def _diferencas_do_manifesto(con, rel, m):
-    """Campos em que a camada 0 do banco nao e a do manifesto (auditoria REC-01): a presenca do snapshot_uid nao
-    basta; o banco precisa ter os mesmos parametros, status, datas e as mesmas respostas (ordem, URL, hash, tamanho)."""
+    """Fields in which the database's layer 0 differs from the manifest (audit REC-01): the snapshot_uid being present
+    is not enough; the database must have the same parameters, status, dates and the same responses (order, URL,
+    hash, size)."""
     try:
         cid, manif, tipo, ep, pj, ent, ex, di, df, tp, ano, emp, arq, quando, origem, st, obs, cv = con.execute(
             "SELECT id, manifesto, tipo, endpoint, parametros_json, entidade, exercicio, data_inicial, data_final, "
@@ -637,13 +640,13 @@ def _diferencas_do_manifesto(con, rel, m):
 
 
 def verificar(con, armazem):
-    """Problemas de integridade entre banco e armazem (lista vazia = integro): objetos e manifestos do armazem, os
-    dois sentidos da presenca (manifesto x coleta, evidencia x banco), cada coleta igual ao seu manifesto campo a
-    campo e cada objeto do banco conferido pelo hash."""
+    """Integrity problems between database and store (empty list = intact): store objects and manifests, presence in
+    both directions (manifest x collection, evidence x database), each collection equal to its manifest field by
+    field and each database object checked against its hash."""
     problemas = [f"armazém: {p}" for p in armazem.verificar()]
     registrados = {u for (u,) in con.execute("SELECT snapshot_uid FROM coleta")}
     no_disco = {}
-    itens, _ = armazem.manifestos_e_erros()      # os ilegiveis ja vieram de armazem.verificar()
+    itens, _ = armazem.manifestos_e_erros()      # the unreadable ones already came from armazem.verificar()
     for rel, m in itens:
         no_disco[m["snapshot_uid"]] = rel
         if m["snapshot_uid"] not in registrados:
@@ -656,7 +659,7 @@ def verificar(con, armazem):
             dif = _diferencas_do_manifesto(con, rel, m)
             if dif:
                 problemas.append(f"coleta difere do manifesto {rel}: {', '.join(dif)}")
-    evid, _ = armazem.evidencias_e_erros()        # os ilegiveis ja vieram de armazem.verificar()
+    evid, _ = armazem.evidencias_e_erros()        # the unreadable ones already came from armazem.verificar()
     evid_no_disco = {m["evidencia_uid"]: rel for rel, m in evid}
     evid_no_banco = dict(con.execute("SELECT evidencia_uid, manifesto FROM evidencia_externa WHERE evidencia_uid IS NOT NULL"))
     for uid, rel in evid_no_disco.items():

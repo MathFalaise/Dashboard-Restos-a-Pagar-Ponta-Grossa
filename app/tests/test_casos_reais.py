@@ -1,11 +1,12 @@
-"""Casos reais obrigatorios (secao 24 da especificacao da revisao corretiva) sobre o ARMAZEM REAL do projeto.
+"""Mandatory real cases (section 24 of the corrective review specification) over the project's REAL store.
 
-O banco e montado num diretorio temporario a partir de snapshots/ (os 466 snapshots da base homologada, Etapas
-01-04.4; snapshots de cargas posteriores ficam de fora), so com leitura do armazem: sincronizar -> normalizar ->
-derivar (atual e 'como estava em' 29/09/2026). O teste confere que nenhum arquivo do armazem muda e que os
-hashes de resultado sao os registrados na 04.4.
-Valores esperados: etapa02/RELATORIO_ETAPA02.md secao 4, etapa03/RELATORIO_ETAPA03.md, etapa04/RELATORIO_04_3.md,
-etapa04/RELATORIO_04_4.md secoes 7-13 e etapa04/lotes/consistencia_rreo.md.
+The database is built in a temporary directory from data/snapshots/ (the 466 snapshots of the homologated base,
+stages 01-04.4; snapshots of later loads stay out), by only reading the store: sync -> normalize -> derive
+(current and 'as it was on' 29/09/2026). The test checks that no store file changes and that the result hashes
+are the ones recorded in 04.4.
+Expected values: docs/stages/02-accounting-validation/REPORT.md section 4, docs/stages/03-data-model/REPORT.md,
+docs/stages/04-pipeline/REPORT_04_3.md, docs/stages/04-pipeline/REPORT_04_4.md sections 7-13 and
+docs/stages/04-pipeline/batches/consistencia_rreo.md.
 """
 import re
 
@@ -13,7 +14,7 @@ from conftest import ARMAZEM_REAL, RAIZ_PROJETO, SNAPSHOTS_HOMOLOGADOS, manifest
 
 from rp import banco
 
-HASH_ATUAL = "2f6b4e295ce795934f7051fba31d9d3c1b5bc42c8858d4622a3e89ec88e3f2a5"      # RELATORIO_04_4.md, Lote M
+HASH_ATUAL = "2f6b4e295ce795934f7051fba31d9d3c1b5bc42c8858d4622a3e89ec88e3f2a5"      # REPORT_04_4.md, Lote M
 HASH_EM_2909 = "b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68"
 
 
@@ -21,7 +22,7 @@ def test_armazem_real_intacto_e_integro(real):
     assert real["armazem_antes"] == real["armazem_depois"]
     homologados = manifestos_homologados(real["armazem"])
     assert real["importacao"]["sincronizados"] == len(homologados) == SNAPSHOTS_HOMOLOGADOS
-    # a base homologada inteira esta integra; o armazem so pode ter A MAIS os snapshots de cargas posteriores (D1)
+    # the whole homologated base is intact; the store may only have, IN ADDITION, the snapshots of later loads (D1)
     todos = {p.relative_to(ARMAZEM_REAL).as_posix() for p in (ARMAZEM_REAL / "coletas").rglob("*.json")}
     posteriores = todos - {rel for rel, _ in homologados}
     assert sorted(banco.verificar(real["con"], real["armazem"])) == sorted(
@@ -50,7 +51,7 @@ def test_caso_11963_2016(real):
     c, dv = o["campos"], o["derivados"]
     assert (c["proc_c"]["valor"], c["cancelado_aproc_c"]["valor"], c["liquidado_c"]["valor"]) == (386452, 386452, -386452)
     assert (dv["categoria"]["valor"], dv["s1_saldo_total_c"]["valor"]) == ("processado", 0)
-    # a divisao do cancelamento (CANC v1) continua calculada, mas sai como analitica: a regra nao e mais recomendada
+    # the cancellation split (CANC v1) is still computed, but comes out as analytical: the rule is no longer recommended
     assert dv["cancel_processado_c"]["valor"] == 386452 and dv["cancel_processado_c"]["natureza"] == "analitico"
 
 
@@ -63,7 +64,7 @@ def test_caso_2401751_2023_e_seu_par(real):
     assert par["este_registro_e_o_lado"] == "A" and b["par_espelhado"]["este_registro_e_o_lado"] == "B"
     assert (par["b"]["entidade"], par["b"]["empenho"], par["b"]["inscrito_c"]) == (15, 1751, 1975000)
     assert (par["relacao_inscricao"], par["lado_com_execucao"]) == ("outra", "B")
-    assert a["proveniencia"]["snapshot_uid"] != b["proveniencia"]["snapshot_uid"]      # dois registros brutos
+    assert a["proveniencia"]["snapshot_uid"] != b["proveniencia"]["snapshot_uid"]      # two raw records
     for df in ("2025-02-28", "2025-04-30", "2025-06-30", "2025-08-31", "2025-10-31", "2025-12-31"):
         o = p.detalhe_empenho(1, 2023, 2401751, 2025, df)["ocorrencias"][0]
         assert o["campos"]["proc_c"]["valor"] + o["campos"]["aproc_c"]["valor"] == 841000, df
@@ -101,7 +102,7 @@ def test_espelhamento_2026(real):
         if df in esperado_lado_a:
             assert r["lado_com_execucao"]["A"] == esperado_lado_a[df], df
     assert p.pares(2026, "2026-08-31")["resumo"]["anoempenho"] == {2023: 1, 2024: 19, 2025: 711}
-    # os dois lados entram nos indicadores: nada e descontado por espelhamento
+    # both sides enter the indicators: nothing is discounted because of mirroring
     ind = p.indicadores(2026, "2026-08-31")
     assert ind["disponivel"] and ind["valores"]["registros"]["valor_c"] == sum(
         e["snapshot"]["registros"] for e in ind["entidades"] if e["entra_no_total"])
@@ -124,10 +125,11 @@ def test_divergencias_h_i_de_2026(real):
 
 
 def _consistencia_da_04_4():
-    """Linhas de etapa04/lotes/consistencia_rreo.md: (escopo, de) -> (L de A, (a)+(f) de A+1, diferenca, API S1, API a+f)."""
+    """Rows of docs/stages/04-pipeline/batches/consistencia_rreo.md: (scope, from) -> (L of A, (a)+(f) of A+1,
+    difference, API S1, API a+f)."""
     c = lambda s: None if s.strip() in ("—", "") else int(re.sub(r"[^\d-]", "", s.split("(")[0]))
     saida = {}
-    for linha in (RAIZ_PROJETO / "etapa04/lotes/consistencia_rreo.md").read_text(encoding="utf-8").splitlines()[2:]:
+    for linha in (RAIZ_PROJETO / "docs/stages/04-pipeline/batches/consistencia_rreo.md").read_text(encoding="utf-8").splitlines()[2:]:
         cel = [x.strip() for x in linha.strip("|").split("|")]
         de = int(cel[1][:4])
         saida[(cel[0], de)] = tuple(c(x) for x in cel[2:7])
@@ -138,9 +140,9 @@ def test_674_426_01_e_coerencia_entre_publicacoes(real):
     coe = real["painel"].coerencia_entre_publicacoes()["comparacoes"]
     (x,) = [x for x in coe if (x["escopo"], x["de"], x["data_final_para"]) == ("entidade", 2024, "2025-12-31")]
     assert x["diferenca_c"] == 67442601 and (x["rreo_L_de_c"], x["rreo_a_mais_f_para_c"]) == (1784893028, 1852335629)
-    assert x["api_s1_de_c"] == x["api_a_mais_f_para_c"] == 1853176629          # a API reproduz a publicacao posterior
+    assert x["api_s1_de_c"] == x["api_a_mais_f_para_c"] == 1853176629          # the API reproduces the later publication
     assert x["situacao_da_diferenca"] == "parcialmente explicada"
-    # toda a tabela da 04.4 que o extrator de producao consegue ler (2020 em diante) e reproduzida ao centavo
+    # the whole 04.4 table that the production extractor can read (2020 onwards) is reproduced to the cent
     tabela = _consistencia_da_04_4()
     conferidas = 0
     for x in coe:
@@ -159,7 +161,7 @@ def test_entidade_inexistente_no_exercicio_nao_e_zero(real):
     for ent, ex in ((15, 2016), (15, 2018), (10, 2023), (10, 2025)):
         r = p.indicadores(ex, f"{ex}-12-31", ent)
         assert not r["disponivel"] and "não é RP zero" in r["motivo_indisponivel"], (ent, ex)
-    r = p.indicadores(2019, "2019-12-31", 15)       # primeiro exercicio oficial da entidade 15: zero legitimo
+    r = p.indicadores(2019, "2019-12-31", 15)       # entity 15's first official fiscal year: a legitimate zero
     assert r["disponivel"] and r["valores"]["registros"]["valor_c"] == 0
     mun = p.indicadores(2016, "2016-12-31")
     assert mun["disponivel"] and [e["entidade"] for e in mun["entidades"] if not e["entra_no_total"]] == [15]
@@ -170,7 +172,7 @@ def test_retrato_historico_29_09(real):
     r = p.indicadores(2025, "2025-12-31", entidade=1, em="2026-09-29")
     assert r["retrato"]["texto"] == ("Como a base estava em 29/09/2026: exercício de 2025, corte 31/12/2025, "
                                      "coletado em 29/09/2026")
-    assert r["reconciliacao"].startswith("24 comparações coluna a coluna")      # 12 colunas x RREO-COL v1/v2
+    assert r["reconciliacao"].startswith("24 comparações coluna a coluna")      # 12 columns x RREO-COL v1/v2
     atual = p.indicadores(2025, "2025-12-31", entidade=1)
     assert atual["retrato"]["texto"].startswith("Estado atual da base para o exercício de 2025, corte 31/12/2025")
-    assert atual["valores"]["saldo_total"]["valor_c"] == r["valores"]["saldo_total"]["valor_c"]   # recoleta identica
+    assert atual["valores"]["saldo_total"]["valor_c"] == r["valores"]["saldo_total"]["valor_c"]   # identical re-collection

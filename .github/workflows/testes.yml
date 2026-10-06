@@ -1,12 +1,12 @@
-# Testes automaticos (revisao critica, itens 34, 36, 37 e 38). Nenhum teste acessa a internet; so o pip baixa pacotes.
+# Automated tests (critical review, items 34, 36, 37 and 38). No test accesses the internet; only pip downloads packages.
 #
-# * sinteticos: Linux e Windows, Python 3.11 a 3.14. So os testes com dados inventados (-m "not dados_reais"):
-#   e o que prova a portabilidade declarada no README.
-# * dados_reais: o ambiente homologado (requirements-lock.txt com hashes, Python 3.14) nos dois sistemas. Monta bancos
-#   temporarios a partir do armazem ../snapshots e do bruto das Etapas 01/02, confere os hashes homologados e roda os
-#   26 testes da investigacao (etapa03/validacao). Se um dia o bruto sair do repositorio, os passos sao pulados.
-# * dependencias: pip-audit sobre a trava com hashes (decisao D5): versao travada com vulnerabilidade conhecida reprova.
-# * pacote: instalacao editavel e o comando `rp`.
+# * sinteticos: Linux and Windows, Python 3.11 to 3.14. Only the tests with invented data (-m "not dados_reais"):
+#   this is what proves the portability stated in the README.
+# * dados_reais: the homologated environment (requirements-lock.txt with hashes, Python 3.14) on both systems. Builds
+#   temporary databases from the ../data/snapshots store and the raw data of stages 01/02, checks the homologated hashes and runs
+#   the 26 investigation tests (docs/stages/03-data-model/validation). If the raw data ever leaves the repository, these steps are skipped.
+# * dependencias: pip-audit over the lock file with hashes (decision D5): a locked version with a known vulnerability fails.
+# * pacote: editable install and the `rp` command.
 name: testes
 
 on:
@@ -41,7 +41,7 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: python -m pip install -r requirements-dev.txt
       - name: sintaxe de todo o codigo nesta versao do Python
-        run: python -m compileall -q rp tests ../rp.py ../etapa03/validacao
+        run: python -m compileall -q rp tests ../rp.py ../docs/stages/03-data-model/validation
       - run: python -m pytest tests -q -m "not dados_reais"
 
   dados_reais:
@@ -63,16 +63,16 @@ jobs:
       - name: ambiente homologado, cada arquivo conferido pelo hash da trava
         run: python -m pip install --require-hashes -r requirements-lock.txt
       - name: testes com o armazem real e o bruto das Etapas 01/02
-        if: hashFiles('snapshots/coletas/**') != '' && hashFiles('etapa02/dados_brutos/**') != ''
+        if: hashFiles('data/snapshots/coletas/**') != '' && hashFiles('data/stage02-raw/**') != ''
         run: python -m pytest tests -q -m dados_reais
       - name: testes da investigacao (Etapa 03)
-        if: hashFiles('etapa02/dados_brutos/**') != ''
-        working-directory: etapa03/validacao
+        if: hashFiles('data/stage02-raw/**') != ''
+        working-directory: docs/stages/03-data-model/validation
         run: python -m pytest tests -q
 
   dependencias:
-    # Decisao D5 da revisao critica (06/10/2026): vulnerabilidade conhecida numa versao travada reprova o CI.
-    # A trava tem hashes: o pip-audit confere os mesmos arquivos que o ambiente homologado instala.
+    # Decision D5 of the critical review (06/10/2026): a known vulnerability in a locked version fails the CI.
+    # The lock file has hashes: pip-audit checks the same files the homologated environment installs.
     name: dependencias sem vulnerabilidade conhecida (pip-audit)
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -106,6 +106,6 @@ jobs:
           python - <<'EOF'
           import json, os
           d = json.load(open("iniciar.json", encoding="utf-8"))
-          assert os.path.samefile(d["snapshots"], os.path.join(os.environ["GITHUB_WORKSPACE"], "snapshots")), d
+          assert os.path.samefile(d["snapshots"], os.path.join(os.environ["GITHUB_WORKSPACE"], "data", "snapshots")), d
           print(d)
           EOF

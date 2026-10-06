@@ -1,5 +1,5 @@
-"""O atalho rp.py na raiz do projeto: `python -m rp ...` funciona tanto em app/ quanto na raiz (pedido do
-responsavel em 01/10/2026; o erro era 'No module named rp' ao rodar na raiz)."""
+"""The rp.py shortcut at the project root: `python -m rp ...` works both in app/ and at the root (requested by the
+owner on 01/10/2026; the error was 'No module named rp' when running at the root)."""
 import json
 import subprocess
 import sys

@@ -1,12 +1,12 @@
-"""Execucoes de processamento: listar e apagar UMA execucao inteira, com seguranca.
+"""Processing runs: list them and delete ONE whole run, safely.
 
-Nunca apaga linhas avulsas nem nada da camada bruta. Fluxo:
-    listar -> escolher (tipo, id) -> simular -> confirmar (id repetido) -> backup -> apagar -> verificar
+It never deletes individual rows nor anything from the raw layer. Flow:
+    list -> choose (type, id) -> simulate -> confirm (repeated id) -> backup -> delete -> verify
 
-Execucao "em uso" (so sai com --permitir-mais-recente):
-  * normalizacao: a mais recente;
-  * derivacao: a mais recente de cada vigencia - a atual (sem data) e a de cada data "como estava em".
-    Uma derivacao "como estava em" criada depois da atual nao torna a atual apagavel.
+A run "in use" (only removed with --permitir-mais-recente):
+  * normalization: the most recent;
+  * derivation: the most recent of each validity - the current one (no date) and the one for each "as it was on" date.
+    An "as it was on" derivation created after the current one does not make the current one deletable.
 """
 import hashlib
 
@@ -51,7 +51,7 @@ def hash_camada0(con):
 
 
 def plano(con, tipo, ident, permitir_mais_recente=False):
-    """O que seria apagado. Recusa o que nao estiver claramente identificado ou ainda estiver em uso."""
+    """What would be deleted. Refuses anything not clearly identified or still in use."""
     if tipo == "derivacao":
         tabela_exec, col, tabelas = "derivacao_execucao", "derivacao_id", TABELAS_DERIVACAO
     elif tipo == "normalizacao":

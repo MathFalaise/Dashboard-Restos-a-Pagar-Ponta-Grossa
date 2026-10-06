@@ -1,30 +1,30 @@
-"""Camada 2 - derivacao: toda interpretacao, sempre com a versao da regra.
+"""Layer 2 - derivation: every interpretation, always with the rule version.
 
-* Todas as versoes de regra do catalogo sao calculadas LADO A LADO (RREO-COL v1/v2 x
-  CONS-PAR v1/v2). Nenhuma experimental vira padrao.
-* Determinismo: o resultado depende so do conjunto de snapshots e do catalogo de
-  regras - nao da hora, da ordem de insercao nem de ids internos. O `hash_resultado`
-  e calculado sobre identificadores estaveis (snapshot_uid, ordem da resposta,
-  indice), entao e o mesmo num banco reconstruido a partir do armazem.
-* Nenhum registro e removido: espelhamento e consolidacao existem so aqui.
+* All rule versions in the catalog are computed SIDE BY SIDE (RREO-COL v1/v2 x CONS-PAR v1/v2). No experimental
+  rule becomes the default.
+* Determinism: the result depends only on the set of snapshots and on the rule catalog - not on the time, the
+  insertion order or internal ids. `hash_resultado` is computed over stable identifiers (snapshot_uid, response
+  order, index), so it is the same in a database rebuilt from the store.
+* No record is removed: mirroring and consolidation exist only here.
 
-Desempenho: as linhas (registro + derivado) de cada coleta sao lidas com as colunas que as
-regras usam, por um leitor com cache LRU pequeno (o fechamento de um ano e a abertura do
-seguinte costumam ser a mesma coleta), e as visoes guardam so os componentes calculados,
-nao as linhas. Nada disso muda o resultado: a ordem de leitura e a mesma e o hash e conferido.
+Performance: the rows (record + derived) of each collection are read with the columns the rules use, by a reader
+with a small LRU cache (the closing of one year and the opening of the next are often the same collection), and
+the views keep only the computed components, not the rows. None of this changes the result: the read order is the
+same and the hash is checked.
 
-Chave repetida (revisao critica, itens 1, 13 e 14). A chave de negocio (entidade, anoempenho, empenho) e unica num
-retrato; repetida, o retrato e AMBIGUO e:
-  * fica integro no bruto e na normalizacao (nenhum registro e apagado ou fundido) e tem rp_derivado como os demais;
-  * gera a anomalia CHAVE-DUP com a natureza da repeticao: "exata" (copias identicas no bruto) ou "conflitante"
-    (conteudo diferente), e as posicoes de origem estaveis (ordem da resposta, indice);
-  * NUNCA vira o retrato vigente do corte (coletas_vigentes): somar as copias contaria a mesma chave duas vezes, e
-    escolher uma delas seria decidir em silencio qual e a certa. Vale o retrato valido anterior do corte, e a
-    verificacao "retrato com chave repetida fora da vigência" registra a troca;
-  * por isso continuidade, pareamento e visoes nunca recebem retrato com chave repetida. O mapa por chave dessas
-    regras confere isso e para com erro de programa se acontecer (antes, {chave: linha} ficava com a ULTIMA copia
-    enquanto a soma contava as duas).
-Sem chave repetida (o caso de todos os 466 snapshots reais), o resultado e o hash sao os mesmos de antes.
+Repeated key (critical review, items 1, 13 and 14). The business key (entidade, anoempenho, empenho) is unique in a
+snapshot; if repeated, the snapshot is AMBIGUOUS and:
+  * stays intact in the raw data and in the normalization (no record is deleted or merged) and has rp_derivado like
+    the others;
+  * produces the CHAVE-DUP anomaly with the nature of the repetition: "exata" (identical copies in the raw data) or
+    "conflitante" (different content), and the stable source positions (response order, index);
+  * NEVER becomes the current snapshot of the cut-off (coletas_vigentes): summing the copies would count the same
+    key twice, and picking one of them would silently decide which is right. The previous valid snapshot of the
+    cut-off applies, and the check "retrato com chave repetida fora da vigência" records the swap;
+  * so continuity, pairing and views never receive a snapshot with a repeated key. Those rules' per-key map checks
+    this and stops with a program error if it happens (before, {key: row} kept the LAST copy while the sum counted
+    both).
+Without a repeated key (the case of all 466 real snapshots), the result and the hash are the same as before.
 """
 import hashlib
 import json
@@ -32,26 +32,26 @@ import logging
 from collections import OrderedDict, defaultdict
 
 from . import DataInvalida, agora, banco, instante, regras
-from .vigencia import VERIF_RETRATO_AMBIGUO, coletas_ambiguas, coletas_vigentes  # noqa: F401 (reexportados)
+from .vigencia import VERIF_RETRATO_AMBIGUO, coletas_ambiguas, coletas_vigentes  # noqa: F401 (re-exported)
 
 log = logging.getLogger("rp.derivar")
 
 VERSAO = "rp-derivador/1"
-# Entidades do par, base das copias e entidade do RREO por entidade NAO ficam aqui: sao parametros das regras
-# PAR-24 v1 e CONC-RREO v1 (regras.PARAMETROS -> tabela regra_parametro), lidos a cada derivacao.
+# The pair's entities, the copies' base and the entity of the per-entity RREO do NOT live here: they are parameters
+# of rules PAR-24 v1 and CONC-RREO v1 (regras.PARAMETROS -> regra_parametro table), read on every derivation.
 COMPONENTES = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "L", "S1", "S2", "S3"]
 AGREGACOES = (("RREO-COL", 1), ("RREO-COL", 2))
 CONSOLIDACOES = (("CONS-PAR", 1), ("CONS-PAR", 2))
 
-# Colunas que as regras leem de cada linha (continuidade, pareamento, componentes das visoes).
+# Columns the rules read from each row (continuity, pairing, view components).
 CAMPOS_REGISTRO = ["resposta_id", "indice", "coleta_id", "entidade", "anoempenho", "empenho", "data_emissao", "cnpj",
                    "proc_c", "aproc_c", "cancelado_proc_c", "pago_proc_c", "cancelado_aproc_c", "pago_aproc_c",
                    "liquidado_c"]
 CAMPOS_DERIVADO = ["categoria", "faixa_processado", "faixa_nao_processado", "s1_saldo_total_c", "s2_a_liquidar_c",
                    "s3_liquidado_a_pagar_c", "cancel_processado_c", "cancel_nao_processado_c"]
-# As respostas da coleta entram como lista (resposta_id IN ...): assim o SQLite percorre a chave primaria
-# (normalizacao_id, resposta_id, indice) so nas respostas da coleta, ja na ordem pedida, em vez de varrer
-# todos os registros da normalizacao a cada consulta. O filtro por coleta_id continua, redundante de proposito.
+# The collection's responses go in as a list (resposta_id IN ...): this way SQLite walks the primary key
+# (normalizacao_id, resposta_id, indice) only over the collection's responses, already in the requested order,
+# instead of scanning every record of the normalization on each query. The coleta_id filter stays, redundant on purpose.
 SQL_LINHAS = ("SELECT " + ", ".join([f"r.{c}" for c in CAMPOS_REGISTRO] + [f"d.{c}" for c in CAMPOS_DERIVADO]) +
               " FROM rp_registro r JOIN rp_derivado d ON d.resposta_id = r.resposta_id AND d.indice = r.indice "
               "AND d.derivacao_id = ? WHERE r.normalizacao_id = ? "
@@ -61,10 +61,10 @@ NOMES_LINHA = CAMPOS_REGISTRO + CAMPOS_DERIVADO
 
 
 def derivar(con, nid, em=None):
-    """Nova derivacao sobre a normalizacao `nid`. `em` (ISO com fuso): considera so snapshots coletados
-    ate essa data - 'como estava em'. Sem `em`, usa todos (o mais recente de cada corte e o vigente).
-    `em` precisa estar na forma canonica de rp.instante (a comparacao com coletada_em e textual e a camada painel
-    procura a derivacao por esse texto): outra forma do mesmo instante e recusada, nunca comparada (auditoria CLI-01)."""
+    """New derivation over normalization `nid`. `em` (ISO with offset): only considers snapshots collected up to
+    that date - 'as it was on'. Without `em`, uses all of them (the most recent of each cut-off is the current one).
+    `em` must be in rp.instante's canonical form (the comparison with coletada_em is textual and the panel layer
+    looks the derivation up by that text): another form of the same instant is refused, never compared (audit CLI-01)."""
     if em is not None and instante(em) != em:
         raise DataInvalida(f"vigencia {em!r} fora da forma canonica {instante(em)!r}: use rp.instante")
     regras.semear(con)
@@ -92,14 +92,15 @@ def derivar(con, nid, em=None):
 
 
 def _ate(em, alias="c"):
-    """Filtro SQL de vigencia sobre coleta.coletada_em."""
+    """SQL validity filter over coleta.coletada_em."""
     return (f" AND {alias}.coletada_em <= ?", (em,)) if em else ("", ())
 
 
-# --------------------------------------------------------------------------- selecao de snapshots
+# --------------------------------------------------------------------------- snapshot selection
 def _vigencia_recusada(con, did, R, em, ambiguas, vig, uid):
-    """Verificacao para cada corte cujo retrato mais recente e ambiguo: ele nao e o vigente, e o vigente e o anterior
-    valido (ou nenhum). So existe quando ha chave repetida; sem ela, nada e gravado (o hash nao muda)."""
+    """A check for each cut-off whose most recent snapshot is ambiguous: it is not the current one, and the current one
+    is the previous valid one (or none). It only exists when there is a repeated key; without it, nothing is recorded
+    (the hash does not change)."""
     if not ambiguas:
         return
     for corte, cid in sorted(coletas_vigentes(con, em, excluir=frozenset()).items()):
@@ -112,12 +113,12 @@ def _vigencia_recusada(con, did, R, em, ambiguas, vig, uid):
 
 
 class ChaveAmbigua(RuntimeError):
-    """Retrato com chave repetida chegou a uma regra que o indexa por chave: defeito de programa (coletas_vigentes
-    devia te-lo excluido). Nunca se escolhe uma das copias."""
+    """A snapshot with a repeated key reached a rule that indexes it by key: a program bug (coletas_vigentes should
+    have excluded it). One of the copies is never picked."""
 
 
 def _por_chave(linhas, contexto):
-    """{(anoempenho, empenho): linha} de um retrato. Chave repetida -> ChaveAmbigua (nunca a ultima copia vence)."""
+    """{(anoempenho, empenho): row} of a snapshot. A repeated key -> ChaveAmbigua (the last copy never wins)."""
     mapa = {}
     for r in linhas:
         k = (r["anoempenho"], r["empenho"])
@@ -128,12 +129,12 @@ def _por_chave(linhas, contexto):
 
 
 def _linhas(con, did, nid, cid):
-    """Linhas (registro + derivado) de uma coleta, na ordem de origem (resposta, indice)."""
+    """Rows (record + derived) of a collection, in source order (response, index)."""
     return [dict(zip(NOMES_LINHA, row)) for row in con.execute(SQL_LINHAS, (did, nid, cid, cid))]
 
 
 class _Leitor:
-    """`_linhas` com cache LRU de poucas coletas. As linhas sao so lidas pelas regras, nunca alteradas."""
+    """`_linhas` with an LRU cache of a few collections. The rules only read the rows, never change them."""
 
     def __init__(self, con, did, nid, capacidade=4):
         self.con, self.did, self.nid, self.capacidade = con, did, nid, capacidade
@@ -163,7 +164,7 @@ def _verif(con, did, regra, descricao, escopo, verificados, falhas):
                 (did, regra, descricao, json.dumps(escopo, sort_keys=True, ensure_ascii=False), verificados, falhas))
 
 
-# --------------------------------------------------------------------------- por registro
+# --------------------------------------------------------------------------- per record
 def _registros(con, did, nid, R, par, em=None):
     filtro, p = _ate(em)
     fonte = con.execute(
@@ -189,8 +190,8 @@ def _registros(con, did, nid, R, par, em=None):
                    proc + aproc - pproc - paproc - caproc,        # S1
                    aproc - liq - caproc,                          # S2
                    proc - pproc + liq - paproc,                   # S3
-                   caproc if proc > 0 and aproc == 0 else 0,      # CANC processado
-                   caproc if aproc > 0 else 0)                    # CANC nao processado
+                   caproc if proc > 0 and aproc == 0 else 0,      # CANC processed
+                   caproc if aproc > 0 else 0)                    # CANC not processed
             if liq < 0:
                 linha("LIQ-NEG", cid, e, ano, emp, liquidado_c=liq)
             if proc == 0 and pproc != 0:
@@ -218,9 +219,9 @@ def _registros(con, did, nid, R, par, em=None):
 
 
 def _natureza_da_repeticao(con, posicoes):
-    """('exata' | 'conflitante', [[ordem da resposta, indice], ...]). Compara as ocorrencias NO BRUTO (bytes do
-    armazem, forma canonica): a normalizacao guarda o nome das chaves extras, nao o valor, entao so o bruto prova que
-    duas copias sao identicas. As posicoes usam a ordem da resposta (estavel), nunca o id interno."""
+    """('exata' | 'conflitante', [[response order, index], ...]). Compares the occurrences IN THE RAW DATA (store bytes,
+    canonical form): the normalization keeps the name of extra keys, not their value, so only the raw data proves two
+    copies are identical. The positions use the response order (stable), never the internal id."""
     from .contrato import canonico
     paginas, formas, origem = {}, set(), []
     for rid, i in posicoes:
@@ -238,8 +239,8 @@ EFEITO = {20: ("empenho", 1), 21: ("cancelamento", -1), 22: ("estorno_cancelamen
 
 
 def _movimentacao(con, did, nid, em=None):
-    """Lancamentos so de snapshot completo, como os registros (_registros): snapshot incompleto nunca vira retrato
-    valido (auditoria DER-01)."""
+    """Entries only from complete snapshots, like the records (_registros): an incomplete snapshot never becomes a
+    valid snapshot (audit DER-01)."""
     filtro, p = _ate(em)
     fonte = con.execute(
         "SELECT m.resposta_id, m.indice, m.tipo_lancamento, m.valor_c, m.exercicio_liquidacao_rotulo, "
@@ -256,10 +257,10 @@ def _movimentacao(con, did, nid, em=None):
     con.executemany("INSERT INTO movimentacao_interpretada VALUES (?,?,?,?,?,?,?)", interpretados())
 
 
-# --------------------------------------------------------------------------- continuidade
+# --------------------------------------------------------------------------- continuity
 def _continuidade(con, did, nid, R, vig, uid, ler=None):
-    """Fechamento de A (01/01-31/12) x abertura de A+1 (snapshot que comeca em 01/01 de A+1;
-    a abertura nao depende de dataFinal - escolhe-se o de maior dataFinal, depois o mais recente)."""
+    """Closing of A (01/01-31/12) x opening of A+1 (snapshot starting on 01/01 of A+1; the opening does not depend on
+    dataFinal - the one with the latest dataFinal is chosen, then the most recent)."""
     ler = ler or _Leitor(con, did, nid)
     regra = R[("ANOM-CONT", 1)]
     fech = {(e, ex): c for (e, ex, di, df), c in vig.items() if di == f"{ex}-01-01" and df == f"{ex}-12-31"}
@@ -288,13 +289,13 @@ def _continuidade(con, did, nid, R, vig, uid, ler=None):
                {"entidade": e, "de": ex, "para": ex + 1, "snapshots": [uid[ca], uid[cb]]}, len(A), falhas)
 
 
-# --------------------------------------------------------------------------- espelhamento
+# --------------------------------------------------------------------------- mirroring
 def _execucao(r):
     return abs(r["pago_proc_c"]) + abs(r["pago_aproc_c"]) + abs(r["cancelado_aproc_c"]) + abs(r["liquidado_c"])
 
 
 def _pareamento(con, did, nid, R, vig, uid, par, ler=None):
-    """Pares copia <-> original segundo os parametros da regra PAR-24 (entidades, base, campos de conferencia)."""
+    """Copy <-> original pairs according to the parameters of rule PAR-24 (entities, base, matching fields)."""
     ler = ler or _Leitor(con, did, nid)
     regra = R[("PAR-24", 1)]
     ent_a, ent_b, base = par["entidade_copia"], par["entidade_original"], par["base_empenho_copia"]
@@ -305,7 +306,7 @@ def _pareamento(con, did, nid, R, vig, uid, par, ler=None):
     for ex, di, df in sorted(cortes):
         ca, cb = vig[(ent_a, ex, di, df)], vig[(ent_b, ex, di, df)]
         linhas_a = ler(ca)
-        _por_chave(linhas_a, "pareamento (lado A)")      # so confere: as copias sao percorridas como lista
+        _por_chave(linhas_a, "pareamento (lado A)")      # only checks: the copies are walked as a list
         copias = [r for r in linhas_a if r["empenho"] >= base]
         B = _por_chave(ler(cb), "pareamento (lado B)")
         pares, sem_par = [], 0
@@ -337,7 +338,7 @@ def _pareamento(con, did, nid, R, vig, uid, par, ler=None):
     return saida
 
 
-# --------------------------------------------------------------------------- visoes
+# --------------------------------------------------------------------------- views
 def _componentes(linhas, versao_agregacao):
     v = dict.fromkeys(COMPONENTES, 0)
     for r in linhas:
@@ -350,7 +351,7 @@ def _componentes(linhas, versao_agregacao):
             v["h"] += r["liquidado_c"]
             v["i"] += r["pago_aproc_c"]
             v["j"] += r["cancelado_aproc_c"]
-        if versao_agregacao == 2:  # pagamento segue a categoria do registro
+        if versao_agregacao == 2:  # payment follows the record's category
             if r["proc_c"] > 0 and r["aproc_c"] == 0:
                 v["c"] += r["pago_aproc_c"]
             if r["aproc_c"] > 0 and r["proc_c"] == 0:
@@ -376,7 +377,7 @@ def _gravar_visao(con, did, visao, ragg, rcons, ent, ex, df, snapshots, v):
 
 
 def _lado_excluido(versao, p):
-    """CONS-PAR: qual lado tem a INSCRICAO retirada (None = par nao consolidado)."""
+    """CONS-PAR: which side has its INSCRIPTION removed (None = pair not consolidated)."""
     if p["lado"] == "ambos":
         return None
     if versao == 1:
@@ -385,7 +386,7 @@ def _lado_excluido(versao, p):
 
 
 def _entidades_do_catalogo(con, nid, em=None):
-    """Entidades do snapshot de catalogo vigente (o mais recente ate `em`)."""
+    """Entities of the current catalog snapshot (the most recent up to `em`)."""
     filtro, p = _ate(em, "coleta")
     ult = con.execute("SELECT id FROM coleta WHERE tipo='entidades' AND status='completa'" + filtro +
                       " ORDER BY coletada_em DESC, snapshot_uid DESC LIMIT 1", p).fetchone()
@@ -397,9 +398,9 @@ def _entidades_do_catalogo(con, nid, em=None):
 def _visoes(con, did, nid, R, vig, pares, uid, em=None, ler=None):
     ler = ler or _Leitor(con, did, nid)
     entidades = _entidades_do_catalogo(con, nid, em)
-    alvos = [(k, c) for k, c in sorted(vig.items()) if k[2] == f"{k[1]}-01-01"]  # colunas do RREO so com dataInicial = 01/01
+    alvos = [(k, c) for k, c in sorted(vig.items()) if k[2] == f"{k[1]}-01-01"]  # RREO columns only with dataInicial = 01/01
     componentes = {}
-    for _, c in alvos:   # cada coleta e lida uma vez; so os componentes ficam na memoria
+    for _, c in alvos:   # each collection is read once; only the components stay in memory
         if (AGREGACOES[0][1], c) not in componentes:
             linhas = ler(c)
             for _, versao in AGREGACOES:
@@ -413,7 +414,7 @@ def _visoes(con, did, nid, R, vig, pares, uid, em=None, ler=None):
             por_corte[(ex, df)][e] = (c, v)
         for (ex, df), ents in sorted(por_corte.items()):
             if not entidades or set(ents) != entidades:
-                continue  # visao do Municipio so com TODAS as entidades no mesmo corte
+                continue  # Municipality view only with ALL entities at the same cut-off
             pub = dict.fromkeys(COMPONENTES, 0)
             for _, v in ents.values():
                 for comp in COMPONENTES:
@@ -426,7 +427,7 @@ def _visoes(con, did, nid, R, vig, pares, uid, em=None, ler=None):
                     lado = _lado_excluido(cons[1], p)
                     if lado is None:
                         continue
-                    x = p[lado]  # so a INSCRICAO deste lado sai; fluxos dos dois lados ficam
+                    x = p[lado]  # only the INSCRIPTION of this side leaves; the flows of both sides stay
                     if x["proc_c"] > 0:
                         ana[x["faixa_processado"]] -= x["proc_c"]
                     if x["aproc_c"] > 0:
@@ -437,12 +438,12 @@ def _visoes(con, did, nid, R, vig, pares, uid, em=None, ler=None):
                 _gravar_visao(con, did, "analitico", ragg, R[cons], None, ex, df, snaps, _fechar(ana))
 
 
-# --------------------------------------------------------------------------- conciliacao
+# --------------------------------------------------------------------------- reconciliation
 def _conciliacao(con, did, nid, R, uid, conc, em=None):
     regra = R[("CONC-RREO", 1)]
-    ent_rreo = conc["entidade_do_rreo_por_entidade"]   # o RREO "por entidade" e o desta entidade
+    ent_rreo = conc["entidade_do_rreo_por_entidade"]   # the RREO "por entidade" is this entity's
     filtro, p = _ate(em)
-    # PDF de RREO sem nenhum valor extraido nesta normalizacao (ex.: layout desconhecido): registrado, nunca ignorado
+    # RREO PDF with no value extracted in this normalization (e.g. unknown layout): recorded, never ignored
     for (cid,) in con.execute("SELECT c.id FROM coleta c WHERE c.tipo='rreo_pdf' AND c.status='completa'" + filtro +
                               " AND NOT EXISTS (SELECT 1 FROM rreo_valor v WHERE v.normalizacao_id=? AND v.coleta_id=c.id) "
                               "ORDER BY c.coletada_em, c.snapshot_uid", (*p, nid)).fetchall():
@@ -478,9 +479,9 @@ def _conciliacao(con, did, nid, R, uid, conc, em=None):
             _verif(con, did, regra, "conciliação RREO × API (colunas com diferença)", escopo_v, len(rv), dif)
 
 
-# --------------------------------------------------------------------------- hash estavel
+# --------------------------------------------------------------------------- stable hash
 def resultado_estavel(con, did):
-    """Todo o resultado da derivacao com ids internos trocados por identificadores estaveis."""
+    """The whole derivation result with internal ids replaced by stable identifiers."""
     uid = dict(con.execute("SELECT id, snapshot_uid FROM coleta"))
     resp = {i: (uid[c], o) for i, c, o in con.execute("SELECT id, coleta_id, ordem FROM resposta_bruta")}
     rg = {i: f"{c} v{v}" for i, c, v in con.execute("SELECT id, codigo, versao FROM regra")}
@@ -513,7 +514,7 @@ def resultado_estavel(con, did):
 
 
 def hash_resultado(con, did):
-    """Hash da EXECUCAO completa: valores, relacoes e diagnosticos (anomalia, verificacao). E o hash homologado."""
+    """Hash of the complete RUN: values, relations and diagnostics (anomaly, check). It is the homologated hash."""
     h = hashlib.sha256()
     for tabela, linhas in resultado_estavel(con, did).items():
         h.update(tabela.encode())
@@ -522,14 +523,14 @@ def hash_resultado(con, did):
     return h.hexdigest()
 
 
-# Tabelas que SAO o resultado (valores e relacoes). anomalia e verificacao sao diagnostico: texto de uma descricao ou
-# um detalhe a mais mudam o hash_resultado, mas nao o resultado financeiro (revisao critica, item 25).
+# Tables that ARE the result (values and relations). anomalia and verificacao are diagnostics: the text of a
+# description or an extra detail changes hash_resultado, but not the financial result (critical review, item 25).
 TABELAS_SEMANTICAS = ("rp_derivado", "movimentacao_interpretada", "espelhamento_par", "visao_valor", "conciliacao_rreo")
 
 
 def hash_semantico(con, did):
-    """Hash so do resultado (TABELAS_SEMANTICAS), com a mesma serializacao do hash_resultado. Calculado sob demanda,
-    nunca gravado: o hash_resultado homologado continua o mesmo. Igual em dois bancos = mesmos valores e relacoes."""
+    """Hash of the result only (TABELAS_SEMANTICAS), with the same serialization as hash_resultado. Computed on demand,
+    never recorded: the homologated hash_resultado stays the same. Equal in two databases = same values and relations."""
     h = hashlib.sha256()
     for tabela, linhas in resultado_estavel(con, did).items():
         if tabela not in TABELAS_SEMANTICAS:

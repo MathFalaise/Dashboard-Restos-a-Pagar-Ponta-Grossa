@@ -1,14 +1,15 @@
-"""Testes da Subetapa 05.6: qualidade dos dados e situacao das diferencas (contrato secao 6; plano, secao 05.6).
+"""Tests of sub-stage 05.6: data quality and the situation of the differences (contract section 6; plan, section
+05.6).
 
-Regime "derivacao" (contrato secao 4.1): anomalias e verificacoes NAO sao recalculadas; o painel le o que a
-derivacao gravou e os testes conferem contagens, escopo e ligacoes contra as tabelas da derivacao.
-* anomalias por tipo com a contagem da derivacao; drill-down so com chave completa (e exato so no snapshot vigente);
-  anomalia sem chave so no agregado;
-* verificacoes de conjunto, interpretadas por descricao (R5); descricao fora do catalogo = "significado nao
-  catalogado"; nunca listadas como empenhos;
-* as cinco situacoes das diferencas com o RREO separadas e iguais as da reconciliacao; diferenca zero nunca contada
-  como explicada.
-SINTETICO = banco temporario com registros inventados (fixture `mundo`).
+"derivacao" regime (contract section 4.1): anomalies and checks are NOT recalculated; the panel reads what the
+derivation recorded and the tests check counts, scope and links against the derivation's tables.
+* anomalies by type with the derivation's count; drill-down only with a complete key (and exact only in the current
+  snapshot); an anomaly without a key only in the aggregate;
+* set-level checks, interpreted by description (R5); a description outside the catalog = "significado nao
+  catalogado"; never listed as commitments;
+* the five situations of the differences with the RREO apart and equal to the reconciliation's; a zero difference is
+  never counted as explained.
+SINTETICO = temporary database with invented records (fixture `mundo`).
 """
 import re
 import time
@@ -31,11 +32,11 @@ def _secao(corpo, ident):
 # ================================================================== SINTETICO
 @pytest.fixture
 def qualidade(mundo):
-    """Entidade 1, corte 31/12/2025 coletado duas vezes (o segundo retrato e o vigente): LIQ-NEG, COPIA-24 e
-    PAGOPROC-SEM-PROC + SEM-SALDO-ABERTURA, cada uma nos dois retratos. Depois de processar, acrescenta a mao: uma
-    anomalia SEM chave de empenho; duas verificacoes fora do catalogo (descricao desconhecida; descricao conhecida
-    gravada por outra regra); e uma continuidade 2024 -> 2025 da entidade 1 com 1 falha e a anomalia
-    SALDO-SEM-CONTINUIDADE correspondente (no snapshot de 2025), para a ligacao por regra e escopo."""
+    """Entity 1, cut-off 31/12/2025 collected twice (the second snapshot is the current one): LIQ-NEG, COPIA-24 and
+    PAGOPROC-SEM-PROC + SEM-SALDO-ABERTURA, each in both snapshots. After processing, it adds by hand: an anomaly
+    WITHOUT a commitment key; two checks outside the catalog (unknown description; known description recorded by
+    another rule); and a 2024 -> 2025 continuity of entity 1 with 1 failure and the matching
+    SALDO-SEM-CONTINUIDADE anomaly (in the 2025 snapshot), for the link by rule and scope."""
     mundo.catalogos({1: [2025]})
     regs = [_reg(1, aproc=100.0, liquidado=-5.0), _reg(2400001, aproc=10.0), _reg(3, aproc=0, pagoProc=2.0)]
     mundo.listagem(1, 2025, "2025-12-31", regs, T0)
@@ -74,14 +75,14 @@ def test_SINTETICO_ligacao_so_com_chave_e_exata_so_no_vigente(qualidade):
     with qualidade.painel() as p:
         a = p.anomalias("LIQ-NEG")
         itens = a["itens"]
-        assert (len(itens), a["total"], a["sem_chave"]) == (2, 2, 1)             # sem chave: so no agregado
+        assert (len(itens), a["total"], a["sem_chave"]) == (2, 2, 1)             # without a key: only in the aggregate
         assert all(x["chave"] for x in itens)
         vig = [x for x in itens if x["vigente"]]
         ant = [x for x in itens if not x["vigente"]]
         assert len(vig) == len(ant) == 1
         assert vig[0]["ligacao"]["destino"] == "empenho" and vig[0]["retrato"] == "vigente"
         assert ant[0]["ligacao"]["destino"] == "retratos" and ant[0]["retrato"] == "retrato anterior do corte"
-        d = p.detalhe_empenho(1, 2024, 1, 2025, "2025-12-31")                    # o registro da ligacao
+        d = p.detalhe_empenho(1, 2024, 1, 2025, "2025-12-31")                    # the linked record
         assert d["ocorrencias"][0]["campos"]["liquidado_c"]["valor"] == vig[0]["detalhe"]["liquidado_c"] == -500
         assert len(p.anomalias("LIQ-NEG", limite=1, deslocamento=1)["itens"]) == 1
         assert p.anomalias("CHAVE-DUP")["itens"] == []
@@ -97,7 +98,7 @@ def test_SINTETICO_verificacao_fora_do_catalogo_nao_e_interpretada(qualidade):
         for v in (inventada, outra_regra):
             assert not v["catalogada"] and v["situacao"] == NAO_CATALOGADA and v["significado_de_falhas"] == NAO_CATALOGADA
             assert v["anomalias_ligadas"] == [] and all(i["situacao"] == NAO_CATALOGADA for i in v["itens"])
-        assert (inventada["verificados"], inventada["falhas"]) == (5, 2)                 # numeros brutos preservados
+        assert (inventada["verificados"], inventada["falhas"]) == (5, 2)                 # raw numbers preserved
 
 
 def test_SINTETICO_ligacao_da_verificacao_por_regra_e_escopo(qualidade):
@@ -122,16 +123,16 @@ def test_SINTETICO_tela_da_qualidade(qualidade):
     v = dados(corpo)
     assert (v["anom-LIQ-NEG"], v["anom-LIQ-NEG-vig"]) == (3, 2)
     oc = _secao(corpo, "ocorrencias")
-    assert oc.count('href="/empenho?') == 1 and oc.count('href="/retratos?') == 1      # 1 vigente, 1 retrato anterior
+    assert oc.count('href="/empenho?') == 1 and oc.count('href="/retratos?') == 1      # 1 current, 1 earlier snapshot
     assert v["ocorr-sem-chave"] == 1 and 'id="sem-chave"' in oc
-    assert "/empenho?" not in _secao(corpo, "verificacoes")                             # verificacao nao vira empenho
+    assert "/empenho?" not in _secao(corpo, "verificacoes")                             # a check does not become a commitment
     assert NAO_CATALOGADA in _secao(corpo, "verificacoes")
     assert links_permitidos(corpo) and "style=" not in corpo
     assert 'id="sem-ocorrencia"' in ok(app, "/qualidade", tipo="CHAVE-DUP")
     assert chamar(app, "/qualidade", tipo="NAO-EXISTE")[0] == "400 Bad Request"
 
 
-# ================================================================== armazem real
+# ================================================================== real store
 @pytest.fixture(scope="module")
 def q_real(real):
     return real["painel"].qualidade()
@@ -149,7 +150,7 @@ def test_anomalias_iguais_a_derivacao(real, q_real):
     assert {k: x["em_snapshots_vigentes"] for k, x in t.items()} == dict(nos_vigentes)
     catalogo = {c for (c,) in con.execute("SELECT codigo FROM anomalia_tipo")}
     assert {x["tipo"] for x in q_real["anomalias"]["tipos_sem_ocorrencia"]} == catalogo - set(esperado)
-    assert all(x["com_chave_de_empenho"] == x["ocorrencias"] for x in t.values())       # hoje todas tem chave
+    assert all(x["com_chave_de_empenho"] == x["ocorrencias"] for x in t.values())       # today all of them have a key
 
 
 def test_verificacoes_iguais_a_derivacao_e_interpretadas(real, q_real):
@@ -165,7 +166,7 @@ def test_verificacoes_iguais_a_derivacao_e_interpretadas(real, q_real):
     assert all(v["catalogada"] for v in vs.values())
     cont = vs[("continuidade fechamento→abertura", "ANOM-CONT v1")]
     assert [a["tipo"] for a in cont["anomalias_ligadas"]] == ["SALDO-SEM-CONTINUIDADE", "DESCONTINUIDADE"]
-    assert all(len(i["snapshots"]) == 2 for i in cont["itens"])                         # escopo traz os dois snapshots
+    assert all(len(i["snapshots"]) == 2 for i in cont["itens"])                         # the scope carries both snapshots
 
 
 def test_cinco_situacoes_iguais_a_reconciliacao(real, q_real):
@@ -219,9 +220,9 @@ def test_tela_igual_ao_painel_reais(real, q_real):
             dr["por_regra"]["RREO-COL v1"][s], dr["por_regra"]["RREO-COL v2"][s], dr["coerencia"]["exibida"][s],
             dr["coerencia"]["todas"][s])
     assert "As contagens conferem." in corpo and "/empenho?" not in _secao(corpo, "verificacoes")
-    assert _secao(corpo, "ocorrencias").count('href="/empenho?') == 50                 # PAR-24: todas no vigente
-    reconc = ok(app, "/reconciliacao")                                                   # a coerencia exibida continua igual
+    assert _secao(corpo, "ocorrencias").count('href="/empenho?') == 50                 # PAR-24: all in the current one
+    reconc = ok(app, "/reconciliacao")                                                   # the consistency shown stays the same
     assert len(re.findall(r'id="coe-', reconc)) == dr["total_coerencia"]["exibida"]
-    for x in q_real["anomalias"]["por_tipo"]:                                            # nenhuma identificacao de credor
+    for x in q_real["anomalias"]["por_tipo"]:                                            # no creditor identification
         chaves = {k for i in real["painel"].anomalias(x["tipo"], limite=500)["itens"] for k in (i["detalhe"] or {})}
         assert not chaves & {"nome", "cnpj", "cnpj_nome", "fornecedor"}, (x["tipo"], chaves)

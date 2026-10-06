@@ -1,4 +1,4 @@
-# Dependencias de execucao (versoes em uso e testadas; Python 3.14.3). Instalar: pip install -r requirements.txt
-# A interface (python -m rp interface) e a camada painel usam so a biblioteca padrao do Python.
-requests==2.34.2    # coletor: chamadas a API do portal (rp/http.py)
-pymupdf==1.28.2     # processar: transcricao dos PDFs do RREO (rp/normalizar.py)
+# Runtime dependencies (versions in use and tested; Python 3.14.3). Install: pip install -r requirements.txt
+# The interface (python -m rp interface) and the panel layer use only the Python standard library.
+requests==2.34.2    # collector: calls to the portal API (rp/http.py)
+pymupdf==1.28.2     # processar: transcription of the RREO PDFs (rp/normalizar.py)

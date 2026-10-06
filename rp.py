@@ -1,8 +1,8 @@
-"""Atalho para usar `python -m rp ...` tambem na raiz do projeto.
+"""Shortcut to run `python -m rp ...` from the project root as well.
 
-O pacote fica em app/rp. Dentro de app/ o Python acha o pacote direto e este arquivo nao e usado; na raiz, ele
-poe app/ na frente do caminho de busca e executa o pacote de verdade (python -m rp interface, verificar, etc.).
-Nao muda nada no comportamento do programa: configuracao, banco e snapshots continuam resolvidos a partir de app/.
+The package lives in app/rp. Inside app/ Python finds the package directly and this file is not used; at the root,
+it puts app/ first on the import path and runs the real package (python -m rp interface, verificar, etc.).
+It changes nothing in the program's behavior: config, database and snapshots are still resolved from app/.
 """
 import runpy
 import sys

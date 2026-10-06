@@ -1,8 +1,8 @@
-"""Os 26 testes da Etapa 03, executados sobre o CODIGO DE PRODUCAO (app/rp).
+"""The 26 tests of stage 03, run over the PRODUCTION CODE (app/rp).
 
-Mesmas assercoes e mesmos numeros de etapa03/validacao/tests/test_integridade.py;
-nada e importado de etapa03/. Os dados brutos das Etapas 01/02 entram num armazem
-TEMPORARIO pelo importador de producao (fixture `producao`, em conftest.py).
+Same assertions and same numbers as docs/stages/03-data-model/validation/tests/test_integridade.py; nothing is
+imported from there. The raw data of stages 01/02 enters a TEMPORARY store through the production importer (the
+`producao` fixture, in conftest.py).
 """
 import json
 import sqlite3
@@ -23,7 +23,7 @@ def vig(con, e, ex, di, df):
     return consultas.snapshot_em(con, e, ex, di, df)
 
 
-# ---------------------------------------------------------------- camada bruta
+# ---------------------------------------------------------------- raw layer
 def test_camada_bruta_imutavel(producao):
     con = producao["con"]
     for sql in ("UPDATE coleta SET status='falhou' WHERE id=1", "DELETE FROM coleta WHERE id=1",
@@ -38,7 +38,7 @@ def test_hash_de_cada_resposta_confere(producao):
     shas = [s for (s,) in con.execute("SELECT sha256 FROM resposta_bruta")]
     assert len(shas) == 224
     for s in set(shas):
-        banco.corpo(con, s)  # descomprime e confere tamanho + SHA-256
+        banco.corpo(con, s)  # decompresses and checks size + SHA-256
 
 
 def test_regra_nao_se_edita(producao):
@@ -46,7 +46,7 @@ def test_regra_nao_se_edita(producao):
         producao["con"].execute("UPDATE regra SET definicao='x' WHERE codigo='S1'")
 
 
-# ---------------------------------------------------------------- normalizacao
+# ---------------------------------------------------------------- normalization
 def test_paginacao_completa_e_nenhum_registro_perdido(producao):
     con, nid = producao["con"], producao["nid"]
     for cid, status in con.execute("SELECT id, status FROM coleta WHERE tipo='rp_listagem'").fetchall():
@@ -77,7 +77,7 @@ def test_movimentacao_guarda_rotulos_como_vieram(producao):
     assert r == (2026, 1089, 2025, 1)
 
 
-# ---------------------------------------------------------------- derivacao
+# ---------------------------------------------------------------- derivation
 def test_mov_ref_resolve_rotulos_trocados(producao):
     refs = producao["con"].execute(
         "SELECT DISTINCT i.liquidacao_exercicio, i.liquidacao_numero FROM movimentacao_interpretada i "
@@ -154,7 +154,7 @@ def test_anomalias_do_corte_2026(producao):
               did, cid) == (2025, 2410946)
 
 
-# ---------------------------------------------------------------- espelhamento
+# ---------------------------------------------------------------- mirroring
 def test_espelhamento_2026_execucao_so_na_copia(producao):
     con, did = producao["con"], producao["did"]
     lados = dict(con.execute("SELECT lado_com_execucao, COUNT(*) FROM espelhamento_par WHERE derivacao_id=? AND exercicio=2026 GROUP BY 1", (did,)))
@@ -238,7 +238,7 @@ def test_rreo_sem_snapshot_correspondente_e_registrado_nao_inventado(producao):
     assert n == 2 * 2
 
 
-# ---------------------------------------------------------------- snapshots no tempo
+# ---------------------------------------------------------------- snapshots over time
 def test_mesmo_corte_em_datas_diferentes(producao):
     con, nid = producao["con"], producao["nid"]
     hist = consultas.historico(con, 1, 2026, "2026-01-01", "2026-08-31")
@@ -251,7 +251,7 @@ def test_mesmo_corte_em_datas_diferentes(producao):
 
 
 def test_SINTETICO_alteracao_retroativa_preserva_os_dois_retratos(tmp_path):
-    """SINTETICO: dois snapshots do mesmo corte com um valor alterado (entidade ficticia 999)."""
+    """SINTETICO: two snapshots of the same cut-off with one changed value (fictitious entity 999)."""
     cfg = carregar(dados_locais=tmp_path / "l", snapshots=tmp_path / "s", backups=tmp_path / "b")
     con, armazem = banco.abrir(cfg), Armazem(cfg.snapshots)
     col = {"nome": "teste-sintetico", "versao": "1", "sha256_codigo": None}
@@ -278,7 +278,7 @@ def test_SINTETICO_alteracao_retroativa_preserva_os_dois_retratos(tmp_path):
     assert um(con, "SELECT COUNT(*) FROM coleta")[0] == 2
 
 
-# ---------------------------------------------------------------- reprocessamento
+# ---------------------------------------------------------------- reprocessing
 def test_reprocessamento_deterministico(producao):
     con, nid, did = producao["con"], producao["nid"], producao["did"]
     did2 = derivar.derivar(con, nid)

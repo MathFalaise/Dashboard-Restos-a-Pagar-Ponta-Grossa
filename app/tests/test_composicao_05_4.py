@@ -1,14 +1,14 @@
-"""Testes da Subetapa 05.4: composicao do saldo (contrato M-05 a M-08; plano, secao 05.4).
+"""Tests of sub-stage 05.4: balance composition (contract M-05 to M-08; plan, section 05.4).
 
-* cada dimensao fecha SOZINHA com o total do corte, por medida (soma dos grupos - total = 0, sem tolerancia);
-  dimensao que nao fecha nao e exibida, mesmo que as outras fechem;
-* grupos fixos (categoria, faixa, tipo de credor) sempre presentes, com 0 quando vazios; "sem classificacao"
-  sempre presente nas dimensoes orcamentarias;
-* faixa (R3): fecha em valores; a contagem por faixa e por parte e nao e somada; texto sem referencia as colunas do
-  RREO;
-* cada grupo leva a uma lista de empenhos cujo total e o proprio grupo;
-* validacao independente: composicao = recalculo do JSON bruto (recalculo_bruto.py); tela = painel.
-SINTETICO = banco temporario com registros inventados (fixture `mundo`).
+* each dimension adds up ON ITS OWN to the cut-off total, per measure (sum of the groups - total = 0, no tolerance);
+  a dimension that does not add up is not shown, even if the others do;
+* fixed groups (category, band, creditor type) always present, with 0 when empty; "sem classificacao" always present
+  in the budget dimensions;
+* band (R3): adds up in values; the count per band is per part and is not summed; text without reference to the RREO
+  columns;
+* each group leads to a commitment list whose total is the group itself;
+* independent validation: composition = recalculation from the raw JSON (recalculo_bruto.py); screen = panel.
+SINTETICO = temporary database with invented records (fixture `mundo`).
 """
 import re
 import time
@@ -30,7 +30,7 @@ COLUNAS_RREO = re.compile(r"(?i)coluna|RREO|\([abfg]\)")
 
 
 def _chave_bruta(d, g):
-    """Chave do grupo do painel no formato de recalculo_bruto.composicao."""
+    """Key of the panel's group in the format of recalculo_bruto.composicao."""
     if d in ("categoria", "faixa", "tipo_credor"):
         return g["chave"]
     if d == "fonte_recurso":
@@ -39,7 +39,7 @@ def _chave_bruta(d, g):
 
 
 def _confere_com_o_bruto(r, bruto, contexto):
-    """Painel = bruto: total, e em cada dimensao cada grupo (grupo vazio = 0) e nenhum grupo do bruto ausente."""
+    """Panel = raw: total, and in each dimension each group (empty group = 0) and no group of the raw data missing."""
     assert r["total"] == bruto["total"], contexto
     for d in COMPOSICOES:
         x, b = r["dimensoes"][d], bruto["dimensoes"][d]
@@ -55,7 +55,7 @@ def _confere_com_o_bruto(r, bruto, contexto):
 
 
 def _confere_lista(p, ex, df, ent, d, g):
-    """O grupo leva a uma lista cujo total e o proprio grupo (registros, inscricao e S1; na faixa, a parte)."""
+    """The group leads to a list whose total is the group itself (records, inscription and S1; in the band, the part)."""
     e = p.empenhos(ex, df, ent, limite=1, **g["filtro"])
     assert e["total"] == g["registros"], (ex, df, ent, d, g["ident"])
     if g["registros"] == 0:
@@ -72,8 +72,8 @@ def _confere_lista(p, ex, df, ent, d, g):
 # ================================================================== SINTETICO
 @pytest.fixture
 def composicao(mundo):
-    """2025-12-31: entidade 1 com 4 registros (um de cada categoria; um sem classificacao orcamentaria por PF, um
-    sem documento) e entidade 15 sem RP (zero registros). 2025-10-31: so a entidade 1 (Municipio indisponivel)."""
+    """2025-12-31: entity 1 with 4 records (one of each category; one without budget classification by PF, one without
+    a document) and entity 15 without RP (zero records). 2025-10-31: only entity 1 (Municipality unavailable)."""
     mundo.catalogos({1: [2025], 15: [2025]})
     regs = [_reg(1, ano=2024, proc=100.0, aproc=50.0, pagoProc=30.0, fonteRecurso=1000, descricaoFonte="1000-Livres", **ORC),
             _reg(2, ano=2022, aproc=30.0, cnpj="***456***", fonteRecurso=1000, descricaoFonte="1000-Livres", **ORC),
@@ -97,13 +97,13 @@ def test_SINTETICO_fechamento_grupos_fixos_e_sem_classificacao(composicao):
         assert r["total"] == {"registros": 4, "inscricao_total_c": 20000, "saldo_total_c": 16500}
         assert all(x["fecha"] and x["exibida"] for x in r["dimensoes"].values())
         cat = _grupos(r, "categoria")
-        assert list(cat) == list(CATEGORIAS)                                    # todos, na ordem fixa
+        assert list(cat) == list(CATEGORIAS)                                    # all of them, in the fixed order
         assert [(cat[k]["registros"], cat[k]["inscricao_total_c"], cat[k]["saldo_total_c"]) for k in CATEGORIAS] == [
             (1, 2000, 2000), (1, 3000, 3000), (1, 15000, 12000), (1, 0, -500)]
         faixa = _grupos(r, "faixa")
         assert {k: (g["registros"], g["inscricao_total_c"]) for k, g in faixa.items()} == {
             "a": (1, 2000), "b": (1, 10000), "f": (1, 3000), "g": (1, 5000)}
-        assert r["dimensoes"]["faixa"]["medidas"] == ["inscricao_total_c"]          # R3: so valores fecham
+        assert r["dimensoes"]["faixa"]["medidas"] == ["inscricao_total_c"]          # R3: only values add up
         assert not r["dimensoes"]["faixa"]["contagem_aditiva"]
         tipo = _grupos(r, "tipo_credor")
         assert [g["chave"] for g in tipo.values()] == list(TIPOS_CREDOR)
@@ -112,7 +112,7 @@ def test_SINTETICO_fechamento_grupos_fixos_e_sem_classificacao(composicao):
         assert list(orgao) == ["09", "sem"] and orgao["sem"]["rotulo"] == SEM_CLASSIFICACAO
         assert (orgao["sem"]["registros"], orgao["sem"]["inscricao_total_c"], orgao["sem"]["saldo_total_c"]) == (2, 2000, 1500)
         fonte = _grupos(r, "fonte_recurso")
-        assert fonte["sem"]["registros"] == 0 and list(fonte)[-1] == "sem"        # presente mesmo vazio, por ultimo
+        assert fonte["sem"]["registros"] == 0 and list(fonte)[-1] == "sem"        # present even when empty, last
         for x in r["dimensoes"].values():
             assert {m: f["diferenca"] for m, f in x["fechamento"].items()} == dict.fromkeys(x["medidas"], 0)
 
@@ -129,7 +129,7 @@ def test_SINTETICO_igual_ao_recalculo_do_bruto(composicao):
 
 def test_SINTETICO_zero_verdadeiro_e_indisponivel(composicao):
     with composicao.painel() as p:
-        z = p.composicao(2025, "2025-12-31", 15)                                # entidade existente sem RP
+        z = p.composicao(2025, "2025-12-31", 15)                                # existing entity without RP
         assert z["situacao"]["codigo"] == "sem_rp" and z["total"] == dict.fromkeys(MEDIDAS_DA_COMPOSICAO, 0)
         assert [g["registros"] for g in z["dimensoes"]["categoria"]["grupos"]] == [0, 0, 0, 0]
         assert [g["ident"] for g in z["dimensoes"]["elemento"]["grupos"]] == ["sem"]
@@ -140,8 +140,8 @@ def test_SINTETICO_zero_verdadeiro_e_indisponivel(composicao):
 
 
 def test_SINTETICO_dimensao_que_nao_fecha_nao_e_exibida(mundo):
-    """proc negativo nao tem faixa (FAIXA v1 so classifica parte positiva): a faixa nao fecha com a inscricao e sai
-    da tela; as outras dimensoes continuam fechando e exibidas."""
+    """A negative proc has no band (FAIXA v1 only classifies the positive part): the band does not add up to the
+    inscription and leaves the screen; the other dimensions keep adding up and are shown."""
     mundo.catalogos({1: [2025]})
     mundo.listagem(1, 2025, "2025-12-31", [_reg(1, ano=2024, proc=100.0, aproc=50.0),
                                            _reg(2, ano=2023, proc=-10.0, aproc=50.0)], T0)
@@ -153,7 +153,7 @@ def test_SINTETICO_dimensao_que_nao_fecha_nao_e_exibida(mundo):
         assert f["fechamento"]["inscricao_total_c"]["diferenca"] == 1000 and "não é exibida" in f["motivo_nao_exibida"]
         assert all(x["exibida"] for d, x in r["dimensoes"].items() if d != "faixa")
         b = rb.Bruto(mundo.con, mundo.armazem).composicao(2025, "2025-12-31")["composicao"]
-        assert rb.fechamento(b["total"]["inscricao_total_c"],                  # o bruto tambem nao fecha
+        assert rb.fechamento(b["total"]["inscricao_total_c"],                  # the raw data does not add up either
                              [(k, v["inscricao_total_c"]) for k, v in b["dimensoes"]["faixa"].items()])["diferenca_c"] == 1000
     app = Aplicacao(mundo.cfg.banco)
     corpo = ok(app, "/composicao", exercicio=2025, data_final="2025-12-31", dimensao="faixa")
@@ -216,7 +216,7 @@ def test_SINTETICO_tela_valores_links_e_texto_da_faixa(composicao):
             if d != "faixa":
                 assert v[f"comp-{d}-{g['ident']}-s1"] == g["saldo_total_c"]
         assert v[f"comp-{d}-fech-insc"] == 0 and v["comp-total-insc"] == r["total"]["inscricao_total_c"]
-        for href in re.findall(r'href="(/empenhos\?[^"]*)"', corpo):        # cada link: total da lista = grupo
+        for href in re.findall(r'href="(/empenhos\?[^"]*)"', corpo):        # each link: list total = group
             q = dict(parse_qsl(urlsplit(href.replace("&amp;", "&")).query))
             lista = dados(ok(app, "/empenhos", **q))
             assert lista["tot-registros"] > 0
@@ -227,14 +227,14 @@ def test_SINTETICO_tela_valores_links_e_texto_da_faixa(composicao):
     assert TEXTO_FAIXA[1:] in secao                       # "composição dos registros da API segundo a regra FAIXA v1"
     assert not COLUNAS_RREO.search(re.sub(r"<[^>]+>", " ", secao))
     lista = dados(ok(app, "/empenhos", exercicio=2025, data_final="2025-12-31", faixa="b"))
-    assert lista["tot-proc"] == 10000                                             # faixa b = parte processada
+    assert lista["tot-proc"] == 10000                                             # band b = processed part
     corpo = ok(app, "/composicao", exercicio=2025, data_final="2025-10-31")
     assert 'id="indisponivel"' in corpo and not any(k.startswith(("comp-", "fech-")) for k in dados(corpo))
     assert "R$" not in corpo.split('id="indisponivel"')[1]
     assert chamar(app, "/empenhos", exercicio=2025, data_final="2025-12-31", faixa="c")[0] == "400 Bad Request"
 
 
-# ================================================================== armazem real
+# ================================================================== real store
 @pytest.fixture(scope="module")
 def app_real(real):
     return Aplicacao(real["cfg"].banco)
@@ -263,7 +263,7 @@ def test_toda_dimensao_fecha_e_e_igual_ao_bruto_em_todo_corte_disponivel(real, b
                 continue
             _confere_com_o_bruto(r, x["composicao"], (ex, df, ent))
             n += 1
-    assert n >= 22                                                           # todo corte tem ao menos um escopo
+    assert n >= 22                                                           # every cut-off has at least one scope
 
 
 def test_sem_classificacao_presente_com_contagem(real):
@@ -271,7 +271,7 @@ def test_sem_classificacao_presente_com_contagem(real):
     for d in DIMENSOES_ORCAMENTARIAS:
         sem = r["dimensoes"][d]["grupos"][-1]
         assert sem["ident"] == "sem" and sem["rotulo"] == SEM_CLASSIFICACAO
-        assert sem["registros"] == (0 if d == "fonte_recurso" else 16)        # medicao do plano (secao 5.4)
+        assert sem["registros"] == (0 if d == "fonte_recurso" else 16)        # the plan's measurement (section 5.4)
 
 
 def test_mesma_consulta_de_categorias_e_por_dimensao(real):

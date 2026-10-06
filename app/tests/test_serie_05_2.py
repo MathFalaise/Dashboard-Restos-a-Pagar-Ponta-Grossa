@@ -1,10 +1,10 @@
-"""Testes da Subetapa 05.2: evolucao dentro do exercicio (contrato M-01 e M-02; plano, secao 05.2).
+"""Tests of sub-stage 05.2: evolution within the fiscal year (contract M-01 and M-02; plan, section 05.2).
 
-* camada painel: `Painel.evolucao` com o universo completo de cortes (R1), situacao de cada ponto, rotulo do corte
-  posterior a coleta (R4) e diferenca so entre pontos adjacentes com valor;
-* interface: tela /evolucao com grafico SVG (lacuna e lacuna), tabela de valores exatos e tabela de diferencas;
-* validacao independente: a serie do painel = a recalculada do JSON bruto (recalculo_bruto.py), ao centavo.
-SINTETICO = banco temporario com registros inventados (fixture `mundo`).
+* panel layer: `Painel.evolucao` with the full universe of cut-offs (R1), the situation of each point, the label of a
+  cut-off after the collection (R4) and a difference only between adjacent points with a value;
+* interface: /evolucao screen with an SVG chart (a gap is a gap), a table of exact values and a table of differences;
+* independent validation: the panel's series = the one recalculated from the raw JSON (recalculo_bruto.py), to the cent.
+SINTETICO = temporary database with invented records (fixture `mundo`).
 """
 import ast
 import re
@@ -24,8 +24,8 @@ T0 = "2026-09-29T20:00:00-03:00"
 # ================================================================== SINTETICO
 @pytest.fixture
 def serie_sintetica(mundo):
-    """2025: entidade 1 em 3 cortes; entidade 15 sem o corte de 30/04 (lacuna no meio). 2026: corte 31/12 coletado
-    em 29/09/2026 (posterior a coleta) so da entidade 1; entidade 15 existente com zero registros em 31/08/2026."""
+    """2025: entity 1 at 3 cut-offs; entity 15 without the 30/04 cut-off (a gap in the middle). 2026: a 31/12 cut-off
+    collected on 29/09/2026 (after the collection) only for entity 1; entity 15 existing with zero records on 31/08/2026."""
     mundo.catalogos({1: [2025, 2026], 15: [2025, 2026]})
     for df, pago in (("2025-02-28", 10.0), ("2025-04-30", 30.0), ("2025-06-30", 35.0)):
         mundo.listagem(1, 2025, df, [_reg(1, aproc=100.0, pagoAProc=pago, liquidado=pago)], T0)
@@ -46,7 +46,7 @@ def test_SINTETICO_serie_tem_todos_os_cortes_e_lacuna_nunca_vira_zero(serie_sint
         lacuna = s15[1]
         assert not lacuna["tem_valor"] and all(v["valor_c"] is None for v in lacuna["valores"].values())
         assert lacuna["situacao"]["texto"] == SITUACOES_DO_PONTO["sem_coleta"]
-        for x in s15[1:]:                                                     # nunca contra lacuna nem pulando
+        for x in s15[1:]:                                                     # never against a gap nor skipping one
             d = x["diferenca_para_o_anterior"]
             assert d["motivo_indisponivel"] and all(v is None for v in d["valores"].values())
         mun = p.evolucao(2025)["serie"]
@@ -85,7 +85,7 @@ def test_SINTETICO_tela_mostra_lacunas_e_o_grafico_e_conforme(serie_sintetica):
     status, cab, corpo = chamar(app, "/evolucao", exercicio=2025, entidade=15)
     assert status == "200 OK" and "default-src 'none'" in cab["Content-Security-Policy"]
     assert 'id="lacuna-2025-04-30"' in corpo and 'id="dif-lacuna-2025-04-30"' in corpo
-    assert 'id="dif-lacuna-2025-06-30"' in corpo and "dif-2025-06-30-" not in corpo      # nao pula a lacuna
+    assert 'id="dif-lacuna-2025-06-30"' in corpo and "dif-2025-06-30-" not in corpo      # does not skip the gap
     linha = re.search(r'id="lacuna-2025-04-30".*?</tr>', corpo, re.S).group(0)
     assert "R$" not in linha and "sem valor" in linha
     svg = re.search(r"<svg.*?</svg>", corpo, re.S).group(0)
@@ -95,7 +95,7 @@ def test_SINTETICO_tela_mostra_lacunas_e_o_grafico_e_conforme(serie_sintetica):
     assert re.search(r'role="img" aria-labelledby="graf-s1-t graf-s1-d"', svg)
     zero = ok(app, "/evolucao", exercicio=2026, entidade=15)
     svg0 = re.search(r"<svg.*?</svg>", zero, re.S).group(0)
-    assert svg0.count('class="zero"') == 1 and svg0.count('class="lacuna"') == 1   # zero desenhado como zero
+    assert svg0.count('class="zero"') == 1 and svg0.count('class="lacuna"') == 1   # zero drawn as zero
     assert dados(zero)["ser-2026-08-31-saldo_total"] == 0
     assert ROTULO_POSTERIOR_A_COLETA in ok(app, "/evolucao", exercicio=2026, entidade=1)
 
@@ -110,7 +110,7 @@ def test_grafico_nao_faz_aritmetica_de_valores_monetarios():
         assert not (isinstance(no, ast.Call) and getattr(no.func, "id", None) == "sum"), no.lineno
 
 
-# ================================================================== armazem real
+# ================================================================== real store
 @pytest.fixture(scope="module")
 def app_real(real):
     return Aplicacao(real["cfg"].banco)
@@ -132,7 +132,7 @@ def test_serie_do_painel_igual_a_recalculada_do_bruto(real, bruto_real, ex):
             assert x["situacao"]["codigo"] == e["situacao"] and x["tem_valor"] == e["tem_valor"], (ex, ent, x["data_final"])
             valores = {k: v["valor_c"] for k, v in x["valores"].items()}
             assert valores == (e["valores"] or dict.fromkeys(valores)), (ex, ent, x["data_final"])
-            if anterior is not None:                  # diferenca recalculada do bruto, de forma independente
+            if anterior is not None:                  # difference recalculated from the raw data, independently
                 d = x["diferenca_para_o_anterior"]["valores"]
                 for k in INDICADORES_DA_SERIE:
                     ant = anterior["valores"] and anterior["valores"][k]
@@ -156,7 +156,8 @@ def test_lacunas_reais_de_2026(real):
 
 
 def test_inscricao_estavel_dentro_do_exercicio(real):
-    """Criterio de parada da 05.2: a inscricao nao varia entre cortes do mesmo exercicio (seria mudanca retroativa)."""
+    """05.2 stopping criterion: the inscription does not vary between cut-offs of the same fiscal year (that would be a
+    retroactive change)."""
     p = real["painel"]
     for ex in (2025, 2026):
         for ent in [None] + [e["entidade"] for e in p.entidades()["entidades"]]:
@@ -169,7 +170,7 @@ def test_tela_igual_ao_painel(real, app_real, ex, ent):
     serie = real["painel"].evolucao(ex, ent)["serie"]
     corpo = ok(app_real, "/evolucao", exercicio=ex, entidade=ent)
     v = dados(corpo)
-    assert corpo.count("<tr><td><a href=\"/?") == len(serie)                     # uma linha por corte do universo
+    assert corpo.count("<tr><td><a href=\"/?") == len(serie)                     # one row per cut-off of the universe
     svg = re.search(r"<svg.*?</svg>", corpo, re.S).group(0)
     assert svg.count('class="ponto"') == len(serie) and svg.count('class="lacuna"') == sum(1 for x in serie
                                                                                           if not x["tem_valor"])
@@ -194,7 +195,7 @@ def test_metodologia_e_navegacao(app_real):
     assert SITUACOES_DO_PONTO["municipio_indisponivel"] in ok(app_real, "/metodologia")
     resumo = ok(app_real, "/", exercicio=2025, data_final="2025-12-31")
     assert 'href="/evolucao?exercicio=2025"' in resumo
-    assert '<a href="/evolucao"' in resumo                                         # item do menu
+    assert '<a href="/evolucao"' in resumo                                         # menu item
 
 
 def test_desempenho_da_tela_de_evolucao(app_real):

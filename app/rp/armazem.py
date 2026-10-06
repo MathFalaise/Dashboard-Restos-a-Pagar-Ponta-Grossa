@@ -1,22 +1,21 @@
-"""Armazem de snapshots em disco: a fonte bruta da qual o banco e reconstruivel.
+"""On-disk snapshot store: the raw source the database can be rebuilt from.
 
-Estrutura (raiz = cfg.snapshots):
-  objetos/<ab>/<sha256>.zlib        bytes da resposta, comprimidos; nome = sha256 do ORIGINAL
-  coletas/<AAAA>/<MM>/<carimbo>_<tipo>_<uid8>.json   manifesto de um snapshot
+Layout (root = cfg.snapshots):
+  objetos/<ab>/<sha256>.zlib        response bytes, compressed; name = sha256 of the ORIGINAL
+  coletas/<YYYY>/<MM>/<stamp>_<type>_<uid8>.json   manifest of one snapshot
 
-Regras:
-  * objeto e manifesto sao gravados uma unica vez (arquivo temporario + rename);
-  * manifesto existente NUNCA e sobrescrito, nem por duas gravacoes simultaneas: a publicacao do
-    arquivo temporario e exclusiva (falha se o destino ja existir);
-  * bytes iguais viram um so objeto, referenciado por quantos snapshots precisarem.
-    Isso e economia de armazenamento, nao deduplicacao de registros: cada snapshot
-    continua existindo, com o proprio manifesto.
+Rules:
+  * object and manifest are written only once (temporary file + rename);
+  * an existing manifest is NEVER overwritten, not even by two simultaneous writes: publishing the temporary file
+    is exclusive (it fails if the target already exists);
+  * identical bytes become a single object, referenced by as many snapshots as needed.
+    This saves storage, it does not deduplicate records: every snapshot still exists, with its own manifest.
 
-Seguranca:
-  * todo hash usado para montar caminho e validado (64 hexadecimais): um manifesto adulterado
-    nao consegue apontar para fora da pasta `objetos`;
-  * a descompressao tem teto (tamanho esperado, ou LIMITE_OBJETO): um objeto adulterado nao
-    consegue esgotar a memoria (bomba de descompressao).
+Security:
+  * every hash used to build a path is validated (64 hexadecimal characters): a tampered manifest cannot point
+    outside the `objetos` folder;
+  * decompression has a ceiling (expected size, or LIMITE_OBJETO): a tampered object cannot exhaust memory
+    (decompression bomb).
 """
 import json
 import os
@@ -28,9 +27,9 @@ from . import sha256, sha256_valido
 
 FORMATO = "rp-snapshot/1"
 FORMATO_EVIDENCIA = "rp-evidencia/1"
-# tipos aceitos pela tabela evidencia_externa -> nome usado no arquivo do manifesto
+# types accepted by the evidencia_externa table -> name used in the manifest file
 TIPOS_EVIDENCIA = {"e-SIC": "esic", "norma": "norma", "nota": "nota", "outro": "outro"}
-LIMITE_OBJETO = 256 * 1024 * 1024      # teto de descompressao quando o tamanho esperado nao e conhecido
+LIMITE_OBJETO = 256 * 1024 * 1024      # decompression ceiling when the expected size is unknown
 _TIPO = re.compile(r"[a-z_]+")
 _UID = re.compile(r"[0-9a-f]{32}")
 _ISO = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
@@ -49,8 +48,8 @@ class ManifestoInvalido(ValueError):
 
 
 def descomprimir(comprimido, tamanho=None):
-    """zlib com teto de saida. Para objeto integro o resultado e identico a zlib.decompress;
-    objeto truncado, com tamanho diferente do esperado ou maior que o teto vira ObjetoCorrompido."""
+    """zlib with an output ceiling. For an intact object the result is identical to zlib.decompress;
+    a truncated object, or one whose size differs from the expected or exceeds the ceiling, raises ObjetoCorrompido."""
     limite = LIMITE_OBJETO if tamanho is None else tamanho
     d = zlib.decompressobj()
     try:
@@ -67,11 +66,11 @@ def descomprimir(comprimido, tamanho=None):
 
 
 def _publicar_sem_sobrescrever(tmp, destino):
-    """Move `tmp` para `destino` de forma atomica, falhando (FileExistsError) se o destino ja existir."""
+    """Atomically moves `tmp` to `destino`, failing (FileExistsError) if the target already exists."""
     if os.name == "nt":
-        os.rename(tmp, destino)          # no Windows, rename falha se o destino existir
+        os.rename(tmp, destino)          # on Windows, rename fails if the target exists
     else:
-        os.link(tmp, destino)            # no POSIX, link falha se o destino existir
+        os.link(tmp, destino)            # on POSIX, link fails if the target exists
         os.unlink(tmp)
 
 
@@ -79,7 +78,7 @@ class Armazem:
     def __init__(self, raiz):
         self.raiz = Path(raiz)
 
-    # ------------------------------------------------------------ objetos
+    # ------------------------------------------------------------ objects
     def caminho_objeto(self, h):
         if not sha256_valido(h):
             raise ObjetoCorrompido(f"hash invalido: {h!r}")
@@ -89,16 +88,16 @@ class Armazem:
         h = sha256(corpo)
         destino = self.caminho_objeto(h)
         if destino.exists():
-            self.ler_objeto(h, len(corpo))  # confere o que ja estava la
+            self.ler_objeto(h, len(corpo))  # checks what was already there
             return h
         destino.parent.mkdir(parents=True, exist_ok=True)
         tmp = destino.with_name(destino.name + f".tmp{os.getpid()}")
         try:
             tmp.write_bytes(zlib.compress(corpo, 6))
-            os.replace(tmp, destino)     # objeto e enderecado pelo conteudo: substituir por bytes iguais e inocuo
+            os.replace(tmp, destino)     # objects are content-addressed: replacing with identical bytes is harmless
         finally:
             tmp.unlink(missing_ok=True)
-        self.ler_objeto(h, len(corpo))  # confere a gravacao
+        self.ler_objeto(h, len(corpo))  # checks the write
         return h
 
     def ler_comprimido(self, h):
@@ -117,7 +116,7 @@ class Armazem:
             raise ObjetoCorrompido(f"{h}: conteúdo não confere com o hash")
         return corpo
 
-    # ------------------------------------------------------------ manifestos
+    # ------------------------------------------------------------ manifests
     def gravar_manifesto(self, m):
         tipo, uid, quando = m.get("tipo"), m.get("snapshot_uid"), m.get("coletada_em")
         if not (isinstance(tipo, str) and _TIPO.fullmatch(tipo) and isinstance(uid, str) and _UID.fullmatch(uid)
@@ -128,7 +127,7 @@ class Armazem:
         return self._gravar_json_uma_vez(rel, m)
 
     def gravar_manifesto_evidencia(self, m):
-        """Manifesto de uma evidencia externa (e-SIC, norma, nota...), em evidencias/AAAA/MM/. Nunca sobrescrito."""
+        """Manifest of an external evidence (e-SIC, regulation, note...), in evidencias/YYYY/MM/. Never overwritten."""
         tipo, uid, quando = m.get("tipo"), m.get("evidencia_uid"), m.get("registrada_em")
         if not (tipo in TIPOS_EVIDENCIA and isinstance(uid, str) and _UID.fullmatch(uid)
                 and isinstance(quando, str) and _ISO.match(quando) and sha256_valido(m.get("sha256"))):
@@ -160,7 +159,7 @@ class Armazem:
         return json.loads(p.read_text(encoding="utf-8"))
 
     def manifestos_e_erros(self):
-        """(itens, erros): itens = (caminho relativo, manifesto) em ordem de coleta; erros = arquivos ilegiveis."""
+        """(items, errors): items = (relative path, manifest) in collection order; errors = unreadable files."""
         base = self.raiz / "coletas"
         itens, erros = [], []
         for p in base.rglob("*.json") if base.exists() else []:
@@ -176,14 +175,14 @@ class Armazem:
         return [(rel, m) for rel, m, _ in itens], erros
 
     def manifestos(self):
-        """(caminho relativo, manifesto) em ordem de coleta. Manifesto ilegivel interrompe (ManifestoInvalido)."""
+        """(relative path, manifest) in collection order. An unreadable manifest stops it (ManifestoInvalido)."""
         itens, erros = self.manifestos_e_erros()
         if erros:
             raise ManifestoInvalido("; ".join(erros))
         return itens
 
     def evidencias_e_erros(self):
-        """(itens, erros) dos manifestos de evidencia externa, em ordem de registro."""
+        """(items, errors) of the external evidence manifests, in recording order."""
         base = self.raiz / "evidencias"
         itens, erros = [], []
         for p in base.rglob("*.json") if base.exists() else []:
@@ -199,16 +198,16 @@ class Armazem:
         return [(rel, m) for rel, m, _ in itens], erros
 
     def evidencias(self):
-        """(caminho relativo, manifesto) das evidencias externas. Manifesto ilegivel interrompe (ManifestoInvalido)."""
+        """(relative path, manifest) of the external evidence. An unreadable manifest stops it (ManifestoInvalido)."""
         itens, erros = self.evidencias_e_erros()
         if erros:
             raise ManifestoInvalido("; ".join(erros))
         return itens
 
     def verificar(self):
-        """Problemas encontrados (lista vazia = integro). Alem de manifestos e objetos, relata objeto que nenhum
-        manifesto referencia e arquivo temporario abandonado: os dois sao o rastro de uma gravacao interrompida
-        (objetos sao gravados antes do manifesto) e nunca sao apagados automaticamente (auditoria ARM-01)."""
+        """Problems found (empty list = intact). Besides manifests and objects, reports objects no manifest
+        references and abandoned temporary files: both are traces of an interrupted write (objects are written
+        before the manifest) and are never deleted automatically (audit ARM-01)."""
         itens, problemas = self.manifestos_e_erros()
         evid, erros_evid = self.evidencias_e_erros()
         problemas += erros_evid
