@@ -1,5 +1,6 @@
 # Trava das versoes EXATAS do ambiente que produziu e homologou os resultados (auditoria DEP-01), agora COM HASHES
-# (revisao critica, decisao D5 de 06/10/2026). Python 3.14.3; nenhuma versao foi atualizada.
+# (revisao critica, decisao D5 de 06/10/2026). Python 3.14.3. Unica versao atualizada: urllib3 2.7.0 -> 2.8.0
+# (06/10/2026, autorizada pelo responsavel), que corrige PYSEC-2026-4175, -4176 e -4177 acusadas pelo pip-audit.
 # requirements.txt fixa so as dependencias diretas; as transitivas (urllib3, idna, charset-normalizer, certifi)
 # variavam entre instalacoes. Instalar exatamente este ambiente: pip install -r requirements-lock.txt
 # Com hashes, o pip passa a exigir que CADA arquivo baixado tenha um dos SHA-256 abaixo (--require-hashes implicito).
@@ -10,8 +11,8 @@
 # execucao
 requests==2.34.2 \
     --hash=sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0
-urllib3==2.7.0 \
-    --hash=sha256:9fb4c81ebbb1ce9531cce37674bbc6f1360472bc18ca9a553ede278ef7276897
+urllib3==2.8.0 \
+    --hash=sha256:0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3
 idna==3.19 \
     --hash=sha256:815e7be7a7806d54abb586dc943addc79e8b2ee16915059658cbeff4b1b43bf4
 charset-normalizer==3.5.1 \
