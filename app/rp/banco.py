@@ -17,6 +17,7 @@ SHA-256 da estrutura (sqlite_master sem comentarios nem espacos: comentario e es
 ativo foi criado antes de os comentarios do esquema.sql perderem os acentos, e a estrutura e a mesma). Um teste
 exige que o esquema montado pelo codigo tenha a impressao da sua versao: mudou a estrutura, tem de mudar a versao.
 """
+import gzip
 import hashlib
 import json
 import logging
@@ -309,8 +310,9 @@ def backup(con, cfg, motivo, operacional=False, manter=3):
 
     * padrao (antes de mudanca estrutural, importacao, manual): `backups/`, NUNCA apagado automaticamente;
     * operacional (antes de apagar uma execucao, que e reprocessavel do bruto): pasta local
-      `backups_operacionais/`, fora do OneDrive, mantendo so os `manter` mais recentes desse tipo.
-      Arquivo listado em `backups_operacionais/PRESERVAR.txt` (um nome por linha) nunca e apagado.
+      `backups_operacionais/`, fora do OneDrive. Os `manter` mais recentes desse tipo ficam como estao; os mais
+      antigos sao COMPRIMIDOS (<nome>.gz, conferido byte a byte), nunca apagados (revisao critica, D6).
+      Arquivo listado em `backups_operacionais/PRESERVAR.txt` (um nome por linha) nao entra na retencao.
     O nome nunca repete o de um backup existente (sufixo -2, -3... no mesmo segundo)."""
     carimbo = datetime.now(BRT).strftime("%Y%m%d-%H%M%S")
     motivo = _MOTIVO.sub("-", str(motivo)).strip(".-") or "sem-motivo"
@@ -334,12 +336,86 @@ def backup(con, cfg, motivo, operacional=False, manter=3):
         tmp.unlink(missing_ok=True)
     log.info("backup gravado em %s", destino)
     if operacional:
-        lista = pasta / "PRESERVAR.txt"
-        preservar = set(lista.read_text(encoding="utf-8").split()) if lista.exists() else set()
-        for velho in sorted(p for p in pasta.glob("*.sqlite") if p.name not in preservar)[:-manter]:
-            velho.unlink()
-            log.info("backup operacional antigo removido (retenção %d): %s", manter, velho.name)
+        for velho in _fora_da_retencao(pasta, manter):
+            comprimido = comprimir_backup(velho)
+            log.info("backup operacional antigo comprimido (retenção %d): %s", manter, comprimido.name)
     return destino
+
+
+def _na_retencao(pasta):
+    """Backups operacionais .sqlite sujeitos a retencao (sem os listados em PRESERVAR.txt), do mais antigo ao mais
+    novo (o nome comeca pelo carimbo)."""
+    lista = pasta / "PRESERVAR.txt"
+    preservar = set(lista.read_text(encoding="utf-8").split()) if lista.exists() else set()
+    return sorted(p for p in pasta.glob("*.sqlite") if p.name not in preservar)
+
+
+def _fora_da_retencao(pasta, manter):
+    """Os da retencao alem dos `manter` mais recentes."""
+    return _na_retencao(pasta)[:-manter] if manter else _na_retencao(pasta)
+
+
+def comprimir_backup(arquivo, bloco=1 << 20):
+    """Comprime um backup em <nome>.gz SEM perder nada (revisao critica, D6): grava num temporario, confere que a
+    descompressao devolve os mesmos bytes (SHA-256) e so entao remove o original. Recusa sobrescrever um .gz
+    existente. Para voltar ao arquivo original: python -m gzip -d <nome>.gz"""
+    arquivo = Path(arquivo)
+    destino = arquivo.with_name(arquivo.name + ".gz")
+    if destino.exists():
+        raise FileExistsError(f"{destino} já existe: nada foi comprimido")
+    tmp = arquivo.with_name(f"{destino.name}.tmp{os.getpid()}")
+    h = hashlib.sha256()
+    try:
+        with open(arquivo, "rb") as ent, gzip.open(tmp, "wb", compresslevel=6) as sai:
+            while b := ent.read(bloco):
+                h.update(b)
+                sai.write(b)
+        conferido = hashlib.sha256()
+        with gzip.open(tmp, "rb") as ent:
+            while b := ent.read(bloco):
+                conferido.update(b)
+        if conferido.hexdigest() != h.hexdigest():
+            raise ObjetoCorrompido(f"{tmp}: a descompressão não devolve os bytes de {arquivo.name}")
+        from .armazem import _publicar_sem_sobrescrever
+        _publicar_sem_sobrescrever(tmp, destino)
+    finally:
+        tmp.unlink(missing_ok=True)
+    arquivo.unlink()
+    return destino
+
+
+def comprimir_backups_operacionais(cfg, manter=3, simular=True):
+    """Comprime os backups operacionais fora da janela dos `manter` mais recentes, INCLUSIVE os preservados
+    (PRESERVAR.txt protege contra apagar; comprimir nao apaga nada). Os mais recentes ficam como estao, prontos para
+    restaurar. `simular` so lista."""
+    pasta = cfg.backups_operacionais
+    if not pasta.exists():
+        return []
+    recentes = set(_na_retencao(pasta)[-manter:]) if manter else set()
+    saida = []
+    for arq in sorted(pasta.glob("*.sqlite")):
+        if arq in recentes:
+            continue
+        antes = arq.stat().st_size
+        if simular:
+            saida.append({"arquivo": arq.name, "bytes": antes, "simulado": True})
+            continue
+        gz = comprimir_backup(arq)
+        saida.append({"arquivo": gz.name, "bytes_antes": antes, "bytes_depois": gz.stat().st_size})
+        log.info("backup operacional comprimido: %s (%d -> %d bytes)", gz.name, antes, gz.stat().st_size)
+    return saida
+
+
+def espaco(cfg):
+    """Bytes ocupados por pasta (banco ativo, armazem, backups, backups operacionais, logs): para acompanhar o
+    crescimento (revisao critica, D6)."""
+    def total(p):
+        p = Path(p)
+        if p.is_file():
+            return p.stat().st_size
+        return sum(f.stat().st_size for f in p.rglob("*") if f.is_file()) if p.exists() else 0
+    return {"banco": total(cfg.banco), "armazem": total(cfg.snapshots), "backups": total(cfg.backups),
+            "backups_operacionais": total(cfg.backups_operacionais), "logs": total(cfg.logs)}
 
 
 def compactar(con, caminho):
