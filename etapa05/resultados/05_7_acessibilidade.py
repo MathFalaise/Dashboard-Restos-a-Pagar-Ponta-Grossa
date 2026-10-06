@@ -8,7 +8,8 @@ Por WSGI (sem servidor), confere em cada pagina:
   * toda <table> com <thead> e todo <th> do cabecalho com scope="col"; todo <a> com texto; todo <details> com <summary>;
   * todo <svg> com role="img" e nome acessivel (aria-label, ou aria-labelledby com ids que existem na pagina);
   * nenhum atributo style, <style> ou <script>;
-  * nenhum href/src externo (http, https ou //): a interface funciona sem rede.
+  * nenhum href/src externo (http, https ou //): a interface funciona sem rede. Excecao desde 06/10/2026: link <a>
+    para o portal oficial (servicos.pontagrossa.pr.gov.br/portaltransparencia...), com rel="external" ('onde conferir').
 """
 import argparse
 import json
@@ -23,6 +24,9 @@ sys.path.insert(0, str(RAIZ / "app"))
 
 from rp.config import carregar  # noqa: E402
 from rp.interface.aplicacao import Aplicacao  # noqa: E402
+from rp.interface.portal import DOMINIO  # noqa: E402
+
+PORTAL = DOMINIO + "/portaltransparencia"
 
 PAGINAS = [
     ("/", {}), ("/", dict(exercicio=2026, data_final="2026-03-31")), ("/", dict(exercicio=2025, data_final="2025-12-31", entidade=15)),
@@ -65,7 +69,9 @@ class Leitor(HTMLParser):
             self.problemas.append(f"<{tag}>")
         for k in ("href", "src"):
             v = a.get(k) or ""
-            if v.startswith(("http:", "https:", "//")):
+            # desde 06/10/2026: so link (nunca src) para o portal oficial, marcado rel="external" ("onde conferir")
+            portal = (k == "href" and tag == "a" and v.startswith(PORTAL) and "external" in (a.get("rel") or ""))
+            if v.startswith(("http:", "https:", "//")) and not portal:
                 self.problemas.append(f"recurso externo: {v}")
         if a.get("id"):
             self.ids[a["id"]] += 1
