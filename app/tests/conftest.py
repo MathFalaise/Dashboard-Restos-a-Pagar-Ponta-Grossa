@@ -16,10 +16,10 @@ from rp.coletor import EP_ENT, EP_EXE, EP_RP, Coletor  # noqa: E402
 from rp.config import carregar  # noqa: E402
 from rp.http import Cliente  # noqa: E402
 
-# Fixtures que leem dados REAIS: `real` monta um banco a partir do armazem ../snapshots e `producao`, a partir do bruto
-# das Etapas 01/02. Os dois tem dados de credores (nome, CNPJ, CPF mascarado). Todo teste que usa uma delas, direta ou
-# indiretamente, recebe o marcador `dados_reais` (revisao critica, item 34): `-m "not dados_reais"` roda so o que e
-# sintetico, num ambiente sem o bruto.
+# Fixtures that read REAL data: `real` builds a database from the store data/snapshots and `producao`, from the raw
+# data of stages 01/02. Both hold creditor data (name, CNPJ, masked CPF). Every test that uses one of them, directly or
+# indirectly, gets the `dados_reais` marker (critical review, item 34): `-m "not dados_reais"` runs only what is
+# synthetic, in an environment without the raw data.
 FIXTURES_DE_DADOS_REAIS = {"real", "producao"}
 
 
@@ -35,7 +35,7 @@ def pytest_collection_modifyitems(items):
 
 
 class Relogio:
-    """Relogio falso: dormir avanca o tempo e fica registrado."""
+    """Fake clock: sleeping moves time forward and gets recorded."""
     def __init__(self):
         self.t = 1000.0
         self.dormiu = []
@@ -49,8 +49,8 @@ class Relogio:
 
 
 class Portal:
-    """Transporte falso. `rotas[(caminho, pagina)]` = lista de respostas consumidas em ordem;
-    cada resposta e (status, corpo_bytes) ou uma excecao a lancar."""
+    """Fake transport. `rotas[(path, page)]` = list of responses consumed in order;
+    each response is (status, body_bytes) or an exception to raise."""
     def __init__(self):
         self.rotas = {}
         self.chamadas = []
@@ -78,9 +78,9 @@ RAIZ_PROJETO = Path(__file__).resolve().parents[2]
 
 
 def montar_producao(base, armazem_de=None, so_homologados=False):
-    """Armazem + banco TEMPORARIOS de producao com os dados brutos das Etapas 01/02, processados
-    pelo pipeline de producao. `armazem_de`: reaproveita um armazem existente (reconstrucao).
-    `so_homologados`: registra so os snapshots da base homologada (ver BASE_HOMOLOGADA_ATE)."""
+    """TEMPORARY production store + database with the raw data of stages 01/02, processed by the production pipeline.
+    `armazem_de`: reuses an existing store (rebuild).
+    `so_homologados`: records only the snapshots of the homologated base (see BASE_HOMOLOGADA_ATE)."""
     from rp import derivar, importar, normalizar
     cfg = carregar(dados_locais=base / "local", snapshots=armazem_de or base / "snapshots", backups=base / "backups")
     con = banco.abrir(cfg)
@@ -117,32 +117,32 @@ def ambiente(tmp_path):
             "coletor": Coletor(cfg, con, armazem, cliente)}
 
 
-# ------------------------------------------------------------------ banco montado a partir do ARMAZEM REAL
+# ------------------------------------------------------------------ database built from the REAL store
 ARMAZEM_REAL = RAIZ_PROJETO / "data" / "snapshots"
 EM_2909 = "2026-09-29T23:59:59-03:00"
-# Base HOMOLOGADA (Etapas 01-05): os 466 snapshots coletados de 29/09 19h56 a 30/09 01h27 de 2026. Uma carga nova
-# (D1) so ACRESCENTA snapshots ao armazem; os testes de casos reais continuam provando a base homologada, e a carga
-# nova e validada pelos portoes (procedimento da D1, etapa05/CONSOLIDACAO_POS_05.md, secao 8).
+# HOMOLOGATED base (stages 01-05): the 466 snapshots collected from 29/09 19:56 to 30/09 01:27 of 2026. A new load
+# (D1) only ADDS snapshots to the store; the real-case tests keep proving the homologated base, and the new load is
+# validated by the gates (D1 procedure, docs/stages/05-analysis/POST_05_CONSOLIDATION.md, section 8).
 BASE_HOMOLOGADA_ATE = "2026-09-30T01:27:56-03:00"
 SNAPSHOTS_HOMOLOGADOS = 466
 
 
 def manifestos_homologados(armazem):
-    """(caminho, manifesto) dos snapshots da base homologada: coletados ate BASE_HOMOLOGADA_ATE."""
+    """(path, manifest) of the snapshots of the homologated base: collected up to BASE_HOMOLOGADA_ATE."""
     limite = datetime.fromisoformat(BASE_HOMOLOGADA_ATE)
     return [(rel, m) for rel, m in armazem.manifestos() if datetime.fromisoformat(m["coletada_em"]) <= limite]
 
 
 def retrato_do_armazem():
-    """(caminho, tamanho, sha256) de todo arquivo do armazem real."""
+    """(path, size, sha256) of every file in the real store."""
     return sorted((p.relative_to(ARMAZEM_REAL).as_posix(), p.stat().st_size, hashlib.sha256(p.read_bytes()).hexdigest())
                   for p in ARMAZEM_REAL.rglob("*") if p.is_file())
 
 
 @pytest.fixture(scope="session")
 def real(tmp_path_factory):
-    """Banco TEMPORARIO montado so com leitura do armazem real (os 466 snapshots da base homologada) -> normalizar ->
-    derivar atual e 'como estava em' 29/09/2026. Compartilhado pelos testes de casos reais."""
+    """TEMPORARY database built by only reading the real store (the 466 snapshots of the homologated base) -> normalize
+    -> derive current and 'as it was on' 29/09/2026. Shared by the real-case tests."""
     from rp import derivar
     from rp.painel import Painel
     antes = retrato_do_armazem()
@@ -156,12 +156,12 @@ def real(tmp_path_factory):
     m["con"].close()
 
 
-# ------------------------------------------------------------------ mundo SINTETICO (registros inventados)
+# ------------------------------------------------------------------ SYNTHETIC world (invented records)
 COLETOR_SINTETICO = {"nome": "teste", "versao": "1", "sha256_codigo": None}
 
 
 def registro_sintetico(emp, ano=2024, entidade=1, **kw):
-    """Um item de content[] da listagem de RP, com valores inventados."""
+    """An item of the RP listing's content[], with invented values."""
     from rp import normalizar
     r = {k: 0 for k in normalizar.DINHEIRO}
     r.update({"entidade": entidade, "anoempenho": ano, "empenho": emp, "empenhoExercicio": f"{emp}/{ano}",
@@ -172,7 +172,7 @@ def registro_sintetico(emp, ano=2024, entidade=1, **kw):
 
 
 class Mundo:
-    """Banco e armazem temporarios com catalogos e listagens inventados."""
+    """Temporary database and store with invented catalogs and listings."""
 
     def __init__(self, tmp_path):
         self.cfg = carregar(dados_locais=tmp_path / "l", snapshots=tmp_path / "s", backups=tmp_path / "b")
@@ -186,7 +186,7 @@ class Mundo:
                                respostas=[{"url": "sintetico", "http_status": 200, "corpo": json.dumps(corpo).encode()}])
 
     def catalogos(self, exercicios, quando="2026-09-29T10:00:00-03:00"):
-        """`exercicios` = {entidade: [exercicios oficiais]}."""
+        """`exercicios` = {entity: [official fiscal years]}."""
         self._snap("entidades", EP_ENT, {}, [{"id": e, "nome": f"ENTIDADE {e}", "cnpj": None, "tipo": "A"}
                                              for e in exercicios], quando)
         for e, anos in exercicios.items():
@@ -216,7 +216,7 @@ def mundo(tmp_path):
     m.con.close()
 
 
-# ------------------------------------------------------------------ chamada da interface (WSGI, sem servidor)
+# ------------------------------------------------------------------ interface call (WSGI, no server)
 def chamar(app, caminho, metodo="GET", **params):
     env = {}
     setup_testing_defaults(env)
@@ -231,7 +231,7 @@ def chamar(app, caminho, metodo="GET", **params):
 
 
 class _Dados(HTMLParser):
-    """Valores <data value> (centavos) com id, na ordem em que aparecem."""
+    """<data value> values (cents) with an id, in the order they appear."""
 
     def __init__(self):
         super().__init__()
@@ -258,8 +258,8 @@ def ok(app, caminho, **params):
 
 
 def links_permitidos(corpo):
-    """Todo href e interno ('/' ou '#') ou, desde 06/10/2026 ('onde conferir no Portal'), link para o portal oficial
-    marcado rel="external". Nenhum recurso externo e carregado: isso e conferido a parte (sem src)."""
+    """Every href is internal ('/' or '#') or, since 06/10/2026 ('onde conferir no Portal'), a link to the official
+    portal marked rel="external". No external resource is loaded: that is checked separately (no src)."""
     import re
     from rp.interface import portal
     for tag in re.findall(r"<a\s[^>]*>", corpo):

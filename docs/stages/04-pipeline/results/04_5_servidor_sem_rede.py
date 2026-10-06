@@ -1,5 +1,5 @@
-"""Sobe a interface (python -m rp interface) num processo em que toda conexao ou resolucao de nome para fora
-desta maquina e recusada e anotada em tentativas_de_rede.txt. Simula o computador sem internet."""
+"""Starts the interface (python -m rp interface) in a process where every connection or name resolution outside
+this machine is refused and logged in tentativas_de_rede.txt. Simulates the computer without internet."""
 import socket
 import sys
 from pathlib import Path

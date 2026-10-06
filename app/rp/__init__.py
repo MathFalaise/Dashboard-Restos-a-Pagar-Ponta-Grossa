@@ -1,4 +1,4 @@
-"""Restos a Pagar de Ponta Grossa - coletor e pipeline (codigo de producao)."""
+"""Restos a Pagar of Ponta Grossa - collector and pipeline (production code)."""
 import hashlib
 import re
 from datetime import datetime, timedelta, timezone
@@ -6,7 +6,7 @@ from pathlib import Path
 
 VERSAO = "0.4.0"
 
-# Brasil sem horario de verao desde 2019: deslocamento fixo evita depender de tzdata no Windows.
+# Brazil has had no daylight saving time since 2019: a fixed offset avoids depending on tzdata on Windows.
 BRT = timezone(timedelta(hours=-3), "BRT")
 
 _HEX64 = re.compile(r"[0-9a-f]{64}")
@@ -21,9 +21,9 @@ class DataInvalida(ValueError):
 
 
 def instante(em):
-    """'AAAA-MM-DD' (fim do dia) ou data/hora ISO -> ISO com fuso de Brasilia, no formato de coleta.coletada_em.
-    A vigencia 'como estava em' e comparada com coletada_em COMO TEXTO (derivacao e camada painel), por isso todo
-    instante passa por aqui: mesmo instante = mesmo texto (auditoria CLI-01)."""
+    """'YYYY-MM-DD' (end of day) or ISO date/time -> ISO with the Brasilia offset, in the format of coleta.coletada_em.
+    The 'as it was on' validity is compared with coletada_em AS TEXT (derivation and panel layer), so every instant
+    goes through here: same instant = same text (audit CLI-01)."""
     if em is None:
         return None
     try:
@@ -41,12 +41,12 @@ def sha256(b):
 
 
 def sha256_valido(h):
-    """True se `h` e um SHA-256 em hexadecimal minusculo (64 caracteres), e nada alem disso."""
+    """True if `h` is a lowercase hexadecimal SHA-256 (64 characters), and nothing else."""
     return isinstance(h, str) and _HEX64.fullmatch(h) is not None
 
 
 def hash_do_codigo():
-    """Hash dos fontes do pacote: fixa o que a versao do coletor quer dizer."""
+    """Hash of the package sources: pins down what the collector version means."""
     h = hashlib.sha256()
     for p in sorted(Path(__file__).parent.glob("*.py")) + [Path(__file__).parent / "esquema.sql"]:
         h.update(p.name.encode())

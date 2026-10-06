@@ -1,37 +1,38 @@
-"""Coletor: transforma consultas ao portal em snapshots imutaveis.
+"""Collector: turns portal queries into immutable snapshots.
 
-Ordem de gravacao de um snapshot (e por que):
-  1. objetos no armazem (bytes, conferidos pelo hash);
-  2. manifesto no armazem (imutavel) - a partir daqui o snapshot EXISTE;
-  3. registro no banco (camada 0). Se falhar, `banco.sincronizar` completa depois.
+Write order of a snapshot (and why):
+  1. objects in the store (bytes, checked against their hash);
+  2. manifest in the store (immutable) - from here on the snapshot EXISTS;
+  3. row in the database (layer 0). If it fails, `banco.sincronizar` completes it later.
 
-Regras de negocio que o coletor garante (Etapa 02 secoes 8 e 11; Etapa 03 secao 4.2):
-  * listagem de RP sempre SEM `tipoPesquisa` e com `dataInicial` = 01/01 do exercicio;
-  * `dataFinal` tem de estar no mesmo ano do exercicio (nunca mistura anos);
-  * paginacao ate `last`, conferindo que `totalElements` nao muda entre paginas e que a soma
-    das paginas nunca passa dele (servidor que ignore `page` nao prende o coletor em laco);
-  * contrato da pagina conferido (auditoria COL-02/03): `totalElements` inteiro, `number` = pagina pedida,
-    `numberOfElements` = tamanho de `content`, `content` nao maior que o `size` ecoado, `totalPages` coerente;
-    `first` e `empty` coerentes (revisao, item 2; presentes e coerentes nas 322 paginas reais gravadas);
-  * soma = total NAO prova que os registros sao distintos (auditoria COL-01). Por isso, alem dela:
-      - nenhum registro identico pode reaparecer numa pagina seguinte;
-      - na listagem de RP, a chave (anoempenho, empenho) nao pode diminuir e precisa CRESCER na troca de pagina
-        (ordem real da API em 100% dos snapshots gravados; nao e contrato documentado - se a API mudar a ordem,
-        a coleta falha visivelmente em vez de aceitar paginas deslocadas);
-      - com mais de uma pagina, todas sao lidas de novo e precisam vir iguais (a base nao mudou no meio). A
-        segunda leitura vai para o manifesto ("segunda_leitura"), fora das respostas normalizadas;
-  * a listagem de RP PEDE a ordem (anoempenho, empenho) em `sort` e confere o eco em cada pagina (revisao, item 3):
-    a ordem deixa de ser so a observada. Sondagem de 05/10/2026: com essa ordem a API devolve o mesmo content da
-    ordem implicita (auditoria/sondagem_ordenacao.json);
-  * a chave de negocio (entidade, anoempenho, empenho) nao pode repetir no retrato inteiro, dentro ou entre
-    paginas (revisao, itens 1 e 2). Repetida, o snapshot fica `incompleta`: e preservado, mas nunca vira o retrato
-    vigente do corte. A observacao diz quantas chaves repetiram e se as copias sao identicas (exatas) ou diferem
-    (conflitantes);
-  * catalogo so e 'completa' se cumprir o contrato minimo (contrato.py): JSON valido nao basta (revisao, item 6);
-  * o manifesto registra quando a coleta terminou (`coleta_finalizada_em`) e a forma da resposta (`contrato_api`):
-    uma coleta de varias paginas e um retrato montado por consultas sucessivas, nao uma fotografia atomica da base
-    (revisao, itens 17 e 18);
-  * snapshot incompleto ou falho tambem e gravado - com status que impede seu uso.
+Business rules the collector guarantees (stage 02 sections 8 and 11; stage 03 section 4.2):
+  * the RP listing is always WITHOUT `tipoPesquisa` and with `dataInicial` = 01/01 of the fiscal year;
+  * `dataFinal` must be in the same year as the fiscal year (years are never mixed);
+  * pagination until `last`, checking that `totalElements` does not change between pages and that the sum of the
+    pages never exceeds it (a server that ignores `page` cannot trap the collector in a loop);
+  * page contract checked (audit COL-02/03): integer `totalElements`, `number` = requested page,
+    `numberOfElements` = size of `content`, `content` not larger than the echoed `size`, consistent `totalPages`;
+    consistent `first` and `empty` (review, item 2; present and consistent in the 322 real pages recorded);
+  * sum = total does NOT prove the records are distinct (audit COL-01). So, besides it:
+      - no identical record may reappear on a later page;
+      - in the RP listing, the key (anoempenho, empenho) cannot decrease and must GROW at the page boundary
+        (the API's real order in 100% of the recorded snapshots; it is not a documented contract - if the API
+        changes the order, collection fails visibly instead of accepting shifted pages);
+      - with more than one page, all pages are read again and must come back equal (the base did not change
+        midway). The second read goes to the manifest ("segunda_leitura"), outside the normalized responses;
+  * the RP listing ASKS for the order (anoempenho, empenho) in `sort` and checks the echo on every page (review,
+    item 3): the order is no longer only observed. Probe of 05/10/2026: with this order the API returns the same
+    content as the implicit order (docs/audits/sondagem_ordenacao.json);
+  * the business key (entidade, anoempenho, empenho) cannot repeat in the whole snapshot, within or across pages
+    (review, items 1 and 2). If repeated, the snapshot is `incompleta`: it is kept, but it never becomes the
+    current snapshot of the cut-off. The note says how many keys repeated and whether the copies are identical
+    (exact) or differ (conflicting);
+  * a catalog is only 'completa' if it meets the minimum contract (contrato.py): valid JSON is not enough (review,
+    item 6);
+  * the manifest records when the collection finished (`coleta_finalizada_em`) and the shape of the response
+    (`contrato_api`): a multi-page collection is a snapshot built from successive queries, not an atomic picture of
+    the base (review, items 17 and 18);
+  * an incomplete or failed snapshot is recorded too - with a status that prevents its use.
 """
 import json
 import logging
@@ -51,7 +52,7 @@ EP_ARQ = "/api/files/arquivo"
 EP_ENT = "/api/entidades/lista"
 EP_EXE = "/api/exercicios/entidade"
 TAMANHO_PAGINA = 2000
-MAX_PAGINAS = 10_000     # teto de seguranca: 20 milhoes de registros por corte, muito acima do real
+MAX_PAGINAS = 10_000     # safety ceiling: 20 million records per cut-off, far above reality
 
 
 class ParametroInvalido(ValueError):
@@ -59,7 +60,7 @@ class ParametroInvalido(ValueError):
 
 
 def _inteiro_positivo(v):
-    """True para int (nao bool) maior que zero."""
+    """True for an int (not bool) greater than zero."""
     return isinstance(v, int) and not isinstance(v, bool) and v > 0
 
 
@@ -68,19 +69,20 @@ def _inteiro(v):
 
 
 def chave_rp(registro):
-    """Ordem da listagem de RP na API: (anoempenho, empenho)."""
+    """Order of the RP listing in the API: (anoempenho, empenho)."""
     return (registro["anoempenho"], registro["empenho"])
 
 
 def conferir_pagina(d, pagina, size, total, paginas, conteudo, sort=None):
-    """Problema no contrato da pagina (texto) ou None. Campo ausente nao e cobrado aqui (a API real sempre os manda;
-    totalElements, o unico indispensavel, e cobrado em _paginado). `sort`: ordem pedida; se a pagina ecoar `sort`,
-    o eco tem de ser exatamente ela - servidor que ignora a ordem pedida nao produz retrato 'completa'."""
+    """A problem in the page contract (text) or None. A missing field is not required here (the real API always sends
+    them; totalElements, the only indispensable one, is required in _paginado). `sort`: requested order; if the page
+    echoes `sort`, the echo must be exactly it - a server that ignores the requested order yields no 'completa'
+    snapshot."""
     if d.get("number") is not None and d.get("number") != pagina:
         return f"página {pagina}: a API devolveu a página number={d.get('number')}"
     if d.get("numberOfElements") is not None and d.get("numberOfElements") != len(conteudo):
         return f"página {pagina}: numberOfElements={d.get('numberOfElements')} mas content tem {len(conteudo)}"
-    if d.get("first") is not None and d.get("first") is not (pagina == 0):     # revisao, item 2
+    if d.get("first") is not None and d.get("first") is not (pagina == 0):     # review, item 2
         return f"página {pagina}: first={d.get('first')!r} incoerente com a página pedida"
     if d.get("empty") is not None and d.get("empty") is not (not conteudo):
         return f"página {pagina}: empty={d.get('empty')!r} mas content tem {len(conteudo)}"
@@ -96,7 +98,7 @@ def conferir_pagina(d, pagina, size, total, paginas, conteudo, sort=None):
 
 
 def _descrever_repetidas(repetidas):
-    """Texto da observacao de chaves de negocio repetidas: quantas, quantas exatas/conflitantes, exemplos."""
+    """Note text for repeated business keys: how many, how many exact/conflicting, examples."""
     exatas = sorted(k for k, n in repetidas.items() if n == "exata")
     conflitantes = sorted(k for k, n in repetidas.items() if n == "conflitante")
     exemplos = ", ".join(f"{k[1]}/{k[2]}" for k in (conflitantes or exatas)[:3])
@@ -112,7 +114,7 @@ class Coletor:
         self.identidade = {"nome": "rp-coletor", "versao": f"{VERSAO}+{h[:12]}", "sha256_codigo": h,
                            "descricao": "coletor de produção (app/rp)"}
 
-    # ----------------------------------------------------------------- nucleo
+    # ----------------------------------------------------------------- core
     def _snapshot(self, tipo, endpoint, parametros, respostas, status, coletada_em, observacoes, segunda_leitura=None):
         s = gravar_snapshot(
             self.con, self.armazem, tipo=tipo, endpoint=endpoint, parametros=parametros, coletada_em=coletada_em,
@@ -126,14 +128,14 @@ class Coletor:
         return s
 
     def _paginado(self, endpoint, params, chave=None):
-        """Todas as paginas de um endpoint no formato Page do Spring. Devolve (respostas, status, observacoes,
-        segunda_leitura). `chave`: funcao do registro cuja sequencia nao pode diminuir e precisa crescer na troca
-        de pagina (listagem de RP); com ela, a chave de NEGOCIO (contrato.chave_negocio) tambem nao pode repetir no
-        retrato - nem entre paginas (paginacao deslocada) nem dentro de uma pagina (a propria API repetiu)."""
+        """All pages of an endpoint in the Spring Page format. Returns (respostas, status, observacoes, segunda_leitura).
+        `chave`: function of the record whose sequence cannot decrease and must grow at the page boundary (RP
+        listing); with it, the BUSINESS key (contrato.chave_negocio) cannot repeat in the snapshot either - neither
+        across pages (shifted pagination) nor within a page (the API itself repeated it)."""
         respostas, obs, total, paginas, soma, pagina = [], [], None, None, 0, 0
         vistos, ultima = set(), None
-        primeira = {}        # chave de negocio -> forma canonica da primeira ocorrencia
-        repetidas = {}       # chave de negocio -> "exata" | "conflitante"
+        primeira = {}        # business key -> canonical form of the first occurrence
+        repetidas = {}       # business key -> "exata" | "conflitante"
 
         def fim(status, mensagem):
             return respostas, status, obs + [mensagem], None
@@ -154,7 +156,7 @@ class Coletor:
                 return fim("falhou", f"página {pagina}: resposta não é uma página JSON ({e})")
             if pagina == 0:
                 total, paginas = d.get("totalElements"), d.get("totalPages")
-                if not _inteiro(total) or total < 0:      # sem total o teto pela soma nao vale (auditoria COL-03)
+                if not _inteiro(total) or total < 0:      # without a total, the ceiling by sum does not apply (audit COL-03)
                     return fim("incompleta", f"totalElements ausente ou não inteiro: {total!r}")
                 if paginas is not None and (not _inteiro(paginas) or paginas < 0):
                     return fim("incompleta", f"totalPages não inteiro: {paginas!r}")
@@ -191,7 +193,7 @@ class Coletor:
                             else "exata"
                     else:
                         primeira[negocio] = canon
-            if repetidas:           # a pagina inteira foi conferida: a observacao classifica todas as repeticoes dela
+            if repetidas:           # the whole page was checked: the note classifies all of its repetitions
                 return fim("incompleta", _descrever_repetidas(repetidas))
             vistos |= novos
             soma += len(conteudo)
@@ -200,19 +202,20 @@ class Coletor:
             if d.get("last") or not conteudo:
                 break
             pagina += 1
-            if paginas is not None and pagina >= paginas:     # paginas comecam em 0 (auditoria COL-04)
+            if paginas is not None and pagina >= paginas:     # pages start at 0 (audit COL-04)
                 return fim("incompleta", f"a página {pagina - 1} não é a última (last=false), mas totalPages={paginas}")
             if pagina >= MAX_PAGINAS:
                 return fim("incompleta", f"paginacao passou do teto de {MAX_PAGINAS} paginas")
         if soma != total:
             return fim("incompleta", f"soma das páginas {soma} ≠ totalElements {total}")
-        if len(respostas) == 1:      # uma resposta e um retrato atomico da base: nada a conferir
+        if len(respostas) == 1:      # one response is an atomic picture of the base: nothing to check
             return respostas, "completa", obs, None
         return self._segunda_leitura(endpoint, params, respostas, obs)
 
     def _segunda_leitura(self, endpoint, params, respostas, obs):
-        """Le de novo cada pagina; o snapshot so e 'completa' se todas vierem com o mesmo content e o mesmo total.
-        Detecta o deslocamento compensado (exclusao antes do ponto + inclusao depois) que soma, total e ordem nao veem."""
+        """Reads every page again; the snapshot is only 'completa' if all of them come back with the same content and
+        the same total. Detects the compensated shift (deletion before the point + insertion after) that sum, total
+        and order cannot see."""
         segunda = []
         for pagina, r1 in enumerate(respostas):
             try:
@@ -232,9 +235,9 @@ class Coletor:
                                                        "a base mudou durante a coleta"], segunda
         return respostas, "completa", obs + [f"segunda leitura das {len(segunda)} páginas idêntica"], segunda
 
-    # ----------------------------------------------------------------- tipos
+    # ----------------------------------------------------------------- types
     def listagem(self, entidade, exercicio, data_final):
-        """Snapshot da listagem de RP de uma entidade num corte (01/01 -> data_final)."""
+        """Snapshot of an entity's RP listing at a cut-off (01/01 -> data_final)."""
         df = date.fromisoformat(data_final)
         if df.year != exercicio:
             raise ParametroInvalido(f"dataFinal {data_final} fora do exercício {exercicio}: combinação proibida (Etapa 02 §8)")
@@ -246,9 +249,9 @@ class Coletor:
         return self._snapshot("rp_listagem", EP_RP, params, respostas, status, inicio, obs, segunda)
 
     def _fora_do_catalogo(self, entidade, exercicio):
-        """Observacao quando a entidade (ou o exercicio dela) nao esta no catalogo vigente ja coletado: a API devolve
-        200 com 0 registros para entidade ou exercicio inexistente, o que seria lido como 'sem RP' (auditoria COL-05).
-        So informa; a coleta nao e recusada (entidade extinta pode faltar do catalogo atual)."""
+        """Note when the entity (or its fiscal year) is not in the current catalog already collected: the API returns
+        200 with 0 records for a non-existent entity or year, which would read as 'no RP' (audit COL-05). It only
+        informs; collection is not refused (an extinct entity may be missing from the current catalog)."""
         from . import banco
         obs = []
         consultas = (
@@ -271,8 +274,8 @@ class Coletor:
         return obs
 
     def recoletar(self, ref):
-        """Nova coleta de um corte JA coletado, com EXATAMENTE os parametros do snapshot `ref` (uid ou id).
-        O snapshot anterior nao e tocado: a recoleta e outro snapshot, que registra de qual veio."""
+        """New collection of an ALREADY collected cut-off, with EXACTLY the parameters of snapshot `ref` (uid or id).
+        The previous snapshot is not touched: the re-collection is another snapshot, which records where it came from."""
         col = "snapshot_uid" if isinstance(ref, str) and not str(ref).isdigit() else "id"
         row = self.con.execute(f"SELECT snapshot_uid, tipo, parametros_json FROM coleta WHERE {col}=?", (ref,)).fetchone()
         if not row:
@@ -297,8 +300,8 @@ class Coletor:
         return self._snapshot("movimentacao", EP_MOV, meta, respostas, status, inicio, obs, segunda)
 
     def _simples(self, tipo, endpoint, params, meta, validar):
-        """Uma requisicao. `validar(resposta)` devolve o problema do conteudo (texto) ou None: so HTTP 200 com
-        conteudo dentro do contrato e 'completa'."""
+        """One request. `validar(resposta)` returns the content problem (text) or None: only HTTP 200 with content within
+        the contract is 'completa'."""
         inicio = agora()
         obs = []
         try:
@@ -314,8 +317,8 @@ class Coletor:
         return self._snapshot(tipo, endpoint, meta, respostas, status, inicio, obs), (respostas[0] if respostas else None)
 
     def catalogos(self, entidades):
-        """Catalogo de entidades e, por entidade, o de exercicios. JSON valido nao basta: cada um precisa cumprir o
-        contrato minimo (contrato.py), senao o snapshot fica 'falhou' com o motivo (revisao, item 6)."""
+        """Catalog of entities and, per entity, of fiscal years. Valid JSON is not enough: each one must meet the minimum
+        contract (contrato.py), otherwise the snapshot is 'falhou' with the reason (review, item 6)."""
         feitos = []
         s, _ = self._simples("entidades", EP_ENT, None, {}, lambda r: contrato.contrato_entidades(_json(r.corpo)))
         feitos.append(s)
@@ -326,11 +329,11 @@ class Coletor:
         return feitos
 
     def rreo(self, exercicio, entidade=None, ids=None, baixar_pdfs=True, bimestres=None):
-        """Listagem de publicacoes da LRF (grupo 1) e PDFs do RREO Anexo VII ainda nao coletados.
-        `bimestres` (ex. {6}): so os PDFs desses bimestres (rotulos como "6o Bimestre", "6o BIMESTRE" e
-        "6o Bimestre - Consolidado"; no portal o "o" e o indicador ordinal).
-        Arquivo cujo idArquivo nao e inteiro positivo e ignorado e vai para o log: nenhum texto vindo da
-        resposta entra na URL."""
+        """List of LRF publications (group 1) and RREO Annex VII PDFs not yet collected.
+        `bimestres` (e.g. {6}): only the PDFs of those two-month periods (labels such as "6o Bimestre", "6o BIMESTRE"
+        and "6o Bimestre - Consolidado"; on the portal the "o" is the ordinal indicator).
+        A file whose idArquivo is not a positive integer is ignored and logged: no text coming from the response
+        goes into the URL."""
         entidade = self.cfg.entidade_rreo if entidade is None else entidade   # config.toml [rreo]
         params = {"entidade": int(entidade), "exercicio": int(exercicio)}
         s, r = self._simples("publicacoes", EP_PUB, params, dict(params),
@@ -345,7 +348,7 @@ class Coletor:
             if ids and arq["idArquivo"] not in ids:
                 continue
             if bimestres and not any(re.match(rf"\s*{b}\s*º\s*bimestre", str(arq.get("valor", "")), re.I) for b in bimestres):
-                continue  # o rotulo varia entre anos: "6o Bimestre", "6o BIMESTRE", "4 o Bimestre"
+                continue  # the label varies across years: "6o Bimestre", "6o BIMESTRE", "4 o Bimestre"
             ja = self.con.execute("SELECT 1 FROM coleta WHERE tipo='rreo_pdf' AND id_arquivo=? AND status='completa'",
                                   (arq["idArquivo"],)).fetchone()
             if ja:
@@ -366,7 +369,7 @@ def _json(b):
 
 
 def anexo_vii(publicacoes):
-    """Arquivos do subgrupo 'Anexo VII - Demonstrativo dos Restos a Pagar...' na listagem de publicacoes."""
+    """Files of the 'Anexo VII - Demonstrativo dos Restos a Pagar...' subgroup in the publications list."""
     for grupo in publicacoes if isinstance(publicacoes, list) else []:
         if not isinstance(grupo, dict):
             continue

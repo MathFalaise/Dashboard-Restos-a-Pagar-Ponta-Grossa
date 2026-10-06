@@ -1,24 +1,24 @@
-"""Grafico de barras em SVG gerado no servidor (etapa05/CONTRATO_ANALITICO.md secao 7).
+"""Bar chart as SVG generated on the server (docs/stages/05-analysis/ANALYTICAL_CONTRACT.md section 7).
 
-* Sem JavaScript e sem recurso externo: o <svg> faz parte do HTML. Nada de atributo `style` nem <style> (a CSP
-  `style-src 'self'` os bloquearia): so atributos de geometria (x, y, width, height) e classes, com as cores em
-  estilo.css.
-* Apresentacao, nao calculo: os valores chegam prontos da camada painel. Aqui so se converte valor em pixels
-  (escala), sem nenhuma soma ou diferenca de valores monetarios.
-* Ponto sem valor e LACUNA (retangulo tracejado e o texto "sem dado"), nunca uma barra de altura zero. Zero
-  verdadeiro e uma linha na base com o rotulo "0".
-* Cada barra e um link (href interno, comecando por "/") para a tela do corte, onde esta a proveniencia; a tabela
-  de valores exatos acompanha sempre o grafico e e a fonte da verdade.
+* No JavaScript and no external resource: the <svg> is part of the HTML. No `style` attribute nor <style> (the CSP
+  `style-src 'self'` would block them): only geometry attributes (x, y, width, height) and classes, with the colors
+  in estilo.css.
+* Presentation, not calculation: values arrive ready from the panel layer. Here they are only turned into pixels
+  (scale), with no sum or difference of monetary values.
+* A point without a value is a GAP (dashed rectangle and the text "sem dado"), never a zero-height bar. A true zero
+  is a line at the base with the label "0".
+* Each bar is a link (internal href, starting with "/") to the cut-off screen, where the provenance is; the table of
+  exact values always goes with the chart and is the source of truth.
 """
 from .formato import esc
 
 LARGURA, ALTURA = 720, 340
-MARGEM_X, TOPO, BASE = 20, 20, 64          # BASE: espaco para os rotulos dos cortes
+MARGEM_X, TOPO, BASE = 20, 20, 64          # BASE: room for the cut-off labels
 
 
 def barras(ident, titulo, descricao, pontos):
-    """pontos: [{"rotulo": "31/01", "valor_c": int ou None, "titulo": texto do ponto, "href": "/..."}].
-    Devolve o <figure> com o SVG; texto do titulo e da descricao vao em <title>/<desc> (leitor de tela)."""
+    """pontos: [{"rotulo": "31/01", "valor_c": int or None, "titulo": point text, "href": "/..."}].
+    Returns the <figure> with the SVG; the title and description text go in <title>/<desc> (screen readers)."""
     valores = [p["valor_c"] for p in pontos if p["valor_c"] is not None]
     maior = max([0] + valores)
     menor = min([0] + valores)
@@ -36,7 +36,7 @@ def barras(ident, titulo, descricao, pontos):
         x = MARGEM_X + i * faixa + (faixa - largura_barra) / 2
         centro = MARGEM_X + i * faixa + faixa / 2
         v = p["valor_c"]
-        if v is None:       # a lacuna ocupa quase toda a faixa do ponto, para o rotulo caber com muitos pontos
+        if v is None:       # the gap fills almost the whole band of the point, so the label fits even with many points
             largura_lacuna = faixa * 0.9
             forma = (f'<rect class="lacuna" x="{centro - largura_lacuna / 2:.1f}" y="{TOPO}" '
                      f'width="{largura_lacuna:.1f}" height="{altura_util}"/>'

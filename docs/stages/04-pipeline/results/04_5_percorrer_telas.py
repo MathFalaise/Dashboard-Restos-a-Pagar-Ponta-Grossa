@@ -1,4 +1,4 @@
-"""Percorre todas as telas da interface em http://127.0.0.1:8051 (sem proxy) e mede o tempo de cada uma."""
+"""Walks through every screen of the interface at http://127.0.0.1:8051 (no proxy) and measures the time of each one."""
 import json, re, sys, time, urllib.request
 from urllib.parse import urlencode
 sys.stdout.reconfigure(errors="backslashreplace")
@@ -39,7 +39,7 @@ for nome, caminho, params in visitas:
     saida.append({"tela": nome, "status": status, "segundos": round(dt, 3), "bytes": len(corpo),
                   "tem_proveniencia": "Origem do dado" in html or "<code>" in html,
                   "fonte_visivel": "API do sistema Elotech/Oxy Transparência" in html})
-# comparacao de retratos a partir de um link da tela de retratos
+# comparison of snapshots from a link on the snapshots screen
 ret = abridor.open(BASE + "/retratos?" + urlencode(dict(entidade=1, exercicio=2025, data_final="2025-12-31")), timeout=60).read().decode()
 link = re.search(r'href="(/comparar\?[^"]+)"', ret).group(1).replace("&amp;", "&")
 t = time.perf_counter(); r = abridor.open(BASE + link, timeout=60); dt = time.perf_counter() - t

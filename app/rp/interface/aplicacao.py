@@ -1,15 +1,16 @@
-"""Aplicacao WSGI da interface publica (somente leitura).
+"""WSGI application of the public interface (read-only).
 
-Fluxo: navegador -> esta aplicacao -> rp.painel.Painel (banco aberto em modo somente leitura) -> pagina HTML.
-  * Nunca chama a API da Elotech nem outro servico: nao importa cliente HTTP e nao abre conexao de saida. A unica
-    rede e a do proprio servidor local; a interface funciona com a internet desligada.
-  * So GET e HEAD. Filtro so escolhe o que ler; cada requisicao abre o banco em modo somente leitura (a escrita e
-    recusada pelo SQLite: URI mode=ro + PRAGMA query_only).
-  * Sempre nivel publico: nao ha parametro que mostre nome, codigo ou documento de credor em lista.
-  * HTML sem JavaScript e sem recurso externo (nem fonte, nem CDN), com cabecalhos de seguranca: CSP restritiva,
-    nosniff, no-referrer, sem enquadramento.
-  * WSGI (PEP 3333): localmente roda com wsgiref (biblioteca padrao); numa publicacao futura, com qualquer
-    servidor WSGI, sem mudar o codigo.
+Flow: browser -> this application -> rp.painel.Painel (database opened read-only) -> HTML page.
+  * Never calls the Elotech API or any other service: it imports no HTTP client and opens no outgoing connection.
+    The only network is the local server itself; the interface works with the internet off. Links to the official
+    portal ("where to check") are plain hrefs: the browser follows them, the server never does.
+  * Only GET and HEAD. A filter only chooses what to read; each request opens the database read-only (SQLite
+    refuses writes: URI mode=ro + PRAGMA query_only).
+  * Always the public level: no parameter shows a creditor's name, code or document in a list.
+  * HTML without JavaScript and without external resources (no font, no CDN), with security headers: strict CSP,
+    nosniff, no-referrer, no framing.
+  * WSGI (PEP 3333): locally it runs on wsgiref (standard library); a future deployment can use any WSGI server
+    without changing the code.
 """
 import logging
 import re
@@ -25,7 +26,7 @@ from . import paginas
 
 log = logging.getLogger("rp.interface")
 
-LIMITE_CONSULTA = 2048          # tamanho maximo da query string
+LIMITE_CONSULTA = 2048          # maximum query string size
 ESTILO = Path(__file__).with_name("estilo.css").read_bytes()
 CABECALHOS = [
     ("Content-Security-Policy", "default-src 'none'; style-src 'self'; form-action 'self'; base-uri 'none'; "
@@ -48,8 +49,8 @@ class ParametroInvalido(ValueError):
 
 
 class Parametros:
-    """Parametros da query string, validados um a um: valor invalido vira erro 400, nunca um valor adivinhado.
-    Campo vazio conta como ausente."""
+    """Query string parameters, validated one by one: an invalid value becomes a 400 error, never a guessed value.
+    An empty field counts as absent."""
 
     def __init__(self, consulta):
         if len(consulta) > LIMITE_CONSULTA:
@@ -107,11 +108,11 @@ class Parametros:
 
 
 class Aplicacao:
-    """Aplicacao WSGI. `caminho_banco` e aberto so para leitura, uma conexao por requisicao."""
+    """WSGI application. `caminho_banco` is opened read-only, one connection per request."""
 
     def __init__(self, caminho_banco):
         self.caminho = Path(caminho_banco)
-        with Painel.abrir(self.caminho):   # falha cedo: banco ausente ou esquema antigo
+        with Painel.abrir(self.caminho):   # fail early: missing database or old schema
             pass
 
     def __call__(self, environ, start_response):
@@ -137,7 +138,7 @@ class Aplicacao:
             return self._pagina(start_response, metodo, "503 Service Unavailable", "Base não processada", str(e))
         except ErroDoPainel as e:
             return self._pagina(start_response, metodo, "400 Bad Request", "Consulta recusada", str(e))
-        except Exception:   # detalhe so no log; a resposta nao expoe caminho nem pilha
+        except Exception:   # details only in the log; the response exposes neither path nor stack
             log.exception("erro ao montar %s", caminho)
             return self._pagina(start_response, metodo, "500 Internal Server Error", "Erro interno",
                                 "Não foi possível montar a página. O detalhe ficou no log.")
@@ -158,7 +159,7 @@ class Aplicacao:
 
 
 class _Servidor(WSGIServer):
-    """WSGIServer sem socket.getfqdn no bind: nenhuma resolucao de nome, nem local."""
+    """WSGIServer without socket.getfqdn on bind: no name resolution, not even local."""
 
     def server_bind(self):
         socketserver.TCPServer.server_bind(self)
@@ -167,7 +168,7 @@ class _Servidor(WSGIServer):
 
 
 class _Manipulador(WSGIRequestHandler):
-    def log_message(self, formato, *args):   # vai para o log do programa, nao direto para o terminal
+    def log_message(self, formato, *args):   # goes to the program log, not straight to the terminal
         log.info("%s %s", self.address_string(), formato % args)
 
 
@@ -178,7 +179,7 @@ def criar_servidor(caminho_banco, host="127.0.0.1", porta=8050):
 
 
 def servir(caminho_banco, host="127.0.0.1", porta=8050):
-    """Servidor local de desenvolvimento/consulta (um pedido por vez). Ctrl+C encerra."""
+    """Local development/query server (one request at a time). Ctrl+C stops it."""
     servidor = criar_servidor(caminho_banco, host, porta)
     if host not in ("127.0.0.1", "localhost", "::1"):
         print(f"ATENCAO: a interface ficara acessivel pela rede em {host}. Ela e somente leitura, mas nao tem "

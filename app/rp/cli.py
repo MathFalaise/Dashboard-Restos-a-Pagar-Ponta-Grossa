@@ -1,4 +1,4 @@
-"""Linha de comando: python -m rp <comando> (rodar dentro de app/)."""
+"""Command line: python -m rp <command> (run inside app/)."""
 import argparse
 import json
 import logging
@@ -26,15 +26,15 @@ CONSULTAS_PAINEL = ("contexto", "cortes", "entidades", "indicadores", "evolucao"
                     "regras", "evidencias", "fontes", "metodologia", "dicionario")
 
 
-# Logs: um arquivo por dia; os de mais de RETENCAO_LOGS_DIAS dias saem na abertura (revisao critica, D6).
-# Por dia, e nao por tamanho: no Windows, girar um arquivo aberto por outro processo (a interface e uma coleta
-# ao mesmo tempo) falha.
+# Logs: one file per day; the ones older than RETENCAO_LOGS_DIAS days are removed on startup (critical review, D6).
+# Per day, not per size: on Windows, rotating a file that another process has open (the interface and a
+# collection at the same time) fails.
 RETENCAO_LOGS_DIAS = 90
 _LOG_DO_DIA = re.compile(r"^rp-(\d{4}-\d{2}-\d{2})\.log$")
 
 
 def podar_logs(pasta, hoje, dias=RETENCAO_LOGS_DIAS):
-    """Apaga rp-AAAA-MM-DD.log com data anterior a `hoje` - `dias`. Outro arquivo da pasta nunca e tocado."""
+    """Deletes rp-YYYY-MM-DD.log dated before `hoje` - `dias`. No other file in the folder is ever touched."""
     removidos = []
     for p in sorted(Path(pasta).glob("rp-*.log")):
         m = _LOG_DO_DIA.match(p.name)
@@ -53,12 +53,12 @@ def _logs(cfg):
 
 
 def main(argv=None):
-    """Executa um comando. Codigos de saida: 0 ok; 1 `verificar` achou problema (ou: `portoes` nao apto,
-    `comparar-bancos` diferentes, `diagnosticar-api` viu a API mudar); 2 coleta incompleta ou com falha (ou:
-    `diagnosticar-api` nao conseguiu consultar); 3 exclusao recusada; 4 comando recusado (parametro, configuracao,
-    corte, arquivo existente...), com uma linha JSON {"erro": ...} na saida e o detalhe completo no log.
-    Caractere que a codificacao da saida nao representa (ex.: cp1252 com saida redirecionada para arquivo) sai
-    como escape \\uXXXX, em vez de derrubar o programa depois do trabalho feito."""
+    """Runs a command. Exit codes: 0 ok; 1 `verificar` found a problem (or: `portoes` not fit, `comparar-bancos`
+    different, `diagnosticar-api` saw the API change); 2 incomplete or failed collection (or: `diagnosticar-api`
+    could not query); 3 deletion refused; 4 command refused (parameter, config, cut-off, existing file...), with a
+    JSON line {"erro": ...} on the output and the full detail in the log.
+    A character the output encoding cannot represent (e.g. cp1252 with output redirected to a file) comes out as a
+    \\uXXXX escape, instead of crashing the program after the work is done."""
     for fluxo in (sys.stdout, sys.stderr):
         if hasattr(fluxo, "reconfigure"):
             fluxo.reconfigure(errors="backslashreplace")
@@ -186,13 +186,13 @@ def _main(argv=None):
 
     cfg = carregar(a.config)
     _logs(cfg)
-    if a.cmd == "painel":   # antes de banco.abrir: o painel nunca migra nem escreve
+    if a.cmd == "painel":   # before banco.abrir: the panel never migrates nor writes
         return _painel(a, cfg)
-    if a.cmd == "interface":   # idem: a interface so le, pela camada painel
+    if a.cmd == "interface":   # same: the interface only reads, through the panel layer
         from .interface import servir
         servir(a.banco or cfg.banco, a.host, a.porta)
         return 0
-    if a.cmd == "comparar-bancos":   # idem: os dois bancos abertos so para leitura
+    if a.cmd == "comparar-bancos":   # same: both databases opened read-only
         from . import equivalencia
         from .portoes import _abrir
         con_a, con_b = _abrir(a.banco or cfg.banco), _abrir(a.outro)
@@ -203,7 +203,7 @@ def _main(argv=None):
             con_b.close()
         print(json.dumps(r, ensure_ascii=False, indent=1))
         return 0 if r["equivalentes"] else 1
-    if a.cmd == "portoes":     # idem: so leitura do banco e do armazem
+    if a.cmd == "portoes":     # same: read-only on the database and the store
         from . import portoes
         if a.gravar_referencia:
             print(json.dumps(portoes.gravar_referencia(a.banco or cfg.banco, a.gravar_referencia), indent=1))
@@ -212,9 +212,9 @@ def _main(argv=None):
         r = portoes.avaliar(a.banco or cfg.banco, Armazem(cfg.snapshots), ref)
         print(json.dumps(r, ensure_ascii=False, indent=1, default=str))
         return 0 if r["apto"] else 1
-    if a.cmd == "diagnosticar-api":   # idem: consulta o portal, mas nao grava snapshot nem abre o banco para escrita
+    if a.cmd == "diagnosticar-api":   # same: queries the portal, but records no snapshot and does not open the database for writing
         return _diagnosticar_api(a, cfg)
-    if a.cmd == "comprimir-backups":   # so arquivos de backup: nao abre o banco
+    if a.cmd == "comprimir-backups":   # backup files only: does not open the database
         r = banco.comprimir_backups_operacionais(cfg, a.manter, simular=not a.confirmar)
         print(json.dumps({"simulado": not a.confirmar, "arquivos": r}, ensure_ascii=False, indent=1))
         return 0
@@ -247,7 +247,7 @@ def _main(argv=None):
         return 0
     if a.cmd == "apagar-execucao":
         from . import execucoes
-        try:  # recusa tem saida propria (codigo 3), mantida por compatibilidade
+        try:  # a refusal has its own exit code (3), kept for compatibility
             if a.simular:
                 r = {"simulacao": execucoes.plano(con, a.tipo, a.id, a.permitir_mais_recente)}
             else:
@@ -261,7 +261,7 @@ def _main(argv=None):
     if a.cmd == "comparar":
         from . import comparador
         r = comparador.comparar(con, a.a, a.b)
-        if a.saida:  # modo "x": nunca sobrescreve um arquivo existente
+        if a.saida:  # mode "x": never overwrites an existing file
             with open(a.saida, "x", encoding="utf-8") as f:
                 f.write(json.dumps(r, ensure_ascii=False, indent=1, default=str))
         resumo = {k: r[k] for k in ("corte", "anterior", "posterior", "bytes_identicos", "contagens", "impacto_financeiro_por_grupo", "saldo_s1")}
@@ -295,7 +295,7 @@ def _main(argv=None):
         return 0
     if a.cmd == "processar":
         from . import derivar, normalizar
-        em = instante(a.em)   # mesma forma da camada painel; data invalida e recusada antes de normalizar (CLI-01)
+        em = instante(a.em)   # same form as the panel layer; an invalid date is refused before normalizing (CLI-01)
         if a.normalizacao:
             nid, resumo = a.normalizacao, {"reusada": a.normalizacao}
         else:
@@ -346,7 +346,7 @@ def _main(argv=None):
 
 
 def _diagnosticar_api(a, cfg):
-    """Diagnostico do contrato da API (diagnostico.py). Sem banco ativo ainda, so a estrutura deixa de ser comparada."""
+    """API contract diagnosis (diagnostico.py). Without an active database yet, only the structure stops being compared."""
     from . import diagnostico
     from .portoes import _abrir
     hoje = datetime.now(BRT).date()
@@ -373,7 +373,7 @@ def _exigir(a, *nomes):
 
 
 def _painel(a, cfg):
-    """Consultas da camada do dashboard (somente leitura; nunca abre o banco para escrita)."""
+    """Dashboard layer queries (read-only; never opens the database for writing)."""
     from .painel import Painel
     with Painel.abrir(a.banco or cfg.banco, a.nivel) as p:
         c = a.consulta

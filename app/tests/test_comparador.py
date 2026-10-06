@@ -1,8 +1,8 @@
-"""Testes do comparador de snapshots e da recoleta (Etapa 04.4).
+"""Tests of the snapshot comparator and of re-collection (stage 04.4).
 
-* Os casos com dados REAIS usam a fixture `producao` (bruto das Etapas 01/02).
-* Os casos marcados SINTETICO usam registros inventados, porque os dados reais coletados ate
-  agora nao tem diferencas entre retratos do mesmo corte.
+* Cases with REAL data use the `producao` fixture (raw data of stages 01/02).
+* Cases marked SINTETICO use invented records, because the real data collected so far has no differences between
+  snapshots of the same cut-off.
 """
 import json
 
@@ -18,9 +18,9 @@ from rp.snapshots import gravar_snapshot
 COL = {"nome": "teste", "versao": "1", "sha256_codigo": None}
 
 
-# ------------------------------------------------------------------ dados reais
+# ------------------------------------------------------------------ real data
 def test_REAL_snapshots_identicos_do_mesmo_corte(producao):
-    """Etapa 02: dois retratos de entidade 1 / 2026 ate 31/08 (20h12 e 20h25), bytes identicos."""
+    """Stage 02: two snapshots of entity 1 / 2026 up to 31/08 (20h12 and 20h25), identical bytes."""
     con = producao["con"]
     (c1, t1, _), (c2, t2, _) = consultas.historico(con, 1, 2026, "2026-01-01", "2026-08-31")
     r = comparador.comparar(con, c1, c2)
@@ -95,7 +95,7 @@ def test_SINTETICO_registro_removido(tmp_path):
 
 
 def test_SINTETICO_alteracao_de_valor_com_anterior_e_posterior(tmp_path):
-    """Exemplo da especificacao: 500.000,00 -> 300.000,00 = -200.000,00."""
+    """Example from the specification: 500.000,00 -> 300.000,00 = -200.000,00."""
     _, r = _comparar(tmp_path, [_reg(1, aproc=500000.0)], [_reg(1, aproc=300000.0)])
     (alt,) = r["alterados"]
     (campo,) = [c for c in alt["campos"] if c["campo"] == "aproc_c"]
@@ -112,11 +112,11 @@ def test_SINTETICO_alteracao_de_campo_nao_monetario(tmp_path):
 
 
 def test_SINTETICO_alteracao_em_varios_campos_e_de_classificacao(tmp_path):
-    """Pagamento, liquidacao e mudanca de categoria (nao processado -> ambos) no mesmo registro."""
+    """Payment, liquidation and a category change (not processed -> both) in the same record."""
     _, r = _comparar(tmp_path, [_reg(1, aproc=100.0)],
                      [_reg(1, aproc=100.0, proc=30.0, liquidado=30.0, pagoAProc=20.0, orgao="09")])
     (alt,) = r["alterados"]
-    # orgao passou a existir: a lista de chaves ausentes tambem muda, e o comparador relata isso
+    # the agency came to exist: the list of missing keys also changes, and the comparator reports it
     assert {c["campo"] for c in alt["campos"]} == {"proc_c", "liquidado_c", "pago_aproc_c", "orgao", "chaves_ausentes"}
     assert {"campo": "categoria", "antes": "nao_processado", "depois": "ambos"} in alt["classificacao_e_saldos"]
     g = r["impacto_financeiro_por_grupo"]
@@ -124,7 +124,7 @@ def test_SINTETICO_alteracao_em_varios_campos_e_de_classificacao(tmp_path):
 
 
 def test_SINTETICO_alteracao_relacionada_a_espelhamento(tmp_path):
-    """Copia 24xxxxx da entidade 1 muda entre os retratos; o original da entidade 15 existe no mesmo corte."""
+    """Entity 1's 24xxxxx copy changes between the snapshots; entity 15's original exists at the same cut-off."""
     copia = lambda **kw: _reg(2400021, **kw)
     original = _reg(21, entidade=15)
     extra = lambda con, arm: _snap(con, arm, "2026-10-03T20:00:01-03:00", [original], dict(P, entidade=15))
@@ -146,10 +146,10 @@ def test_SINTETICO_momentos_diferentes_e_sem_alterar_os_originais(tmp_path):
     assert not r["bytes_identicos"] and r["contagens"]["alterados"] == 1
     assert (con.total_changes, execucoes.hash_camada0(con)) == antes
     assert all((armazem.raiz / m).read_bytes() == v for m, v in manifestos.items())
-    assert con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0] == 2  # nenhum retrato substituido
+    assert con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0] == 2  # no snapshot replaced
 
 
-# ------------------------------------------------------------------ recoleta e filtro de bimestre
+# ------------------------------------------------------------------ re-collection and bimester filter
 def test_recoleta_usa_exatamente_os_mesmos_parametros_e_preserva_o_original(ambiente):
     p = ambiente["portal"]
     p.rotas[(EP_RP, "0")] = [(200, pagina([_reg(1)], 0, 1, True, 1))]
@@ -158,7 +158,7 @@ def test_recoleta_usa_exatamente_os_mesmos_parametros_e_preserva_o_original(ambi
     con = ambiente["con"]
     p1, p2 = (con.execute("SELECT parametros_json FROM coleta WHERE snapshot_uid=?", (s["snapshot_uid"],)).fetchone()[0] for s in (s1, s2))
     assert p1 == p2 and s1["snapshot_uid"] != s2["snapshot_uid"]
-    assert p.chamadas[0] == p.chamadas[1]  # mesma URL, mesmos parametros
+    assert p.chamadas[0] == p.chamadas[1]  # same URL, same parameters
     assert "recoleta de " + s1["snapshot_uid"] in s2["observacao"]
     assert con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0] == 2
 
@@ -179,11 +179,12 @@ def test_rreo_filtra_bimestres(ambiente):
     for i in (1, 2, 3):
         p.rotas[(f"{EP_ARQ}/{i}", None)] = [(200, b"%PDF-1.3")]
     r = ambiente["coletor"].rreo(2024, bimestres={6})
-    assert len(r) == 3 and not any(c[0].endswith("/arquivo/1") for c in p.chamadas)  # o 5o bimestre nao e baixado
+    assert len(r) == 3 and not any(c[0].endswith("/arquivo/1") for c in p.chamadas)  # the 5th bimester is not downloaded
 
 
 def test_rreo_filtra_bimestres_rotulo_em_maiusculas(ambiente):
-    """Em 2019 o portal publica "6o BIMESTRE" (caixa alta) e em 2018 ha "4 o Bimestre": o filtro nao pode depender disso."""
+    """In 2019 the portal publishes "6o BIMESTRE" (upper case) and in 2018 there is "4 o Bimestre": the filter cannot
+    depend on that."""
     from rp.coletor import EP_ARQ, EP_PUB
     p = ambiente["portal"]
     lista = [{"idArquivo": i, "valor": v} for i, v in ((1, "5º BIMESTRE"), (2, "6º BIMESTRE"), (3, "6 º Bimestre"), (4, "16º Bimestre"))]
@@ -193,7 +194,7 @@ def test_rreo_filtra_bimestres_rotulo_em_maiusculas(ambiente):
         p.rotas[(f"{EP_ARQ}/{i}", None)] = [(200, b"%PDF-1.3")]
     r = ambiente["coletor"].rreo(2019, bimestres={6})
     baixados = {c[0].rsplit("/", 1)[1] for c in p.chamadas if "/arquivo/" in c[0]}
-    assert len(r) == 3 and baixados == {"2", "3"}  # nem o 5o nem o "16o"
+    assert len(r) == 3 and baixados == {"2", "3"}  # neither the 5th nor the "16o"
 
 
 def test_retencao_nunca_apaga_backups_preservados(tmp_path):
@@ -206,4 +207,4 @@ def test_retencao_nunca_apaga_backups_preservados(tmp_path):
         time.sleep(1.05)
         banco.backup(con, cfg, f"antes-apagar-{i}", operacional=True)
     nomes = {p.name for p in cfg.backups_operacionais.glob("*.sqlite")}
-    assert primeiro.name in nomes and len(nomes) == 4  # 3 da retencao + 1 preservado
+    assert primeiro.name in nomes and len(nomes) == 4  # 3 from retention + 1 preserved

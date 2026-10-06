@@ -1,9 +1,9 @@
-"""Medicao das consultas da camada painel (auditoria tecnica; SOMENTE LEITURA, fora da execucao normal).
+"""Measurement of the panel layer's queries (technical audit; READ-ONLY, outside the normal run).
 
-Uso (dentro de app/):  python ../docs/audits/benchmark_painel.py SAIDA.json [--banco CAMINHO] [--repeticoes N]
+Usage (inside app/):  python ../docs/audits/benchmark_painel.py SAIDA.json [--banco CAMINHO] [--repeticoes N]
 
-Para cada chamada tipica da interface: tempo (mediana de N repeticoes), numero de comandos SQL executados e os
-planos (EXPLAIN QUERY PLAN) que fazem SCAN de tabela inteira. Nao altera nada: o banco e aberto pela camada painel
+For each typical interface call: time (median of N repetitions), number of SQL statements executed and the
+plans (EXPLAIN QUERY PLAN) that do a full table SCAN. It changes nothing: the database is opened by the panel layer
 (URI mode=ro + query_only).
 """
 import argparse
@@ -76,7 +76,7 @@ def main():
                         det = linha[-1]
                         if det.startswith("SCAN ") and " USING " not in det:
                             scans.add(det)
-                except Exception as e:  # consulta com parametro ja substituido pelo trace: plano nao disponivel
+                except Exception as e:  # query with the parameter already substituted by the trace: plan not available
                     scans.add(f"(plano indisponivel: {type(e).__name__})")
             p.con.set_trace_callback(sqls.append)
             out.append({"chamada": nome, "mediana_s": round(statistics.median(tempos), 3), "max_s": round(max(tempos), 3),

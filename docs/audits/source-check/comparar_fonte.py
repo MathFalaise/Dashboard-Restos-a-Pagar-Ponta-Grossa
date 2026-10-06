@@ -1,15 +1,15 @@
-"""Prova real (05/10/2026), passo 2: compara o banco ativo com a fonte, em tres niveis, so lendo.
+"""Source check (05/10/2026), step 2: compares the active database with the source, at three levels, read-only.
 
-  N2  API hoje x bruto gravado: para cada corte, o snapshot que o painel usa (banco ativo) contra a recoleta feita
-      agora no armazem temporario. Registros que faltam, que surgiram e campos diferentes, campo a campo.
-  N3  bruto gravado x banco: cada registro do snapshot usado contra a linha de rp_registro da normalizacao atual
-      (mapeamento refeito aqui, independente de normalizar.py).
-  N4  bruto x tela: os 14 indicadores que o painel mostra contra o recalculo independente (tests/recalculo_bruto.py)
-      do bruto gravado e do bruto de hoje.
-Tambem: movimentacoes (lancamentos), catalogos (entidades e exercicios) e PDFs do RREO (bytes, por idArquivo).
+  N2  API today x recorded raw data: for each cut-off, the snapshot the panel uses (active database) against the
+      re-collection made now into the temporary store. Missing records, new records and different fields, field by field.
+  N3  recorded raw data x database: each record of the snapshot used against the rp_registro row of the current
+      normalization (mapping redone here, independently of normalizar.py).
+  N4  raw data x screen: the 14 indicators the panel shows against the independent recalculation
+      (tests/recalculo_bruto.py) of the recorded raw data and of today's raw data.
+Also: movements (entries), catalogs (entities and fiscal years) and RREO PDFs (bytes, by idArquivo).
 
-Nenhum nome, documento ou descricao sai no relatorio: so chaves de empenho, nomes de campo e valores em centavos.
-Uso (dentro de app/): python ../docs/audits/source-check/comparar_fonte.py --temp C:/rpaud/prova --saida ARQ.json
+No name, document or description goes into the report: only commitment keys, field names and values in cents.
+Usage (inside app/): python ../docs/audits/source-check/comparar_fonte.py --temp C:/rpaud/prova --saida ARQ.json
 """
 import argparse
 import json
@@ -29,9 +29,9 @@ from rp.painel import Painel               # noqa: E402
 
 ATIVO = Path.home() / "RestosAPagar_local" / "banco" / "restos_a_pagar.sqlite"
 ARMAZEM_ATIVO = APP.parent / "data" / "snapshots"
-NORMALIZACAO = 13   # normalizacao da derivacao atual (23) do banco ativo
+NORMALIZACAO = 13   # normalization of the current derivation (23) of the active database
 
-# coluna de rp_registro -> chave da API (refeito aqui de proposito; ver docstring)
+# rp_registro column -> API key (redone here on purpose; see the docstring)
 TEXTO = {"entidade": "entidade", "anoempenho": "anoempenho", "empenho": "empenho",
          "empenho_exercicio": "empenhoExercicio", "data_emissao": "dataEmissao", "programatica": "programatica",
          "fonte_recurso": "fonteRecurso", "descricao_fonte": "descricaoFonte", "fornecedor": "fornecedor",
@@ -58,7 +58,7 @@ def corpos(con, armazem, coleta_id):
 
 
 def itens(con, armazem, coleta_id):
-    """[(ordem, indice, item)] de um snapshot de listagem, lidos do armazem (Decimal para numeros)."""
+    """[(order, index, item)] of a listing snapshot, read from the store (Decimal for numbers)."""
     saida = []
     for o, b in corpos(con, armazem, coleta_id):
         d = json.loads(b, parse_float=Decimal)
@@ -92,7 +92,7 @@ def centavos_api(v):
     return rb.centavos(v)
 
 
-# ------------------------------------------------------------------ N3: bruto gravado x banco
+# ------------------------------------------------------------------ N3: recorded raw data x database
 def bruto_x_banco(con, cid, brutos):
     cols = list(TEXTO) + list(DINHEIRO)
     linhas = {(o, i): row for o, i, *row in con.execute(
@@ -122,7 +122,7 @@ def bruto_x_banco(con, cid, brutos):
             "exemplos": exemplos}
 
 
-# ------------------------------------------------------------------ N2: bruto gravado x API hoje
+# ------------------------------------------------------------------ N2: recorded raw data x API today
 def antes_x_hoje(antes, hoje):
     a = {chave(r): r for _, _, r in antes}
     b = {chave(r): r for _, _, r in hoje}
@@ -180,7 +180,7 @@ def main():
                                           if not valores_tela or valores_tela.get(k) != calc_h[k]}
         rel["cortes"].append(item)
 
-    # movimentacoes: lancamentos do snapshot mais recente de cada empenho, antes x hoje
+    # movements: entries of the most recent snapshot of each commitment, before x today
     for ent, ano, emp in con_a.execute("SELECT DISTINCT entidade, anoempenho, empenho FROM coleta WHERE tipo='movimentacao' "
                                        "AND status='completa' ORDER BY 1, 2, 3").fetchall():
         va = ultima_coleta(con_a, "movimentacao", entidade=ent, anoempenho=ano, empenho=emp)
@@ -201,7 +201,7 @@ def main():
                                      "iguais": None if lt is None else norm(la) == norm(lt),
                                      "status_hoje": vt[3] if vt else None})
 
-    # catalogos: conteudo do snapshot mais recente, antes x hoje
+    # catalogs: content of the most recent snapshot, before x today
     def cat(con, arm, tipo, endpoint):
         c = con.execute("SELECT id FROM coleta WHERE tipo=? AND endpoint=? AND status='completa' "
                         "ORDER BY coletada_em DESC LIMIT 1", (tipo, endpoint)).fetchone()
@@ -212,7 +212,7 @@ def main():
                                 "so_antes": [i for i in (x or []) if i not in (y or [])],
                                 "so_hoje": [i for i in (y or []) if i not in (x or [])]}
 
-    # PDFs do RREO: mesmos bytes pelo idArquivo?
+    # RREO PDFs: same bytes by idArquivo?
     for (ida,) in con_a.execute("SELECT DISTINCT id_arquivo FROM coleta WHERE tipo='rreo_pdf' ORDER BY 1"):
         ha = {r[0] for r in con_a.execute("SELECT r.sha256 FROM resposta_bruta r JOIN coleta c ON c.id=r.coleta_id "
                                           "WHERE c.tipo='rreo_pdf' AND c.id_arquivo=?", (ida,))}
@@ -220,7 +220,7 @@ def main():
                                           "WHERE c.tipo='rreo_pdf' AND c.id_arquivo=? AND c.status='completa'", (ida,))}
         rel["rreo_pdf"].append({"id_arquivo": ida, "baixado_hoje": bool(ht), "mesmos_bytes": bool(ht) and ht <= ha})
 
-    # resumo
+    # summary
     cs = rel["cortes"]
     n2 = [c["N2_antes_x_hoje"] for c in cs if "N2_antes_x_hoje" in c]
     resumo = {

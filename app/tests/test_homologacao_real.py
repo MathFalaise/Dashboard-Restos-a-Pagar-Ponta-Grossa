@@ -1,12 +1,12 @@
-"""Homologacao da interface (Subetapa 04.6) sobre o ARMAZEM REAL do projeto.
+"""Homologation of the interface (sub-stage 04.6) over the project's REAL store.
 
-Banco temporario montado so com leitura de snapshots/ (fixture `real` do conftest). Tres niveis sao comparados:
-  1. recalculo INDEPENDENTE a partir do JSON bruto da API guardado no armazem (sem normalizacao nem derivacao);
-  2. a camada painel (rp.painel.Painel);
-  3. o valor exibido na pagina (<data value> em centavos).
-Secoes da especificacao: 4 (indicadores), 5 (verdade contra o Elotech), 6 (nao contaminacao pelo RREO),
-7 (proveniencia), 8 (retrato), 14 (desempenho), 17 (filtros), 18 (detalhe), 19 (reconciliacao), 20 (regras
-experimentais). Os bancos alterados nos testes de RREO sao COPIAS temporarias; o armazem so e lido.
+A temporary database built by only reading data/snapshots/ (the conftest `real` fixture). Three levels are compared:
+  1. INDEPENDENT recalculation from the API's raw JSON kept in the store (no normalization, no derivation);
+  2. the panel layer (rp.painel.Painel);
+  3. the value shown on the page (<data value> in cents).
+Specification sections: 4 (indicators), 5 (truth against Elotech), 6 (no contamination by the RREO),
+7 (provenance), 8 (snapshot), 14 (performance), 17 (filters), 18 (detail), 19 (reconciliation), 20 (experimental
+rules). The databases changed in the RREO tests are temporary COPIES; the store is only read.
 """
 import hashlib
 import json
@@ -35,14 +35,14 @@ def app(real):
     return Aplicacao(real["cfg"].banco)
 
 
-# ------------------------------------------------------------------ recalculo independente (JSON bruto)
+# ------------------------------------------------------------------ independent recalculation (raw JSON)
 def _c(v):
-    """Valor da API (float lido como Decimal) -> centavos, sem passar pelo normalizador."""
+    """API value (float read as Decimal) -> cents, without going through the normalizer."""
     return int(Decimal(str(v)) * 100) if v is not None else 0
 
 
 def registros_brutos(real, uid):
-    """Itens content[] de todas as paginas do snapshot, lidos do armazem (manifesto -> objetos -> JSON)."""
+    """content[] items of all pages of the snapshot, read from the store (manifest -> objects -> JSON)."""
     rel = real["con"].execute("SELECT manifesto FROM coleta WHERE snapshot_uid=?", (uid,)).fetchone()[0]
     m = real["armazem"].ler_manifesto(rel)
     itens = []
@@ -53,7 +53,7 @@ def registros_brutos(real, uid):
 
 
 def recalcular(itens):
-    """Mesmos indicadores da tela, recalculados do bruto com as formulas documentadas (Etapa 02, S1-S3)."""
+    """The same indicators as the screen, recalculated from the raw data with the documented formulas (stage 02, S1-S3)."""
     s = {k: 0 for k in ("registros", "inscricao_processada", "inscricao_nao_processada", "inscricao_total",
                         "pago_processado", "pago_nao_processado", "pagamentos", "liquidacoes", "cancelamentos",
                         "retencoes", "saldo_total", "saldo_a_liquidar", "saldo_liquidado_a_pagar")}
@@ -76,7 +76,7 @@ def recalcular(itens):
 
 
 def snapshot_vigente(real, entidade, ex, df):
-    """Escolha independente do retrato: a coleta completa mais recente do corte."""
+    """Independent choice of the snapshot: the most recent complete collection of the cut-off."""
     row = real["con"].execute(
         "SELECT snapshot_uid FROM coleta WHERE tipo='rp_listagem' AND status='completa' AND tipo_pesquisa IS NULL AND "
         "entidade=? AND exercicio=? AND data_inicial=? AND data_final=? ORDER BY coletada_em DESC, snapshot_uid DESC "
@@ -84,14 +84,14 @@ def snapshot_vigente(real, entidade, ex, df):
     return row and row[0]
 
 
-# ================================================================== secoes 4 e 5: indicadores = bruto = painel = tela
+# ================================================================== sections 4 and 5: indicators = raw = panel = screen
 @pytest.mark.parametrize("ex, df, ent", CORTES)
 def test_indicadores_recalculados_do_bruto_iguais_ao_painel_e_a_tela(app, real, ex, df, ent):
     ind = real["painel"].indicadores(ex, df, ent)
     assert ind["disponivel"], (ex, df, ent, ind["motivo_indisponivel"])
     usados = [e for e in ind["entidades"] if e["entra_no_total"]]
     itens = []
-    for e in usados:                                   # o snapshot usado e o vigente, escolhido de forma independente
+    for e in usados:                                   # the snapshot used is the current one, chosen independently
         assert e["snapshot"]["snapshot_uid"] == snapshot_vigente(real, e["entidade"], ex, df)
         itens += registros_brutos(real, e["snapshot"]["snapshot_uid"])
     assert sorted(ind["retrato"]["snapshots"]) == sorted(e["snapshot"]["snapshot_uid"] for e in usados)
@@ -104,7 +104,7 @@ def test_indicadores_recalculados_do_bruto_iguais_ao_painel_e_a_tela(app, real, 
 
 
 def test_municipio_so_soma_entidades_do_catalogo_oficial(real):
-    """O total do Municipio = entidades cujo catalogo oficial (exercicios da API) contem o exercicio."""
+    """The Municipality total = entities whose official catalog (the API's fiscal years) contains the fiscal year."""
     con = real["con"]
     for ex, df in ((2016, "2016-12-31"), (2024, "2024-12-31"), (2026, "2026-08-31")):
         ind = real["painel"].indicadores(ex, df)
@@ -128,8 +128,8 @@ def registros_catalogo(real, coleta_id):
 
 
 def test_valores_de_2024_2025_2026_fixados_na_linha_de_base(real):
-    """Valores do Municipio registrados no estado de partida da 04.6 (etapa04/resultados/04_6_estado_antes.json):
-    a interface homologada nao pode introduzir nenhuma divergencia em relacao a eles."""
+    """Municipality values recorded in the 04.6 starting state (docs/stages/04-pipeline/results/04_6_estado_antes.json):
+    the homologated interface cannot introduce any divergence from them."""
     esperado = {
         (2024, "2024-12-31"): (dict(registros=6427, inscricao_total=16290699167, saldo_total=1897498899,
                                     pagamentos=12519386373, cancelamentos=1873813895), 67817165, "parcialmente explicada"),
@@ -143,7 +143,7 @@ def test_valores_de_2024_2025_2026_fixados_na_linha_de_base(real):
         assert {k: ind["valores"][k]["valor_c"] for k in v} == v
         conf = ind["conferencia_rreo"]
         assert (conf["diferenca_c"], conf["situacao_da_diferenca"]) == (dif, situacao)
-        assert conf["api"]["valor_c"] == v["saldo_total"]           # a API continua sendo o valor principal
+        assert conf["api"]["valor_c"] == v["saldo_total"]           # the API is still the main value
 
 
 def test_hash_da_derivacao_igual_ao_do_banco_ativo(real):
@@ -152,7 +152,7 @@ def test_hash_da_derivacao_igual_ao_do_banco_ativo(real):
     assert h.startswith("2f6b4e295ce79593") and h2909.startswith("b8a0b2ed2328bf09")
 
 
-# ================================================================== secao 5: casos de regressao contra o bruto
+# ================================================================== section 5: regression cases against the raw data
 @pytest.mark.parametrize("ent, ano, emp, ex, df", [(1, 2025, 5659, 2026, "2026-12-31"), (1, 2016, 11963, 2026, "2026-12-31"),
                                                    (1, 2023, 2401751, 2024, "2024-12-31"),
                                                    (15, 2023, 1751, 2024, "2024-12-31"),
@@ -169,7 +169,7 @@ def test_casos_reais_detalhe_igual_ao_json_da_api(app, real, ent, ano, emp, ex, 
     assert v["derivado-s1_saldo_total_c"] == s1
 
 
-# ================================================================== secao 6: nao contaminacao pelo RREO
+# ================================================================== section 6: no contamination by the RREO
 def _copia(real, tmp_path):
     destino = tmp_path / "copia.sqlite"
     with sqlite3.connect(destino) as d:
@@ -189,7 +189,7 @@ RREO_CORTES = [(2024, "2024-12-31", None), (2026, "2026-08-31", None), (2026, "2
 def test_indicador_principal_usa_elotech_e_sobrevive_sem_rreo(real, tmp_path):
     antes = _indicadores(real["cfg"].banco, RREO_CORTES)
     copia = _copia(real, tmp_path)
-    with sqlite3.connect(copia) as con:           # remove todo dado de RREO da COPIA (normalizado e derivado)
+    with sqlite3.connect(copia) as con:           # removes every RREO data from the COPY (normalized and derived)
         for t in ("conciliacao_rreo", "rreo_valor", "rreo_extracao"):
             con.execute(f"DELETE FROM {t}")
     con.close()
@@ -208,20 +208,20 @@ def test_alterar_o_rreo_nao_altera_a_api_e_a_divergencia_aparece(real, tmp_path)
     with Painel.abrir(real["cfg"].banco) as p:
         conf0 = p.indicadores(2026, "2026-08-31")["conferencia_rreo"]
     copia = _copia(real, tmp_path)
-    delta = 1234567                                # R$ 12.345,67 a mais no RREO publicado (so na copia)
+    delta = 1234567                                # R$ 12.345,67 more in the published RREO (only in the copy)
     with sqlite3.connect(copia) as con:
         con.execute("UPDATE conciliacao_rreo SET valor_rreo_c = valor_rreo_c + ?, diferenca_c = diferenca_c - ?",
                     (delta, delta))
         con.execute("UPDATE rreo_valor SET valor_c = valor_c + ?", (delta,))
     con.close()
-    assert _indicadores(copia, RREO_CORTES) == antes          # a API nao muda quando o RREO muda
+    assert _indicadores(copia, RREO_CORTES) == antes          # the API does not change when the RREO changes
     with Painel.abrir(copia) as p:
         conf = p.indicadores(2026, "2026-08-31")["conferencia_rreo"]
         rec = p.reconciliacao(2026, "2026-08-31", "consolidado")["linhas"]
     assert conf["api"]["valor_c"] == conf0["api"]["valor_c"] == antes[(2026, "2026-08-31", None)]["saldo_total"]
     assert conf["rreo"]["valor_c"] == conf0["rreo"]["valor_c"] + delta
     assert conf["diferenca_c"] == conf0["diferenca_c"] - delta and conf["situacao_do_dado"]["codigo"] == "divergente"
-    assert all(x["diferenca_c"] != 0 and x["api_c"] != x["rreo_c"] for x in rec)   # nenhuma coluna "fechada" a forca
+    assert all(x["diferenca_c"] != 0 and x["api_c"] != x["rreo_c"] for x in rec)   # no column "closed" by force
     corpo = ok(Aplicacao(copia), "/", exercicio=2026, data_final="2026-08-31")
     v = dados(corpo)
     assert v["ind-saldo_total"] == v["conf-api"] == antes[(2026, "2026-08-31", None)]["saldo_total"]
@@ -229,7 +229,7 @@ def test_alterar_o_rreo_nao_altera_a_api_e_a_divergencia_aparece(real, tmp_path)
 
 
 def test_nunca_substitui_api_por_rreo_nem_quando_o_rreo_coincide_com_outro_valor(real, tmp_path):
-    """Mesmo com o RREO igualado a qualquer valor, o indicador continua a soma da API."""
+    """Even with the RREO set to any value, the indicator is still the API sum."""
     copia = _copia(real, tmp_path)
     with sqlite3.connect(copia) as con:
         con.execute("UPDATE conciliacao_rreo SET valor_rreo_c = 0, diferenca_c = valor_api_c")
@@ -238,9 +238,9 @@ def test_nunca_substitui_api_por_rreo_nem_quando_o_rreo_coincide_com_outro_valor
     assert _indicadores(copia, RREO_CORTES) == antes
 
 
-# ================================================================== secao 7: proveniencia
+# ================================================================== section 7: provenance
 def _objeto_no_armazem(real, sha):
-    corpo = real["armazem"].ler_objeto(sha)            # confere o SHA-256 do conteudo
+    corpo = real["armazem"].ler_objeto(sha)            # checks the SHA-256 of the content
     return hashlib.sha256(corpo).hexdigest() == sha
 
 
@@ -294,7 +294,7 @@ def test_diferenca_aponta_para_as_duas_fontes(app, real):
     assert "Snapshots da API" in rec and "Snapshot do PDF" in rec
 
 
-# ================================================================== secao 8: retrato
+# ================================================================== section 8: snapshot
 def test_todo_corte_diz_exercicio_corte_coleta_tipo_e_snapshot(app, real):
     for c in real["painel"].cortes()["cortes"]:
         ex, df = c["exercicio"], c["data_final"]
@@ -313,7 +313,7 @@ def test_todo_corte_diz_exercicio_corte_coleta_tipo_e_snapshot(app, real):
     assert "Retrato</dt><dd>histórico — como a base estava em 30/09/2026" in corpo
 
 
-# ================================================================== secao 17: filtros
+# ================================================================== section 17: filters
 def _subconjunto(real, ex, df, ent, pred):
     ind = real["painel"].indicadores(ex, df, ent)
     itens = [r for e in ind["entidades"] if e["entra_no_total"]
@@ -364,8 +364,8 @@ def test_filtro_sem_resultado_mostra_nenhum_resultado_e_nunca_zero(app, real, fi
     assert "R$ 0,00" not in corpo and "<table" not in corpo.split('id="sem-resultado"')[1]
 
 
-# ================================================================== secao 18: detalhe
-CPF = re.compile(r"\b\d{3}\.\d{3}\.\d{3}-\d{2}\b|\*+\d{3}\*+")       # CPF completo ou mascarado pela API
+# ================================================================== section 18: detail
+CPF = re.compile(r"\b\d{3}\.\d{3}\.\d{3}-\d{2}\b|\*+\d{3}\*+")       # a complete CPF or one masked by the API
 
 
 def test_detalhe_separa_fonte_derivado_e_analise_sem_dado_pessoal(app, real):
@@ -379,7 +379,7 @@ def test_detalhe_separa_fonte_derivado_e_analise_sem_dado_pessoal(app, real):
     assert "natureza-analitico" in analise
     assert not re.search(r"natureza-(derivado|da_fonte|publicado)", analise)
     assert "Origem do dado" in corpo
-    # pessoa fisica: sem nome, sem CPF; nenhum dado bancario em nenhuma pagina de detalhe
+    # individual: no name, no CPF; no bank data on any detail page
     con = real["con"]
     pf = con.execute("SELECT r.entidade, r.anoempenho, r.empenho, c.exercicio, c.data_final FROM rp_registro r JOIN coleta c "
                      "ON c.id=r.coleta_id WHERE r.cnpj LIKE '%***%' AND c.data_inicial = c.exercicio || '-01-01' "
@@ -394,7 +394,7 @@ def test_detalhe_separa_fonte_derivado_e_analise_sem_dado_pessoal(app, real):
         assert not re.search(r"(?i)ag[êe]ncia|conta corrente|banco do|\bpix\b", corpo)
 
 
-# ================================================================== secao 19: reconciliacao
+# ================================================================== section 19: reconciliation
 def test_reconciliacao_mostra_periodo_escopo_coluna_pdf_extracao_e_explicacao(app):
     corpo = ok(app, "/reconciliacao", exercicio=2026, data_final="2026-08-31", escopo="entidade")
     for trecho in ("Período</dt><dd>janeiro a agosto de 2026", "Escopo</dt><dd>entidade — entidade 1", "Coluna do RREO",
@@ -407,7 +407,7 @@ def test_reconciliacao_mostra_periodo_escopo_coluna_pdf_extracao_e_explicacao(ap
     assert len(linhas) == 24
 
 
-# ================================================================== secao 20: regras experimentais
+# ================================================================== section 20: experimental rules
 def test_regras_experimentais_so_aparecem_rotuladas_como_analise(app, real):
     rec = ok(app, "/reconciliacao", exercicio=2026, data_final="2026-08-31", escopo="consolidado")
     for linha in re.findall(r"<tr><td><strong>[a-lL]</strong>.*?</tr>", rec, re.S):
@@ -426,7 +426,7 @@ def test_regras_experimentais_so_aparecem_rotuladas_como_analise(app, real):
         assert "CONS-PAR" not in ok(app, caminho, **params)
 
 
-# ================================================================== secao 14: desempenho
+# ================================================================== section 14: performance
 def test_desempenho_das_operacoes_no_banco_real(app):
     operacoes = [("abertura", "/", {}), ("troca de exercício", "/", dict(exercicio=2019, data_final="2019-12-31")),
                  ("filtro de entidade", "/", dict(exercicio=2025, data_final="2025-12-31", entidade=15)),

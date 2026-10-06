@@ -1,11 +1,11 @@
-"""INVESTIGACAO (nao e extrator de producao): le a linha TOTAL (III) dos PDFs de RREO que o extrator
-`rp-rreo-coordenadas/1` nao reconhece (layouts de 2016, 2018 e 2019) e compara com a API.
+"""INVESTIGATION (not a production extractor): reads the TOTAL (III) row of the RREO PDFs that the
+`rp-rreo-coordenadas/1` extractor does not recognize (2016, 2018 and 2019 layouts) and compares it with the API.
 
-Metodo: texto do PDF (pymupdf), a partir do rotulo "TOTAL (III)", os 12 primeiros valores numericos
-("-" = 0) na ordem a..L, conferidos pelas identidades do proprio demonstrativo (e = a+b-c-d;
-k = f+g-i-j; L = e+k). Se as identidades nao fecharem, a leitura e recusada, nunca ajustada.
-O escopo (entidade 1 ou consolidado) e decidido pelo conteudo: se lista fundacoes/autarquias como
-orgaos, e o Municipio. Somente leitura: nada e gravado no banco.
+Method: PDF text (pymupdf), from the "TOTAL (III)" label, the first 12 numeric values
+("-" = 0) in the order a..L, checked by the statement's own identities (e = a+b-c-d;
+k = f+g-i-j; L = e+k). If the identities do not close, the reading is refused, never adjusted.
+The scope (entity 1 or consolidated) is decided by the content: if it lists foundations/autarchies as
+agencies, it is the Municipality. Read-only: nothing is written to the database.
 """
 import json
 import re
@@ -81,5 +81,5 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.stdout.reconfigure(errors="backslashreplace")   # saida em cp1252 (arquivo) nao derruba o script
+    sys.stdout.reconfigure(errors="backslashreplace")   # cp1252 output (file) does not crash the script
     main()

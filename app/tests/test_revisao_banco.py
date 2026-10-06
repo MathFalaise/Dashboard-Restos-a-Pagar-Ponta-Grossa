@@ -1,6 +1,7 @@
-"""Revisao critica (05/10/2026), etapa D - banco, normalizacao e verificacao: itens 7, 11, 12, 25, 28, 29, 30, 44 e 46.
+"""Critical review (05/10/2026), stage D - database, normalization and verification: items 7, 11, 12, 25, 28, 29, 30,
+44 and 46.
 
-Bancos temporarios (fixture `mundo`) e PDFs sinteticos; nada le o banco ativo.
+Temporary databases (fixture `mundo`) and synthetic PDFs; nothing reads the active database.
 """
 import json
 import re
@@ -16,7 +17,7 @@ T1 = "2026-09-20T10:00:00-03:00"
 
 
 def _processado(mundo):
-    """Fechamento de 2025 e abertura de 2026: gera visoes e a verificacao de continuidade (diagnostico)."""
+    """2025 closing and 2026 opening: generates views and the continuity check (diagnostic)."""
     mundo.catalogos({1: [2025, 2026]})
     mundo.listagem(1, 2025, "2025-12-31", [registro_sintetico(1, ano=2024), registro_sintetico(2, ano=2023)], T1)
     mundo.listagem(1, 2026, "2026-08-31", [registro_sintetico(1, ano=2024)], T1)
@@ -28,9 +29,9 @@ def _portao(mundo, ident, caminho=None):
     return next(p for p in r["portoes"] if p["id"] == ident)
 
 
-# ------------------------------------------------------------------ item 28: impressao do esquema
+# ------------------------------------------------------------------ item 28: schema fingerprint
 def test_REV28_codigo_tem_a_impressao_da_sua_versao():
-    # mudou tabela, coluna, restricao, indice ou gatilho? Este teste falha ate a versao nova ter a impressao nova
+    # did a table, column, constraint, index or trigger change? This test fails until the new version has the new fingerprint
     assert banco.impressao_esquema(banco.esquema_do_codigo()) == banco.IMPRESSAO_ESQUEMA[banco.VERSAO_ESQUEMA]
 
 
@@ -52,7 +53,7 @@ def test_REV28_comentario_e_espaco_nao_mudam_a_impressao_mas_estrutura_muda():
     assert montar(outros_comentarios) == referencia
     assert montar(texto, "ALTER TABLE anomalia ADD COLUMN extra TEXT") != referencia
     assert montar(texto.replace("CHECK (escopo IN ('entidade', 'consolidado'))",
-                                "CHECK (escopo IN ('entidade'))")) != referencia     # restricao muda a impressao
+                                "CHECK (escopo IN ('entidade'))")) != referencia     # a constraint changes the fingerprint
 
 
 def test_REV28_portao_do_esquema(mundo, tmp_path):
@@ -68,7 +69,7 @@ def test_REV28_portao_do_esquema(mundo, tmp_path):
     assert p["ok"] is False and p["detalhe"]["versao"] == banco.VERSAO_ESQUEMA
 
 
-# ------------------------------------------------------------------ item 46: banco ativo so em disco local
+# ------------------------------------------------------------------ item 46: active database only on a local disk
 @pytest.mark.parametrize("caminho", [
     "C:/Users/x/Dropbox/RP/banco.sqlite", "C:/Users/x/Dropbox (Empresa)/banco.sqlite",
     "G:/My Drive/banco.sqlite", "G:/Meu Drive/RP/banco.sqlite", "C:/Users/x/iCloudDrive/banco.sqlite",
@@ -81,7 +82,7 @@ def test_REV46_pastas_sincronizadas_conhecidas(caminho):
 def test_REV46_unidade_de_rede_e_disco_local(tmp_path):
     assert banco._unidade_de_rede(Path(r"\\servidor\compartilhamento\banco.sqlite"))
     assert not banco.em_pasta_sincronizada(tmp_path / "banco.sqlite")
-    assert not banco.em_pasta_sincronizada(tmp_path / "Box" / "toolbox" / "banco.sqlite")   # nome generico: local
+    assert not banco.em_pasta_sincronizada(tmp_path / "Box" / "toolbox" / "banco.sqlite")   # generic name: local
 
 
 def test_REV46_abrir_recusa_banco_ativo_em_pasta_sincronizada(tmp_path):
@@ -92,7 +93,7 @@ def test_REV46_abrir_recusa_banco_ativo_em_pasta_sincronizada(tmp_path):
     assert not cfg.banco.exists()
 
 
-# ------------------------------------------------------------------ itens 7, 11 e 12: transcricao do RREO
+# ------------------------------------------------------------------ items 7, 11 and 12: RREO transcription
 def _pdf(paginas):
     try:
         import pymupdf
@@ -135,7 +136,7 @@ def test_REV12_pdf_com_mais_de_uma_pagina_nao_e_transcrito_pela_metade():
 
 
 def _mundo_com_pdf(mundo):
-    """Um snapshot de PDF do RREO (bytes crus: Mundo._snap grava JSON)."""
+    """A snapshot of an RREO PDF (raw bytes: Mundo._snap writes JSON)."""
     from rp.snapshots import gravar_snapshot
     from conftest import COLETOR_SINTETICO
     gravar_snapshot(mundo.con, mundo.armazem, tipo="rreo_pdf", endpoint="/api/files/arquivo/10",
@@ -153,14 +154,14 @@ def test_REV07_erro_de_layout_fica_registrado(mundo, monkeypatch):
 
 def test_REV07_erro_de_programa_no_extrator_derruba_o_processamento(mundo, monkeypatch):
     _mundo_com_pdf(mundo)
-    monkeypatch.setattr(normalizar, "_rreo", lambda *a: None + 1)     # TypeError: defeito de programa, nao layout
+    monkeypatch.setattr(normalizar, "_rreo", lambda *a: None + 1)     # TypeError: a program defect, not a layout
     antes = mundo.con.execute("SELECT COUNT(*) FROM normalizacao_execucao").fetchone()[0]
     with pytest.raises(TypeError):
         normalizar.normalizar(mundo.con)
-    assert mundo.con.execute("SELECT COUNT(*) FROM normalizacao_execucao").fetchone()[0] == antes   # nada gravado
+    assert mundo.con.execute("SELECT COUNT(*) FROM normalizacao_execucao").fetchone()[0] == antes   # nothing written
 
 
-# ------------------------------------------------------------------ item 25: hash semantico x hash da execucao
+# ------------------------------------------------------------------ item 25: semantic hash x run hash
 def test_REV25_diagnostico_muda_o_hash_da_execucao_mas_nao_o_semantico(mundo):
     _, did = _processado(mundo)
     con = mundo.con
@@ -174,7 +175,7 @@ def test_REV25_diagnostico_muda_o_hash_da_execucao_mas_nao_o_semantico(mundo):
     assert derivar.hash_semantico(con, did) != s
 
 
-# ------------------------------------------------------------------ item 44: referencia em serializacao canonica
+# ------------------------------------------------------------------ item 44: reference in canonical serialization
 def test_REV44_referencia_canonica_e_compatibilidade_com_a_antiga(mundo, tmp_path):
     _processado(mundo)
     arq = tmp_path / "ref.json"
@@ -183,17 +184,17 @@ def test_REV44_referencia_canonica_e_compatibilidade_com_a_antiga(mundo, tmp_pat
     r = portoes.avaliar(mundo.cfg.banco, mundo.armazem, ref)
     assert next(p for p in r["portoes"] if p["id"] == "camada_bruta_preservada")["ok"] is True
     with sqlite3.connect(f"{Path(mundo.cfg.banco).resolve().as_uri()}?mode=ro", uri=True) as con:
-        antiga = portoes._referencia(con, canonico=False)          # como as referencias gravadas antes (repr)
+        antiga = portoes._referencia(con, canonico=False)          # like the references recorded before (repr)
     assert "formato" not in antiga and antiga["hash_coletas"] != ref["hash_coletas"]
     r = portoes.avaliar(mundo.cfg.banco, mundo.armazem, antiga)
     assert next(p for p in r["portoes"] if p["id"] == "camada_bruta_preservada")["ok"] is True
-    # depois de uma carga nova as linhas antigas continuam iguais: a referencia canonica confere
+    # after a new load the old rows stay the same: the canonical reference matches
     mundo.listagem(1, 2025, "2025-06-30", [registro_sintetico(3, ano=2024)], "2026-09-21T10:00:00-03:00")
     r = portoes.avaliar(mundo.cfg.banco, mundo.armazem, ref)
     assert next(p for p in r["portoes"] if p["id"] == "camada_bruta_preservada")["ok"] is True
 
 
-# ------------------------------------------------------------------ itens 29 e 30: backup -> restauracao -> resultado
+# ------------------------------------------------------------------ items 29 and 30: backup -> restore -> result
 def test_REV30_backup_restaurado_reproduz_o_mesmo_resultado(mundo):
     _, did = _processado(mundo)
     arq = banco.backup(mundo.con, mundo.cfg, "teste-restauracao")

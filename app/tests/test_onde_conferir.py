@@ -1,6 +1,6 @@
-"""'Origem do dado: onde conferir no Portal' (pedido do responsavel, 06/10/2026): cada valor leva ao lugar do Portal
-da Transparencia onde ele se encontra, com as condicoes de cada caminho; o registro tecnico (snapshot) fica recolhido.
-Usa o banco temporario montado do armazem real (fixture `real`): so leitura, nenhuma conexao de rede."""
+"""'Origem do dado: onde conferir no Portal' (requested by the owner, 06/10/2026): each value leads to the place in
+the Portal da Transparencia where it is found, with the conditions of each path; the technical record (snapshot) stays
+collapsed. Uses the temporary database built from the real store (fixture `real`): read-only, no network connection."""
 import html
 import re
 from urllib.parse import parse_qs, urlsplit
@@ -48,7 +48,7 @@ def test_resumo_traz_a_integra_de_cada_entidade_do_total_e_as_condicoes(app):
     secao = secao[:secao.index("</section>")]
     integras = [u for u, _ in _links(secao) if "/empenhos/restos-a-pagar?" in u]
     prefeitura = [u for u in integras if _q(u)["entidade"] == ["1"]]
-    assert [_q(u)["page"] for u in prefeitura] == [["0"], ["1"], ["2"]]           # 4.557 registros: 3 paginas
+    assert [_q(u)["page"] for u in prefeitura] == [["0"], ["1"], ["2"]]           # 4,557 records: 3 pages
     assert all(_q(u)["dataFinal"] == ["2026-08-31"] for u in integras)
     assert any(u == P.url_consulta(15) for u, _ in _links(secao))
     for condicao in ("o portal não soma", "Íntegra:", "equivale ao corte 31/12", "sem retenção nem estorno"):
@@ -65,7 +65,7 @@ def test_cartao_diz_em_que_coluna_da_tela_e_guarda_o_registro_tecnico(app):
     assert "O portal não mostra este total" in cartoes["saldo_total"]
     for c in cartoes.values():
         assert 'href="#onde-conferir"' in c and "Registro técnico (auditoria)" in c
-        assert re.search(r"<code>[0-9a-f]{32}</code>", c.split("Registro técnico")[1])   # o snapshot continua la
+        assert re.search(r"<code>[0-9a-f]{32}</code>", c.split("Registro técnico")[1])   # the snapshot is still there
 
 
 def test_empenho_leva_ao_proprio_empenho_no_corte_ao_detalhe_e_a_tela(app):
@@ -74,7 +74,7 @@ def test_empenho_leva_ao_proprio_empenho_no_corte_ao_detalhe_e_a_tela(app):
     links = dict((t, u) for u, t in _links(origem))
     q = _q(links["Este empenho no corte"])
     assert (q["empenho"], q["anoempenho"], q["dataFinal"], q["exercicio"]) == (["5659"], ["2025"], ["2026-08-31"], ["2026"])
-    assert links["Detalhe do empenho no portal"] == P.url_empenho(1, 2025, 5659)       # exercicio = ano do EMPENHO
+    assert links["Detalhe do empenho no portal"] == P.url_empenho(1, 2025, 5659)       # exercicio = year of the COMMITMENT
     assert links["Página da íntegra onde ele estava na coleta"].startswith(P.API + "/empenhos/restos-a-pagar?")
     assert links["Tela de consulta"] == P.url_consulta(1)
     assert "exercício 2026 no topo, Empenho 5659, Ano 2025" in origem

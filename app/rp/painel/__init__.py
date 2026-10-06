@@ -1,12 +1,12 @@
-"""Infraestrutura de leitura para o futuro dashboard (nao ha frontend no projeto).
+"""Read infrastructure for the dashboard.
 
-  consulta.py     Painel: consultas somente leitura sobre o banco (indicadores, cortes, entidades, empenhos,
-                  retratos, reconciliacao, coerencia entre publicacoes, visoes analiticas, regras, evidencias)
-  fontes.py       fontes de dados, naturezas de valor, dicionario de campos e texto de metodologia
-  publico.py      minimizacao de dados do nivel publico
-  explicacoes.py  explicacoes conhecidas das diferencas API x RREO (transcricao dos relatorios)
+  consulta.py     Painel: read-only queries over the database (indicators, cut-offs, entities, commitments,
+                  snapshots, reconciliation, consistency between publications, analytical views, rules, evidence)
+  fontes.py       data sources, value natures, field dictionary and methodology text
+  publico.py      data minimization for the public level
+  explicacoes.py  known explanations of the API x RREO differences (transcribed from the reports)
 
-O dashboard le desta camada; nunca chama a API da Elotech diretamente.
+The dashboard reads from this layer; it never calls the Elotech API directly.
 """
 from .consulta import Painel
 

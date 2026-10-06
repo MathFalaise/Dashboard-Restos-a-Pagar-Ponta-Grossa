@@ -1,10 +1,10 @@
-"""Sobe a interface com TODA conexao de saida bloqueada (equivalente a internet desligada), para o teste da 04.6.
+"""Starts the interface with EVERY outgoing connection blocked (equivalent to the internet turned off), for the 04.6 test.
 
-Uso (dentro de app/):  python ../docs/stages/04-pipeline/results/04_6_servidor_sem_rede.py BANCO PORTA REGISTRO.jsonl
+Usage (inside app/):  python ../docs/stages/04-pipeline/results/04_6_servidor_sem_rede.py BANCO PORTA REGISTRO.jsonl
 
-Antes de importar o programa, troca socket.connect e socket.getaddrinfo por versoes que so aceitam 127.0.0.1/::1/
-localhost. Toda tentativa de sair da maquina falha e fica gravada em REGISTRO.jsonl (uma linha por tentativa).
-Tambem aponta os proxies do ambiente para um endereco morto. Nao altera nenhuma configuracao do sistema.
+Before importing the program, it replaces socket.connect and socket.getaddrinfo with versions that only accept
+127.0.0.1/::1/localhost. Every attempt to leave the machine fails and is written to REGISTRO.jsonl (one line per
+attempt). It also points the environment's proxies to a dead address. It changes no system setting.
 """
 import json
 import os

@@ -1,8 +1,9 @@
-"""Revisao critica (05/10/2026), etapas B e C - duplicidade e elegibilidade: itens 1, 13, 14, 15 e 35 (casos 5 e 6).
+"""Critical review (05/10/2026), stages B and C - duplication and eligibility: items 1, 13, 14, 15 and 35 (cases 5
+and 6).
 
-Mundo sintetico (fixture `mundo`): o snapshot e gravado direto como 'completa', como um retrato antigo ou importado
-que nao passou pela trava nova do coletor. A derivacao, o painel e os portoes tem de tratar a chave repetida sozinhos:
-nenhuma copia somada duas vezes, nenhuma escolhida em silencio.
+Synthetic world (fixture `mundo`): the snapshot is written directly as 'completa', like an old or imported snapshot
+that did not go through the collector's new lock. The derivation, the panel and the gates must handle the repeated key
+on their own: no copy summed twice, none chosen silently.
 """
 import json
 
@@ -20,7 +21,7 @@ R2_OUTRO = registro_sintetico(2, ano=2024, aproc=70.0)
 
 
 def _cenario(mundo, retratos):
-    """`retratos`: [(quando, registros)] do mesmo corte da entidade 1. Devolve (snapshots, nid, did)."""
+    """`retratos`: [(when, records)] of the same cut-off of entity 1. Returns (snapshots, nid, did)."""
     mundo.catalogos({1: [2025]})
     snaps = [mundo.listagem(1, *CORTE, regs, quando) for quando, regs in retratos]
     nid, did = mundo.processar()
@@ -41,14 +42,14 @@ def _inscricao(painel):
     return painel.indicadores(*CORTE, entidade=1)["valores"]["inscricao_total"]["valor_c"]
 
 
-# ------------------------------------------------------------------ caso 6 do item 35: copia exata
+# ------------------------------------------------------------------ item 35 case 6: exact copy
 def test_REV01_copia_exata_nao_e_somada_e_retrato_anterior_vale(mundo):
     (s1, s2), _, did = _cenario(mundo, [(T1, [R1, R2]), (T2, [R1, R2, R2])])
     con = mundo.con
     [a] = _anomalias(con, did)
     assert a == {"ocorrencias": 2, "natureza": "exata", "posicoes": [[0, 1], [0, 2]]}
     assert derivar.coletas_vigentes(con)[(1, 2025, "2025-01-01", "2025-12-31")] == s1["coleta_id"]
-    # visao da derivacao: 100 + 50 (a regra antiga somava 100 + 50 + 50 do retrato novo)
+    # the derivation's view: 100 + 50 (the old rule summed 100 + 50 + 50 of the new snapshot)
     g = con.execute("SELECT valor_c FROM visao_valor WHERE derivacao_id=? AND visao='entidade' AND componente='g' "
                     "AND coletas_json=?", (did, json.dumps([s1["snapshot_uid"]]))).fetchall()
     assert g and all(v == 15000 for (v,) in g)
@@ -68,12 +69,12 @@ def test_REV01_painel_usa_o_retrato_valido_e_avisa(mundo):
         assert p._vigentes(p.contexto(), None) == derivar.coletas_vigentes(mundo.con)
 
 
-# ------------------------------------------------------------------ caso 5 do item 35: conteudo diferente
+# ------------------------------------------------------------------ item 35 case 5: different content
 def test_REV01_copia_conflitante_bloqueia_o_retrato(mundo):
     (s1, _), _, did = _cenario(mundo, [(T1, [R1, R2]), (T2, [R1, R2, R2_OUTRO])])
     [a] = _anomalias(mundo.con, did)
     assert a["natureza"] == "conflitante" and a["ocorrencias"] == 2
-    with mundo.painel() as p:      # nenhuma das duas versoes do empenho 2 (50 ou 70) e escolhida
+    with mundo.painel() as p:      # neither of the two versions of commitment 2 (50 or 70) is chosen
         assert _inscricao(p) == 15000
         assert p.indicadores(*CORTE, entidade=1)["entidades"][0]["snapshot"]["snapshot_uid"] == s1["snapshot_uid"]
 
@@ -87,13 +88,13 @@ def test_REV01_so_retrato_ambiguo_deixa_o_dado_indisponivel(mundo):
         assert not r["disponivel"] and r["valores"]["inscricao_total"]["valor_c"] is None
         assert r["entidades"][0]["situacao_do_dado"]["codigo"] == "ambiguo"
         assert "não há retrato válido anterior" in " ".join(r["avisos"])
-        m = p.indicadores(*CORTE)                        # Municipio: entidade do catalogo sem retrato valido
+        m = p.indicadores(*CORTE)                        # Municipality: catalog entity without a valid snapshot
         assert not m["disponivel"] and "CHAVE-DUP" in m["motivo_indisponivel"]
 
 
 def test_REV01_corte_so_com_retrato_ambiguo_aparece_e_confere_com_o_bruto(mundo):
-    # R1 do contrato analitico: corte sem dado aparece com a situacao, nunca omitido. O oraculo bruto decide a mesma
-    # elegibilidade lendo o JSON do armazem (sem a anomalia gravada pela derivacao)
+    # R1 of the analytical contract: a cut-off without data shows up with its situation, never omitted. The raw oracle decides the same
+    # eligibility by reading the store's JSON (without the anomaly recorded by the derivation)
     _cenario(mundo, [(T1, [R1, R2])])
     mundo.listagem(1, 2025, "2025-04-30", [R1, R2, R2], T2)
     mundo.processar()
@@ -109,7 +110,7 @@ def test_REV01_corte_so_com_retrato_ambiguo_aparece_e_confere_com_o_bruto(mundo)
             assert serie == [("2025-04-30", esperado), ("2025-12-31", "com_dados")]
 
 
-# ------------------------------------------------------------------ item 14: portao
+# ------------------------------------------------------------------ item 14: gate
 def test_REV14_portao_reprova_com_a_natureza_da_repeticao(mundo):
     _cenario(mundo, [(T1, [R1, R2]), (T2, [R1, R2, R2, R1, registro_sintetico(1, ano=2024, aproc=1.0)])])
     p, r = _portao(mundo, "retrato_sem_chave_repetida")
@@ -125,21 +126,21 @@ def test_REV14_sem_repeticao_o_portao_aprova_e_nada_novo_e_gravado(mundo):
     assert not _anomalias(con, did)
     assert con.execute("SELECT COUNT(*) FROM verificacao WHERE derivacao_id=? AND descricao=?",
                        (did, derivar.VERIF_RETRATO_AMBIGUO)).fetchone()[0] == 0
-    with mundo.painel() as painel:                       # o retrato mais novo e o vigente, como sempre foi
+    with mundo.painel() as painel:                       # the newest snapshot is the current one, as it always was
         assert _inscricao(painel) == 17000
 
 
-# ------------------------------------------------------------------ item 13: mapa por chave nunca escolhe uma copia
+# ------------------------------------------------------------------ item 13: a map by key never picks a copy
 def test_REV13_mapa_por_chave_recusa_repeticao():
     linha = lambda emp, v: {"anoempenho": 2024, "empenho": emp, "coleta_id": 9, "proc_c": v}
     assert set(derivar._por_chave([linha(1, 1), linha(2, 2)], "teste")) == {(2024, 1), (2024, 2)}
-    with pytest.raises(derivar.ChaveAmbigua, match="repetida"):      # antes: {k: r} ficava com a ULTIMA copia
+    with pytest.raises(derivar.ChaveAmbigua, match="repetida"):      # before: {k: r} kept the LAST copy
         derivar._por_chave([linha(1, 1), linha(1, 2)], "teste")
 
 
 def test_REV13_continuidade_nunca_recebe_retrato_ambiguo(mundo):
-    # fechamento 2024 ambiguo + abertura 2025: o ambiguo nao e vigente, entao nao ha continuidade a calcular (antes:
-    # o fechamento entrava com a ultima copia de cada chave)
+    # ambiguous 2024 closing + 2025 opening: the ambiguous one is not current, so there is no continuity to compute (before:
+    # the closing came in with the last copy of each key)
     mundo.catalogos({1: [2024, 2025]})
     mundo.listagem(1, 2024, "2024-12-31", [registro_sintetico(1, ano=2023), registro_sintetico(1, ano=2023)], T1)
     mundo.listagem(1, 2025, "2025-12-31", [registro_sintetico(1, ano=2023)], T1)

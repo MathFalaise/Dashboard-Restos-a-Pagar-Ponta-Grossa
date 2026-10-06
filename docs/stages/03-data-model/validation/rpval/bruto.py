@@ -1,11 +1,11 @@
-"""Camada 0: criação do banco e registro de coletas brutas.
+"""Layer 0: database creation and recording of raw collections.
 
-VALIDAÇÃO DO MODELO — Etapa 03. Não é código de produção.
+MODEL VALIDATION - stage 03. Not production code.
 
-`registrar_coleta` é o único caminho de escrita da camada bruta: grava a coleta
-e todas as respostas numa só transação (a camada é imutável; não existe
-"completar depois"). `carregar_etapas_anteriores` importa, sem alterar um
-byte, o que as Etapas 01 e 02 baixaram.
+`registrar_coleta` is the only write path of the raw layer: it writes the collection
+and all responses in a single transaction (the layer is immutable; there is no
+"complete it later"). `carregar_etapas_anteriores` imports, without changing a
+byte, what stages 01 and 02 downloaded.
 """
 import hashlib
 import json
@@ -48,9 +48,9 @@ def coletor(con, nome, versao, arquivo_codigo=None, descricao=None):
 
 def registrar_coleta(con, *, tipo, endpoint, parametros, coletada_em, origem_carimbo, status,
                      coletor_id, respostas, observacao=None):
-    """respostas: lista de dicts {url, corpo(bytes), http_status, cabecalhos, recebida_em}, na ordem."""
+    """respostas: list of dicts {url, corpo(bytes), http_status, cabecalhos, recebida_em}, in order."""
     p = parametros
-    with con:  # uma transação: coleta e respostas entram juntas ou não entram
+    with con:  # one transaction: the collection and the responses go in together or not at all
         cur = con.execute(
             "INSERT INTO coleta (tipo, endpoint, parametros_json, entidade, exercicio, data_inicial, data_final, "
             "tipo_pesquisa, anoempenho, empenho, id_arquivo, coletada_em, origem_carimbo, status, "
@@ -71,7 +71,7 @@ def registrar_coleta(con, *, tipo, endpoint, parametros, coletada_em, origem_car
 
 
 def _iso(s):
-    """'2026-09-29T20:12:30' (sem fuso, horário local da coleta) -> ISO com -03:00."""
+    """'2026-09-29T20:12:30' (no time zone, local time of the collection) -> ISO with -03:00."""
     return datetime.fromisoformat(s).replace(tzinfo=BRT).isoformat(timespec="seconds")
 
 
@@ -80,7 +80,7 @@ def _mtime(p):
 
 
 def _status_listagem(corpos):
-    """Completa se a última página diz last=true e a soma bate com totalElements."""
+    """Complete if the last page says last=true and the sum matches totalElements."""
     ds = [json.loads(c) for c in corpos]
     ok = ds[-1].get("last") and sum(d["numberOfElements"] for d in ds) == ds[-1]["totalElements"]
     return "completa" if ok else "incompleta"
@@ -96,12 +96,12 @@ def _params_rp(url):
 
 
 def carregar_etapas_anteriores(con, raiz):
-    """Importa os dados brutos das Etapas 01 e 02. Devolve um resumo."""
+    """Imports the raw data of stages 01 and 02. Returns a summary."""
     raiz = Path(raiz)
     e2 = raiz / "data" / "stage02-raw"
     resumo = {}
 
-    # 1) listagens de RP da Etapa 02, agrupadas por consulta (MANIFESTO)
+    # 1) stage 02 RP listings, grouped by query (MANIFESTO)
     col_rp = coletor(con, "etapa02-investigacao/coletar.py", "1", raiz / "docs/stages/02-accounting-validation/investigation/coletar.py",
                      "script de investigação da Etapa 02")
     grupos = {}
@@ -124,7 +124,7 @@ def carregar_etapas_anteriores(con, raiz):
         n += 1
     resumo["rp_listagem (manifesto)"] = n
 
-    # 2) recoleta do mesmo corte, 13 min depois (Etapa 02 §3.6): OUTRO snapshot
+    # 2) re-collection of the same cut-off, 13 min later (stage 02 section 3.6): ANOTHER snapshot
     col_re = coletor(con, "etapa02-recoleta-inline", "1", None, "recoleta feita por script inline na Etapa 02")
     arqs = sorted((e2 / "api" / "recoleta").glob("*_p*_recoleta.json"))
     resp = []
@@ -140,7 +140,7 @@ def carregar_etapas_anteriores(con, raiz):
                      observacao="recoleta do mesmo corte ~13 min depois; horário aproximado (mtime)")
     resumo["rp_listagem (recoleta)"] = 1
 
-    # 3) movimentações por empenho
+    # 3) movements per commitment
     col_mv = coletor(con, "etapa02-investigacao/casos.py", "1", raiz / "docs/stages/02-accounting-validation/investigation/casos.py")
     n = 0
     for a in sorted((e2 / "movimentacao").glob("mov_ent*_ex*_emp*.json")):
@@ -157,7 +157,7 @@ def carregar_etapas_anteriores(con, raiz):
         n += 1
     resumo["movimentacao"] = n
 
-    # 4) listagens de publicações e PDFs do RREO (id do arquivo pelo nome no Content-Disposition)
+    # 4) publication listings and RREO PDFs (file id from the name in Content-Disposition)
     col_man = coletor(con, "etapa02-curl-manual", "1", None, "downloads com curl durante a Etapa 02")
     pubs = {}
     for a in sorted((e2 / "rreo").glob("api_publicacoes_1_ent1_ex*.json")):
@@ -190,7 +190,7 @@ def carregar_etapas_anteriores(con, raiz):
         n += 1
     resumo["rreo_pdf"] = n
 
-    # 5) catálogos baixados na Etapa 01
+    # 5) catalogs downloaded in stage 01
     col_e1 = coletor(con, "etapa01-curl-manual", "1", None, "downloads com curl durante a Etapa 01")
     e1 = raiz / "data" / "stage01-samples"
     for tipo, arq, endpoint, q in (("entidades", "api_entidades_lista.json", "/api/entidades/lista", {}),

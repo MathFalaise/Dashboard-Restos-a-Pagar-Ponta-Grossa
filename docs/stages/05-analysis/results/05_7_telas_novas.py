@@ -1,11 +1,11 @@
-"""Valores das telas novas da Etapa 05 conferidos com a camada painel (Subetapa 05.7; somente leitura).
+"""Values of the new stage 05 screens checked against the panel layer (sub-stage 05.7; read-only).
 
-Uso (dentro de app/):  python ../docs/stages/05-analysis/results/05_7_telas_novas.py SAIDA.json [--banco CAMINHO]
+Usage (inside app/):  python ../docs/stages/05-analysis/results/05_7_telas_novas.py SAIDA.json [--banco CAMINHO]
 
-Percorre por WSGI (sem servidor) as telas das subetapas 05.2 a 05.6 em todos os escopos e grava todo
-<data id value> de cada pagina. Para cada pagina, monta o valor esperado de cada id a partir da camada painel (a mesma
-consulta que a tela usa) e registra: ids esperados ausentes, valores diferentes e ids exibidos que nao foram
-conferidos. Criterio: os tres vazios.
+Walks through WSGI (no server) the screens of sub-stages 05.2 to 05.6 in every scope and records every
+<data id value> of each page. For each page, builds the expected value of each id from the panel layer (the same
+query the screen uses) and records: expected ids that are missing, different values and shown ids that were not
+checked. Criterion: all three empty.
 """
 import argparse
 import json

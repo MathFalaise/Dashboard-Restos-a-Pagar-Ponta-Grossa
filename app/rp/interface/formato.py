@@ -1,10 +1,10 @@
-"""Formatacao HTML da interface.
+"""HTML formatting for the interface.
 
-* Todo texto vindo do banco passa por `esc` (escape de HTML, inclusive aspas): nome de credor, descricao de
-  fonte de recurso ou rotulo de PDF nunca viram marcacao.
-* Dinheiro chega em centavos (inteiro) e e formatado com aritmetica inteira: nada de float, nada de
-  arredondamento. O valor exato em centavos vai junto, legivel por maquina, no elemento <data value="...">.
-* Ausencia de valor NUNCA vira "R$ 0,00": aparece como texto explicito (sem valor, com o motivo).
+* Every text coming from the database goes through `esc` (HTML escaping, quotes included): a creditor name, a
+  funding source description or a PDF label never becomes markup.
+* Money arrives in cents (integer) and is formatted with integer arithmetic: no float, no rounding. The exact value
+  in cents goes along, machine-readable, in the <data value="..."> element.
+* A missing value NEVER becomes "R$ 0,00": it shows up as explicit text (no value, with the reason).
 """
 import html
 from urllib.parse import urlencode
@@ -26,7 +26,7 @@ def esc(v):
 
 
 def moeda(c):
-    """Centavos (int) -> 'R$ 1.234.567,89' / '-R$ 12,30'. None -> None (quem chama decide o texto de ausencia)."""
+    """Cents (int) -> 'R$ 1.234.567,89' / '-R$ 12,30'. None -> None (the caller decides the absence text)."""
     if c is None:
         return None
     if isinstance(c, bool) or not isinstance(c, int):
@@ -40,7 +40,7 @@ def inteiro(n):
 
 
 def valor(c, ident=None, ausencia="sem valor"):
-    """<data> com o valor exato em centavos, ou o texto de ausencia (nunca zero)."""
+    """<data> with the exact value in cents, or the absence text (never zero)."""
     if c is None:
         return f'<span class="sem-valor">{esc(ausencia)}</span>'
     atributo_id = f' id="{esc(ident)}"' if ident else ""
@@ -73,9 +73,9 @@ def regras(lista):
 
 
 def situacao_regra(codigo_versao, situacao, ressalva=None):
-    """'RREO-COL v2' + situacao -> texto com o rotulo explicito: regra experimental = ANALISE EXPERIMENTAL; nao
-    recomendada = analise nao recomendada. So regra operacional sai sem destaque; promovida sem conferencia
-    independente (decisao D7) sai como "operacional com ressalva", com o motivo."""
+    """'RREO-COL v2' + situation -> text with the explicit label: experimental rule = ANALISE EXPERIMENTAL; not
+    recommended = analise nao recomendada. Only an operational rule shows without a badge; one promoted without an
+    independent check (decision D7) shows as "operacional com ressalva", with the reason."""
     if situacao == "experimental":
         return f'{esc(codigo_versao)} <span class="selo-analise">ANÁLISE EXPERIMENTAL</span>'
     if situacao == "nao_recomendada":
@@ -86,7 +86,7 @@ def situacao_regra(codigo_versao, situacao, ressalva=None):
 
 
 def selo(fonte, nat, lista_regras=None, calculo=None):
-    """Linha 'Fonte - Natureza - Regra' que acompanha todo valor. Sem regra, mostra o calculo (ex.: soma de proc)."""
+    """'Fonte - Natureza - Regra' line that goes with every value. Without a rule, it shows the calculation (e.g. sum of proc)."""
     partes = [f'<span class="selo-fonte">Fonte: {esc(FONTE_CURTA.get(fonte, fonte))}</span>', f"Natureza: {natureza(nat)}"]
     if lista_regras:
         partes.append(f"Regra: {regras(lista_regras)}")
@@ -111,19 +111,19 @@ def _th(texto, dica):
 
 
 def tabela(cabecalho, linhas, classe="tabela"):
-    """cabecalho: lista de (texto, dica ou None); linhas: listas de celulas em HTML JA escapado. Celula que ja
-    comeca com '<td' (ex.: colspan) entra como esta."""
+    """header: list of (text, hint or None); rows: lists of cells in ALREADY escaped HTML. A cell that already
+    starts with '<td' (e.g. colspan) goes in as is."""
     th = "".join(_th(t, d) for t, d in cabecalho)
     corpo = "".join("<tr>" + "".join(c if c.startswith("<td") else f"<td>{c}</td>" for c in l) + "</tr>" for l in linhas)
     return f'<div class="rolagem"><table class="{esc(classe)}"><thead><tr>{th}</tr></thead><tbody>{corpo}</tbody></table></div>'
 
 
 def lista_definicoes(pares):
-    """[(termo, HTML ja escapado)] -> <dl>."""
+    """[(term, already escaped HTML)] -> <dl>."""
     return "<dl>" + "".join(f"<dt>{esc(t)}</dt><dd>{d}</dd>" for t, d in pares) + "</dl>"
 
 
 def opcoes(lista, selecionado):
-    """[(valor, rotulo)] -> <option>s, marcando o selecionado."""
+    """[(value, label)] -> <option>s, marking the selected one."""
     return "".join(f'<option value="{esc(v)}"{" selected" if str(v) == str(selecionado) else ""}>{esc(r)}</option>'
                    for v, r in lista)

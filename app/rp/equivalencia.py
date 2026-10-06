@@ -1,16 +1,17 @@
-"""Impressoes digitais ESTAVEIS de um banco, para provar que dois bancos tem o mesmo conteudo (SOMENTE LEITURA).
+"""STABLE fingerprints of a database, to prove that two databases have the same content (READ-ONLY).
 
-`execucoes.hash_camada0` continua existindo (e o valor dos relatorios homologados), mas so prova a integridade do MESMO
-arquivo ao longo do tempo: ele inclui ids internos e carimbos de registro (coletor_versao.registrado_em,
-esquema_versao.aplicada_em), que mudam num banco reconstruido a partir do armazem (auditoria DET-02).
+`execucoes.hash_camada0` still exists (it is the value in the homologated reports), but it only proves the integrity
+of the SAME file over time: it includes internal ids and recording timestamps (coletor_versao.registrado_em,
+esquema_versao.aplicada_em), which change in a database rebuilt from the store (audit DET-02).
 
-Aqui cada camada e reduzida a identificadores que nao dependem do banco: snapshot_uid, ordem da resposta, indice do
-registro, SHA-256 dos bytes, codigo e versao da regra. Assim "banco ativo" x "banco reconstruido do armazem" pode ser
-comparado camada a camada:
-  * camada 0: coletas (parametros, data, status, coletor), respostas (ordem, URL, cabecalhos, hash, tamanho) e evidencias;
-  * normalizacao (a mais recente): cada tabela da camada 1, com a posicao de origem estavel;
-  * derivacao: o hash_resultado (ja estavel) da ultima derivacao de cada vigencia, recalculado.
-Campos que registram QUANDO o processamento rodou (executada_em, extraida_em) ficam fora: nao sao conteudo.
+Here each layer is reduced to identifiers that do not depend on the database: snapshot_uid, response order, record
+index, SHA-256 of the bytes, rule code and version. So "active database" x "database rebuilt from the store" can be
+compared layer by layer:
+  * layer 0: collections (parameters, date, status, collector), responses (order, URL, headers, hash, size) and
+    evidence;
+  * normalization (the most recent): each layer 1 table, with the stable source position;
+  * derivation: the hash_resultado (already stable) of the last derivation of each validity, recomputed.
+Fields that record WHEN processing ran (executada_em, extraida_em) stay out: they are not content.
 """
 import hashlib
 import json
@@ -37,7 +38,7 @@ def _atualizar(h, linha):
 
 
 def camada0(con):
-    """Impressao da camada bruta por identificadores do armazem."""
+    """Fingerprint of the raw layer by store identifiers."""
     h, n = _h(), {"coletas": 0, "respostas": 0, "objetos": 0, "evidencias": 0}
     for row in con.execute(
             "SELECT c.snapshot_uid, c.tipo, c.endpoint, c.parametros_json, c.coletada_em, c.origem_carimbo, c.status, "
@@ -61,7 +62,7 @@ def camada0(con):
 
 
 def normalizacao(con, nid=None):
-    """Impressao de cada tabela da camada 1 de uma normalizacao (padrao: a mais recente)."""
+    """Fingerprint of each layer 1 table of a normalization (default: the most recent)."""
     if nid is None:
         nid = con.execute("SELECT MAX(id) FROM normalizacao_execucao").fetchone()[0]
     if nid is None:
@@ -88,8 +89,8 @@ def normalizacao(con, nid=None):
 
 
 def derivacoes(con):
-    """Ultima derivacao de cada vigencia: hash_resultado gravado e recalculado (ja e estavel por construcao) e o hash
-    semantico (so valores e relacoes, sem anomalia/verificacao; revisao critica, item 25)."""
+    """Last derivation of each validity: recorded and recomputed hash_resultado (already stable by construction) and the
+    semantic hash (values and relations only, without anomaly/check; critical review, item 25)."""
     saida = {}
     for did, vig in con.execute("SELECT MAX(id), vigencia_em FROM derivacao_execucao GROUP BY IFNULL(vigencia_em, '')"):
         gravado, versao = con.execute("SELECT hash_resultado, derivador_versao FROM derivacao_execucao WHERE id=?",
@@ -105,7 +106,7 @@ def resumo(con):
 
 
 def comparar(con_a, con_b):
-    """Compara dois bancos camada a camada. `equivalentes` so e True se tudo for igual."""
+    """Compares two databases layer by layer. `equivalentes` is only True if everything is equal."""
     a, b = resumo(con_a), resumo(con_b)
     c0 = a["camada0"] == b["camada0"]
     na, nb = a["normalizacao"] or {}, b["normalizacao"] or {}
@@ -115,7 +116,7 @@ def comparar(con_a, con_b):
     der = {v: (a["derivacoes"].get(v, {}).get("hash_recalculado") == b["derivacoes"].get(v, {}).get("hash_recalculado")
                and a["derivacoes"].get(v, {}).get("hash_recalculado") is not None) for v in vigs}
     integras = all(d["hash_gravado"] == d["hash_recalculado"] for x in (a, b) for d in x["derivacoes"].values())
-    # resultado financeiro igual mesmo quando so o diagnostico difere (texto de verificacao, detalhe de anomalia)
+    # same financial result even when only the diagnostics differ (check text, anomaly detail)
     semantica = {v: (a["derivacoes"].get(v, {}).get("hash_semantico") == b["derivacoes"].get(v, {}).get("hash_semantico")
                      and a["derivacoes"].get(v, {}).get("hash_semantico") is not None) for v in vigs}
     return {"equivalentes": c0 and norm and all(der.values()) and integras,

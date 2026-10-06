@@ -1,8 +1,8 @@
-"""Fontes de dados, naturezas de valor, dicionario de campos e metodologia da camada de consulta.
+"""Data sources, value natures, field dictionary and methodology of the query layer.
 
-So declaracoes (sem acesso ao banco). Os textos dizem apenas o que a documentacao do projeto demonstra:
-a atribuicao da API a plataforma Oxy Transparencia (Elotech) vem do actuator/info consultado na Etapa 01
-e da especificacao OpenAPI guardada no bruto; nada aqui afirma algo que o projeto nao comprovou.
+Declarations only (no database access). The texts only say what the project's documentation demonstrates: the
+attribution of the API to the Oxy Transparencia platform (Elotech) comes from the actuator/info queried in stage 01
+and from the OpenAPI specification kept in the raw data; nothing here asserts something the project did not prove.
 """
 
 ELOTECH = {
@@ -52,7 +52,7 @@ NATUREZAS = {
     "diferenca": "Diferença — divergência entre duas fontes ou dois retratos",
 }
 
-# Colunas do RREO Anexo VII (rotulos transcritos na Etapa 02, docs/stages/02-accounting-validation/REPORT.md secao 5)
+# RREO Annex VII columns (labels transcribed in stage 02, docs/stages/02-accounting-validation/REPORT.md section 5)
 COLUNAS_RREO = {
     "a": "Processados — inscritos em exercícios anteriores",
     "b": "Processados — inscritos em 31/dez do exercício anterior",
@@ -67,7 +67,7 @@ COLUNAS_RREO = {
     "k": "Não processados — saldo = (f+g) − (i+j)",
     "L": "Saldo total = e + k",
 }
-# coluna normalizada -> (campo da API, rotulo apresentado, significado confirmado na Etapa 02, status de evidencia)
+# normalized column -> (API field, displayed label, meaning confirmed in stage 02, evidence status)
 CAMPOS = {
     "proc_c": ("proc", "Inscrição processada",
                "Saldo liquidado e não pago antes de dataInicial; com dataInicial = 01/01, RP Processados inscritos.",
@@ -124,7 +124,7 @@ CAMPOS = {
     "cnpj_nome": ("cnpjNome", "Documento e nome do credor", "Como a API devolve (restrito).", "campo da API"),
 }
 
-# valores derivados por registro (camada 2): coluna -> (rotulo, formula, regra)
+# per-record derived values (layer 2): column -> (label, formula, rule)
 DERIVADOS = {
     "categoria": ("Categoria", "ambos / processado / não processado / sem saldo de abertura, por proc e aproc", ("CAT", 1)),
     "faixa_processado": ("Faixa do processado", "(b) se anoempenho = exercício − 1; senão (a)", ("FAIXA", 1)),

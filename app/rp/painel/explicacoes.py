@@ -1,20 +1,20 @@
-"""Explicacoes conhecidas das diferencas (transcricao versionada dos achados das Etapas 02-04.4).
+"""Known explanations of the differences (versioned transcription of the findings of stages 02-04.4).
 
-Nada aqui e analise nova: cada entrada aponta o relatorio que a sustenta. Uma explicacao NUNCA altera o valor da
-API; ela so qualifica a diferenca mostrada na area de reconciliacao. Diferenca sem entrada aparece com a situacao
-"nao determinada".
+Nothing here is new analysis: each entry points to the report that supports it. An explanation NEVER changes the
+API value; it only qualifies the difference shown in the reconciliation area. A difference without an entry shows
+up with the situation "nao determinada".
 
-EXPLICACOES: diferencas API x RREO (tabela conciliacao_rreo). Campos: exercicios, datas_finais (None = todas do
-exercicio), escopo (None = entidade e consolidado), colunas (None = todas), regra ("RREO-COL v1"/"RREO-COL v2" ou
-None = qualquer), classe, situacao, status_evidencia, texto, fonte.
-COERENCIA: diferencas entre duas publicacoes (L do RREO de dezembro de A x (a)+(f) dos RREOs de A+1).
+EXPLICACOES: API x RREO differences (conciliacao_rreo table). Fields: exercicios, datas_finais (None = all of the
+year), escopo (None = entity and consolidated), colunas (None = all), regra ("RREO-COL v1"/"RREO-COL v2" or
+None = any), classe, situacao, status_evidencia, texto, fonte.
+COERENCIA: differences between two publications (L of December's RREO of A x (a)+(f) of the RREOs of A+1).
 
-Classes (docs/stages/04-pipeline/REPORT_04_4.md secao 9): T = lancamento com data retroativa feito depois da emissao do RREO;
-C = copias 24xxxxx ausentes do RREO; R = reclassificacao; P = regra de pagamento (RREO-COL);
-E = caso isolado de entidade; H = hipotese de divisao de cancelamento; ND = nao determinada.
-Situacao: explicada (valor atribuido a registros ou documentos identificados, com CONFIRMADO ou FORTE EVIDENCIA);
-parcialmente explicada (so parte do valor atribuida); hipotese (causa provavel, sem atribuicao do valor a registros);
-nao determinada. `status_evidencia` repete o grau de evidencia registrado no relatorio de origem.
+Classes (docs/stages/04-pipeline/REPORT_04_4.md section 9): T = backdated entry made after the RREO was issued;
+C = 24xxxxx copies missing from the RREO; R = reclassification; P = payment rule (RREO-COL);
+E = isolated entity case; H = cancellation split hypothesis; ND = not determined.
+Situation: explained (value attributed to identified records or documents, with CONFIRMADO or FORTE EVIDENCIA);
+partially explained (only part of the value attributed); hypothesis (likely cause, without attributing the value to
+records); not determined. `status_evidencia` repeats the evidence grade recorded in the source report.
 """
 
 SITUACOES = ("explicada", "parcialmente explicada", "hipótese", "não determinada")
@@ -165,9 +165,9 @@ CAMPOS_SAIDA = ("classe", "situacao", "status_evidencia", "texto", "fonte")
 
 
 def resumo(achadas):
-    """Situacao de uma diferenca a partir das entradas aplicaveis. Cada entrada costuma cobrir PARTE do valor,
-    entao a diferenca so e 'explicada' quando todas as entradas sao explicadas; havendo parte explicada e parte
-    nao, e 'parcialmente explicada'."""
+    """Situation of a difference from the applicable entries. Each entry usually covers PART of the value, so the
+    difference is only 'explicada' when all entries are explained; with part explained and part not, it is
+    'parcialmente explicada'."""
     s = {e["situacao"] for e in achadas}
     if not s:
         return "não determinada"
@@ -179,7 +179,7 @@ def resumo(achadas):
 
 
 def explicar(exercicio, data_final, escopo, coluna, regra):
-    """Entradas aplicaveis a uma diferenca API x RREO e a situacao resumida (ver `resumo`)."""
+    """Entries applicable to an API x RREO difference and the summarized situation (see `resumo`)."""
     achadas = [e for e in EXPLICACOES
                if exercicio in e["exercicios"]
                and (e["datas_finais"] is None or data_final in e["datas_finais"])
@@ -190,6 +190,6 @@ def explicar(exercicio, data_final, escopo, coluna, regra):
 
 
 def explicar_coerencia(escopo, de):
-    """Entradas aplicaveis a uma diferenca entre publicacoes (A = `de`) e a situacao resumida."""
+    """Entries applicable to a difference between publications (A = `de`) and the summarized situation."""
     achadas = [e for e in COERENCIA if escopo in e["escopos"] and e["de"] == de]
     return achadas, resumo(achadas)

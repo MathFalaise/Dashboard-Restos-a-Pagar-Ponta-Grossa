@@ -1,12 +1,12 @@
-"""Testes da Subetapa 05.3: serie entre exercicios (contrato M-03 e M-04; plano, secao 05.3).
+"""Tests of sub-stage 05.3: series across fiscal years (contract M-03 and M-04; plan, section 05.3).
 
-* corte representativo unico por exercicio para todos os escopos (R8); exercicio sem cobertura; exercicio sem
-  nenhum corte com o Municipio disponivel = lacuna para todos os escopos;
-* fechamento de A x abertura de A+1 = (a)+(f)(A+1) - S1(A) pela FAIXA v1 (R2); no Municipio, R7;
-* verificacao de continuidade lida da derivacao (regime "derivacao", sem reimplementar a regra);
-* texto do retrato em todo ponto: estado atual da base, nunca "o que se sabia na epoca";
-* validacao independente: serie = recalculo do JSON bruto (recalculo_bruto.py); tela = painel.
-SINTETICO = banco temporario com registros inventados (fixture `mundo`).
+* a single representative cut-off per fiscal year for every scope (R8); a year without coverage; a year without any
+  cut-off with the Municipality available = a gap for every scope;
+* closing of A x opening of A+1 = (a)+(f)(A+1) - S1(A) by FAIXA v1 (R2); in the Municipality, R7;
+* continuity check read from the derivation ("derivacao" regime, without reimplementing the rule);
+* snapshot text at every point: current state of the base, never "what was known at the time";
+* independent validation: series = recalculation from the raw JSON (recalculo_bruto.py); screen = panel.
+SINTETICO = temporary database with invented records (fixture `mundo`).
 """
 import json
 import re
@@ -26,9 +26,9 @@ PROIBIDO = re.compile(r"(?i)situação (conhecida )?em \d{4}|conhecid[ao] (em|na
 # ================================================================== SINTETICO
 @pytest.fixture
 def historico(mundo):
-    """2022: entidade 1. 2023: sem nenhuma coleta (no catalogo da entidade 1). 2024: entidades 1 e 15 em 31/12.
-    2025: 31/10 com as duas; 31/12 so da entidade 1 (exercicio em aberto -> 31/10). 2026: so a entidade 1, sem o
-    Municipio completo em nenhum corte (lacuna para todos os escopos)."""
+    """2022: entity 1. 2023: no collection at all (in entity 1's catalog). 2024: entities 1 and 15 on 31/12.
+    2025: 31/10 with both; 31/12 only for entity 1 (open fiscal year -> 31/10). 2026: only entity 1, without the full
+    Municipality at any cut-off (a gap for every scope)."""
     mundo.catalogos({1: [2022, 2023, 2024, 2025, 2026], 15: [2024, 2025, 2026]})
     mundo.listagem(1, 2022, "2022-12-31", [_reg(9, ano=2021, aproc=10.0)], T0)
     mundo.listagem(1, 2024, "2024-12-31", [_reg(1, ano=2023, aproc=100.0, pagoAProc=30.0),
@@ -51,13 +51,13 @@ def test_SINTETICO_universo_corte_representativo_e_lacunas(historico):
     with historico.painel() as p:
         assert p.corte_representativo(2024)["data_final"] == "2024-12-31" and not p.corte_representativo(2024)["aberto"]
         rep25 = p.corte_representativo(2025)
-        assert rep25["data_final"] == "2025-10-31" and rep25["aberto"]                       # R8: nao 31/12
+        assert rep25["data_final"] == "2025-10-31" and rep25["aberto"]                       # R8: not 31/12
         assert p.corte_representativo(2026)["motivo"] == "Município indisponível em todos os cortes do exercício"
         for ent in (None, 1, 15):
             pts = {x["exercicio"]: x for x in p.serie_entre_exercicios(ent)["exercicios"]}
             assert sorted(pts) == [2022, 2023, 2024, 2025, 2026]
             assert pts[2023]["situacao"]["codigo"] == "exercicio_sem_cobertura" and _sem_valor(pts[2023])
-            assert pts[2025]["data_final"] == "2025-10-31"                                 # o mesmo para todo escopo
+            assert pts[2025]["data_final"] == "2025-10-31"                                 # the same for every scope
             assert pts[2026]["situacao"]["codigo"] == "municipio_indisponivel" and _sem_valor(pts[2026])
             assert pts[2026]["motivo_indisponivel"] == "Município indisponível em todos os cortes do exercício"
         um = {x["exercicio"]: x for x in p.serie_entre_exercicios(1)["exercicios"]}
@@ -70,7 +70,7 @@ def test_SINTETICO_fechamento_e_abertura_com_sinal_e_faixa(historico):
     with historico.painel() as p:
         fa = {f["de"]: f for f in p.serie_entre_exercicios()["fechamento_abertura"]}
         assert fa[2022]["motivo_indisponivel"].startswith("exercício 2023 sem valor")
-        f = fa[2024]                     # S1(2024) = 70+40 (ent. 1) + 20 (ent. 15); abertura 2025 sem a faixa g (ano 2024)
+        f = fa[2024]                     # S1(2024) = 70+40 (ent. 1) + 20 (ent. 15); 2025 opening without band g (year 2024)
         assert (f["s1_de_c"], f["a_mais_f_para_c"], f["diferenca_c"]) == (13000, 7000 + 4000 + 1500, -500)
         assert f["natureza"] == "diferenca" and f["regras"] == ["S1 v1", "FAIXA v1"]
         assert f["proveniencia"]["de"]["snapshots"] and f["proveniencia"]["para"]["snapshots"]
@@ -107,7 +107,7 @@ def test_SINTETICO_continuidade_e_lida_da_derivacao(historico):
             "(SELECT MAX(id) FROM derivacao_execucao WHERE vigencia_em IS NULL)", (CONTINUIDADE,))]
         esperado = [(v, fa) for e, v, fa in linhas if e["entidade"] == 1 and e["de"] == 2024]
         assert [(x["verificados"], x["falhas"]) for x in f["continuidade"]["linhas"]] == esperado
-        assert f["continuidade"]["falhas"] == sum(fa for _, fa in esperado) > 0      # o dado sintetico tem falhas
+        assert f["continuidade"]["falhas"] == sum(fa for _, fa in esperado) > 0      # the synthetic data has failures
 
 
 def test_SINTETICO_tela_retrato_lacunas_e_grafico(historico):
@@ -128,7 +128,7 @@ def test_SINTETICO_tela_retrato_lacunas_e_grafico(historico):
     assert (v["fa-2024-s1"], v["fa-2024-af"], v["fa-2024-dif"]) == (13000, 12500, -500)
 
 
-# ================================================================== armazem real
+# ================================================================== real store
 @pytest.fixture(scope="module")
 def app_real(real):
     return Aplicacao(real["cfg"].banco)
@@ -179,7 +179,7 @@ def test_serie_e_fechamento_iguais_ao_recalculo_do_bruto(real, bruto_real, entid
 
 
 def test_fechamento_igual_a_coerencia_ja_homologada(real):
-    """Para os escopos com RREO, a serie usa a mesma definicao da coerencia entre publicacoes (04.5)."""
+    """For the scopes with an RREO, the series uses the same definition as the consistency between publications (04.5)."""
     p = real["painel"]
     coe = {(x["escopo"], x["de"]): x for x in p.coerencia_entre_publicacoes()["comparacoes"] if x["api_s1_de_c"] is not None
            and x["data_final_para"] == (f"{x['para']}-12-31" if x["para"] < 2026 else "2026-08-31")}

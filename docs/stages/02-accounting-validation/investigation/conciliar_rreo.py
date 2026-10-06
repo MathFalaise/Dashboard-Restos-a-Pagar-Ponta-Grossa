@@ -1,9 +1,9 @@
-"""INVESTIGAÇÃO — Etapa 02. NÃO é código de produção.
+"""INVESTIGATION - stage 02. NOT production code.
 
-Soma os campos da listagem de Restos a Pagar (páginas brutas já baixadas por
-coletar.py) e compara com as colunas do RREO Anexo VII. Não assume
-correspondência: imprime as somas candidatas ao lado do valor do RREO e a
-diferença, para inspeção.
+Sums the fields of the Restos a Pagar listing (raw pages already downloaded by
+coletar.py) and compares them with the columns of RREO Annex VII. It assumes no
+correspondence: prints the candidate sums next to the RREO value and the
+difference, for inspection.
 """
 import json
 import sys
@@ -21,7 +21,7 @@ def carregar(ent, ex, di, df, tipo):
         arq = RAIZ / f"rp_ent{ent}_ex{ex}_{di}_a_{df}_{tipo}_p{p}.json"
         if not arq.exists():
             break
-        # Decimal: soma exata dos valores como vieram no JSON
+        # Decimal: exact sum of the values as they came in the JSON
         regs += json.loads(arq.read_text(encoding="utf-8"), parse_float=Decimal)["content"]
         p += 1
     return regs
@@ -61,8 +61,8 @@ def D(s):
 
 
 def comparar(ent, ex, di, df, rreo, rotulo):
-    """Cada coluna do RREO contra a soma candidata da API. A regra de cada
-    candidata está escrita ao lado; o resultado (diferença) é que diz se vale."""
+    """Each RREO column against the API's candidate sum. The rule of each
+    candidate is written next to it; the result (difference) is what says whether it holds."""
     P = carregar(ent, ex, di, df, "Processados")
     N = carregar(ent, ex, di, df, "NaoProcessados")
     ant = ex - 1

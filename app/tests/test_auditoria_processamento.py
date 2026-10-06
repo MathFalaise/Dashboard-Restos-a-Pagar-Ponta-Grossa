@@ -1,5 +1,5 @@
-"""Regressao da auditoria tecnica, grupos G4 e G5: vigencia, determinismo, normalizacao do RREO, derivacao e
-catalogo de regras. SINTETICO = banco temporario com registros inventados (fixture `mundo`)."""
+"""Regression of the technical audit, groups G4 and G5: validity, determinism, RREO normalization, derivation and the
+rule catalog. SINTETICO = temporary database with invented records (fixture `mundo`)."""
 import json
 import os
 import subprocess
@@ -16,10 +16,10 @@ T0 = "2026-09-29T20:00:00-03:00"
 APP = RAIZ_PROJETO / "app"
 
 
-# ------------------------------------------------------------------ CLI-01: vigencia "como estava em"
+# ------------------------------------------------------------------ CLI-01: validity "as it was on"
 def test_CLI01_instante_unico_para_derivacao_painel_e_cli():
-    assert instante("2026-09-29") == "2026-09-29T23:59:59-03:00"            # data = fim do dia
-    assert instante("2026-09-30T02:59:59Z") == "2026-09-29T23:59:59-03:00"  # mesmo instante, mesmo texto
+    assert instante("2026-09-29") == "2026-09-29T23:59:59-03:00"            # date = end of the day
+    assert instante("2026-09-30T02:59:59Z") == "2026-09-29T23:59:59-03:00"  # same instant, same text
     assert instante("2026-09-29T23:59:59-03:00") == "2026-09-29T23:59:59-03:00"
     with pytest.raises(DataInvalida):
         instante("ontem")
@@ -60,15 +60,15 @@ def test_CLI01_processar_em_normaliza_a_data_e_recusa_texto_invalido(mundo, tmp_
     n = lambda: mundo.con.execute("SELECT COUNT(*) FROM normalizacao_execucao").fetchone()[0]
     antes = n()
     assert cli.main(["--config", cfg, "processar", "--em", "ontem"]) == 4
-    assert n() == antes                                                   # recusado antes de normalizar
+    assert n() == antes                                                   # refused before normalizing
     assert cli.main(["--config", cfg, "processar", "--em", "2026-09-29"]) == 0
     vig = mundo.con.execute("SELECT vigencia_em FROM derivacao_execucao ORDER BY id DESC LIMIT 1").fetchone()[0]
-    assert vig == "2026-09-29T23:59:59-03:00"                             # o snapshot das 20h do dia 29 entra
+    assert vig == "2026-09-29T23:59:59-03:00"                             # the snapshot of 20h on the 29th is included
     did = mundo.con.execute("SELECT MAX(id) FROM derivacao_execucao").fetchone()[0]
     assert mundo.con.execute("SELECT COUNT(*) FROM rp_derivado WHERE derivacao_id=?", (did,)).fetchone()[0] == 1
 
 
-# ------------------------------------------------------------------ NORM-02 e DET-01: transcricao do RREO
+# ------------------------------------------------------------------ NORM-02 and DET-01: RREO transcription
 def _pdf(*textos):
     try:
         import pymupdf
@@ -123,7 +123,7 @@ def test_DET01_mensagem_de_layout_desconhecido_igual_com_qualquer_PYTHONHASHSEED
     assert len(saidas) == 1 and "colunas não encontradas" in saidas.pop()
 
 
-# ------------------------------------------------------------------ DER-01: movimentacao so de snapshot completo
+# ------------------------------------------------------------------ DER-01: movement only from a complete snapshot
 def test_DER01_movimentacao_de_snapshot_incompleto_nao_entra_na_derivacao(mundo):
     mundo.catalogos({1: [2025]})
     mundo.listagem(1, 2025, "2025-12-31", [_reg(1)], T0)
@@ -142,7 +142,7 @@ def test_DER01_movimentacao_de_snapshot_incompleto_nao_entra_na_derivacao(mundo)
     assert por_status == {"completa": 1}
 
 
-# ------------------------------------------------------------------ DB-03: catalogo de regras codigo x banco
+# ------------------------------------------------------------------ DB-03: rule catalog code x database
 def test_DB03_editar_regra_ja_gravada_e_recusado(mundo, monkeypatch):
     assert regras.conferir_catalogo(mundo.con) == []
     editada = [r if r[:2] != ("S1", 1) else (*r[:5], r[5] + " (editada)", r[6]) for r in regras.REGRAS]

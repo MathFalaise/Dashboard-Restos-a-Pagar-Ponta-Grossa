@@ -1,11 +1,11 @@
-"""Matriz de conciliacao RREO x API com as regras experimentais LADO A LADO (somente leitura).
+"""RREO x API reconciliation matrix with the experimental rules SIDE BY SIDE (read-only).
 
-Para cada PDF de RREO transcrito: RREO-COL v1/v2 x (sem consolidacao, CONS-PAR v1, CONS-PAR v2).
-* consolidado: visoes 'publicado' e 'analitico' gravadas pela derivacao;
-* entidade 1: visao 'entidade' e, para CONS-PAR, a mesma retirada de inscricao que a derivacao faz no
-  consolidado, aplicada ao lado que e da entidade 1 (A = copia 24xxxxx). CONS-PAR v1 retira B (entidade 15),
-  entao nao mexe no RREO da entidade 1.
-Nada e gravado no banco. Uso: python analise_conciliacao.py [exercicio ...]
+For each transcribed RREO PDF: RREO-COL v1/v2 x (no consolidation, CONS-PAR v1, CONS-PAR v2).
+* consolidated: the 'publicado' and 'analitico' views written by the derivation;
+* entity 1: the 'entidade' view and, for CONS-PAR, the same removal of inscription the derivation does in the
+  consolidated view, applied to the side that belongs to entity 1 (A = 24xxxxx copy). CONS-PAR v1 removes B
+  (entity 15), so it does not touch entity 1's RREO.
+Nothing is written to the database. Usage: python analise_conciliacao.py [exercicio ...]
 """
 import json
 import sqlite3
@@ -31,7 +31,7 @@ def main(anos):
     rg = {(c, v): i for i, c, v in con.execute("SELECT id, codigo, versao FROM regra")}
     docs = con.execute("SELECT DISTINCT v.coleta_id, v.escopo, v.exercicio, v.data_final, v.emitido_em FROM rreo_valor v "
                        "WHERE v.normalizacao_id=? AND v.linha='TOTAL (III)' ORDER BY 3,4,2,1", (nid,)).fetchall()
-    # pares por corte, com a faixa de cada lado
+    # pairs per cut-off, with the band of each side
     pares = defaultdict(list)
     for r in con.execute(
             "SELECT p.exercicio, p.data_final, p.mesma_inscricao, p.relacao_inscricao, p.lado_com_execucao, "
@@ -51,7 +51,7 @@ def main(anos):
     for rc, escopo, ex, df, emit in docs:
         if anos and ex not in anos:
             continue
-        if (escopo, ex, df) in vistos:   # mesmo PDF coletado duas vezes (conteudo identico): uma linha so
+        if (escopo, ex, df) in vistos:   # same PDF collected twice (identical content): a single row
             continue
         vistos.add((escopo, ex, df))
         rv = dict(con.execute("SELECT coluna, valor_c FROM rreo_valor WHERE normalizacao_id=? AND coleta_id=? AND linha='TOTAL (III)'",
@@ -72,7 +72,7 @@ def main(anos):
                                            (did, rg[("RREO-COL", vagg)], ex, df)))
                     if api and cons:
                         for p in pares.get((ex, df), []):
-                            if _lado_excluido(cons, p) == "a":     # so o lado A e da entidade 1
+                            if _lado_excluido(cons, p) == "a":     # only side A belongs to entity 1
                                 x = p["a"]
                                 if x["proc_c"] > 0:
                                     api[x["faixa_processado"]] -= x["proc_c"]
@@ -89,5 +89,5 @@ def main(anos):
 
 
 if __name__ == "__main__":
-    sys.stdout.reconfigure(errors="backslashreplace")   # saida em cp1252 (arquivo) nao derruba o script
+    sys.stdout.reconfigure(errors="backslashreplace")   # cp1252 output (file) does not crash the script
     main({int(a) for a in sys.argv[1:]})

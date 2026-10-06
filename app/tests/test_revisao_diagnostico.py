@@ -1,7 +1,7 @@
-"""Revisao critica (05/10/2026), item 49 - `diagnosticar-api`: confere o contrato da API sem gravar nada.
+"""Critical review (05/10/2026), item 49 - `diagnosticar-api`: checks the API contract without writing anything.
 
-Transporte simulado (fixture `ambiente`): nenhuma consulta sai da maquina. A referencia da estrutura sao snapshots
-gravados pelo coletor de producao a partir do mesmo portal simulado.
+Simulated transport (fixture `ambiente`): no query leaves the machine. The structure reference is the snapshots
+recorded by the production collector from the same simulated portal.
 """
 import json
 
@@ -35,7 +35,7 @@ def _api(portal, entidades=ENTIDADES, exercicios=EXERCICIOS, listagem=None):
 
 
 def _referencia(ambiente):
-    """Snapshots completos gravados pelo coletor. O credor e objeto em UM registro so: campo raro."""
+    """Complete snapshots recorded by the collector. The creditor is an object in ONE record only: a rare field."""
     _api(ambiente["portal"], listagem=_pag([REG(1), REG(2, credor={"nome": "X"}), REG(3)]))
     c = ambiente["coletor"]
     assert [s["status"] for s in c.catalogos([1])] == ["completa", "completa"]
@@ -56,7 +56,7 @@ def _arquivos(ambiente):
     return sorted((p.as_posix(), p.stat().st_size) for p in ambiente["cfg"].snapshots.rglob("*") if p.is_file())
 
 
-# ------------------------------------------------------------------ API igual: ok, e nada gravado
+# ------------------------------------------------------------------ same API: ok, and nothing written
 def test_REV49_api_igual_da_ok_e_nao_grava_nada(ambiente):
     _referencia(ambiente)
     _api(ambiente["portal"])
@@ -66,11 +66,11 @@ def test_REV49_api_igual_da_ok_e_nao_grava_nada(ambiente):
     assert r["resultado"] == "ok" and diagnostico.CODIGO_DE_SAIDA[r["resultado"]] == 0
     assert all(v["situacao"] == "ok" and not v["problemas"] for v in r["verificacoes"])
     assert all(v["estrutura"]["igual"] for v in r["verificacoes"])
-    # o credor objeto de UM registro gravado nao e obrigatorio: a amostra sem ele nao e "campo removido"
+    # the creditor object of ONE recorded record is not required: the sample without it is not a "removed field"
     assert "$.content[].credor.nome" not in _por_alvo(r)["rp_listagem"]["estrutura"]["removidos"]
     assert (con.total_changes, con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0], _arquivos(ambiente)) == antes
-    assert r["requisicoes"] == 3 + 4          # 3 da coleta de referencia + 4 do diagnostico
-    assert r["portal"]["http_status"] == 404 and r["portal"]["versao"] is None   # informativo: nao muda o resultado
+    assert r["requisicoes"] == 3 + 4          # 3 from the reference collection + 4 from the diagnostic
+    assert r["portal"]["http_status"] == 404 and r["portal"]["versao"] is None   # informative: does not change the result
     url = _por_alvo(r)["rp_listagem"]["url"]
     assert "sort=anoempenho%2Casc&sort=empenho%2Casc" in url and "size=20" in url
 
@@ -84,7 +84,7 @@ def test_REV49_versao_do_portal_e_informativa(ambiente):
     assert (r["portal"]["versao"], r["portal"]["build"]) == ("3.128.0", "2026-09-22T10:00:00Z")
 
 
-# ------------------------------------------------------------------ estrutura
+# ------------------------------------------------------------------ structure
 def test_REV49_campo_novo_tipo_novo_e_campo_obrigatorio_sumido(ambiente):
     _referencia(ambiente)
     regs = [REG(4, novoCampo=1, proc="1,50"), {k: v for k, v in REG(5).items() if k != "aproc"}]
@@ -119,12 +119,12 @@ def test_REV49_comparar_amostra_nao_acusa_campo_raro():
     c = contrato.comparar_amostra(ref, amostra)
     assert c["igual"] and c["registros_na_amostra"] == 1
     assert contrato.comparar_formas(contrato.forma(ref), contrato.forma(amostra))["removidos"] == \
-        ["$.content[].credor.nome"]           # a comparacao de uniao acusaria; a de obrigatorios nao
+        ["$.content[].credor.nome"]           # the union comparison would flag it; the required-fields one does not
 
 
 def test_REV49_eco_da_ordem_pedida_nao_e_mudanca_de_estrutura():
-    # medido no portal em 05/10/2026: a unica diferenca entre a amostra e os snapshots gravados era o eco de `sort`,
-    # vazio nos snapshots coletados antes de o coletor pedir a ordem
+    # measured on the portal on 05/10/2026: the only difference between the sample and the recorded snapshots was the `sort` echo,
+    # empty in the snapshots collected before the collector asked for the order
     pag = lambda reg, sort, sort_pageable: json.dumps(
         {"content": [reg], "sort": sort, "pageable": {"sort": sort_pageable, "pageNumber": 0}}).encode()
     antigo = [pag(REG(1), [], [])]
@@ -133,7 +133,7 @@ def test_REV49_eco_da_ordem_pedida_nao_e_mudanca_de_estrutura():
     assert objeto["tipo_diferente"] == ["$.sort: array -> object"] and objeto["novos"] == ["$.sort.sorted"]
 
 
-# ------------------------------------------------------------------ contrato da pagina e da ordem
+# ------------------------------------------------------------------ page and order contract
 @pytest.mark.parametrize("listagem, trecho", [
     (_pag([REG(4)], size=20, sort=None), "não ecoa 'sort'"),
     (_pag([REG(4)], size=20, sort=[{**SORT_ECO[0], "direction": "DESC"}, SORT_ECO[1]]), "não aplicou a ordenação"),
@@ -174,7 +174,7 @@ def test_REV49_fora_do_catalogo_e_so_aviso(ambiente):
     assert "exercício 2025 fora do catálogo" in v["exercicios/1"]["avisos"][0]
 
 
-# ------------------------------------------------------------------ rede e HTTP
+# ------------------------------------------------------------------ network and HTTP
 def test_REV49_rede_e_5xx_sao_indisponivel_e_4xx_e_mudanca(ambiente):
     p = ambiente["portal"]
     _api(p)
@@ -186,7 +186,7 @@ def test_REV49_rede_e_5xx_sao_indisponivel_e_4xx_e_mudanca(ambiente):
     assert (v["entidades"]["situacao"], v["entidades"]["http_status"]) == ("indisponivel", 503)
     assert (v["exercicios/1"]["situacao"], v["exercicios/1"]["http_status"]) == ("indisponivel", None)
     assert v["rp_listagem"]["situacao"] == "ok"
-    del p.rotas[(EP_RP, "0")]                       # o portal simulado devolve 404: endpoint mudou
+    del p.rotas[(EP_RP, "0")]                       # the simulated portal returns 404: the endpoint changed
     r = _diagnosticar(ambiente, con=None)
     assert r["resultado"] == "mudou" and _por_alvo(r)["rp_listagem"]["http_status"] == 404
 
@@ -223,5 +223,5 @@ def test_REV49_cli_codigo_de_saida_e_banco_so_leitura(ambiente, tmp_path, monkey
     _api(ambiente["portal"], listagem=_pag([REG(4, novoCampo=1)], size=20))
     assert cli.main(args) == 1
     capsys.readouterr()
-    assert cli.main(args[:-1] + ["2026-01-31"]) == 4          # data final fora do exercicio: recusado
+    assert cli.main(args[:-1] + ["2026-01-31"]) == 4          # end date outside the fiscal year: refused
     assert "ParametroInvalido" in capsys.readouterr().out

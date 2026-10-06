@@ -1,15 +1,15 @@
-"""INVESTIGAÇÃO — Etapa 02. NÃO é código de produção.
+"""INVESTIGATION - stage 02. NOT production code.
 
-Diferença (API − RREO) de cada coluna do Anexo VII, bimestre a bimestre.
-As abas são derivadas da consulta SemTipo pela regra confirmada
-(Processados = proc>0; NaoProcessados = aproc>0), que coincide 100% com as
-consultas por aba nos períodos em que as três foram baixadas.
+Difference (API - RREO) of each column of Annex VII, bimester by bimester.
+The tabs are derived from the SemTipo query by the confirmed rule
+(Processados = proc>0; NaoProcessados = aproc>0), which matches 100% the
+per-tab queries in the periods where all three were downloaded.
 """
 from decimal import Decimal
 
 from conciliar_rreo import D, br, carregar
 
-RREO = {  # entidade 1 (Prefeitura), extraídos com extrair_rreo.py
+RREO = {  # entity 1 (Prefeitura), extracted with extrair_rreo.py
     (2025, "2025-06-30", "3º bim, emit. 29/07/2025"): ("2.661.515,65", "24.993.694,85", "7.782.824,73", "-1.829,50", "15.861.840,64", "159.165.530,25", "122.855.255,76", "122.057.925,81", "1.829,50"),
     (2025, "2025-10-31", "5º bim, emit. 27/11/2025"): ("2.661.515,65", "24.993.694,85", "26.202.972,44", "50.874,75", "15.861.840,64", "159.165.530,25", "134.011.459,46", "132.855.286,20", "16.060.588,86"),
     (2025, "2025-12-31", "6º bim, emit. 30/01/2026"): ("2.661.515,65", "24.993.694,85", "26.203.738,11", "51.906,63", "15.861.840,64", "159.165.530,25", "136.380.158,67", "136.288.900,26", "20.763.209,97"),

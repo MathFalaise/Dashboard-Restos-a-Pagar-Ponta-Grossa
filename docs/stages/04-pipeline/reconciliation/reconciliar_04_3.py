@@ -1,10 +1,10 @@
-"""Reconciliacao da Etapa 04.3 (artefato de validacao, nao e producao). Sem acesso a internet.
+"""Reconciliation of stage 04.3 (validation artifact, not production). No internet access.
 
-A) ARMAZEM REAL, derivacao "como estava em 29/09 23:59"  x  investigacao da Etapa 03  -> tem de ser iguais
-B) ARMAZEM REAL, derivacao "atual"  x  derivacao "como estava em"  -> o que as coletas novas acrescentaram
-C) Foco pedido na revisao: 2025/2026 x entidades 1 e 15
+A) REAL STORE, derivation "as it was on 29/09 23:59"  x  stage 03 investigation  -> must be equal
+B) REAL STORE, "current" derivation  x  "as it was on" derivation  -> what the new collections added
+C) Focus requested in the review: 2025/2026 x entities 1 and 15
 
-Uso: python reconciliar_04_3.py PASTA_TEMPORARIA BANCO_ATIVO DERIVACAO_ATUAL DERIVACAO_COMO_ESTAVA
+Usage: python reconciliar_04_3.py PASTA_TEMPORARIA BANCO_ATIVO DERIVACAO_ATUAL DERIVACAO_COMO_ESTAVA
 """
 import json
 import sqlite3
@@ -20,7 +20,7 @@ def br(c):
 
 
 def restringir(t, chaves):
-    """Tabelas por registro, so dos snapshots cujas chaves de conteudo estao em `chaves`."""
+    """Per-record tables, only of the snapshots whose content keys are in `chaves`."""
     out = {}
     for nome in ("rp_registro", "rp_derivado", "movimentacao_lancamento", "movimentacao_interpretada"):
         out[nome] = {k: v for k, v in t[nome].items() if k[0][0] in chaves}
@@ -34,7 +34,7 @@ def visoes(t):
 
 
 def conciliacao(t):
-    """Por (conteudo do PDF, regra, coluna) -> valores; um PDF baixado duas vezes aparece uma vez, se igual."""
+    """By (PDF content, rule, column) -> values; a PDF downloaded twice appears once, if equal."""
     out = defaultdict(set)
     for (rk, agg, col), v in t["conciliacao_rreo"].items():
         out[(rk[2], agg, col)].add(v[:7])
@@ -77,7 +77,7 @@ def main(tmp, banco_ativo, d_atual, d_antes):
     out += ["", "No armazém real, o PDF 2560662 aparece duas vezes: a importação da Etapa 02 e a coleta da 04.1, com bytes idênticos.",
             f"As conciliações das duas cópias são iguais entre si: {unicos}.", ""]
 
-    # B) atual x como estava
+    # B) current x as it was
     vt = visoes(T)
     comuns = va.keys() & vt.keys()
     mudou = {k: (va[k], vt[k]) for k in comuns if va[k] != vt[k]}
@@ -91,7 +91,7 @@ def main(tmp, banco_ativo, d_atual, d_antes):
     out.append(f"- Conciliações novas: {len(novos_rreo)} (PDF × coluna), vindas dos cortes e PDFs coletados hoje.")
     ok &= not mudou
 
-    # C) foco: 2025/2026 x entidades 1 e 15, na derivacao atual
+    # C) focus: 2025/2026 x entities 1 and 15, in the current derivation
     q = lambda sql, *p: ca.execute(sql, (d_atual, *p)).fetchall()
     out += ["", "## C) Foco: 2025/2026 × entidades 1 e 15 (derivação atual)", "", "### Pares espelhados por corte", "",
             "| Corte | Relação entre inscrições | Lado com execução | Pares | Inscrito A (ent. 1) | Inscrito B (ent. 15) | Execução A | Execução B |",
@@ -137,5 +137,5 @@ def main(tmp, banco_ativo, d_atual, d_antes):
 
 
 if __name__ == "__main__":
-    sys.stdout.reconfigure(errors="backslashreplace")   # saida em cp1252 (arquivo) nao derruba o script
+    sys.stdout.reconfigure(errors="backslashreplace")   # cp1252 output (file) does not crash the script
     sys.exit(0 if main(*sys.argv[1:5]) else 1)

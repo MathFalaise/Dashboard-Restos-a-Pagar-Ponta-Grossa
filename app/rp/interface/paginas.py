@@ -1,16 +1,18 @@
-"""Paginas da interface publica.
+"""Pages of the public interface.
 
-Cada funcao recebe o Painel (conexao somente leitura) e os parametros ja validados e devolve (titulo, corpo HTML).
-Nenhuma funcao calcula regra contabil: os valores chegam prontos da camada painel, com natureza, fonte, regra e
-proveniencia; aqui so se escolhe o que mostrar e como rotular. Todo texto do banco passa por `esc`.
+Each function receives the Painel (read-only connection) and the already validated parameters and returns (title,
+HTML body). No function computes an accounting rule: values arrive ready from the panel layer, with nature, source,
+rule and provenance; here we only choose what to show and how to label it. Every text from the database goes
+through `esc`.
 
-Regras de apresentacao:
-  * valor principal = API Elotech; o RREO aparece so na conferencia e na reconciliacao, sempre rotulado;
-  * todo valor mostra fonte, natureza e regra, e tem a origem acessivel (<details>, sem JavaScript);
-  * todo corte mostra exercicio, corte e data da coleta (nunca so "Restos a Pagar de AAAA");
-  * ausencia de valor e texto explicito, nunca R$ 0,00; entidade fora do catalogo oficial nao vira zero;
-  * nivel publico sempre: listas sem nome nem documento do credor; pessoa fisica sem nome no detalhe;
-  * visoes analiticas (CONS-PAR) e regras experimentais nao aparecem como indicador.
+Presentation rules:
+  * main value = Elotech API; the RREO only appears in the cross-check and the reconciliation, always labeled;
+  * every value shows source, nature and rule, and has its origin within reach (<details>, no JavaScript);
+  * every cut-off shows fiscal year, cut-off and collection date (never just "Restos a Pagar de AAAA");
+  * a missing value is explicit text, never R$ 0,00; an entity outside the official catalog never becomes zero;
+  * always the public level: lists without the creditor's name or document; individuals without a name in the
+    detail;
+  * analytical views (CONS-PAR) and experimental rules do not appear as indicators.
 """
 import json
 
@@ -48,9 +50,9 @@ class SemDados(Exception):
     pass
 
 
-# ---------------------------------------------------------------------------------------------- estrutura
+# ---------------------------------------------------------------------------------------------- structure
 def documento(titulo, corpo, ctx, ativo):
-    """Pagina completa: cabecalho, menu, fonte dos dados, conteudo e rodape com a execucao em uso."""
+    """Full page: header, menu, data source, content and footer with the run in use."""
     itens = []
     for caminho, texto in MENU:
         atual = ' class="ativo" aria-current="page"' if caminho == ativo else ""
@@ -85,9 +87,10 @@ def _entidades_do_catalogo(p):
 
 
 def _selecao(p, q, com_entidade=True):
-    """Exercicio, corte e entidade escolhidos. O padrao (nada pedido) sai dos cortes que existem no banco; o que foi
-    pedido nunca e trocado por outro: exercicio sem corte processado vira SemDados, e corte nao processado segue
-    para a camada painel, que devolve a situacao do dado de cada entidade (corte_processado = False)."""
+    """Chosen fiscal year, cut-off and entity. The default (nothing requested) comes from the cut-offs in the database;
+    what was requested is never swapped for something else: a year without a processed cut-off becomes SemDados, and
+    an unprocessed cut-off goes on to the panel layer, which returns the data situation of each entity
+    (corte_processado = False)."""
     em = q.data("em")
     cortes = p.cortes(em)["cortes"]
     ate = f" até {fm.data_br(em)}" if em else ""
@@ -118,7 +121,7 @@ def _selecao(p, q, com_entidade=True):
 
 
 def _quando(sel):
-    """Complemento obrigatorio do titulo: o retrato e o estado atual da base ou 'como estava em' uma data."""
+    """Mandatory complement of the title: the snapshot is the current state of the base or 'as it was on' a date."""
     return f"como a base estava em {fm.data_br(sel['em'])}" if sel["em"] else "estado atual da base"
 
 
@@ -143,9 +146,10 @@ def _formulario(acao, sel, entidades=None, extra="", com_corte=True):
 
 
 def _retrato(ret):
-    """Bloco obrigatorio: exercicio, corte e coleta, com o texto do retrato. Hierarquia (CONSOLIDACAO_POS_05 secao 7):
-    no topo so a frase do retrato (exercicio, corte e data da coleta) e o aviso de corte posterior a coleta; o detalhe
-    de auditoria (tipo, definicoes, snapshots usados e a nota longa) fica em "Origem do retrato", recolhido."""
+    """Mandatory block: fiscal year, cut-off and collection, with the snapshot text. Hierarchy (POST_05_CONSOLIDATION
+    section 7): at the top only the snapshot sentence (fiscal year, cut-off and collection date) and the warning of a
+    cut-off after the collection; the audit detail (type, definitions, snapshots used and the long note) goes into
+    "Origem do retrato", collapsed."""
     if not ret:
         return ""
     ex, df = ret["exercicio"], ret["data_final"]
@@ -192,13 +196,14 @@ def _origem_indicador(v):
 
 
 def _registro_tecnico(conteudo, resumo="Registro técnico (auditoria)"):
-    """O que foi coletado (snapshot, hash, derivacao): prova de onde o numero veio, mesmo se o portal mudar depois."""
+    """What was collected (snapshot, hash, derivation): proof of where the number came from, even if the portal changes
+    later."""
     return f'<details class="registro-tecnico"><summary>{esc(resumo)}</summary>{conteudo}</details>'
 
 
 def _origem_conjunto(prov, resumo="Origem do dado: onde conferir no Portal"):
-    """<details> com a integra no portal de cada snapshot do conjunto (as paginas exatas que o coletor consultou), a
-    tela de consulta e as condicoes; o registro tecnico (uid, recorte, coleta, endpoint, derivacao) fica recolhido."""
+    """<details> with the full portal listing of each snapshot in the set (the exact pages the collector queried), the
+    query screen and the conditions; the technical record (uid, slice, collection, endpoint, derivation) stays collapsed."""
     portal, coleta = [], ""
     for s in prov["snapshots"]:
         urls = [r["url"] for r in s.get("respostas") or [] if str(r.get("url", "")).startswith(P.API)]
@@ -262,7 +267,7 @@ def _explicacoes(situacao, lista):
                if itens else ""))
 
 
-# ---------------------------------------------------------------------------------------------- resumo
+# ---------------------------------------------------------------------------------------------- summary
 def resumo(p, q):
     try:
         sel = _selecao(p, q)
@@ -360,7 +365,7 @@ def _conferencia(ind, sel):
             + f'<p class="nota">{esc(c["nota"])}</p><p>{detalhe}</p></section>')
 
 
-# ---------------------------------------------------------------------------------------------- evolucao
+# ---------------------------------------------------------------------------------------------- evolution
 SERIE_COLUNAS = [("inscricao_total", "Inscrição (abertura)", "proc + aproc"),
                  ("pagamentos", "Pagamentos (acumulado)", "pagoProc + pagoAProc, de 01/01 até o corte"),
                  ("liquidacoes", "Liquidações (acumulado)", "liquidado, de 01/01 até o corte"),
@@ -369,7 +374,7 @@ SERIE_COLUNAS = [("inscricao_total", "Inscrição (abertura)", "proc + aproc"),
 
 
 def evolucao(p, q):
-    """Serie de todos os cortes do exercicio (Subetapa 05.2). Valores e diferencas vem prontos da camada painel."""
+    """Series of all cut-offs of the fiscal year (sub-stage 05.2). Values and differences come ready from the panel layer."""
     try:
         sel = _selecao(p, q)
     except SemDados as e:
@@ -406,13 +411,13 @@ def evolucao(p, q):
 
 
 def _situacao_curta(texto):
-    """Forma curta da situacao para tabelas: o texto antes de ':' e de ' (' (o completo vai como dica)."""
+    """Short form of the situation for tables: the text before ':' and ' (' (the full one goes as a hint)."""
     return texto.split(":")[0].split(" (")[0]
 
 
 def _celula_situacao(x):
-    """Forma curta da situacao (antes de ':'), com o texto completo como dica; o motivo detalhado esta na celula ao
-    lado. Os rotulos (ex.: corte posterior a coleta) aparecem sempre por inteiro."""
+    """Short form of the situation (before ':'), with the full text as a hint; the detailed reason is in the cell next
+    to it. Labels (e.g. cut-off after the collection) always appear in full."""
     texto = _situacao_curta(x["situacao"]["texto"]) + "".join(f"; {rot}" for rot in x["rotulos"])
     return f'<span id="sit-{esc(x["data_final"])}" title="{esc(x["situacao"]["texto"])}">{esc(texto)}</span>'
 
@@ -469,7 +474,7 @@ def _tabela_diferencas(serie, sel):
             + "</section>")
 
 
-# ---------------------------------------------------------------------------------------------- serie entre exercicios
+# ---------------------------------------------------------------------------------------------- series across fiscal years
 HISTORICO_COLUNAS = [("inscricao_total", "Inscrição (abertura)", "proc + aproc"),
                      ("pagamentos", "Pagamentos (até o corte)", "pagoProc + pagoAProc"),
                      ("cancelamentos", "Cancelamentos (até o corte)", "canceladoAProc + canceladoProc"),
@@ -477,7 +482,7 @@ HISTORICO_COLUNAS = [("inscricao_total", "Inscrição (abertura)", "proc + aproc
 
 
 def historico(p, q):
-    """Serie por exercicio (Subetapa 05.3). Valores, diferencas e verificacoes vem prontos da camada painel."""
+    """Series by fiscal year (sub-stage 05.3). Values, differences and checks come ready from the panel layer."""
     em = q.data("em")
     entidade = q.inteiro("entidade", 1, 10 ** 6)
     r = p.serie_entre_exercicios(entidade, em)
@@ -589,13 +594,13 @@ def _tabela_fechamento_abertura(itens):
             + "</section>")
 
 
-# ---------------------------------------------------------------------------------------------- composicao
+# ---------------------------------------------------------------------------------------------- composition
 TOTAL_NA_LISTA = {"inscricao_processada": "Processado (inscrito)", "inscricao_nao_processada": "Não processado (inscrito)"}
 
 
 def composicao(p, q):
-    """Composicao da inscricao e do saldo do corte (Subetapa 05.4). Grupos, totais e fechamentos vem prontos da camada
-    painel; a dimensao que nao fecha com o total do corte nao e exibida."""
+    """Composition of the cut-off's inscription and balance (sub-stage 05.4). Groups, totals and closings come ready
+    from the panel layer; a dimension that does not add up to the cut-off total is not shown."""
     try:
         sel = _selecao(p, q)
     except SemDados as e:
@@ -717,10 +722,10 @@ def _tabela_fechamentos(r, sel):
             + "</section>")
 
 
-# ---------------------------------------------------------------------------------------------- variacao entre cortes
+# ---------------------------------------------------------------------------------------------- variation between cut-offs
 def variacao(p, q):
-    """Investigacao da variacao entre dois cortes do mesmo exercicio (Subetapa 05.5). Variacao, contribuicoes, grupos,
-    classes, fechamentos e paginacao vem prontos da camada painel."""
+    """Investigation of the variation between two cut-offs of the same fiscal year (sub-stage 05.5). Variation,
+    contributions, groups, classes, closings and pagination come ready from the panel layer."""
     try:
         sel = _selecao(p, q)
     except SemDados as e:
@@ -738,12 +743,12 @@ def variacao(p, q):
                           + fm.link("/historico", "Série entre exercícios", entidade=sel["entidade"], em=sel["em"])
                           + " (fechamento × abertura).</p></section>")
     posterior, anterior = sel["data_final"], q.data("anterior")
-    if posterior == cortes[0] and q.data("data_final") is None:   # padrao: o primeiro corte nao tem anterior
+    if posterior == cortes[0] and q.data("data_final") is None:   # default: the first cut-off has no previous one
         posterior = cortes[1]
-    if anterior is None:   # padrao: o corte processado imediatamente anterior ao posterior
+    if anterior is None:   # default: the processed cut-off right before the later one
         anteriores = [c for c in cortes if c < posterior]
         anterior = anteriores[-1] if anteriores else None
-    if anterior is None or anterior >= posterior:   # par pedido impossivel: nunca e trocado por outro
+    if anterior is None or anterior >= posterior:   # an impossible requested pair: it is never swapped for another
         motivo = (f"não há corte processado anterior a {fm.data_br(posterior)} neste exercício" if anterior is None else
                   f"o corte anterior ({fm.data_br(anterior)}) precisa ser anterior ao posterior ({fm.data_br(posterior)})")
         titulo = f"Variação entre cortes — {escopo}, exercício {sel['exercicio']} ({_quando(sel)})"
@@ -900,8 +905,8 @@ def _classes_da_variacao(r):
 
 
 def _origem_contribuicao(x, sel):
-    """Cada lado da variacao: o empenho naquele corte na integra do portal e o detalhe do empenho; o registro tecnico
-    (snapshot, pagina, posicao, objeto bruto) fica recolhido."""
+    """Each side of the variation: the commitment at that cut-off in the portal's full listing and the commitment
+    detail; the technical record (snapshot, page, position, raw object) stays collapsed."""
     c = x["chave"]
     portal, tecnico = [], []
     for nome, df in (("anterior", sel["anterior"]), ("posterior", sel["posterior"])):
@@ -948,9 +953,10 @@ def _lista_da_variacao(r, sel, pagina, base):
             + totais + f'<p class="paginacao">{" · ".join(nav)}</p></section>')
 
 
-# ---------------------------------------------------------------------------------------------- empenho nos cortes
+# ---------------------------------------------------------------------------------------------- commitment across cut-offs
 def empenho_cortes(p, q):
-    """Um empenho em todos os cortes do exercicio (Subetapa 05.5; contrato M-12). Valores vem prontos da camada painel."""
+    """One commitment across all cut-offs of the fiscal year (sub-stage 05.5; contract M-12). Values come ready from the
+    panel layer."""
     entidade, ano, numero = q.inteiro("entidade", 1, 10 ** 6), q.inteiro("anoempenho", 1900, 2999), q.inteiro("empenho", 0, 10 ** 9)
     exercicio = q.inteiro("exercicio", 1900, 2999)
     if None in (entidade, ano, numero, exercicio):
@@ -1005,20 +1011,20 @@ def empenho_cortes(p, q):
 
 
 def _nota_do_retrato(em):
-    """Frase do retrato para a linha do tempo de um empenho (estado atual ou 'como estava em')."""
+    """Snapshot sentence for a commitment's timeline (current state or 'as it was on')."""
     if em:
         return f"Como a base estava em {fm.data_br(em)}: só snapshots coletados até essa data."
     return "Cada corte é o estado atual da base para aquele corte, na data da coleta, não o que se sabia na época."
 
 
-# ---------------------------------------------------------------------------------------------- qualidade dos dados
+# ---------------------------------------------------------------------------------------------- data quality
 SITUACAO_CURTA = {"sem diferença": "sem", "explicada": "exp", "parcialmente explicada": "parc", "hipótese": "hip",
                   "não determinada": "nd"}
 
 
 def qualidade(p, q):
-    """Anomalias, verificacoes e situacao das diferencas com o RREO (Subetapa 05.6), lidas da derivacao pela camada
-    painel; nenhuma reinterpretacao aqui."""
+    """Anomalies, checks and the situation of the differences with the RREO (sub-stage 05.6), read from the derivation
+    by the panel layer; no reinterpretation here."""
     tipo, exercicio = q.texto("tipo", 40), q.inteiro("exercicio", 1900, 2999)
     entidade, data_final = q.inteiro("entidade", 1, 10 ** 6), q.data("data_final")
     pagina = q.inteiro("pagina", 1, 10 ** 6) or 1
@@ -1177,7 +1183,7 @@ def _tabela_diferencas_rreo(dr):
             + f'<p>{fm.link("/reconciliacao", "Ver a reconciliação documento a documento")}</p></section>')
 
 
-# ---------------------------------------------------------------------------------------------- entidades
+# ---------------------------------------------------------------------------------------------- entities
 def entidades(p, q):
     try:
         sel = _selecao(p, q, com_entidade=False)
@@ -1229,7 +1235,7 @@ def entidades(p, q):
     return titulo, "".join(corpo)
 
 
-# ---------------------------------------------------------------------------------------------- empenhos
+# ---------------------------------------------------------------------------------------------- commitments
 def _filtros_empenho(q):
     return {"categoria": q.escolha("categoria", CATEGORIAS), "fonte_recurso": q.inteiro("fonte_recurso", 0, 10 ** 9),
             "programatica": q.texto("programatica", 28), "tipo_credor": q.escolha("tipo_credor", publico.TIPOS_CREDOR),
@@ -1241,7 +1247,7 @@ def _filtros_empenho(q):
 
 
 def _mais_filtros(filtros):
-    """Filtros da composicao (05.4): faixa e classificacao orcamentaria, num bloco recolhivel (aberto quando em uso)."""
+    """Composition filters (05.4): band and budget classification, in a collapsible block (open when in use)."""
     usados = any(filtros[k] is not None for k in ("faixa", "orgao", "funcao", "programa", "elemento", "sem_classificacao"))
     campos = [f'<label>Faixa (FAIXA v1) <select name="faixa"><option value="">todas</option>'
               f'{fm.opcoes([(f, NOME_FAIXA[f]) for f in FAIXAS], filtros["faixa"] or "")}</select></label>']
@@ -1361,7 +1367,7 @@ def _dicionario_resumido():
     return f'<details class="dicionario"><summary>Nomes técnicos dos campos (API Elotech)</summary><ul>{itens}</ul></details>'
 
 
-# ---------------------------------------------------------------------------------------------- detalhe de empenho
+# ---------------------------------------------------------------------------------------------- commitment detail
 def empenho(p, q):
     entidade, ano, numero = q.inteiro("entidade", 1, 10 ** 6), q.inteiro("anoempenho", 1900, 2999), q.inteiro("empenho", 0, 10 ** 9)
     exercicio = q.inteiro("exercicio", 1900, 2999)
@@ -1457,7 +1463,7 @@ def _par(par):
 
 
 def _origem_registro(pv, chave):
-    """Onde conferir este empenho no portal (visivel) e o registro tecnico da coleta (recolhido)."""
+    """Where to check this commitment on the portal (visible) and the collection's technical record (collapsed)."""
     s = pv["snapshot"]
     parametros = ", ".join(f"{k}={v}" for k, v in sorted(s["parametros"].items()))
     return ('<section class="grupo origem-dado" id="origem"><h2>Origem do dado: onde conferir no Portal</h2>'
@@ -1499,7 +1505,7 @@ def _movimentacao(m, chave):
                          ("Liquidação referida", None)], linhas) + "</section>")
 
 
-# ---------------------------------------------------------------------------------------------- retratos
+# ---------------------------------------------------------------------------------------------- snapshots
 def retratos(p, q):
     entidade, exercicio, df = q.inteiro("entidade", 1, 10 ** 6), q.inteiro("exercicio", 1900, 2999), q.data("data_final")
     if None in (entidade, exercicio, df):
@@ -1567,7 +1573,7 @@ def comparar(p, q):
     return titulo, corpo
 
 
-# ---------------------------------------------------------------------------------------------- reconciliacao
+# ---------------------------------------------------------------------------------------------- reconciliation
 def reconciliacao(p, q):
     em = q.data("em")
     exercicio, df, escopo = q.inteiro("exercicio", 1900, 2999), q.data("data_final"), q.escolha("escopo", ("entidade", "consolidado"))
@@ -1609,7 +1615,7 @@ def _reconciliacao_documento(p, q, exercicio, df, escopo, em, cab):
     primeiro = linhas_r[0]
     linhas = []
     for x in linhas_r:
-        ident = f"rec-{x['regra_agregacao']['regra'].split()[-1]}-{x['coluna']}"      # ex.: rec-v2-h
+        ident = f"rec-{x['regra_agregacao']['regra'].split()[-1]}-{x['coluna']}"      # e.g. rec-v2-h
         linhas.append([f'<strong>{esc(x["coluna"])}</strong> <small>{esc(F.COLUNAS_RREO.get(x["coluna"], ""))}</small>',
                        fm.situacao_regra(x["regra_agregacao"]["regra"], x["regra_agregacao"]["situacao"]),
                        fm.valor(x["api_c"], ident + "-api") + " " + fm.natureza(x["api_natureza"]),
@@ -1641,7 +1647,7 @@ def _reconciliacao_documento(p, q, exercicio, df, escopo, em, cab):
 
 def _coerencia(p):
     coe = p.coerencia_entre_publicacoes()
-    ultimo = {(x["escopo"], x["de"]): x for x in coe["comparacoes"] if x["mais_recente"]}   # marca da camada painel
+    ultimo = {(x["escopo"], x["de"]): x for x in coe["comparacoes"] if x["mais_recente"]}   # mark from the panel layer
     linhas = []
     for (escopo, de), x in sorted(ultimo.items(), key=lambda kv: (kv[0][0], kv[0][1])):
         linhas.append([esc(escopo), esc(f"{de} → {x['para']}"),
@@ -1671,14 +1677,14 @@ def _origem_coerencia(x):
             + "</details>")
 
 
-# ---------------------------------------------------------------------------------------------- pares (tecnico)
+# ---------------------------------------------------------------------------------------------- pairs (technical)
 def pares(p, q):
     try:
         sel = _selecao(p, q, com_entidade=False)
     except SemDados as e:
         return erro("Sem dados processados", str(e))
     titulo = f"Técnico: pares espelhados — exercício {sel['exercicio']}, corte {fm.data_br(sel['data_final'])}"
-    if not sel["corte_processado"]:   # sem snapshot no corte, "0 pares" seria ausencia exibida como zero
+    if not sel["corte_processado"]:   # without a snapshot at the cut-off, "0 pares" would be absence shown as zero
         return titulo, (f"<h1>{esc(titulo)}</h1>{_avisos(sel['avisos'])}" + _formulario("/pares", sel)
                         + '<section class="indisponivel" id="indisponivel"><h2>Dados indisponíveis para este corte</h2>'
                           "<p>Corte não processado: não há registros para identificar pares. Nenhuma contagem é "
@@ -1708,7 +1714,7 @@ def pares(p, q):
     return titulo, corpo
 
 
-# ---------------------------------------------------------------------------------------------- metodologia
+# ---------------------------------------------------------------------------------------------- methodology
 def metodologia(p, q):
     m = p.metodologia()
     f = p.fontes()

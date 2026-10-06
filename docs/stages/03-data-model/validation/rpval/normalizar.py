@@ -1,18 +1,18 @@
-"""Camada 1: normalização (tipagem fiel do bruto, sem interpretação).
+"""Layer 1: normalization (faithful typing of the raw data, without interpretation).
 
-VALIDAÇÃO DO MODELO — Etapa 03. Não é código de produção.
+MODEL VALIDATION - stage 03. Not production code.
 
-Princípios:
-  * todo item de content[] vira exatamente uma linha (nada é descartado nem fundido);
-  * dinheiro vira centavos; valor com mais de 2 casas decimais é ERRO, não arredondamento;
-  * chave ausente é registrada (chaves_ausentes), não inventada.
+Principles:
+  * every content[] item becomes exactly one row (nothing is discarded or merged);
+  * money becomes cents; a value with more than 2 decimal places is an ERROR, not rounding;
+  * a missing key is recorded (chaves_ausentes), not invented.
 """
 import json
 import re
 from datetime import date, datetime
 from decimal import Decimal
 
-import fitz  # pymupdf — só para transcrever o PDF do RREO
+import fitz  # pymupdf - only to transcribe the RREO PDF
 
 from .bruto import agora
 
@@ -46,7 +46,7 @@ def _json(corpo):
 
 
 def normalizar(con):
-    """Cria uma execução de normalização sobre TODO o bruto. Devolve o id."""
+    """Creates a normalization run over ALL the raw data. Returns the id."""
     with con:
         nid = con.execute("INSERT INTO normalizacao_execucao (normalizador_versao, executada_em) VALUES (?,?)",
                           (VERSAO, agora())).lastrowid
@@ -98,7 +98,7 @@ def _mov(con, nid, rid, cid, corpo):
              m.get("nroDocumento")))
 
 
-# --- transcrição do PDF do RREO Anexo VII (1 página, layout Elotech) ---------
+# --- transcription of the RREO Annex VII PDF (1 page, Elotech layout) ---------
 EXTRATOR = "rreo-coordenadas-1"
 NUM = re.compile(r"^-?\d{1,3}(\.\d{3})*,\d{2}$")
 ROTULOS = {"(a)": "a", "(b)": "b", "(c)": "c", "(d)": "d", "e=(a+b)": "e", "(f)": "f", "(g)": "g",
@@ -117,7 +117,7 @@ def _rreo(con, nid, cid, corpo):
     data_final = date.fromordinal(prox.toordinal() - 1).isoformat()
     em = re.search(r"emitido em (\d+/\w+/\d{4}) as (\d+)h e (\d+)m", texto)
     emitido = f"{em.group(1)} {em.group(2)}:{em.group(3)}" if em else None
-    # escopo pelo rótulo da publicação ("6º Bimestre - Consolidado"), guardado nos parâmetros da coleta
+    # scope by the publication label ("6º Bimestre - Consolidado"), kept in the collection parameters
     rotulo_pub = json.loads(con.execute("SELECT parametros_json FROM coleta WHERE id=?", (cid,)).fetchone()[0])["rotulo"]
     escopo = "consolidado" if "Consolidado" in rotulo_pub else "entidade"
     palavras = pg.get_text("words")

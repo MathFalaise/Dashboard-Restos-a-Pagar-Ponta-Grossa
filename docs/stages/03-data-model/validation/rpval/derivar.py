@@ -1,10 +1,10 @@
-"""Camada 2: derivação (interpretações, sempre com a versão da regra).
+"""Layer 2: derivation (interpretations, always with the rule version).
 
-VALIDAÇÃO DO MODELO — Etapa 03. Não é código de produção.
+MODEL VALIDATION - stage 03. Not production code.
 
-Uma chamada a `derivar` cria uma derivacao_execucao nova sobre uma
-normalização; nada de execuções anteriores é alterado. O mesmo bruto com as
-mesmas regras tem de produzir o mesmo `hash_resultado`.
+Each call to `derivar` creates a new derivacao_execucao over a normalization;
+nothing of earlier runs is changed. The same raw data with the same rules must
+produce the same `hash_resultado`.
 """
 import hashlib
 import json
@@ -41,19 +41,19 @@ def derivar(con, nid):
 
 # ---------------------------------------------------------------------------
 def coletas_vigentes(con, em=None):
-    """Snapshot vigente de cada corte (listagem sem tipo, completa): o mais recente,
-    ou o mais recente até `em`. Chave: (entidade, exercicio, data_inicial, data_final)."""
+    """Current snapshot of each cut-off (listing without type, complete): the most recent one,
+    or the most recent up to `em`. Key: (entidade, exercicio, data_inicial, data_final)."""
     sql = ("SELECT id, entidade, exercicio, data_inicial, data_final, coletada_em FROM coleta "
            "WHERE tipo='rp_listagem' AND status='completa' AND tipo_pesquisa IS NULL"
            + (" AND coletada_em <= ?" if em else "") + " ORDER BY coletada_em, id")
     vig = {}
     for cid, e, ex, di, df, _ in con.execute(sql, (em,) if em else ()):
-        vig[(e, ex, di, df)] = cid  # o último na ordem vence
+        vig[(e, ex, di, df)] = cid  # the last one in order wins
     return vig
 
 
 def _linhas(con, did, cid):
-    """Registros normalizados + derivados de uma coleta, como dicts."""
+    """Normalized + derived records of a collection, as dicts."""
     q = ("SELECT r.*, d.categoria, d.faixa_processado, d.faixa_nao_processado, d.s1_saldo_total_c, "
          "d.s2_a_liquidar_c, d.s3_liquidado_a_pagar_c, d.cancel_processado_c, d.cancel_nao_processado_c "
          "FROM rp_registro r JOIN rp_derivado d ON d.resposta_id=r.resposta_id AND d.indice=r.indice "
@@ -121,7 +121,7 @@ def _movimentacao(con, did, nid):
                       "no_liquidacao_rotulo, exercicio_pagamento_rotulo, no_pagamento_rotulo "
                       "FROM movimentacao_lancamento WHERE normalizacao_id=?", (nid,))
     for rid, i, t, v, exl, nol, exp, nop in cur.fetchall():
-        if t in (40, 41):          # rótulos trocados (MOV-REF v1)
+        if t in (40, 41):          # swapped labels (MOV-REF v1)
             ref = (exp, nop)
         elif t in (30, 31, 50, 51):
             ref = (exl, nol)
@@ -134,7 +134,7 @@ def _movimentacao(con, did, nid):
 
 # ---------------------------------------------------------------------------
 def _continuidade(con, did, R, vig):
-    """Fechamento de A (01/01–31/12) × abertura de A+1 (01/01–qualquer)."""
+    """Closing of A (01/01-31/12) x opening of A+1 (01/01-any)."""
     fech = {(e, ex): cid for (e, ex, di, df), cid in vig.items() if di == f"{ex}-01-01" and df == f"{ex}-12-31"}
     aber = {}
     for (e, ex, di, df), cid in sorted(vig.items(), key=lambda kv: kv[1]):
@@ -168,7 +168,7 @@ def _execucao(r):
 
 
 def _pareamento(con, did, R, vig):
-    """PAR-24 v1. Devolve {(exercicio, di, df): [pares]} para a visão analítica."""
+    """PAR-24 v1. Returns {(exercicio, di, df): [pairs]} for the analytical view."""
     saida = {}
     cortes = {(ex, di, df) for (e, ex, di, df) in vig if e == ENT_COPIA} & {(ex, di, df) for (e, ex, di, df) in vig if e == ENT_ORIGINAL}
     for ex, di, df in sorted(cortes):
@@ -208,7 +208,7 @@ def _pareamento(con, did, R, vig):
 
 # ---------------------------------------------------------------------------
 def _componentes(linhas, versao_agregacao):
-    """RREO-COL v1: pagamento segue o CAMPO. v2: pagamento segue a CATEGORIA do registro."""
+    """RREO-COL v1: payment follows the FIELD. v2: payment follows the record's CATEGORY."""
     v = dict.fromkeys(COMPONENTES, 0)
     for r in linhas:
         so_p = r["proc_c"] > 0 and r["aproc_c"] == 0
@@ -257,27 +257,27 @@ def _visoes_agregacao(con, did, R, vig, pares, ragg, versao):
     por_corte = defaultdict(dict)
     for (e, ex, di, df), cid in vig.items():
         if di != f"{ex}-01-01":
-            continue  # RREO-COL só vale com dataInicial = 01/01
+            continue  # RREO-COL only holds with dataInicial = 01/01
         v = _componentes(_linhas(con, did, cid), versao)
         _gravar_visao(con, did, "entidade", ragg, None, e, ex, df, [cid], v)
         por_corte[(ex, df)][e] = (cid, v)
     for (ex, df), ents in sorted(por_corte.items()):
         if not entidades or set(ents) != entidades:
-            continue  # visão do Município só com TODAS as entidades no mesmo corte
+            continue  # Municipality view only with ALL entities at the same cut-off
         pub = dict.fromkeys(COMPONENTES, 0)
         for cid, v in ents.values():
             for comp in COMPONENTES:
                 pub[comp] += v[comp]
         coletas = [cid for cid, _ in ents.values()]
         _gravar_visao(con, did, "publicado", ragg, None, None, ex, df, coletas, pub)
-        # visões analíticas: uma por regra de consolidação (EXPERIMENTAIS), lado a lado
+        # analytical views: one per consolidation rule (EXPERIMENTAL), side by side
         for regra, lado_excluido in ((R["CONS-PAR"], CONS_PAR_V1), (R["CONS-PAR-2"], CONS_PAR_V2)):
             ana = dict(pub)
             for p in pares.get((ex, f"{ex}-01-01", df), []):
                 lado = lado_excluido(p)
                 if lado is None:
-                    continue  # não consolidado: os dois lados contam (anomalia já registrada)
-                x = p[lado]   # só a INSCRIÇÃO desse lado sai; fluxos dos dois lados ficam
+                    continue  # not consolidated: both sides count (anomaly already recorded)
+                x = p[lado]   # only that side's INSCRIPTION is removed; the flows of both sides stay
                 if x["proc_c"] > 0:
                     ana[x["faixa_processado"]] -= x["proc_c"]
                 if x["aproc_c"] > 0:
@@ -289,12 +289,12 @@ def _visoes_agregacao(con, did, R, vig, pares, ragg, versao):
 
 
 def CONS_PAR_V1(p):
-    """v1: inscrições iguais e execução em no máximo um lado → a inscrição de B sai."""
+    """v1: equal inscriptions and execution on at most one side -> B's inscription is removed."""
     return "b" if p["mesma"] and p["lado"] != "ambos" else None
 
 
 def CONS_PAR_V2(p):
-    """v2: inscrição de A = inscrição de B ou = saldo final de B → A é remanescente; a inscrição de A sai."""
+    """v2: A's inscription = B's inscription or = B's final balance -> A is a remainder; A's inscription is removed."""
     return "a" if p["relacao"] in ("igual", "a_e_saldo_final_de_b") and p["lado"] != "ambos" else None
 
 
@@ -331,7 +331,7 @@ TABELAS_HASH = ["rp_derivado", "movimentacao_interpretada", "anomalia", "espelha
 
 
 def hash_resultado(con, did):
-    """Hash de todo o resultado da derivação, sem colunas que identificam a execução."""
+    """Hash of the whole derivation result, without the columns that identify the run."""
     h = hashlib.sha256()
     for t in TABELAS_HASH:
         cols = [r[1] for r in con.execute(f"PRAGMA table_info({t})") if r[1] not in ("derivacao_id", "id")]

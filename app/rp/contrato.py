@@ -1,17 +1,18 @@
-"""Contrato EMPIRICO da API Elotech usado pelo coletor (revisao critica, itens 3, 6, 16, 17, 49 e 50).
+"""EMPIRICAL contract of the Elotech API used by the collector (critical review, items 3, 6, 16, 17, 49 and 50).
 
-Nao e documentacao do fornecedor: `/empenhos/restos-a-pagar` nao aparece na especificacao OpenAPI coletada. E o
-comportamento observado e conferido pelo projeto (ver auditoria/CONTRATO_API_ELOTECH.md). Aqui ficam as partes
-do contrato que o codigo usa:
+It is not vendor documentation: `/empenhos/restos-a-pagar` is not in the collected OpenAPI specification. It is the
+behavior observed and checked by the project (see docs/audits/ELOTECH_API_CONTRACT.md). The parts of the contract
+the code uses live here:
 
-  * ORDEM_RP: a ordenacao PEDIDA na listagem de RP. Sondagem de 05/10/2026 (auditoria/sondagem_ordenacao.json):
-    a API aceita e ecoa `sort` em dois campos, obedece a ordem pedida (desc inverte) e, com esta ordem, devolve
-    o mesmo content, byte a byte, que a ordem implicita (1 e 2 paginas). Pedir a ordem fixa o que antes era so
-    observado; o eco e conferido pagina a pagina.
-  * forma(): impressao da ESTRUTURA de uma resposta JSON (caminho -> tipos), gravada no manifesto. Campo novo,
-    removido ou com outro tipo muda a impressao; `diagnosticar-api` compara a forma de hoje com a dos snapshots.
-  * contrato minimo dos catalogos (entidades, exercicios, publicacoes): JSON valido nao basta - um objeto de erro
-    com HTTP 200 e JSON. O minimo e o que a normalizacao precisa para gerar linhas.
+  * ORDEM_RP: the order REQUESTED in the RP listing. Probe of 05/10/2026 (docs/audits/sondagem_ordenacao.json):
+    the API accepts and echoes `sort` on two fields, obeys the requested order (desc reverses it) and, with this
+    order, returns the same content, byte for byte, as the implicit order (1 and 2 pages). Requesting the order
+    pins down what used to be only observed; the echo is checked page by page.
+  * forma(): fingerprint of the STRUCTURE of a JSON response (path -> types), recorded in the manifest. A new field,
+    a removed one or one with another type changes the fingerprint; `diagnosticar-api` compares today's shape with
+    the snapshots'.
+  * minimum contract of the catalogs (entities, fiscal years, publications): valid JSON is not enough - an error
+    object with HTTP 200 is JSON. The minimum is what the normalization needs to produce rows.
 """
 import hashlib
 import json
@@ -24,23 +25,23 @@ CAMPOS_DA_CHAVE = ("entidade", "anoempenho", "empenho")
 
 
 def chave_negocio(registro):
-    """Identidade logica de um registro da listagem de RP: (entidade, anoempenho, empenho)."""
+    """Logical identity of an RP listing record: (entidade, anoempenho, empenho)."""
     return tuple(registro.get(c) for c in CAMPOS_DA_CHAVE)
 
 
 def canonico(registro):
-    """Serializacao canonica de um registro: identidade do CONTEUDO (duas ocorrencias iguais = mesmos bytes aqui)."""
+    """Canonical serialization of a record: identity of the CONTENT (two equal occurrences = same bytes here)."""
     return json.dumps(registro, sort_keys=True, ensure_ascii=False, separators=(",", ":"), default=str)
 
 
 def impressao_registro(registro):
-    """SHA-256 da serializacao canonica: identidade do conteudo de um registro (revisao, item 15)."""
+    """SHA-256 of the canonical serialization: identity of a record's content (review, item 15)."""
     return hashlib.sha256(canonico(registro).encode()).hexdigest()
 
 
-# ------------------------------------------------------------------ ordem pedida e eco
+# ------------------------------------------------------------------ requested order and echo
 def sort_ecoado_confere(ecoado, pedido):
-    """True se o `sort` ecoado pela pagina e exatamente a ordem pedida (propriedade e direcao, na mesma ordem)."""
+    """True if the `sort` echoed by the page is exactly the requested order (property and direction, same order)."""
     if not isinstance(ecoado, list) or len(ecoado) != len(pedido):
         return False
     for e, p in zip(ecoado, pedido):
@@ -50,7 +51,7 @@ def sort_ecoado_confere(ecoado, pedido):
     return True
 
 
-# ------------------------------------------------------------------ forma da resposta
+# ------------------------------------------------------------------ response shape
 def _tipo(v):
     if v is None:
         return "null"
@@ -78,8 +79,8 @@ def _percorrer(valor, caminho, saida):
 
 
 def forma(corpos):
-    """Estrutura da uniao das respostas JSON: lista ordenada 'caminho:tipo1|tipo2'. None se nenhum corpo for JSON
-    (ex.: PDF). Os VALORES nao entram: so caminhos e tipos."""
+    """Structure of the union of the JSON responses: sorted list 'path:type1|type2'. None if no body is JSON
+    (e.g. PDF). VALUES do not go in: only paths and types."""
     saida = defaultdict(set)
     algum = False
     for corpo in corpos:
@@ -95,7 +96,7 @@ def forma(corpos):
 
 
 def descricao_forma(corpos):
-    """Bloco gravado no manifesto ("contrato_api"), ou None para resposta nao JSON."""
+    """Block recorded in the manifest ("contrato_api"), or None for a non-JSON response."""
     f = forma(corpos)
     if f is None:
         return None
@@ -103,8 +104,8 @@ def descricao_forma(corpos):
 
 
 def comparar_formas(referencia, atual):
-    """Diferencas de estrutura entre duas formas: caminhos novos, removidos e com tipo diferente.
-    `null` sozinho nao e mudanca de tipo (campo opcional que veio vazio): so conta tipo que nao existia."""
+    """Structural differences between two shapes: new paths, removed paths and paths with a different type.
+    `null` alone is not a type change (an optional field that came empty): only a type that did not exist counts."""
     ref = {x.rsplit(":", 1)[0]: set(x.rsplit(":", 1)[1].split("|")) for x in referencia or []}
     atu = {x.rsplit(":", 1)[0]: set(x.rsplit(":", 1)[1].split("|")) for x in atual or []}
     novos = sorted(set(atu) - set(ref))
@@ -115,9 +116,9 @@ def comparar_formas(referencia, atual):
             "igual": not (novos or removidos or tipos)}
 
 
-# Partes da resposta que so ECOAM a requisicao (a ordem pedida). Sao conferidas por sort_ecoado_confere, nao pela
-# estrutura: os snapshots coletados antes de o coletor pedir `sort` tem esse eco vazio, e a diferenca nao e mudanca
-# da API (medido no portal em 05/10/2026: era a unica diferenca de estrutura entre a amostra e os snapshots).
+# Parts of the response that only ECHO the request (the requested order). They are checked by sort_ecoado_confere,
+# not by the structure: snapshots collected before the collector requested `sort` have this echo empty, and that
+# is not an API change (measured on the portal on 05/10/2026: the only structural difference between sample and snapshots).
 ECO_DA_REQUISICAO = ("$.sort[]", "$.pageable.sort[]")
 
 
@@ -132,9 +133,9 @@ def _caminhos(valor, prefixo):
 
 
 def _obrigatorios(corpos):
-    """(caminhos do topo presentes em TODA resposta, caminhos presentes em TODO registro, numero de registros).
-    Registro = item de `content` (pagina Spring) ou da lista (catalogo). Campo raro - presente so em alguns
-    registros, ou objeto que as vezes vem nulo - nao e obrigatorio."""
+    """(top-level paths present in EVERY response, paths present in EVERY record, number of records).
+    Record = item of `content` (Spring page) or of the list (catalog). A rare field - present only in some records,
+    or an object that is sometimes null - is not mandatory."""
     topo, registro, n = None, None, 0
     for corpo in corpos:
         try:
@@ -156,11 +157,11 @@ def _obrigatorios(corpos):
 
 
 def comparar_amostra(referencia, amostra):
-    """Estrutura de uma AMOSTRA (ex.: uma pagina pequena pedida agora) contra respostas de referencia (um snapshot
-    gravado). `novos` e `tipo_diferente` pela uniao das formas (comparar_formas): caminho ou tipo que nao aparece em
-    nenhum registro gravado. `removidos` so entre os caminhos OBRIGATORIOS da referencia (em toda resposta e em todo
-    registro): a amostra pequena nao traz os campos raros, e isso nao e mudanca. Amostra sem registros so confere o
-    topo. O eco da ordem pedida (ECO_DA_REQUISICAO) fica fora."""
+    """Structure of a SAMPLE (e.g. a small page requested now) against reference responses (a recorded snapshot).
+    `novos` and `tipo_diferente` by the union of the shapes (comparar_formas): a path or type that appears in no
+    recorded record. `removidos` only among the reference's MANDATORY paths (in every response and every record):
+    the small sample lacks the rare fields, and that is not a change. A sample without records only checks the top
+    level. The echo of the requested order (ECO_DA_REQUISICAO) stays out."""
     sem_eco = lambda f: [x for x in f or [] if _fora_do_eco(x.rsplit(":", 1)[0])]
     base = comparar_formas(sem_eco(forma(referencia)), sem_eco(forma(amostra)))
     topo_ref, reg_ref, _ = _obrigatorios(referencia)
@@ -170,7 +171,7 @@ def comparar_amostra(referencia, amostra):
             "registros_na_amostra": n_am, "igual": not (base["novos"] or removidos or base["tipo_diferente"])}
 
 
-# ------------------------------------------------------------------ contrato minimo dos catalogos
+# ------------------------------------------------------------------ minimum contract of the catalogs
 def _inteiro(v):
     return isinstance(v, int) and not isinstance(v, bool)
 
@@ -185,7 +186,7 @@ def _lista_de_objetos(d, alvo):
 
 
 def contrato_entidades(d):
-    """Problema (texto) ou None. Lista NAO vazia de objetos com `id` inteiro (o que a normalizacao exige)."""
+    """Problem (text) or None. A NON-empty list of objects with an integer `id` (what the normalization requires)."""
     problema = _lista_de_objetos(d, "catálogo de entidades")
     if problema:
         return problema
@@ -198,7 +199,7 @@ def contrato_entidades(d):
 
 
 def contrato_exercicios(d, entidade):
-    """Problema (texto) ou None. Lista de objetos com id.exercicio inteiro e id.entidade.id = a entidade pedida."""
+    """Problem (text) or None. A list of objects with an integer id.exercicio and id.entidade.id = the requested entity."""
     problema = _lista_de_objetos(d, f"catálogo de exercícios da entidade {entidade}")
     if problema:
         return problema
@@ -215,7 +216,7 @@ def contrato_exercicios(d, entidade):
 
 
 def contrato_publicacoes(d):
-    """Problema (texto) ou None. Lista de grupos (objetos) cujo `list`, se presente, e lista."""
+    """Problem (text) or None. A list of groups (objects) whose `list`, if present, is a list."""
     problema = _lista_de_objetos(d, "publicações")
     if problema:
         return problema

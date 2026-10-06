@@ -1,14 +1,14 @@
-"""Reconciliacao INVESTIGACAO x PRODUCAO (Etapa 04.2). Artefato de validacao, nao e producao.
+"""Reconciliation INVESTIGATION x PRODUCTION (stage 04.2). Validation artifact, not production.
 
-    bruto das Etapas 01/02 --> pipeline de investigacao (etapa03/validacao) --> ESPERADO
-    bruto das Etapas 01/02 --> importador + pipeline de producao (app/rp)   --> OBTIDO
-    ESPERADO == OBTIDO, tabela a tabela, linha a linha
+    raw data of stages 01/02 --> investigation pipeline (docs/stages/03-data-model/validation) --> EXPECTED
+    raw data of stages 01/02 --> importer + production pipeline (app/rp)                        --> OBTAINED
+    EXPECTED == OBTAINED, table by table, row by row
 
-Os snapshots dos dois lados sao pareados pelo CONTEUDO: (tipo, coletada_em, SHA-256 de cada
-resposta em ordem). Ids internos, nomes de versao e carimbos de execucao nao entram na comparacao.
-Nao faz nenhuma requisicao a internet.
+The snapshots of both sides are paired by CONTENT: (type, coletada_em, SHA-256 of each
+response in order). Internal ids, version names and run timestamps do not enter the comparison.
+It makes no request to the internet.
 
-Uso: python reconciliar_04_2.py PASTA_TEMPORARIA [BANCO_ATIVO]
+Usage: python reconciliar_04_2.py PASTA_TEMPORARIA [BANCO_ATIVO]
 """
 import json
 import sys
@@ -19,14 +19,14 @@ RAIZ = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(RAIZ / "docs/stages/03-data-model/validation"))
 sys.path.insert(0, str(RAIZ / "app"))
 
-import construir_banco as inv  # noqa: E402  (investigacao)
-from rp import banco, derivar, importar, normalizar  # noqa: E402  (producao)
+import construir_banco as inv  # noqa: E402  (investigation)
+from rp import banco, derivar, importar, normalizar  # noqa: E402  (production)
 from rp.armazem import Armazem  # noqa: E402
 from rp.config import carregar  # noqa: E402
 
 
 def chaves_snapshot(con):
-    """{coleta_id: (tipo, coletada_em, (sha256, ...))}"""
+    """{coleta_id: (type, coletada_em, (sha256, ...))}"""
     out = {}
     for cid, tipo, quando in con.execute("SELECT id, tipo, coletada_em FROM coleta"):
         shas = tuple(s for (s,) in con.execute("SELECT sha256 FROM resposta_bruta WHERE coleta_id=? ORDER BY ordem", (cid,)))
@@ -35,7 +35,7 @@ def chaves_snapshot(con):
 
 
 def origem(con, K):
-    """{resposta_id: (chave do snapshot, ordem)}"""
+    """{resposta_id: (snapshot key, order)}"""
     return {rid: (K[cid], o) for rid, cid, o in con.execute("SELECT id, coleta_id, ordem FROM resposta_bruta")}
 
 
@@ -93,7 +93,7 @@ def tabelas(con, nid, did):
     ver_sem_snapshot = Counter()
     for rg, desc, esc, v, f in con.execute("SELECT regra_id, descricao, escopo_json, verificados, falhas FROM verificacao WHERE derivacao_id=?", (did,)):
         e = json.loads(esc)
-        # investigacao guarda ids ("coletas", "rreo_coleta"); producao guarda uids ("snapshots", "rreo_snapshot")
+        # the investigation keeps ids ("coletas", "rreo_coleta"); production keeps uids ("snapshots", "rreo_snapshot")
         ids = e.pop("coletas", None) or e.pop("snapshots", None)
         if ids is not None:
             e["snapshots"] = [nk(x) for x in ids]
@@ -130,10 +130,10 @@ def comparar(esperado, obtido):
 def main(tmp, banco_ativo=None):
     tmp = Path(tmp)
     tmp.mkdir(parents=True, exist_ok=True)
-    # ESPERADO: pipeline de investigacao
+    # EXPECTED: investigation pipeline
     ci, ni, di, _, _ = inv.construir(tmp / "investigacao.sqlite")
     esperado = tabelas(ci, ni, di)
-    # OBTIDO: importador + pipeline de producao
+    # OBTAINED: importer + production pipeline
     cfg = carregar(dados_locais=tmp / "prod_local", snapshots=tmp / "prod_snapshots", backups=tmp / "prod_backups")
     cp = banco.abrir(cfg)
     importar.importar_etapas_anteriores(cp, Armazem(cfg.snapshots), RAIZ)
@@ -156,7 +156,7 @@ def main(tmp, banco_ativo=None):
     ks_i, ks_p = set(chaves_snapshot(ci).values()), set(chaves_snapshot(cp).values())
     out += ["", f"Snapshots: {len(ks_i)} na investigação, {len(ks_p)} na produção, **{len(ks_i & ks_p)} pareados por conteúdo**.", ""]
 
-    # casos relevantes, lado a lado
+    # relevant cases, side by side
     def val(con, did, sql, *p):
         return con.execute(sql, (did,) + p).fetchall()
     casos = [
@@ -188,14 +188,14 @@ def main(tmp, banco_ativo=None):
         ok &= e == o
         out.append(f"| {nome} | `{e}` | `{o}` | {'**SIM**' if e == o else '**NÃO**'} |")
 
-    # snapshots reais da 04.1 (banco ativo) x investigacao, mesmos bytes
+    # real 04.1 snapshots (active database) x investigation, same bytes
     if banco_ativo:
         import sqlite3
         ca = sqlite3.connect(banco_ativo)
         na = ca.execute("SELECT MAX(id) FROM normalizacao_execucao").fetchone()[0]
         da = ca.execute("SELECT MAX(id) FROM derivacao_execucao WHERE normalizacao_id=?", (na,)).fetchone()[0]
         real = tabelas(ca, na, da)
-        # a listagem real (04.1) tem os MESMOS bytes da recoleta da Etapa 02: comparar registro a registro
+        # the real listing (04.1) has the SAME bytes as the stage 02 re-collection: compare record by record
         Kr = chaves_snapshot(ca)
         lst = [k for k in Kr.values() if k[0] == "rp_listagem"]
         out += ["", "## 3. Snapshots reais da 04.1 (banco ativo) × investigação", ""]
@@ -224,7 +224,7 @@ def main(tmp, banco_ativo=None):
 
 
 if __name__ == "__main__":
-    sys.stdout.reconfigure(errors="backslashreplace")   # saida em cp1252 (arquivo) nao derruba o script
+    sys.stdout.reconfigure(errors="backslashreplace")   # cp1252 output (file) does not crash the script
     ok, texto = main(*sys.argv[1:3])
     Path(RAIZ / "docs/stages/04-pipeline/results" / "04_2_reconciliacao.md").write_text(texto + "\n", encoding="utf-8")
     sys.exit(0 if ok else 1)

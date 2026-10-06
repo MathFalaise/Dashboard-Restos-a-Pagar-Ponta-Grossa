@@ -43,3 +43,13 @@ python -m rp interface
 
 The interface opens at `http://127.0.0.1:8050/`. Everything else (rebuilding the database, collecting, processing,
 quality gates) is in [app/README.md](app/README.md).
+
+## Language conventions
+
+- Comments, docstrings and configuration notes are in English (ASCII).
+- Identifiers (modules, functions, variables, database tables and columns), CLI commands and options, and every
+  text the program shows or stores (interface labels, messages, rule sources, evidence) stay in Portuguese: they
+  are part of the homologated data and of the public interface.
+- Two stage 02 investigation scripts, `docs/stages/02-accounting-validation/investigation/coletar.py` and
+  `casos.py`, are frozen in their original Portuguese: their SHA-256 is recorded in the snapshot manifests they
+  produced.

@@ -1,8 +1,8 @@
-"""Portoes da revisao de seguranca, correcoes e otimizacao (30/09/2026).
+"""Gates of the security, fixes and optimization review (30/09/2026).
 
-Cada teste fixa uma protecao ou uma correcao: se alguem a desfizer, o teste falha.
-Os registros montados aqui sao SINTETICOS. Nenhum teste acessa a internet: o teste do
-transporte HTTP real usa um servidor local em 127.0.0.1.
+Each test pins a protection or a fix: if someone undoes it, the test fails.
+The records built here are SYNTHETIC. No test accesses the internet: the real HTTP transport test uses a local server
+on 127.0.0.1.
 """
 import decimal
 import http.server
@@ -24,7 +24,7 @@ from rp.snapshots import gravar_snapshot
 COL = {"nome": "teste", "versao": "1", "sha256_codigo": None}
 P = {"entidade": 998, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-12-31", "size": 2000}
 ANEXO_VII = "Anexo VII - Demonstrativo dos Restos a Pagar"
-SEXTO = "6º Bimestre"   # rotulo como o portal publica (indicador ordinal)
+SEXTO = "6º Bimestre"   # label as the portal publishes it (ordinal indicator)
 
 
 def _cfg(tmp_path, **kw):
@@ -85,7 +85,7 @@ def test_retry_after_do_servidor_tem_teto(tmp_path):
     c = Cliente(_cfg(tmp_path, espera_base=5.0, tentativas=3), transporte=lambda url, timeout: respostas.pop(0),
                 dormir=relogio.dormir, monotonic=relogio.monotonic)
     assert c.get(EP_RP).status == 200
-    assert max(relogio.dormiu) == 300    # e nao 999999 s
+    assert max(relogio.dormiu) == 300    # and not 999999 s
 
 
 @pytest.mark.parametrize("caminho", ["https://outro.host/x", "//outro.host/x", "/a/../b", "/a/./b", "/a?b=1", "/a#b",
@@ -116,7 +116,7 @@ class _Servidor(http.server.BaseHTTPRequestHandler):
         elif self.path == "/grande":
             self._responder(200, b"x" * 5000)
         elif self.path == "/sem-tamanho":
-            self._responder(200, b"y" * 5000, tamanho=False)   # HTTP/1.0: corpo ate fechar a conexao
+            self._responder(200, b"y" * 5000, tamanho=False)   # HTTP/1.0: body until the connection closes
         else:
             self._responder(200, b'{"ok": true}')
 
@@ -136,7 +136,7 @@ def servidor_local():
 def test_transporte_real_nao_segue_redirecionamento_e_limita_o_corpo(servidor_local):
     get = transporte_requests("teste", 1000, 30)
     status, _, corpo = get(servidor_local + "/redireciona", 10)
-    assert status == 302 and corpo == b""    # devolvido como veio: o coletor registra como falha
+    assert status == 302 and corpo == b""    # returned as it came: the collector records it as a failure
     status, _, corpo = get(servidor_local + "/ok", 10)
     assert status == 200 and corpo == b'{"ok": true}'
     with pytest.raises(RespostaRecusada, match="Content-Length"):
@@ -145,7 +145,7 @@ def test_transporte_real_nao_segue_redirecionamento_e_limita_o_corpo(servidor_lo
         get(servidor_local + "/sem-tamanho", 10)
 
 
-# ------------------------------------------------------------------ configuracao
+# ------------------------------------------------------------------ configuration
 @pytest.mark.parametrize("mudanca", [{"api_base": "http://servicos.pontagrossa.pr.gov.br/api"},
                                      {"api_base": "https://usuario:senha@host/api"},
                                      {"api_base": "https://host/api?x=1"},
@@ -156,7 +156,7 @@ def test_configuracao_fraca_e_recusada(tmp_path, mudanca):
         _cfg(tmp_path, **mudanca)
 
 
-# ------------------------------------------------------------------ armazem
+# ------------------------------------------------------------------ store
 def test_hash_invalido_nunca_vira_caminho(tmp_path):
     a = Armazem(tmp_path / "s")
     for h in ("../../../fora", "AB" * 32, "0" * 63, 123, None):
@@ -170,7 +170,7 @@ def test_descomprimir_igual_a_zlib_e_com_teto(monkeypatch):
     assert descomprimir(comp) == zlib.decompress(comp) == dados
     assert descomprimir(comp, len(dados)) == dados
     with pytest.raises(ObjetoCorrompido, match="passa de 100 bytes"):
-        descomprimir(zlib.compress(b"\0" * 10_000_000), 100)     # bomba: 10 MB a partir de ~10 KB
+        descomprimir(zlib.compress(b"\0" * 10_000_000), 100)     # bomb: 10 MB from ~10 KB
     with pytest.raises(ObjetoCorrompido, match="difere"):
         descomprimir(comp, len(dados) + 1)
     with pytest.raises(ObjetoCorrompido, match="incompleto"):
@@ -210,7 +210,7 @@ def test_manifesto_ilegivel_e_relatado_e_nao_derruba_a_verificacao(tmp_path):
         a.manifestos()
 
 
-# ------------------------------------------------------------------ banco
+# ------------------------------------------------------------------ database
 def test_banco_ativo_em_pasta_do_onedrive_e_recusado(tmp_path):
     cfg = carregar(dados_locais=tmp_path / "OneDrive" / "dados", snapshots=tmp_path / "s", backups=tmp_path / "b")
     with pytest.raises(banco.BancoEmPastaSincronizada):
@@ -235,7 +235,7 @@ def test_objeto_adulterado_no_banco_e_detectado_sem_assert(tmp_path):
     cfg, con, a = _loja(tmp_path)
     s = _snap(con, a, "2026-09-30T10:00:00-03:00", _listagem([_registro(aproc=10)]))
     (sha,) = con.execute("SELECT sha256 FROM resposta_bruta WHERE coleta_id=?", (s["coleta_id"],)).fetchone()
-    con.execute("DROP TRIGGER objeto_sem_update")   # so neste banco de teste: simula adulteracao direta do arquivo
+    con.execute("DROP TRIGGER objeto_sem_update")   # only in this test database: simulates direct tampering with the file
     con.execute("UPDATE objeto_bruto SET dados=? WHERE sha256=?", (zlib.compress(b'{"content": []}'), sha))
     con.commit()
     with pytest.raises(ObjetoCorrompido):
@@ -243,21 +243,21 @@ def test_objeto_adulterado_no_banco_e_detectado_sem_assert(tmp_path):
     assert any("objeto corrompido no banco" in p for p in banco.verificar(con, a))
 
 
-# ------------------------------------------------------------------ coletor
+# ------------------------------------------------------------------ collector
 def test_servidor_que_ignora_page_nao_prende_o_coletor(ambiente):
     p = ambiente["portal"]
-    # a mesma pagina, sempre com last=false e sem totalPages: sem a trava, o coletor pediria paginas para sempre.
-    # Dois registros DISTINTOS na pagina (revisao critica, item 2): com duas copias da mesma chave, a pagina 0 ja seria
-    # recusada pela chave repetida e o teste nao chegaria a trava que ele prova.
+    # the same page, always with last=false and without totalPages: without the lock, the collector would ask for pages forever.
+    # Two DISTINCT records on the page (critical review, item 2): with two copies of the same key, page 0 would already be
+    # refused for the repeated key and the test would not reach the lock it proves.
     dois = [_registro(empenho=7, aproc=1), _registro(empenho=8, aproc=1)]
     p.rotas[(EP_RP, None)] = [(200, pagina(dois, 0, 5, False, None))]
     s = ambiente["coletor"].listagem(998, 2026, "2026-12-31")
-    # auditoria COL-02: a pagina 1 volta com number=0 e e recusada ja na segunda chamada (antes: 3 chamadas, pela soma)
+    # audit COL-02: page 1 comes back with number=0 and is refused on the second call (before: 3 calls, by the sum)
     assert s["status"] == "incompleta" and len(p.chamadas) == 2
     assert "devolveu a página number=0" in s["observacao"]
-    # sem `number` na resposta, a trava antiga continua valendo: 2 + 2 + 2 = 6 > 5 na terceira pagina
+    # without `number` in the response, the old lock still holds: 2 + 2 + 2 = 6 > 5 on the third page
     p.chamadas.clear()
-    dois = [dict(r, entidade=997) for r in dois]    # registros da entidade consultada (revisao critica, item 15)
+    dois = [dict(r, entidade=997) for r in dois]    # records of the queried entity (critical review, item 15)
     p.rotas[(EP_RP, None)] = [(200, json.dumps({"content": dois, "totalElements": 5, "last": False}).encode())]
     s = ambiente["coletor"].listagem(997, 2026, "2026-12-31")
     assert s["status"] == "incompleta" and len(p.chamadas) <= 3
@@ -275,7 +275,7 @@ def test_id_de_arquivo_que_nao_e_inteiro_nao_entra_na_url(ambiente):
     assert len(r) == 2 and arquivos == ["7"]
 
 
-# ------------------------------------------------------------------ normalizacao
+# ------------------------------------------------------------------ normalization
 def test_catalogo_malformado_nao_derruba_a_normalizacao(tmp_path):
     cfg, con, a = _loja(tmp_path)
     _snap(con, a, "2026-09-30T10:00:00-03:00", b'{"erro": "nao e lista"}', tipo="entidades", params={})
@@ -289,7 +289,7 @@ def test_catalogo_malformado_nao_derruba_a_normalizacao(tmp_path):
 
 
 def _centavos_de_referencia(v):
-    """Implementacao anterior a otimizacao, copiada literalmente: a nova tem de dar o mesmo resultado."""
+    """Implementation before the optimization, copied literally: the new one must give the same result."""
     if v is None:
         return None
     d = Decimal(str(v))
@@ -319,7 +319,7 @@ def test_centavos_trata_booleano_como_antes():
             f(True)
 
 
-# ------------------------------------------------------------------ execucoes
+# ------------------------------------------------------------------ runs
 def test_derivacao_atual_continua_protegida_quando_ha_como_estava_em_mais_nova(tmp_path):
     cfg, con, a = _loja(tmp_path)
     _snap(con, a, "2026-09-30T10:00:00-03:00", _listagem([_registro(aproc=10)]))
@@ -334,10 +334,10 @@ def test_derivacao_atual_continua_protegida_quando_ha_como_estava_em_mais_nova(t
     assert {d["id"] for d in execucoes.listar(con)["derivacoes"]} == {como_estava, nova}
 
 
-# ------------------------------------------------------------------ comparador
+# ------------------------------------------------------------------ comparator
 def test_SINTETICO_chave_repetida_nao_some_do_saldo_s1(tmp_path):
     cfg, con, a = _loja(tmp_path)
-    regs = [_registro(aproc=10), _registro(aproc=20)]            # a mesma chave duas vezes
+    regs = [_registro(aproc=10), _registro(aproc=20)]            # the same key twice
     s1 = _snap(con, a, "2026-09-29T20:00:00-03:00", _listagem(regs))
     s2 = _snap(con, a, "2026-10-03T20:00:00-03:00", _listagem(regs))
     nid, _ = normalizar.normalizar(con)
@@ -347,7 +347,7 @@ def test_SINTETICO_chave_repetida_nao_some_do_saldo_s1(tmp_path):
     assert r["chaves_duplicadas"]["anterior"] == [(998, 2025, 7)] and r["contagens"]["alterados"] == 0
 
 
-# ------------------------------------------------------------------ linha de comando
+# ------------------------------------------------------------------ command line
 def test_comparar_com_saida_nunca_sobrescreve_arquivo(tmp_path):
     arq = tmp_path / "config.toml"
     arq.write_text(
@@ -373,8 +373,8 @@ def test_comparar_com_saida_nunca_sobrescreve_arquivo(tmp_path):
 
 
 def test_saida_em_cp1252_nao_derruba_a_linha_de_comando(tmp_path):
-    """`processar` imprime "continuidade fechamento->abertura" com a seta U+2192, que o cp1252 nao tem.
-    Com a saida em cp1252 (redirecionamento para arquivo no Windows), o comando tem de terminar com 0."""
+    """`processar` prints "continuidade fechamento->abertura" with the U+2192 arrow, which cp1252 does not have.
+    With the output in cp1252 (redirection to a file on Windows), the command must end with 0."""
     import os
     import subprocess
     import sys
@@ -387,7 +387,7 @@ def test_saida_em_cp1252_nao_derruba_a_linha_de_comando(tmp_path):
         '[escopo]\nentidades = [998]\nexercicios = [2025, 2026]\n', encoding="utf-8")
     cfg = carregar(arq)
     con, a = banco.abrir(cfg), Armazem(cfg.snapshots)
-    for ex in (2025, 2026):   # fechamento de 2025 e abertura de 2026: gera a verificacao de continuidade
+    for ex in (2025, 2026):   # 2025 closing and 2026 opening: generates the continuity check
         params = {"entidade": 998, "exercicio": ex, "dataInicial": f"{ex}-01-01", "dataFinal": f"{ex}-12-31", "size": 2000}
         quando = f"2026-09-30T1{ex - 2024}:00:00-03:00"   # 2025 -> 11h, 2026 -> 12h
         _snap(con, a, quando, _listagem([_registro(anoempenho=2024, aproc=10)]), params=params)

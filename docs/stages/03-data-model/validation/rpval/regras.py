@@ -1,9 +1,9 @@
-"""Catálogo de regras e de tipos de anomalia (versão 1).
+"""Catalog of rules and anomaly types (version 1).
 
-VALIDAÇÃO DO MODELO — Etapa 03. Não é código de produção.
+MODEL VALIDATION - stage 03. Not production code.
 
-Cada regra aponta a seção do relatório da Etapa 02 que a sustenta e carrega o
-mesmo status de evidência. Regra não se edita: mudança = nova versão.
+Each rule points to the section of the stage 02 report that supports it and carries the
+same evidence status. A rule is never edited: a change = a new version.
 """
 
 R2 = "etapa02/RELATORIO_ETAPA02.md"
@@ -79,7 +79,7 @@ ANOMALIAS = [
 
 
 def semear(con):
-    """Grava o catálogo. Idempotente: não reinsere o que já existe."""
+    """Writes the catalog. Idempotent: does not reinsert what already exists."""
     for r in REGRAS:
         con.execute("INSERT OR IGNORE INTO regra (codigo, versao, tipo, uso, status_evidencia, definicao, fonte) "
                     "VALUES (?,?,?,?,?,?,?)", r)

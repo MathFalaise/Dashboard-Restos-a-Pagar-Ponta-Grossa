@@ -1,13 +1,13 @@
-"""Coerencia ENTRE publicacoes oficiais (somente leitura): o saldo L do RREO do 6o bim de A deveria ser igual
-a (a)+(f) - RP de exercicios anteriores - do RREO de A+1 (qualquer bimestre: sao colunas de inscricao).
-Ao lado, a API: soma de S1 no fechamento de A (RREO-COL v2, L) e (a)+(f) de A+1.
-2018 e 2019 (consolidado) vem da leitura de investigacao `rreo_layout_antigo.py` (identidades conferidas)."""
+"""Consistency BETWEEN official publications (read-only): the L balance of the 6th bimester RREO of A should equal
+(a)+(f) - RP of previous fiscal years - of the RREO of A+1 (any bimester: they are inscription columns).
+Next to it, the API: sum of S1 at the closing of A (RREO-COL v2, L) and (a)+(f) of A+1.
+2018 and 2019 (consolidated) come from the investigation reading `rreo_layout_antigo.py` (identities checked)."""
 import sqlite3, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "app"))
 from rp.config import carregar
 
-sys.stdout.reconfigure(errors="backslashreplace")   # saida em cp1252 (arquivo) nao derruba o script
+sys.stdout.reconfigure(errors="backslashreplace")   # cp1252 output (file) does not crash the script
 br = lambda c: f"{c/100:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") if c is not None else "—"
 con = sqlite3.connect(f"file:{carregar().banco}?mode=ro", uri=True)
 nid = con.execute("SELECT MAX(id) FROM normalizacao_execucao").fetchone()[0]

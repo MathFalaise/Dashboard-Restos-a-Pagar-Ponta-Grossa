@@ -1,8 +1,8 @@
-"""Compara 04_6_estado_antes.json e 04_6_estado_depois.json (secao 29 da especificacao da 04.6).
+"""Compares 04_6_estado_antes.json and 04_6_estado_depois.json (section 29 of the 04.6 specification).
 
-Uso:  python 04_6_comparar_estados.py ANTES.json DEPOIS.json SAIDA.json
-Separa: (1) bruto, armazem e derivacoes (precisam ser identicos); (2) VALORES numericos da camada painel e da tela
-(precisam ser identicos); (3) textos (motivos, rotulos), listados um a um para conferencia.
+Usage:  python 04_6_comparar_estados.py ANTES.json DEPOIS.json SAIDA.json
+Separates: (1) raw data, store and derivations (must be identical); (2) numeric VALUES of the panel layer and of the
+screen (must be identical); (3) texts (reasons, labels), listed one by one for checking.
 """
 import json
 import sys
@@ -16,7 +16,7 @@ for k in ("integrity_check", "hash_camada0", "bruto", "contagens", "esquema_vers
 
 
 def numeros(x, caminho=""):
-    """Achata a estrutura em {caminho: valor}, separando numeros de textos."""
+    """Flattens the structure into {path: value}, separating numbers from texts."""
     if isinstance(x, dict):
         for k, v in x.items():
             yield from numeros(v, f"{caminho}.{k}")

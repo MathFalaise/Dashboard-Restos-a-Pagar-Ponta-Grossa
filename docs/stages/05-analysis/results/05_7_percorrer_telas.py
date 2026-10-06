@@ -1,9 +1,10 @@
-"""Percorre por HTTP as telas da interface, inclusive as da Etapa 05, e grava status, tamanho e tempo (Subetapa 05.7).
+"""Walks over HTTP through the interface screens, including the stage 05 ones, and records status, size and time
+(sub-stage 05.7).
 
-Uso:  python 05_7_percorrer_telas.py http://127.0.0.1:PORTA SAIDA.json
+Usage:  python 05_7_percorrer_telas.py http://127.0.0.1:PORTA SAIDA.json
 
-So acessa o servidor local indicado (sem proxy). Usado com o servidor sem rede da 04.6
-(etapa04/resultados/04_6_servidor_sem_rede.py), que registra toda tentativa de conexao de saida.
+It only accesses the given local server (no proxy). Used with the 04.6 offline server
+(docs/stages/04-pipeline/results/04_6_servidor_sem_rede.py), which logs every outgoing connection attempt.
 """
 import json
 import sys

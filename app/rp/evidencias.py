@@ -1,11 +1,12 @@
-"""Evidencia externa: resposta de e-SIC, norma, nota tecnica, documento oficial, explicacao formal do Municipio.
+"""External evidence: an e-SIC answer, a regulation, a technical note, an official document, a formal explanation
+from the Municipality.
 
-Registrar uma evidencia = guardar o ARQUIVO (bytes, no armazem, enderecado pelo SHA-256), escrever um manifesto
-imutavel em evidencias/ e registrar a linha em evidencia_externa. Como os snapshots, a evidencia nunca e
-sobrescrita nem apagada, e o banco a reconstroi a partir do armazem (banco.sincronizar).
+Recording an evidence = keeping the FILE (bytes, in the store, addressed by SHA-256), writing an immutable manifest in
+evidencias/ and recording the row in evidencia_externa. Like snapshots, evidence is never overwritten or deleted, and
+the database rebuilds it from the store (banco.sincronizar).
 
-Regra de governanca: nenhuma regra nova se apoia em documento externo sem que ele esteja registrado aqui;
-a decisao em regra_situacao aponta para o id da evidencia.
+Governance rule: no new rule relies on an external document unless it is recorded here; the decision in
+regra_situacao points to the evidence id.
 """
 import re
 import uuid
@@ -21,7 +22,7 @@ class EvidenciaInvalida(ValueError):
 
 
 def registrar(con, armazem, *, tipo, descricao, arquivo, origem, data_documento=None, observacao=None):
-    """Registra `arquivo` como evidencia externa. Devolve {evidencia_id, evidencia_uid, sha256, manifesto}."""
+    """Records `arquivo` as external evidence. Returns {evidencia_id, evidencia_uid, sha256, manifesto}."""
     if tipo not in TIPOS_EVIDENCIA:
         raise EvidenciaInvalida(f"tipo precisa ser um de {sorted(TIPOS_EVIDENCIA)}: {tipo!r}")
     for nome, valor in (("descricao", descricao), ("origem", origem)):
@@ -44,5 +45,5 @@ def registrar(con, armazem, *, tipo, descricao, arquivo, origem, data_documento=
 
 
 def _nome_seguro(nome):
-    """So o nome do arquivo (sem pasta), com caracteres de controle removidos."""
+    """Only the file name (no folder), with control characters removed."""
     return re.sub(r"[\x00-\x1f\x7f]", "", nome)[:255] or "arquivo"
