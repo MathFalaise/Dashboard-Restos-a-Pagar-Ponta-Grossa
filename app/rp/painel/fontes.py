@@ -1,8 +1,8 @@
-"""Fontes de dados, naturezas de valor, dicionario de campos e metodologia da camada de consulta.
+"""Data sources, value natures, field dictionary and methodology of the query layer.
 
-So declaracoes (sem acesso ao banco). Os textos dizem apenas o que a documentacao do projeto demonstra:
-a atribuicao da API a plataforma Oxy Transparencia (Elotech) vem do actuator/info consultado na Etapa 01
-e da especificacao OpenAPI guardada no bruto; nada aqui afirma algo que o projeto nao comprovou.
+Declarations only (no database access). The texts only say what the project's documentation demonstrates: the
+attribution of the API to the Oxy Transparencia platform (Elotech) comes from the actuator/info queried in stage 01
+and from the OpenAPI specification kept in the raw data; nothing here asserts something the project did not prove.
 """
 
 ELOTECH = {
@@ -16,8 +16,8 @@ ELOTECH = {
                   "entidades": "/api/entidades/lista", "exercicios": "/api/exercicios/entidade/{id}"},
     "evidencia_da_atribuicao": [
         "Etapa 01: GET /portaltransparencia-api/actuator/info identificou a plataforma como Oxy Transparência, da Elotech "
-        "Gestão Pública, versão 3.128.0 (registrado em etapa01/RELATORIO_ETAPA01.md; a resposta não foi guardada no bruto).",
-        "etapa01/amostras_brutas/openapi_v3_api-docs.json: especificação OpenAPI da API, com contato 'Elotech Gestão Pública'.",
+        "Gestão Pública, versão 3.128.0 (registrado em docs/stages/01-source-discovery/REPORT.md; a resposta não foi guardada no bruto).",
+        "data/stage01-samples/openapi_v3_api-docs.json: especificação OpenAPI da API, com contato 'Elotech Gestão Pública'.",
         "O endpoint de RP usado pelo projeto (/empenhos/restos-a-pagar) não consta dessa especificação; foi identificado "
         "na Etapa 01 pelo funcionamento do próprio portal.",
     ],
@@ -52,7 +52,7 @@ NATUREZAS = {
     "diferenca": "Diferença — divergência entre duas fontes ou dois retratos",
 }
 
-# Colunas do RREO Anexo VII (rotulos transcritos na Etapa 02, etapa02/RELATORIO_ETAPA02.md secao 5)
+# RREO Annex VII columns (labels transcribed in stage 02, docs/stages/02-accounting-validation/REPORT.md section 5)
 COLUNAS_RREO = {
     "a": "Processados — inscritos em exercícios anteriores",
     "b": "Processados — inscritos em 31/dez do exercício anterior",
@@ -67,7 +67,7 @@ COLUNAS_RREO = {
     "k": "Não processados — saldo = (f+g) − (i+j)",
     "L": "Saldo total = e + k",
 }
-# coluna normalizada -> (campo da API, rotulo apresentado, significado confirmado na Etapa 02, status de evidencia)
+# normalized column -> (API field, displayed label, meaning confirmed in stage 02, evidence status)
 CAMPOS = {
     "proc_c": ("proc", "Inscrição processada",
                "Saldo liquidado e não pago antes de dataInicial; com dataInicial = 01/01, RP Processados inscritos.",
@@ -124,7 +124,7 @@ CAMPOS = {
     "cnpj_nome": ("cnpjNome", "Documento e nome do credor", "Como a API devolve (restrito).", "campo da API"),
 }
 
-# valores derivados por registro (camada 2): coluna -> (rotulo, formula, regra)
+# per-record derived values (layer 2): column -> (label, formula, rule)
 DERIVADOS = {
     "categoria": ("Categoria", "ambos / processado / não processado / sem saldo de abertura, por proc e aproc", ("CAT", 1)),
     "faixa_processado": ("Faixa do processado", "(b) se anoempenho = exercício − 1; senão (a)", ("FAIXA", 1)),
@@ -150,7 +150,7 @@ METODOLOGIA = {
                    "necessariamente o estado que estava disponível ao público naquele ano. A Etapa 04.4 registrou "
                    "alterações retroativas na base (lançamentos com data no passado feitos depois e registros inseridos "
                    "depois que aparecem em cortes antigos)."),
-    "arquitetura": "etapa04/ARQUITETURA_FONTES.md",
+    "arquitetura": "docs/stages/04-pipeline/SOURCE_ARCHITECTURE.md",
     "snapshots": ("Cada consulta à API vira um snapshot: as respostas HTTP são guardadas byte a byte, com SHA-256, "
                   "num armazém onde nada é sobrescrito nem apagado. Coletar de novo o mesmo corte cria outro snapshot "
                   "(outro retrato); o anterior continua disponível."),

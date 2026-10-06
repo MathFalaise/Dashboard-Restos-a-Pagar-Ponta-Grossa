@@ -1,13 +1,12 @@
-"""Catalogo de regras e de tipos de anomalia (producao).
+"""Catalog of rules and anomaly types (production).
 
-Mesmos codigos e versoes da Etapa 03 (etapa03/RELATORIO_ETAPA03.md secao 6.1). Toda
-regra carrega o status de evidencia e a fonte. `uso='experimental'` significa:
-calculada e identificada, NUNCA promovida a padrao automaticamente.
+Same codes and versions as stage 03 (docs/stages/03-data-model/REPORT.md section 6.1). Every rule carries its evidence
+status and source. `uso='experimental'` means: computed and identified, NEVER promoted to default automatically.
 
-Parametros de negocio (entidades do par, base 2.400.000 das copias, entidade do RREO por entidade) ficam em
-PARAMETROS, presos a VERSAO da regra, e vao para a tabela imutavel regra_parametro. O codigo le os parametros
-da regra em vez de repetir numeros; mudar um parametro exige uma versao nova da regra.
-A situacao de uso de cada versao (operacional, experimental, nao recomendada...) fica em governanca.py.
+Business parameters (the pair's entities, the copies' base 2,400,000, the entity of the per-entity RREO) live in
+PARAMETROS, tied to the rule VERSION, and go to the immutable regra_parametro table. The code reads the rule's
+parameters instead of repeating numbers; changing a parameter requires a new rule version.
+The usage situation of each version (operational, experimental, not recommended...) lives in governanca.py.
 """
 import json
 
@@ -72,8 +71,8 @@ ANOMALIAS = [
 ]
 
 
-# (codigo, versao) -> parametros estruturados. Transcricao da definicao da regra: mesmo significado, sem numero
-# espalhado pelo codigo. Valor novo = versao nova da regra (a tabela regra_parametro nao aceita edicao).
+# (codigo, versao) -> structured parameters. Transcription of the rule's definition: same meaning, without numbers
+# scattered through the code. A new value = a new rule version (the regra_parametro table accepts no edits).
 PARAMETROS = {
     ("PAR-24", 1): {"entidade_copia": 1, "entidade_original": 15, "base_empenho_copia": 2400000,
                     "campos_de_conferencia": ["cnpj", "data_emissao"]},
@@ -82,13 +81,14 @@ PARAMETROS = {
 
 
 class CatalogoDivergente(Exception):
-    """O catalogo gravado no banco nao e o do codigo para uma versao que ja existe."""
+    """The catalog recorded in the database is not the code's for a version that already exists."""
 
 
 def conferir_catalogo(con):
-    """Divergencias entre o catalogo do codigo e o do banco (lista vazia = iguais). Como o semear usa INSERT OR IGNORE,
-    editar no codigo a definicao, o status, um parametro ou uma decisao de uma versao JA gravada nao chegaria ao banco
-    e ninguem saberia (auditoria DB-03). Decisao registrada so no banco (registrar_decisao) nao e divergencia."""
+    """Differences between the code's catalog and the database's (empty list = equal). Since semear uses INSERT OR
+    IGNORE, editing in the code the definition, status, a parameter or a decision of an ALREADY recorded version would
+    not reach the database and nobody would know (audit DB-03). A decision recorded only in the database
+    (registrar_decisao) is not a divergence."""
     problemas = []
     for codigo, versao, *resto in REGRAS:
         row = con.execute("SELECT tipo, uso, status_evidencia, definicao, fonte FROM regra WHERE codigo=? AND versao=?",
@@ -120,9 +120,9 @@ def conferir_catalogo(con):
 
 
 def semear(con):
-    """Catalogo de regras, tipos de anomalia, parametros de regra e decisoes de governanca (tudo idempotente).
-    Depois confere que o banco tem exatamente o catalogo do codigo; divergencia -> CatalogoDivergente (mudanca de
-    regra exige versao nova, nunca edicao)."""
+    """Catalog of rules, anomaly types, rule parameters and governance decisions (all idempotent).
+    Then checks that the database has exactly the code's catalog; a divergence -> CatalogoDivergente (a rule change
+    requires a new version, never an edit)."""
     _inserir(con)
     problemas = conferir_catalogo(con)
     if problemas:
@@ -149,7 +149,7 @@ class ParametroAusente(KeyError):
 
 
 def parametros(con, codigo, versao):
-    """Parametros registrados de uma versao de regra (le do banco; nunca de constante no codigo)."""
+    """Recorded parameters of a rule version (read from the database; never from a constant in the code)."""
     linhas = con.execute("SELECT p.nome, p.valor_json FROM regra_parametro p JOIN regra r ON r.id = p.regra_id "
                          "WHERE r.codigo=? AND r.versao=?", (codigo, versao)).fetchall()
     if not linhas:
@@ -158,5 +158,5 @@ def parametros(con, codigo, versao):
 
 
 def ids(con):
-    """{(codigo, versao): id} de todas as regras do catalogo."""
+    """{(codigo, versao): id} of every rule in the catalog."""
     return {(c, v): i for i, c, v in con.execute("SELECT id, codigo, versao FROM regra")}

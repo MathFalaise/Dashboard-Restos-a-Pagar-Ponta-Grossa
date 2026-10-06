@@ -1,34 +1,35 @@
-"""Governanca NAO destrutiva das regras.
+"""NON-destructive governance of the rules.
 
-A tabela `regra` e imutavel (gatilho): uma versao de regra nunca e editada nem apagada. A situacao de uso de
-cada versao e um HISTORICO de decisoes em `regra_situacao` (tambem imutavel: so se acrescenta):
+The `regra` table is immutable (trigger): a rule version is never edited or deleted. The usage situation of each
+version is a HISTORY of decisions in `regra_situacao` (also immutable: append-only):
 
-  operacional      pode produzir valores do indicador publicado (se compoe_indicador_publicado = 1)
-  experimental     calculada lado a lado, nunca entra no indicador publicado
-  nao_recomendada  evidencia posterior enfraqueceu a regra; continua calculada para historico e comparacao,
-                   mas nao deve ser usada como base unica de calculos novos
-  supersedida      substituida por outra versao (supersedida_por)
-  aposentada       nao e mais calculada
+  operacional      may produce values of the published indicator (if compoe_indicador_publicado = 1)
+  experimental     computed side by side, never enters the published indicator
+  nao_recomendada  later evidence weakened the rule; still computed for history and comparison, but it should not
+                   be the only basis of new calculations
+  supersedida      replaced by another version (supersedida_por)
+  aposentada       no longer computed
 
-A situacao atual de uma regra e a decisao mais recente (decidido_em, depois id). A decisao antiga continua la.
-Os eventos abaixo sao a transcricao versionada dessas decisoes; `semear` os copia para o banco (INSERT OR IGNORE).
-Decisao nova = evento novo no fim da lista (ou `registrar_decisao`), nunca edicao de um evento antigo.
+The current situation of a rule is the most recent decision (decidido_em, then id). The old decision stays there.
+The events below are the versioned transcription of those decisions; `semear` copies them into the database
+(INSERT OR IGNORE). A new decision = a new event at the end of the list (or `registrar_decisao`), never an edit of
+an old event.
 
-Promocao a operacional (decisao D7 da revisao critica, valida desde POLITICA_PROMOCAO_DESDE), em dois trilhos:
-  * regra que NAO compoe indicador publicado (qualidade, anomalias, pareamento): evidencia documentada (`fonte`)
-    + teste de regressao (`teste_regressao` = "tests/<arquivo>.py::<teste>", que precisa existir);
-  * regra que compoe indicador publicado: o mesmo + conferencia independente registrada (`evidencia_externa_id`:
-    RREO, e-SIC...). Se ela nao existir ou o e-SIC nao responder no prazo (PRAZO_CONFERENCIA_DIAS), a saida
-    documentada e promover com `ressalva` (o motivo), que aparece na metodologia: "operacional com ressalva".
-Promocao nova so por `registrar_decisao` (ou `python -m rp decidir-regra`), nunca por evento novo em EVENTOS; o
-banco v5 recusa por gatilho a promocao fora dos criterios.
+Promotion to operational (critical review decision D7, valid since POLITICA_PROMOCAO_DESDE), on two tracks:
+  * a rule that does NOT make up a published indicator (quality, anomalies, pairing): documented evidence (`fonte`)
+    + a regression test (`teste_regressao` = "tests/<file>.py::<test>", which must exist);
+  * a rule that makes up a published indicator: the same + a recorded independent check (`evidencia_externa_id`:
+    RREO, e-SIC...). If there is none, or the e-SIC does not answer in time (PRAZO_CONFERENCIA_DIAS), the documented
+    way out is to promote it with a `ressalva` (the reason), shown in the methodology: "operacional com ressalva".
+A new promotion only through `registrar_decisao` (or `python -m rp decidir-regra`), never through a new event in
+EVENTOS; the v5 database refuses, by trigger, a promotion outside the criteria.
 """
 from pathlib import Path
 
 from . import agora
 from .banco import POLITICA_PROMOCAO_DESDE
 
-PRAZO_CONFERENCIA_DIAS = 30            # e-SIC: 20 dias + 10 de prorrogacao (Lei 12.527/2011, art. 11)
+PRAZO_CONFERENCIA_DIAS = 30            # e-SIC: 20 days + 10 of extension (Law 12.527/2011, art. 11)
 TESTES = Path(__file__).resolve().parents[1] / "tests"
 
 SITUACOES = ("operacional", "experimental", "nao_recomendada", "supersedida", "aposentada")
@@ -43,7 +44,7 @@ CORRETIVA = "especificacao da revisao corretiva 01-04.4 (usuario, 30/09/2026)"
 
 # (codigo, versao, situacao, status_evidencia, compoe_indicador_publicado, supersedida_por, motivo, fonte, decidido_em, origem)
 EVENTOS = [
-    # ---- 29/09/2026: classificacao herdada do catalogo (uso 'estavel' -> operacional; 'experimental' -> experimental)
+    # ---- 29/09/2026: classification inherited from the catalog (use 'estavel' -> operacional; 'experimental' -> experimental)
     ("CAT", 1, "operacional", "CONFIRMADO", 1, None, "classificacao do registro por proc/aproc na abertura", E3, "2026-09-29", CATALOGO),
     ("FAIXA", 1, "operacional", "CONFIRMADO", 1, None, "faixa por anoempenho (exercicio anterior x anteriores)", E3, "2026-09-29", CATALOGO),
     ("S1", 1, "operacional", "CONFIRMADO", 1, None, "saldo total do registro", E3, "2026-09-29", CATALOGO),
@@ -59,7 +60,7 @@ EVENTOS = [
     ("CONC-RREO", 1, "operacional", "CONFIRMADO", 0, None, "registro da diferenca API - RREO; nunca corrige", E3, "2026-09-29", CATALOGO),
     ("ANOM-REG", 1, "operacional", "CONFIRMADO", 0, None, "anomalias por registro", E3, "2026-09-29", CATALOGO),
     ("ANOM-CONT", 1, "operacional", "CONFIRMADO", 0, None, "continuidade fechamento -> abertura", E3, "2026-09-29", CATALOGO),
-    # ---- 30/09/2026: revisao corretiva (evidencia da 04.4 e da revisao de codigo)
+    # ---- 30/09/2026: corrective review (evidence from 04.4 and from the code review)
     ("RREO-COL", 1, "nao_recomendada", "HIPÓTESE", 0, None,
      "A evidencia de 2017-2026 (04.4) enfraqueceu a v1: nunca concilia mais colunas que a v2 e concilia menos em "
      "documentos de 2020, 2021, 2022 e 2025; seu L = e + k nao e o saldo (difere da soma de S1). Preservada para "
@@ -94,7 +95,7 @@ class DecisaoInvalida(ValueError):
 
 
 def semear(con, R):
-    """Copia EVENTOS para regra_situacao (idempotente). `R` = {(codigo, versao): id}."""
+    """Copies EVENTOS into regra_situacao (idempotent). `R` = {(codigo, versao): id}."""
     for codigo, versao, situacao, status, compoe, sup, motivo, fonte, quando, origem in EVENTOS:
         con.execute("INSERT OR IGNORE INTO regra_situacao (regra_id, situacao, status_evidencia, compoe_indicador_publicado, "
                     "supersedida_por, motivo, fonte, evidencia_externa_id, decidido_em, origem_decisao) "
@@ -103,7 +104,7 @@ def semear(con, R):
 
 
 def teste_existe(referencia):
-    """'tests/<arquivo>.py::<teste>' existe (arquivo e funcao) em app/tests?"""
+    """Does 'tests/<file>.py::<test>' exist (file and function) in app/tests?"""
     arq, _, nome = str(referencia or "").partition("::")
     if not (arq.startswith("tests/") and arq.endswith(".py") and nome.isidentifier() and nome.startswith("test")):
         return False
@@ -116,7 +117,7 @@ def teste_existe(referencia):
 
 
 def _conferir_promocao(situacao, compoe, fonte, teste_regressao, evidencia_externa_id, ressalva):
-    """Criterios da decisao D7 para uma promocao a operacional (ver docstring do modulo)."""
+    """Decision D7 criteria for a promotion to operational (see the module docstring)."""
     if situacao != "operacional":
         return
     if not str(fonte or "").strip():
@@ -132,8 +133,8 @@ def _conferir_promocao(situacao, compoe, fonte, teste_regressao, evidencia_exter
 def registrar_decisao(con, codigo, versao, situacao, status_evidencia, compoe_indicador_publicado, motivo, fonte, origem,
                       supersedida_por=None, evidencia_externa_id=None, decidido_em=None, teste_regressao=None,
                       ressalva=None):
-    """Acrescenta uma decisao ao historico (nunca edita). Devolve o id do evento. Promocao a operacional segue os
-    criterios da decisao D7 (docstring do modulo)."""
+    """Appends a decision to the history (never edits). Returns the event id. A promotion to operational follows the
+    decision D7 criteria (module docstring)."""
     if situacao not in SITUACOES or status_evidencia not in STATUS:
         raise DecisaoInvalida(f"situacao/status invalido: {situacao!r}, {status_evidencia!r}")
     if compoe_indicador_publicado and situacao != "operacional":
@@ -158,7 +159,7 @@ def registrar_decisao(con, codigo, versao, situacao, status_evidencia, compoe_in
 
 
 def situacao_atual(con):
-    """{(codigo, versao): decisao mais recente} com o historico completo de cada regra."""
+    """{(codigo, versao): most recent decision} with the full history of each rule."""
     atual = {}
     for (codigo, versao, uso, status0, rid, sid, situacao, status, compoe, sup, motivo, fonte, evid, quando,
          origem, teste, ressalva) in con.execute(
@@ -176,7 +177,7 @@ def situacao_atual(con):
             item["historico"].append(decisao)
             item.update({k: decisao[k] for k in ("situacao", "status_evidencia", "compoe_indicador_publicado",
                                                  "ressalva")})
-    for item in atual.values():   # regra sem decisao registrada: nao pode compor o indicador publicado
+    for item in atual.values():   # a rule with no recorded decision cannot make up the published indicator
         item.setdefault("situacao", None)
         item.setdefault("status_evidencia", item["status_evidencia_original"])
         item.setdefault("compoe_indicador_publicado", False)

@@ -1,5 +1,5 @@
-"""Regressao da auditoria tecnica, grupo G7 (DET-02): prova de equivalencia entre um banco e o reconstruido do
-armazem. SINTETICO = banco temporario com registros inventados (fixture `mundo`)."""
+"""Regression of the technical audit, group G7 (DET-02): proof of equivalence between a database and the one rebuilt
+from the store. SINTETICO = temporary database with invented records (fixture `mundo`)."""
 from conftest import registro_sintetico as _reg
 
 from rp import banco, derivar, equivalencia, execucoes, normalizar
@@ -12,7 +12,7 @@ def _mundo(mundo):
     mundo.catalogos({1: [2025], 15: [2025]})
     mundo.listagem(1, 2025, "2025-12-31", [_reg(1), _reg(2, proc=50.0)], T0)
     mundo.listagem(15, 2025, "2025-12-31", [_reg(3, entidade=15)], T0)
-    mundo.listagem(1, 2025, "2025-12-31", [_reg(1), _reg(2, proc=40.0)], T1)     # retrato novo do mesmo corte
+    mundo.listagem(1, 2025, "2025-12-31", [_reg(1), _reg(2, proc=40.0)], T1)     # new snapshot of the same cut-off
     nid, _ = mundo.processar()
     derivar.derivar(mundo.con, nid, "2026-09-29T23:59:59-03:00")
     mundo.con.commit()
@@ -28,14 +28,14 @@ def _reconstruido(mundo, tmp_path):
 
 def test_DET02_banco_reconstruido_e_equivalente_embora_hash_camada0_mude(mundo, tmp_path, monkeypatch):
     _mundo(mundo)
-    # reconstrucao "mais tarde": sem relogio fixo, o banco reconstruido podia cair no MESMO segundo do original e, com
-    # os uids aleatorios na mesma ordem, repetir ids e carimbos - e o hash antigo saia igual por acaso (teste instavel)
+    # "later" rebuild: without a fixed clock, the rebuilt database could fall in the SAME second as the original and,
+    # with the random uids in the same order, repeat ids and timestamps - and the old hash matched by chance (flaky test)
     monkeypatch.setattr(banco, "agora", lambda: "2031-01-01T00:00:00-03:00")
     outro = _reconstruido(mundo, tmp_path)
     r = equivalencia.comparar(mundo.con, outro)
     assert r["equivalentes"] is True, {k: v for k, v in r.items() if k not in ("a", "b")}
     assert set(r["derivacao_igual_por_vigencia"]) == {"atual", "2026-09-29T23:59:59-03:00"}
-    # o hash antigo da camada 0 nao serve para isso: inclui ids e carimbos de registro (fica, com o mesmo valor)
+    # the old layer 0 hash does not serve for this: it includes ids and record timestamps (it stays, with the same value)
     assert execucoes.hash_camada0(mundo.con) != execucoes.hash_camada0(outro)
     assert r["a"]["camada0"]["hash"] == r["b"]["camada0"]["hash"]
 

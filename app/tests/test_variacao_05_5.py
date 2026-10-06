@@ -1,13 +1,14 @@
-"""Testes da Subetapa 05.5: investigacao de variacoes (contrato M-09 a M-12; plano, secao 05.5).
+"""Tests of sub-stage 05.5: investigation of variations (contract M-09 to M-12; plan, section 05.5).
 
-* par de cortes do mesmo exercicio, escolhido explicitamente (adjacente ou nao); indisponivel com motivo se um lado
-  nao tem valor, se o Municipio soma conjuntos de entidades diferentes (R6) ou se ha chave repetida;
-* contribuicao por chave com sinal posterior - anterior e classe (nos dois cortes, so no posterior, so no anterior);
-* fechamento ao centavo da lista, dos grupos do resumo (TOP N, outros, sem variacao) e das classes;
-* lista completa paginada: subtotal por pagina e acumulado; a ultima pagina fecha com a variacao total;
-* historico de um empenho em todos os cortes do exercicio, com a situacao nos cortes sem valor;
-* validacao independente: recalculo do JSON bruto (recalculo_bruto.Bruto.contribuicoes e empenho_nos_cortes).
-SINTETICO = banco temporario com registros inventados (fixture `mundo`).
+* a pair of cut-offs of the same fiscal year, chosen explicitly (adjacent or not); unavailable with a reason if one
+  side has no value, if the Municipality sums different sets of entities (R6) or if there is a repeated key;
+* contribution per key with the sign later - earlier and a class (in both cut-offs, only in the later, only in the
+  earlier);
+* closing to the cent of the list, of the summary groups (TOP N, others, no variation) and of the classes;
+* full paginated list: subtotal per page and running total; the last page closes with the total variation;
+* history of a commitment across all cut-offs of the fiscal year, with the situation at the cut-offs without a value;
+* independent validation: recalculation from the raw JSON (recalculo_bruto.Bruto.contribuicoes and empenho_nos_cortes).
+SINTETICO = temporary database with invented records (fixture `mundo`).
 """
 import re
 import time
@@ -25,7 +26,7 @@ BRUTO = {"proc_c": "proc", "aproc_c": "aproc", "pago_proc_c": "pago_proc", "pago
 
 
 def _lista_completa(p, *args, **kw):
-    """Todas as paginas da lista completa de contribuicoes (limite maximo por pagina)."""
+    """All pages of the full list of contributions (maximum limit per page)."""
     itens, desloc = [], 0
     while True:
         r = p.variacao(*args, limite=LIMITE_LISTA, deslocamento=desloc, **kw)
@@ -54,7 +55,7 @@ def _confere_com_o_bruto(p, b, ex, ant, post, ent, metrica):
     assert [(c["id"], c["soma_c"]) for c in r["classes"]] == x["classes"]
     assert r["chaves"]["sem_variacao"] == x["sem_variacao"]
     assert all(f["fecha"] for f in r["fechamentos"].values())
-    for i in itens:                                                        # proveniencia dos dois lados
+    for i in itens:                                                        # provenance of both sides
         for lado in ("anterior", "posterior"):
             assert i[lado] is None or (i[lado]["proveniencia"]["snapshot_uid"] in r[lado]["snapshots"]
                                        and len(i[lado]["proveniencia"]["objeto_bruto_sha256"]) == 64)
@@ -64,8 +65,9 @@ def _confere_com_o_bruto(p, b, ex, ant, post, ent, metrica):
 # ================================================================== SINTETICO
 @pytest.fixture
 def variacao(mundo):
-    """2025, entidades 1 e 15 (a 15 sem RP). 28/02 -> 30/04 na entidade 1: emp 1 paga 30 (S1 -30), emp 2 some (-50),
-    emp 3 igual (0), emp 4 sobe 20, emp 5 e 6 entram (+25, +20). 30/06: so a entidade 1 (Municipio indisponivel)."""
+    """2025, entities 1 and 15 (15 without RP). 28/02 -> 30/04 in entity 1: emp 1 pays 30 (S1 -30), emp 2 disappears
+    (-50), emp 3 equal (0), emp 4 goes up 20, emp 5 and 6 come in (+25, +20). 30/06: only entity 1 (Municipality
+    unavailable)."""
     mundo.catalogos({1: [2025], 15: [2025]})
     antes = [_reg(1, ano=2024, aproc=100.0), _reg(2, ano=2024, aproc=50.0), _reg(3, ano=2024, aproc=30.0),
              _reg(4, ano=2023, aproc=20.0)]
@@ -82,21 +84,21 @@ def variacao(mundo):
 
 def test_SINTETICO_contribuicoes_classes_grupos_e_fechamento(variacao):
     with variacao.painel() as p:
-        for ent in (None, 1):                                  # a entidade 15 tem zero registros: mesmo resultado
+        for ent in (None, 1):                                  # entity 15 has zero records: same result
             r = p.variacao(2025, "2025-02-28", "2025-04-30", ent, "s1", top=1)
             assert r["disponivel"] and r["variacao_c"] == -1500 and r["natureza"] == "diferenca"
             assert (r["anterior"]["total_c"], r["posterior"]["total_c"]) == (20000, 18500)
             itens = r["lista"]["itens"]
             assert [(i["chave"]["empenho"], i["classe"], i["contribuicao_c"]) for i in itens] == [
-                (5, "so_posterior", 2500), (4, "nos_dois", 2000), (6, "so_posterior", 2000),   # empate: chave (2023 < 2024)
+                (5, "so_posterior", 2500), (4, "nos_dois", 2000), (6, "so_posterior", 2000),   # tie: key (2023 < 2024)
                 (1, "nos_dois", -3000), (2, "so_anterior", -5000)]
             assert [i["posicao"] for i in itens] == [1, 2, 3, 4, 5]
-            assert itens[4]["posterior"] is None and itens[0]["anterior"] is None              # um lado so: sem zero
+            assert itens[4]["posterior"] is None and itens[0]["anterior"] is None              # one side only: no zero
             g = {x["id"]: x for x in r["resumo"]["grupos"]}
             assert [(k, g[k]["quantidade"], g[k]["soma_c"]) for k in g] == [
                 ("top_aumentos", 1, 2500), ("outros_aumentos", 2, 4000), ("top_reducoes", 1, -5000),
                 ("outras_reducoes", 1, -3000), ("sem_variacao", 1, 0)]
-            assert [i["chave"]["empenho"] for i in g["top_reducoes"]["itens"]] == [2]          # a mais negativa primeiro
+            assert [i["chave"]["empenho"] for i in g["top_reducoes"]["itens"]] == [2]          # the most negative first
             assert [(c["id"], c["quantidade"], c["soma_c"]) for c in r["classes"]] == [
                 ("nos_dois", 3, -1000), ("so_posterior", 2, 4500), ("so_anterior", 1, -5000)]
             assert all(f["fecha"] and f["diferenca"] == 0 for f in r["fechamentos"].values())
@@ -125,12 +127,12 @@ def test_SINTETICO_igual_ao_recalculo_do_bruto(variacao):
 
 def test_SINTETICO_par_indisponivel_e_zero_verdadeiro(variacao):
     with variacao.painel() as p:
-        r = p.variacao(2025, "2025-04-30", "2025-06-30")                     # Municipio incompleto em 30/06
+        r = p.variacao(2025, "2025-04-30", "2025-06-30")                     # Municipality incomplete on 30/06
         assert not r["disponivel"] and "30/06/2025" in r["motivo_indisponivel"] and r["lista"] is None
         assert r["anterior"]["total_c"] == 18500 and r["posterior"]["total_c"] is None
-        z = p.variacao(2025, "2025-02-28", "2025-04-30", 15)                 # entidade sem RP: zero verdadeiro
+        z = p.variacao(2025, "2025-02-28", "2025-04-30", 15)                 # entity without RP: a true zero
         assert z["disponivel"] and z["variacao_c"] == 0 and z["lista"]["itens"] == []
-        u = p.variacao(2025, "2025-04-30", "2025-06-30", 1)                  # mesmos registros: tudo sem variacao
+        u = p.variacao(2025, "2025-04-30", "2025-06-30", 1)                  # same records: everything without variation
         assert u["variacao_c"] == 0 and u["chaves"] == {"total": 5, "com_variacao": 0, "sem_variacao": 5}
         assert "sem processamento" in p.variacao(2025, "2025-02-28", "2025-05-31")["motivo_indisponivel"]
         for kw in ({"anterior": "2025-04-30", "posterior": "2025-02-28"}, {"anterior": "2025-02-28", "posterior": "2025-02-28"}):
@@ -141,10 +143,10 @@ def test_SINTETICO_par_indisponivel_e_zero_verdadeiro(variacao):
 
 
 def test_SINTETICO_chave_repetida_bloqueia_o_par(mundo):
-    """Revisao critica (05/10/2026), item 1: o retrato com a chave repetida nunca e o vigente. Sem retrato valido
-    anterior, o corte 30/04 aparece na serie como 'ambiguo', sem valor, e o par continua bloqueado - antes o retrato
-    ambiguo era um lado do par e o bloqueio vinha da lista de chaves repetidas. Nenhuma das duas ocorrencias e
-    escolhida; elas seguem no banco e na pagina de qualidade (anomalia CHAVE-DUP)."""
+    """Critical review (05/10/2026), item 1: the snapshot with the repeated key is never the current one. Without a
+    previous valid snapshot, the 30/04 cut-off shows in the series as 'ambiguo', without a value, and the pair stays
+    blocked - before, the ambiguous snapshot was one side of the pair and the block came from the list of repeated
+    keys. Neither occurrence is picked; they stay in the database and on the quality page (CHAVE-DUP anomaly)."""
     mundo.catalogos({1: [2025]})
     mundo.listagem(1, 2025, "2025-02-28", [_reg(1, aproc=10.0)], T0)
     mundo.listagem(1, 2025, "2025-04-30", [_reg(1, aproc=10.0), _reg(1, aproc=5.0)], T0)
@@ -154,7 +156,7 @@ def test_SINTETICO_chave_repetida_bloqueia_o_par(mundo):
         assert not r["disponivel"] and r["lista"] is None and "mais de uma vez" in r["motivo_indisponivel"]
         assert "CHAVE-DUP" in r["motivo_indisponivel"] and r["posterior"]["situacao"]["codigo"] == "municipio_indisponivel"
         assert p.variacao(2025, "2025-02-28", "2025-04-30", entidade=1)["posterior"]["situacao"]["codigo"] == "ambiguo"
-        assert r["chaves_repetidas"] == []          # o retrato recusado nao e lado do par
+        assert r["chaves_repetidas"] == []          # the refused snapshot is not a side of the pair
         h = p.historico_empenho(1, 2024, 1, 2025)
         assert [(c["situacao"]["codigo"], len(c["ocorrencias"])) for c in h["cortes"]] == [("com_dados", 1),
                                                                                            ("ambiguo", 0)]
@@ -165,8 +167,8 @@ def test_SINTETICO_chave_repetida_bloqueia_o_par(mundo):
 
 
 def test_SINTETICO_municipio_com_entidades_diferentes_bloqueia_o_par(mundo):
-    """Entidade 7 fora do catalogo de entidades, com snapshot so no primeiro corte: o Municipio soma {1, 7} e depois
-    {1}; os dois cortes tem valor, mas o par nao e comparavel (R6)."""
+    """Entity 7 outside the entity catalog, with a snapshot only at the first cut-off: the Municipality sums {1, 7} and
+    then {1}; both cut-offs have a value, but the pair is not comparable (R6)."""
     mundo.catalogos({1: [2025]})
     mundo.listagem(1, 2025, "2025-02-28", [_reg(1, aproc=10.0)], T0)
     mundo.listagem(7, 2025, "2025-02-28", [_reg(1, entidade=7, aproc=5.0)], T0)
@@ -216,15 +218,15 @@ def test_SINTETICO_tela_da_variacao_e_do_empenho(variacao):
     assert {c["id"]: v[f"cls-{c['id']}"] for c in r["classes"]} == {c["id"]: c["soma_c"] for c in r["classes"]}
     assert (v["fech-grupos"], v["fech-classes"], v["fech-lista"]) == (0, 0, 0)
     assert (v["lst-subtotal"], v["lst-acumulado"]) == (-1500, -1500)
-    linha = re.search(r"<tr><td>5</td>.*?</tr>", corpo, re.S).group(0)            # emp 2: ausente no posterior
+    linha = re.search(r"<tr><td>5</td>.*?</tr>", corpo, re.S).group(0)            # emp 2: missing from the later
     assert "ausente do corte posterior" in linha and "R$ 0,00" not in linha
     assert links_permitidos(corpo) and "style=" not in corpo
     corpo = ok(app, "/variacao", exercicio=2025, anterior="2025-04-30", data_final="2025-06-30")
     assert 'id="indisponivel"' in corpo and not any(k.startswith(("lst-", "grp-", "cls-", "fech-")) for k in dados(corpo))
     assert dados(corpo)["var-anterior"] == 18500 and "var-posterior" not in dados(corpo)
     corpo = ok(app, "/variacao", exercicio=2025, anterior="2025-04-30", data_final="2025-02-28")
-    assert "precisa ser anterior ao posterior" in corpo and dados(corpo) == {}   # par invertido: sem erro e sem
-    assert 'id="indisponivel"' in corpo                                          # troca (pos-05: test_selecao_pos05)
+    assert "precisa ser anterior ao posterior" in corpo and dados(corpo) == {}   # inverted pair: no error and no
+    assert 'id="indisponivel"' in corpo                                          # swap (post-05: test_selecao_pos05)
     assert chamar(app, "/variacao", exercicio=2025, metrica="liquidacoes")[0] == "400 Bad Request"
     corpo = ok(app, "/empenho/cortes", entidade=1, anoempenho=2024, empenho=2, exercicio=2025)
     v = dados(corpo)
@@ -236,7 +238,7 @@ def test_SINTETICO_tela_da_variacao_e_do_empenho(variacao):
     assert 'href="/variacao?' in ok(app, "/evolucao", exercicio=2025, entidade=1)
 
 
-# ================================================================== armazem real
+# ================================================================== real store
 @pytest.fixture(scope="module")
 def app_real(real):
     return Aplicacao(real["cfg"].banco)
@@ -256,19 +258,19 @@ def test_todos_os_pares_adjacentes_e_o_que_salta_lacuna_iguais_ao_bruto(real, br
     p = real["painel"]
     escopos = [None] + [e["entidade"] for e in p.entidades()["entidades"]]
     pares = [(2025, a, b) for a, b in _pares(p, 2025)] + [(2026, a, b) for a, b in _pares(p, 2026)]
-    pares.append((2026, "2026-02-28", "2026-04-30"))                       # salta a lacuna de 31/03 (Municipio)
+    pares.append((2026, "2026-02-28", "2026-04-30"))                       # jumps over the 31/03 gap (Municipality)
     disponiveis = 0
     for ex, a, b in pares:
         for ent in escopos:
             for metrica in ("s1", "pagamentos"):
                 r = _confere_com_o_bruto(p, bruto_real, ex, a, b, ent, metrica)
-                assert not r["chaves_repetidas"]                           # criterio de parada: nenhuma chave repetida
+                assert not r["chaves_repetidas"]                           # stopping criterion: no repeated key
                 if r["disponivel"]:
                     disponiveis += 1
                     chave = {"s1": "saldo_total", "pagamentos": "pagamentos"}[metrica]
                     ind = {lado: p.indicadores(ex, d, ent)["valores"][chave]["valor_c"] for lado, d in (("a", a), ("b", b))}
                     assert r["variacao_c"] == ind["b"] - ind["a"], (ex, a, b, ent, metrica)
-    assert len(pares) == 12 and disponiveis == 144                         # 264 combinacoes; as demais sem valor num lado
+    assert len(pares) == 12 and disponiveis == 144                         # 264 combinations; the others without a value on one side
 
 
 def test_salto_de_lacuna_e_pares_com_lacuna_no_municipio(real):
@@ -306,8 +308,8 @@ def test_casos_reais_5659_2025_e_2401751_2023(real, bruto_real):
                     {k: v[BRUTO[k]] for k in CAMPOS_DO_HISTORICO} for v in y["ocorrencias"]], (ent, ano, emp, c["data_final"])
     h = p.historico_empenho(1, 2025, 5659, 2026)
     assert all(c["presente"] for c in h["cortes"]) and len(h["cortes"]) == 7
-    assert h["cortes"][-1]["rotulos"]                                      # 31/12/2026: corte posterior a coleta
-    h15 = p.historico_empenho(15, 2023, 1751, 2026)                        # 31/01, 31/03 e 31/12: corte nao coletado
+    assert h["cortes"][-1]["rotulos"]                                      # 31/12/2026: cut-off after the collection
+    h15 = p.historico_empenho(15, 2023, 1751, 2026)                        # 31/01, 31/03 and 31/12: cut-off not collected
     assert [c["data_final"] for c in h15["cortes"] if c["situacao"]["codigo"] == "sem_coleta"] == [
         "2026-01-31", "2026-03-31", "2026-12-31"]
     r, itens = _lista_completa(p, 2026, "2026-08-31", "2026-12-31", 1, "s1")
@@ -325,7 +327,7 @@ def test_tela_igual_ao_painel_reais(real, app_real):
         assert all(v[f"lst-{i['posicao']}"] == i["contribuicao_c"] for i in r["lista"]["itens"])
         assert (v["fech-grupos"], v["fech-classes"], v["fech-lista"]) == (0, 0, 0)
         assert 'id="aviso-pares"' in corpo
-    assert r["lista"]["ultima_pagina"] and v["lst-acumulado"] == v["var-total"]          # pagina 9 de 9
+    assert r["lista"]["ultima_pagina"] and v["lst-acumulado"] == v["var-total"]          # page 9 of 9
     h = p.historico_empenho(1, 2025, 5659, 2026)
     v = dados(ok(app_real, "/empenho/cortes", entidade=1, anoempenho=2025, empenho=5659, exercicio=2026))
     for c in h["cortes"]:

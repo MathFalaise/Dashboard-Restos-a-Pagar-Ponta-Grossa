@@ -1,20 +1,22 @@
-"""Diagnostico do contrato da API Elotech (revisao critica, item 49): consulta o portal e NAO grava nada.
+"""Diagnosis of the Elotech API contract (critical review, item 49): queries the portal and records NOTHING.
 
-Para usar antes de uma coleta, ou quando uma coleta sai 'incompleta' sem motivo claro: diz se a API ainda responde
-como o coletor espera. Nenhum snapshot e criado: o banco e aberto so para leitura (so serve de referencia) e o
-armazem nem e aberto.
+To be used before a collection, or when a collection ends 'incompleta' for no clear reason: it says whether the API
+still answers the way the collector expects. No snapshot is created: the database is opened read-only (it only
+serves as a reference) and the store is not even opened.
 
-Confere, com o mesmo codigo do coletor (contrato.py e coletor.conferir_pagina):
-  * catalogo de entidades e catalogo de exercicios da entidade: contrato minimo;
-  * a primeira pagina, pequena, da listagem de RP de um corte: HTTP 200, pagina Spring, totalElements inteiro,
-    contrato da pagina, eco da ordenacao pedida (aqui o eco e EXIGIDO: sem ele a ordem nao pode ser conferida),
-    registros da entidade pedida, ordem (anoempenho, empenho) que nao diminui e chave de negocio sem repeticao;
-  * a ESTRUTURA de cada resposta contra a do snapshot completo mais recente do mesmo tipo
-    (contrato.comparar_amostra): campo novo, tipo novo, ou campo que estava em todos os registros gravados e falta.
+It checks, with the same code as the collector (contrato.py and coletor.conferir_pagina):
+  * the entity catalog and the entity's fiscal year catalog: minimum contract;
+  * the first, small page of a cut-off's RP listing: HTTP 200, Spring page, integer totalElements, page contract,
+    echo of the requested order (here the echo is REQUIRED: without it the order cannot be checked), records of
+    the requested entity, an order (anoempenho, empenho) that does not decrease and a business key without
+    repetition;
+  * the STRUCTURE of each response against the most recent complete snapshot of the same type
+    (contrato.comparar_amostra): a new field, a new type, or a field that was in every recorded record and is missing.
 
-Resultado: 'ok' (nada mudou), 'mudou' (contrato ou estrutura diferente: revisar antes de coletar) ou 'indisponivel'
-(rede, HTTP 429 ou 5xx: aquele ponto nao foi conferido). Com 'mudou' e 'indisponivel' juntos, vale 'mudou'.
-A versao do portal (/actuator/info; Etapa 01: Oxy Transparencia 3.128.0) vai no relatorio so como informacao.
+Result: 'ok' (nothing changed), 'mudou' (different contract or structure: review before collecting) or
+'indisponivel' (network, HTTP 429 or 5xx: that point was not checked). With 'mudou' and 'indisponivel' together,
+'mudou' wins. The portal version (/actuator/info; stage 01: Oxy Transparencia 3.128.0) goes in the report for
+information only.
 """
 from datetime import date
 
@@ -32,7 +34,7 @@ def _inteiro(v):
 
 
 def _referencia(con, tipo, entidade=None):
-    """(snapshot_uid, corpos) do snapshot completo mais recente do tipo - o da entidade, se houver -, ou (None, [])."""
+    """(snapshot_uid, bodies) of the most recent complete snapshot of the type - the entity's, if any -, or (None, [])."""
     if con is None:
         return None, []
     extra = " AND tipo_pesquisa IS NULL" if tipo == "rp_listagem" else ""
@@ -47,8 +49,8 @@ def _referencia(con, tipo, entidade=None):
 
 
 def _verificar(con, cliente, alvo, tipo, caminho, params, entidade_ref, conferir):
-    """Uma consulta: situacao, problemas de contrato (`conferir(dados)` -> (problemas, avisos)) e estrutura contra
-    o snapshot de referencia. Rede, HTTP 429 ou 5xx: 'indisponivel'. Outro HTTP diferente de 200: 'mudou'."""
+    """One query: situation, contract problems (`conferir(dados)` -> (problems, warnings)) and structure against the
+    reference snapshot. Network, HTTP 429 or 5xx: 'indisponivel'. Any other HTTP other than 200: 'mudou'."""
     saida = {"alvo": alvo, "url": cliente.url(caminho, params), "http_status": None, "situacao": "ok",
              "problemas": [], "avisos": [], "estrutura": None}
     try:
@@ -72,8 +74,8 @@ def _verificar(con, cliente, alvo, tipo, caminho, params, entidade_ref, conferir
 
 
 def _versao_do_portal(cliente):
-    """Versao e build do portal em /actuator/info, ou None. So informativa: nao e endpoint do coletor e pode ser
-    desligado sem afetar a coleta."""
+    """Portal version and build at /actuator/info, or None. Informative only: it is not a collector endpoint and may be
+    switched off without affecting collection."""
     try:
         r = cliente.get(EP_INFO)
     except ErroDeRede as e:
@@ -116,7 +118,7 @@ def _conferir_listagem(entidade, tamanho):
         problema = conferir_pagina(d, 0, tamanho, total, paginas, conteudo, contrato.ORDEM_RP)
         if problema:
             problemas.append(problema)
-        # so a pagina 0 e lida: o que o coletor confere no fim (soma = total) e conferido aqui pela propria pagina
+        # only page 0 is read: what the collector checks at the end (sum = total) is checked here by the page itself
         if d.get("last") is True and _inteiro(total) and total != len(conteudo):
             problemas.append(f"a página 0 é a última (last=true), mas totalElements={total} e content tem "
                              f"{len(conteudo)}")
@@ -144,8 +146,8 @@ def _conferir_listagem(entidade, tamanho):
 
 
 def diagnosticar(con, cliente, entidade, exercicio, data_final, tamanho=TAMANHO_AMOSTRA):
-    """Relatorio do diagnostico. `con`: banco aberto SO PARA LEITURA (referencia da estrutura) ou None.
-    Nada e gravado: nem snapshot, nem linha no banco, nem arquivo no armazem."""
+    """Diagnosis report. `con`: database opened READ-ONLY (structure reference) or None.
+    Nothing is recorded: no snapshot, no database row, no file in the store."""
     try:
         ano = date.fromisoformat(data_final).year
     except (TypeError, ValueError) as e:

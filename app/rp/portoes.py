@@ -1,12 +1,12 @@
-"""Portoes de qualidade antes de disponibilizar uma carga nova no painel (SOMENTE LEITURA).
+"""Quality gates before a new load is made available on the panel (READ-ONLY).
 
-Fluxo de atualizacao: COLETAR -> VALIDAR -> PROCESSAR -> TESTAR -> VERIFICAR -> DISPONIBILIZAR NO PAINEL.
-Este modulo e o VERIFICAR: le o banco (URI mode=ro + PRAGMA query_only) e o armazem e diz, portao a portao, se
-o retrato novo pode ser tratado como valido. Nao coleta, nao processa, nao corrige nada.
+Update flow: COLLECT -> VALIDATE -> PROCESS -> TEST -> VERIFY -> MAKE AVAILABLE ON THE PANEL.
+This module is the VERIFY step: it reads the database (URI mode=ro + PRAGMA query_only) and the store and says, gate
+by gate, whether the new snapshot can be treated as valid. It does not collect, process or fix anything.
 
-A referencia (`gravar_referencia`) e um retrato da camada bruta ANTES da carga nova: hashes das linhas de coleta
-e resposta_bruta existentes. Depois da carga, `avaliar(..., referencia)` confere que essas linhas continuam
-identicas (a carga so acrescenta; nada anterior muda).
+The reference (`gravar_referencia`) is a picture of the raw layer BEFORE the new load: hashes of the existing coleta
+and resposta_bruta rows. After the load, `avaliar(..., referencia)` checks that these rows are still identical (the
+load only adds; nothing earlier changes).
 """
 import hashlib
 import json
@@ -27,9 +27,9 @@ def _abrir(caminho):
     return con
 
 
-# Formato da referencia (revisao critica, item 44): v2 serializa cada linha em JSON canonico (especificado: UTF-8,
-# separadores fixos, bytes em hexadecimal), em vez de repr() do Python. Referencia sem "formato" e a v1 (repr) e
-# continua sendo conferida do jeito com que foi gravada.
+# Reference format (critical review, item 44): v2 serializes each row as canonical JSON (specified: UTF-8, fixed
+# separators, bytes in hexadecimal), instead of Python's repr(). A reference without "formato" is v1 (repr) and
+# is still checked the way it was recorded.
 FORMATO_REFERENCIA = "rp-referencia/2"
 
 
@@ -62,7 +62,7 @@ def _referencia(con, canonico=True):
 
 
 def gravar_referencia(caminho_banco, arquivo):
-    """Grava (modo 'x': nunca sobrescreve) o retrato da camada bruta para conferir depois da carga nova."""
+    """Writes (mode 'x': never overwrites) the picture of the raw layer, to be checked after the new load."""
     con = _abrir(caminho_banco)
     try:
         ref = _referencia(con)
@@ -74,8 +74,8 @@ def gravar_referencia(caminho_banco, arquivo):
 
 
 def avaliar(caminho_banco, armazem, referencia=None):
-    """Lista de portoes {id, descricao, ok, detalhe}; `apto` = todos os verificaveis ok. `referencia` = dict de
-    gravar_referencia (ou None: o portao da camada bruta anterior fica 'nao verificado')."""
+    """List of gates {id, descricao, ok, detalhe}; `apto` = all verifiable ones ok. `referencia` = dict from
+    gravar_referencia (or None: the gate for the earlier raw layer stays 'not verified')."""
     con = _abrir(caminho_banco)
     portoes = []
 
@@ -90,7 +90,7 @@ def avaliar(caminho_banco, armazem, referencia=None):
         portao("snapshots_validos", "armazém × banco: manifestos, objetos e SHA-256 conferidos (verificar)",
                not problemas, problemas[:10])
 
-        # coleta completa: o retrato mais recente de cada corte/consulta precisa estar 'completa'
+        # complete collection: the most recent snapshot of each cut-off/query must be 'completa'
         ultimas = {}
         for cid, tipo, ent, ex, di, df, emp, ano, pesq, par, st in con.execute(
                 "SELECT id, tipo, entidade, exercicio, data_inicial, data_final, empenho, anoempenho, tipo_pesquisa, "
@@ -137,7 +137,7 @@ def avaliar(caminho_banco, armazem, referencia=None):
                    "não verificado: informe --referencia (gravada antes da carga com --gravar-referencia)")
         else:
             n = referencia["max_coleta_id"]
-            canonico = referencia.get("formato") == FORMATO_REFERENCIA    # sem formato: referencia v1 (repr)
+            canonico = referencia.get("formato") == FORMATO_REFERENCIA    # no format: v1 reference (repr)
             _, hc = _hash(con, "SELECT * FROM coleta WHERE id <= ? ORDER BY id", (n,), canonico)
             _, hr = _hash(con, "SELECT * FROM resposta_bruta WHERE coleta_id <= ? ORDER BY id", (n,), canonico)
             iguais = {"coletas": hc == referencia["hash_coletas"], "respostas": hr == referencia["hash_respostas"]}
@@ -163,20 +163,20 @@ def avaliar(caminho_banco, armazem, referencia=None):
                      "também que nenhum tenha ficado sem verificação (lista em 'nao_verificados').")}
 
 
-# Campos monetarios da API: ausencia vira 0 na normalizacao (registrada em chaves_ausentes). Enquanto a regra nao for
-# revista, uma carga com campo monetario ausente nao pode ser disponibilizada sem decisao (auditoria NORM-01).
+# API monetary fields: a missing one becomes 0 in the normalization (recorded in chaves_ausentes). Until the rule is
+# reviewed, a load with a missing monetary field cannot be made available without a decision (audit NORM-01).
 _MONETARIOS = ("proc", "aproc", "canceladoProc", "pagoProc", "pagoProcEstornado", "canceladoAProc", "pagoAProc",
                "pagoAProcEstornado", "liquidado", "retencao")
 
 
 def _vigentes_por_vigencia(con):
-    """Ultima derivacao de cada vigencia (atual e cada 'como estava em'): as que a camada painel usa."""
+    """Last derivation of each validity (current and each 'as it was on'): the ones the panel layer uses."""
     return [r for r in con.execute(
         "SELECT MAX(id), vigencia_em FROM derivacao_execucao GROUP BY IFNULL(vigencia_em, '') ORDER BY 1")]
 
 
 def _orfaos(con):
-    """Relacoes logicas que o esquema nao protege com FOREIGN KEY (auditoria DB-02): contagem de linhas sem par."""
+    """Logical relations the schema does not protect with a FOREIGN KEY (audit DB-02): count of rows without a match."""
     q = lambda sql: con.execute(sql).fetchone()[0]
     o = {
         "rp_derivado_sem_registro_da_normalizacao": q(
@@ -218,14 +218,14 @@ def _orfaos(con):
 
 
 def _portoes_da_auditoria(con, portao, nid, did_atual):
-    """Portoes acrescentados pela auditoria tecnica (DB-01, DB-02, NORM-01, DER-02). Todos so leem."""
+    """Gates added by the technical audit (DB-01, DB-02, NORM-01, DER-02). All of them only read."""
     from . import derivar
     conferidos = []
     for did, vig in _vigentes_por_vigencia(con):
         gravado = con.execute("SELECT hash_resultado FROM derivacao_execucao WHERE id=?", (did,)).fetchone()[0]
         try:
             confere, erro = gravado is not None and derivar.hash_resultado(con, did) == gravado, None
-        except (KeyError, TypeError) as e:   # linha derivada que aponta para coleta/resposta/regra inexistente
+        except (KeyError, TypeError) as e:   # a derived row pointing to a non-existent collection/response/rule
             confere, erro = False, f"hash nao recalculavel: {type(e).__name__} {e}"
         conferidos.append({"derivacao": did, "vigencia": vig or "atual", "gravado": gravado, "confere": confere,
                            **({"erro": erro} if erro else {})})
@@ -252,9 +252,10 @@ def _portoes_da_auditoria(con, portao, nid, did_atual):
 
 
 def _portoes_da_revisao(con, portao, did_atual):
-    """Portoes da revisao critica de 05/10/2026 (itens 14 e 28). So leem."""
-    # item 14: chave repetida e portao, nao so anotacao. O retrato ambiguo ja nao e vigente (vigencia.coletas_vigentes),
-    # mas a carga nao e disponibilizada sem decisao: o painel mostraria o retrato anterior do corte.
+    """Gates from the critical review of 05/10/2026 (items 14 and 28). They only read."""
+    # item 14: a repeated key is a gate, not just a note. The ambiguous snapshot is no longer current
+    # (vigencia.coletas_vigentes), but the load is not made available without a decision: the panel would show the
+    # previous snapshot of the cut-off.
     naturezas, snapshots = {"exata": 0, "conflitante": 0, "não classificada": 0}, set()
     for uid, detalhe in con.execute(
             "SELECT c.snapshot_uid, a.detalhe_json FROM anomalia a LEFT JOIN coleta c ON c.id = a.coleta_id "
@@ -270,15 +271,15 @@ def _portoes_da_revisao(con, portao, did_atual):
            sum(naturezas.values()) == 0,
            {"chaves": sum(naturezas.values()), **naturezas, "snapshots": sorted(s for s in snapshots if s)[:10],
             "derivacao": did_atual,
-            # decisao D1 (06/10/2026): bloquear e dizer o que fazer. Nada de recoleta automatica: a segunda leitura
-            # da propria coleta ja releu as paginas na hora; a recoleta vale MAIS TARDE, quando a API pode ter mudado
+            # decision D1 (06/10/2026): block and say what to do. No automatic re-collection: the collection's own second
+            # read already re-read the pages right away; re-collecting is worth it LATER, when the API may have changed
             "recoletar": [f"python -m rp recoletar --snapshot {s}" for s in sorted(s for s in snapshots if s)[:10]],
             "nota": "retrato com chave repetida nunca é o vigente (vale o retrato válido anterior do corte). "
                     "A segunda leitura da coleta já releu as páginas na hora: recolete o corte MAIS TARDE com o "
                     "comando em 'recoletar', confira com 'python -m rp verificar' e processe de novo "
                     "('python -m rp processar')"})
 
-    # item 28: o esquema do banco e o da sua versao no codigo (estrutura, sem comentarios nem espacos)
+    # item 28: the database schema is the one of its version in the code (structure, without comments or whitespace)
     versao = banco.versao_esquema(con)
     esperado = banco.IMPRESSAO_ESQUEMA.get(versao)
     atual = banco.impressao_esquema(con)

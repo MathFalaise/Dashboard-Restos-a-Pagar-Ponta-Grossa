@@ -1,9 +1,9 @@
-"""Testes da revisao corretiva 01-04.4 (secao 23 da especificacao) e da infraestrutura nova.
+"""Tests of the corrective review 01-04.4 (section 23 of the specification) and of the new infrastructure.
 
-* Casos com dados REAIS usam a fixture `producao` (bruto das Etapas 01/02 processado pelo pipeline de producao).
-* Casos marcados SINTETICO usam registros inventados num banco temporario, para exercitar situacoes que os dados
-  reais nao tem (retrato novo com valor diferente, credor com documento no nome, regra rebaixada...).
-Os 12 testes obrigatorios comecam com test_NN_.
+* Cases with REAL data use the `producao` fixture (raw data of stages 01/02 processed by the production pipeline).
+* Cases marked SINTETICO use invented records in a temporary database, to exercise situations the real data does
+  not have (a new snapshot with a different value, a creditor with a document in the name, a downgraded rule...).
+The 12 mandatory tests start with test_NN_.
 """
 import hashlib
 import inspect
@@ -26,7 +26,7 @@ _reg = registro_sintetico
 
 
 def _tudo(p, ex, df, ent=None):
-    """Todas as consultas publicas de um corte (para varrer o que sai da camada)."""
+    """Every public query of a cut-off (to sweep what comes out of the layer)."""
     return {"indicadores": p.indicadores(ex, df, ent), "empenhos": p.empenhos(ex, df, ent, limite=500),
             "fornecedores": p.fornecedores(ex, df, ent), "dimensao": p.por_dimensao("fonte_recurso", ex, df, ent),
             "cortes": p.cortes(), "entidades": p.entidades(ex)}
@@ -36,7 +36,7 @@ def _sha_arquivo(p):
     return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 
-# ================================================================== 1. fonte primaria = API Elotech
+# ================================================================== 1. primary source = Elotech API
 def test_01_indicador_principal_vem_da_api_elotech_e_nao_do_rreo(producao):
     con, nid = producao["con"], producao["nid"]
     with Painel.abrir(producao["cfg"].banco) as p:
@@ -48,15 +48,15 @@ def test_01_indicador_principal_vem_da_api_elotech_e_nao_do_rreo(producao):
     v = r["valores"]
     assert (v["registros"]["valor_c"], v["liquidacoes"]["valor_c"], v["inscricao_total"]["valor_c"]) == (n, liq, insc)
     assert all(x["natureza"] == "derivado" and x["fonte"] == fontes.ELOTECH["rotulo"] for x in v.values())
-    # o RREO so aparece como referencia de reconciliacao, com natureza propria, e nunca vira o valor do indicador
+    # the RREO only appears as a reconciliation reference, with its own nature, and never becomes the indicator's value
     rec = v["liquidacoes"]["reconciliacao_rreo"]
     assert rec and {x["rreo_natureza"] for x in rec} == {"publicado"}
     assert v["liquidacoes"]["valor_c"] not in {x["rreo_c"] for x in rec}
-    # o calculo dos indicadores nao le a tabela do RREO
+    # computing the indicators does not read the RREO table
     assert "rreo" not in inspect.getsource(consulta.Painel._somas).lower()
 
 
-# ================================================================== 2. divergencia nao altera o valor da API
+# ================================================================== 2. a divergence does not change the API value
 def test_02_divergencia_com_rreo_nao_altera_valor_da_api(producao):
     con, nid = producao["con"], producao["nid"]
     cid = consultas.snapshot_em(con, 1, 2026, "2026-01-01", "2026-08-31")
@@ -77,7 +77,7 @@ def test_02_divergencia_com_rreo_nao_altera_valor_da_api(producao):
     assert antes == depois
 
 
-# ================================================================== 3 e 4. retratos
+# ================================================================== 3 and 4. snapshots
 def _dois_retratos(mundo):
     mundo.catalogos({1: [2024, 2025]})
     a = mundo.listagem(1, 2025, "2025-12-31", [_reg(1, aproc=500000.0)], "2026-09-29T20:00:00-03:00")
@@ -94,8 +94,8 @@ def test_03_SINTETICO_snapshot_antigo_intacto_apos_nova_coleta(mundo):
     b = mundo.listagem(1, 2025, "2025-12-31", [_reg(1, aproc=300000.0)], "2026-10-03T20:00:00-03:00")
     mundo.processar()
     assert a["snapshot_uid"] != b["snapshot_uid"]
-    assert manifesto_a.read_bytes() == bytes_a                                   # manifesto intacto
-    assert mundo.armazem.ler_objeto(obj_a)                                        # objeto intacto (confere hash)
+    assert manifesto_a.read_bytes() == bytes_a                                   # manifest intact
+    assert mundo.armazem.ler_objeto(obj_a)                                        # object intact (hash checked)
     assert mundo.con.execute("SELECT * FROM coleta WHERE snapshot_uid=?", (a["snapshot_uid"],)).fetchone() == linha_a
     with mundo.painel() as p:
         rt = p.retratos(1, 2025, "2025-12-31")["retratos"]
@@ -121,7 +121,7 @@ def test_04_SINTETICO_dois_retratos_independentes(mundo):
     assert dif["saldo_s1"]["diferenca"] == -20000000 and dif["natureza"] == "diferenca"
 
 
-# ================================================================== 5. proveniencia
+# ================================================================== 5. provenance
 def test_05_todo_valor_tem_proveniencia_ate_o_endpoint(producao):
     con = producao["con"]
     with Painel.abrir(producao["cfg"].banco) as p:
@@ -146,14 +146,14 @@ def test_05_todo_valor_tem_proveniencia_ate_o_endpoint(producao):
     assert d["ocorrencias"][0]["proveniencia"]["snapshot"]["snapshot_uid"] in uids
 
 
-# ================================================================== 6. entidade fora do catalogo != zero
+# ================================================================== 6. entity outside the catalog != zero
 def test_06_SINTETICO_entidade_fora_do_catalogo_nao_e_rp_zero(mundo):
     mundo.catalogos({1: [2024, 2025, 2026], 15: [2026]})
     t = "2026-09-29T20:00:00-03:00"
     mundo.listagem(1, 2025, "2025-12-31", [_reg(1, aproc=10.0)], t)
-    mundo.listagem(15, 2025, "2025-12-31", [], t)              # a API devolve 0 registros para quem nao existia
+    mundo.listagem(15, 2025, "2025-12-31", [], t)              # the API returns 0 records for an entity that did not exist
     mundo.listagem(1, 2026, "2026-08-31", [_reg(2, ano=2025, aproc=20.0)], t)
-    mundo.listagem(15, 2026, "2026-08-31", [], t)               # existe e nao tem RP: zero legitimo
+    mundo.listagem(15, 2026, "2026-08-31", [], t)               # exists and has no RP: a legitimate zero
     mundo.processar()
     with mundo.painel() as p:
         fora = p.indicadores(2025, "2025-12-31", entidade=15)
@@ -169,7 +169,7 @@ def test_06_SINTETICO_entidade_fora_do_catalogo_nao_e_rp_zero(mundo):
     assert zero["disponivel"] and zero["valores"]["registros"]["valor_c"] == 0
 
 
-# ================================================================== 7. pares espelhados separados
+# ================================================================== 7. mirrored pairs kept apart
 def test_07_SINTETICO_pares_espelhados_continuam_separados_no_bruto(mundo):
     mundo.catalogos({1: [2024], 15: [2024]})
     t = "2026-09-29T20:00:00-03:00"
@@ -182,7 +182,7 @@ def test_07_SINTETICO_pares_espelhados_continuam_separados_no_bruto(mundo):
     assert linhas == [(1, 2401751, 8410), (15, 1751, 19750)]
     objetos = {s for (s,) in mundo.con.execute("SELECT sha256 FROM resposta_bruta r JOIN coleta c ON c.id=r.coleta_id "
                                                "WHERE c.tipo='rp_listagem'")}
-    assert len(objetos) == 2                                      # dois objetos brutos, um por entidade
+    assert len(objetos) == 2                                      # two raw objects, one per entity
     with mundo.painel() as p:
         pares = p.pares(2024, "2024-12-31")
         mun = p.indicadores(2024, "2024-12-31")
@@ -194,7 +194,7 @@ def test_07_SINTETICO_pares_espelhados_continuam_separados_no_bruto(mundo):
     assert "não está determinada" in par["nota"]
 
 
-# ================================================================== 8. regra experimental fora do indicador
+# ================================================================== 8. experimental rule out of the indicator
 def test_08_SINTETICO_regra_nao_operacional_nunca_entra_no_indicador_publicado(mundo):
     mundo.catalogos({1: [2025]})
     mundo.listagem(1, 2025, "2025-12-31", [_reg(1)], "2026-09-29T20:00:00-03:00")
@@ -204,10 +204,10 @@ def test_08_SINTETICO_regra_nao_operacional_nunca_entra_no_indicador_publicado(m
         assert atual[k]["situacao"] == "operacional" and atual[k]["compoe_indicador_publicado"]
     for k in (("RREO-COL", 1), ("RREO-COL", 2), ("CONS-PAR", 1), ("CONS-PAR", 2), ("CANC", 1)):
         assert not atual[k]["compoe_indicador_publicado"] and k not in consulta.REGRAS_DO_INDICADOR
-    with pytest.raises(governanca.DecisaoInvalida):   # experimental nao pode compor o indicador
+    with pytest.raises(governanca.DecisaoInvalida):   # an experimental rule cannot make up the indicator
         governanca.registrar_decisao(mundo.con, "S1", 1, "experimental", "HIPÓTESE", True, "teste", "teste", "teste")
     rid = regras.ids(mundo.con)[("S1", 1)]
-    with pytest.raises(sqlite3.IntegrityError):         # nem por SQL direto (CHECK da tabela)
+    with pytest.raises(sqlite3.IntegrityError):         # not even through direct SQL (table CHECK)
         mundo.con.execute("INSERT INTO regra_situacao (regra_id, situacao, status_evidencia, compoe_indicador_publicado, "
                           "motivo, fonte, decidido_em, origem_decisao) VALUES (?, 'experimental', 'HIPÓTESE', 1, 'x', 'x', "
                           "'2026-10-01', 'x')", (rid,))
@@ -217,10 +217,10 @@ def test_08_SINTETICO_regra_nao_operacional_nunca_entra_no_indicador_publicado(m
         with pytest.raises(consulta.RegraNaoOperacional):
             p.indicadores(2025, "2025-12-31", entidade=1)
         (s1,) = [x for x in p.regras() if (x["codigo"], x["versao"]) == ("S1", 1)]
-    assert [h["situacao"] for h in s1["historico"]] == ["operacional", "experimental"]   # a decisao antiga continua
+    assert [h["situacao"] for h in s1["historico"]] == ["operacional", "experimental"]   # the old decision is still there
 
 
-# ================================================================== 9. mudanca de regra = versao nova
+# ================================================================== 9. a rule change = a new version
 def test_09_mudanca_de_regra_exige_nova_versao(mundo):
     con = mundo.con
     rid = regras.ids(con)[("PAR-24", 1)]
@@ -237,13 +237,13 @@ def test_09_mudanca_de_regra_exige_nova_versao(mundo):
     with pytest.raises(regras.ParametroAusente):
         regras.parametros(con, "S1", 1)
     antes = [con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in ("regra", "regra_parametro", "regra_situacao")]
-    regras.semear(con)                                  # semear de novo nao duplica nem altera
+    regras.semear(con)                                  # seeding again neither duplicates nor changes
     assert antes == [con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
                      for t in ("regra", "regra_parametro", "regra_situacao")]
 
 
 def test_parametros_de_negocio_nao_estao_espalhados_no_codigo():
-    """2.400.000, entidades 1/15 do par e entidade do RREO vem de regra_parametro, nao de constantes."""
+    """2,400,000, the pair's entities 1/15 and the RREO entity come from regra_parametro, not from constants."""
     raiz = RAIZ_PROJETO / "app" / "rp"
     for arq in ("derivar.py", "comparador.py", "painel/consulta.py"):
         fonte = (raiz / arq).read_text(encoding="utf-8")
@@ -253,7 +253,7 @@ def test_parametros_de_negocio_nao_estao_espalhados_no_codigo():
         assert "entidade=1" not in codigo.replace(" ", ""), arq
 
 
-# ================================================================== 10. sem arredondamento
+# ================================================================== 10. no rounding
 def test_10_SINTETICO_nenhum_valor_monetario_e_arredondado(mundo):
     with pytest.raises(normalizar.ValorNaoRepresentavel):
         normalizar.centavos(Decimal("0.001"))
@@ -270,7 +270,7 @@ def test_10_SINTETICO_nenhum_valor_monetario_e_arredondado(mundo):
     assert "round(" not in fonte and "/ 100" not in fonte and "float(" not in fonte
 
 
-# ================================================================== 11. interface nao escreve
+# ================================================================== 11. the interface does not write
 def test_11_interface_nao_consegue_sobrescrever_nada(producao):
     arq = producao["cfg"].banco
     antes = _sha_arquivo(arq)
@@ -300,10 +300,10 @@ def test_painel_recusa_banco_antigo_sem_migrar(tmp_path):
     antes = _sha_arquivo(arq)
     with pytest.raises(consulta.EsquemaAntigo):
         Painel.abrir(arq)
-    assert _sha_arquivo(arq) == antes                 # o painel nunca migra
+    assert _sha_arquivo(arq) == antes                 # the panel never migrates
 
 
-# ================================================================== 12. dado sensivel
+# ================================================================== 12. sensitive data
 MEI = "12.345.678/0001-90 - JOAO DA SILVA 12345678901"
 
 
@@ -335,7 +335,7 @@ def test_12_SINTETICO_dado_sensivel_fora_da_visao_publica(mundo):
                                                   "nome_publico": "JOAO DA SILVA [documento omitido] ME"}
     assert det_pf["ocorrencias"][0]["credor"]["nome_publico"] == publico.PESSOA_FISICA_OMITIDA
     assert "12345678901" not in json.dumps([det_pj, det_pf], ensure_ascii=False)
-    with mundo.painel("interno") as p:                # so no nivel interno, pedido explicitamente
+    with mundo.painel("interno") as p:                # only at the internal level, explicitly requested
         det = p.detalhe_empenho(1, 2024, 1, 2025, "2025-12-31")
         assert det["ocorrencias"][0]["credor"]["cnpj"] == "12.345.678/0001-90"
         assert "nome" in p.empenhos(2025, "2025-12-31", 1)["registros"][0]
@@ -352,7 +352,7 @@ def test_publico_mascara_documentos_no_nome():
     assert publico.tipo_credor("****123****") == "pessoa física" and publico.tipo_credor(None) == "não identificado"
 
 
-# ================================================================== governanca, evidencia, extracao
+# ================================================================== governance, evidence, extraction
 def test_governanca_da_revisao_corretiva(producao):
     atual = governanca.situacao_atual(producao["con"])
     esperado = {("RREO-COL", 1): "nao_recomendada", ("RREO-COL", 2): "experimental", ("CANC", 1): "nao_recomendada",
@@ -360,10 +360,10 @@ def test_governanca_da_revisao_corretiva(producao):
                 ("S1", 1): "operacional", ("CAT", 1): "operacional"}
     for k, situacao in esperado.items():
         assert atual[k]["situacao"] == situacao, k
-    # RREO-COL v1 foi preservada: a decisao original (operacional) continua no historico
+    # RREO-COL v1 was preserved: the original decision (operational) is still in the history
     assert [h["situacao"] for h in atual[("RREO-COL", 1)]["historico"]] == ["operacional", "nao_recomendada"]
-    assert atual[("RREO-COL", 1)]["uso_original"] == "estavel"    # a tabela regra nao foi editada
-    # nenhuma promocao automatica
+    assert atual[("RREO-COL", 1)]["uso_original"] == "estavel"    # the regra table was not edited
+    # no automatic promotion
     assert not any(h["situacao"] == "operacional" for h in atual[("RREO-COL", 2)]["historico"])
     assert {c for c, _ in atual} >= {"RREO-COL", "CANC", "CONS-PAR"} and ("CANC", 2) not in atual
     assert ("CONS-PAR", 3) not in atual
@@ -407,7 +407,7 @@ def test_extracao_do_rreo_registra_metodo_e_pdf(producao):
         assert ext[3] == n and (ext[4] is None) == (n > 0)
 
 
-# ================================================================== painel: coerencia com a derivacao
+# ================================================================== panel: consistency with the derivation
 def test_painel_usa_os_mesmos_snapshots_vigentes_da_derivacao(producao):
     with Painel.abrir(producao["cfg"].banco) as p:
         ctx = p.contexto()
@@ -419,8 +419,8 @@ def test_SINTETICO_snapshot_ainda_nao_processado_nao_vira_zero(mundo):
     mundo.catalogos({1: [2025]})
     mundo.listagem(1, 2025, "2025-12-31", [_reg(1, aproc=10.0)], "2026-09-29T20:00:00-03:00")
     mundo.processar()
-    mundo.listagem(1, 2025, "2025-12-31", [_reg(1, aproc=99.0)], "2026-10-03T20:00:00-03:00")   # nao processado
-    mundo.listagem(1, 2025, "2025-06-30", [_reg(1, aproc=10.0)], "2026-10-03T20:00:00-03:00")   # corte novo
+    mundo.listagem(1, 2025, "2025-12-31", [_reg(1, aproc=99.0)], "2026-10-03T20:00:00-03:00")   # not processed
+    mundo.listagem(1, 2025, "2025-06-30", [_reg(1, aproc=10.0)], "2026-10-03T20:00:00-03:00")   # new cut-off
     with mundo.painel() as p:
         r = p.indicadores(2025, "2025-12-31", entidade=1)
         novo = p.indicadores(2025, "2025-06-30", entidade=1)
@@ -444,7 +444,7 @@ def test_resumo_so_chama_de_explicada_quando_tudo_esta_explicado():
     assert explicacoes.resumo([e("explicada"), e("não determinada")]) == "parcialmente explicada"
     assert explicacoes.resumo([e("parcialmente explicada"), e("explicada")]) == "parcialmente explicada"
     assert explicacoes.resumo([e("hipótese"), e("não determinada")]) == "hipótese"
-    # 2024, entidade, L: a copia 2401751 (8.410,00) esta explicada, o restante nao
+    # 2024, entity, L: the 2401751 copy (8,410.00) is explained, the rest is not
     achadas, situacao = explicacoes.explicar(2024, "2024-12-31", "entidade", "L", "RREO-COL v2")
     assert {x["classe"] for x in achadas} == {"T", "C"} and situacao == "parcialmente explicada"
 

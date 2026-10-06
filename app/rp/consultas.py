@@ -1,4 +1,4 @@
-"""Consultas temporais sobre snapshots ("como estava em")."""
+"""Time-based queries over snapshots ("as it was on")."""
 from .derivar import coletas_vigentes
 
 CAMPOS = ["proc_c", "aproc_c", "cancelado_proc_c", "pago_proc_c", "pago_proc_estornado_c", "cancelado_aproc_c",
@@ -6,7 +6,7 @@ CAMPOS = ["proc_c", "aproc_c", "cancelado_proc_c", "pago_proc_c", "pago_proc_est
 
 
 def snapshot_em(con, entidade, exercicio, data_inicial, data_final, em=None):
-    """Id da coleta que o portal mostrava para o corte na data `em` (ou a mais recente)."""
+    """Id of the collection the portal showed for the cut-off on date `em` (or the most recent one)."""
     return coletas_vigentes(con, em).get((entidade, exercicio, data_inicial, data_final))
 
 
@@ -18,7 +18,7 @@ def historico(con, entidade, exercicio, data_inicial, data_final):
 
 
 def diferencas(con, nid, coleta_1, coleta_2):
-    """O que mudou entre dois snapshots do mesmo corte: chaves novas, sumidas e campos alterados."""
+    """What changed between two snapshots of the same cut-off: new keys, missing keys and changed fields."""
     def carregar(cid):
         cur = con.execute(f"SELECT entidade, anoempenho, empenho, {','.join(CAMPOS)} FROM rp_registro "
                           "WHERE normalizacao_id=? AND coleta_id=?", (nid, cid))

@@ -1,7 +1,7 @@
-"""Revisao critica (05/10/2026), etapa A - coleta: itens 2, 3, 6, 8, 17, 18, 20, 21, 35 e 50.
+"""Critical review (05/10/2026), stage A - collection: items 2, 3, 6, 8, 17, 18, 20, 21, 35 and 50.
 
-Cada teste cita o item da revisao (auditoria/REVISAO_CRITICA_RESPOSTA.md). Transporte simulado (fixture `ambiente`),
-exceto os do item 8, que sobem um servidor HTTP local de verdade em 127.0.0.1 (nada sai da maquina).
+Each test cites the review item (docs/audits/CRITICAL_REVIEW_RESPONSE.md). Simulated transport (fixture `ambiente`),
+except for item 8, whose tests start a real local HTTP server on 127.0.0.1 (nothing leaves the machine).
 """
 import json
 import threading
@@ -33,9 +33,9 @@ def _listar(ambiente):
     return ambiente["coletor"].listagem(1, 2026, "2026-08-31")
 
 
-# ------------------------------------------------------------------ itens 1, 2 e 35: chave de negocio unica
+# ------------------------------------------------------------------ items 1, 2 and 35: unique business key
 def test_REV02_chave_repetida_dentro_da_pagina_copia_exata(ambiente):
-    p = ambiente["portal"]   # a regra antiga so olhava paginas ANTERIORES: [A, A] na mesma pagina passava
+    p = ambiente["portal"]   # the old rule only looked at EARLIER pages: [A, A] on the same page passed
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1), REG(2), REG(2)], 0, 3, True, 1))]
     s = _listar(ambiente)
     assert s["status"] == "incompleta" and len(p.chamadas) == 1
@@ -51,23 +51,23 @@ def test_REV02_chave_repetida_dentro_da_pagina_conteudo_diferente(ambiente):
 
 
 def test_REV02_repeticao_classificada_por_chave_e_sem_segunda_leitura(ambiente):
-    p = ambiente["portal"]   # chave 2 com 3 copias (uma diferente) e chave 4 com 2 copias iguais, na pagina 1
+    p = ambiente["portal"]   # key 2 with 3 copies (one different) and key 4 with 2 equal copies, on page 1
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1)], 0, 6, False, 2, size=5))]
     p.rotas[(EP_RP, "1")] = [(200, _pag([REG(2), REG(2), REG(2, aproc=3.0), REG(4), REG(4)], 1, 6, True, 2, size=5))]
     s = _listar(ambiente)
-    assert s["status"] == "incompleta" and len(p.chamadas) == 2          # parou na pagina 1, sem segunda leitura
+    assert s["status"] == "incompleta" and len(p.chamadas) == 2          # stopped on page 1, without a second read
     assert "2 chave(s), 1 exata(s)" in s["observacao"] and "1 conflitante(s)" in s["observacao"]
     assert "segunda_leitura" not in ambiente["armazem"].ler_manifesto(s["manifesto"])
 
 
 def test_REV02_mesmo_empenho_em_anos_diferentes_nao_e_repeticao(ambiente):
-    p = ambiente["portal"]   # a chave e (entidade, anoempenho, empenho): o numero do empenho sozinho repete entre anos
+    p = ambiente["portal"]   # the key is (entidade, anoempenho, empenho): the commitment number alone repeats across years
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(5, anoempenho=2024), REG(5, anoempenho=2025)], 0, 2, True, 1))]
     assert _listar(ambiente)["status"] == "completa"
 
 
 def test_REV02_chave_repetida_entre_paginas_continua_recusada(ambiente):
-    # caso 1 do item 35: pagina 0 = A B, pagina 1 = B C (B com outro valor): ordem e chave denunciam
+    # item 35 case 1: page 0 = A B, page 1 = B C (B with another value): order and key give it away
     p = ambiente["portal"]
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1), REG(2)], 0, 4, False, 2, size=2))]
     p.rotas[(EP_RP, "1")] = [(200, _pag([REG(2, proc=7.0), REG(3)], 1, 4, True, 2, size=2))]
@@ -75,11 +75,11 @@ def test_REV02_chave_repetida_entre_paginas_continua_recusada(ambiente):
 
 
 @pytest.mark.parametrize("pagina1, trecho", [
-    # item 35, teste 2: a pagina 1 chega dizendo number=0
+    # item 35, test 2: page 1 arrives saying number=0
     (lambda: _pag([REG(3), REG(4)], 0, 4, True, 2, size=2), "a API devolveu a página number=0"),
-    # item 35, teste 3: numberOfElements diferente do content
+    # item 35, test 3: numberOfElements different from content
     (lambda: _alterar(_pag([REG(3), REG(4)], 1, 4, True, 2, size=2), numberOfElements=3), "numberOfElements=3"),
-    # item 2: first e empty coerentes (presentes e coerentes nas 322 paginas reais gravadas)
+    # item 2: first and empty consistent (present and consistent in the 322 real pages recorded)
     (lambda: _alterar(_pag([REG(3), REG(4)], 1, 4, True, 2, size=2), first=True), "first=True incoerente"),
     (lambda: _alterar(_pag([REG(3), REG(4)], 1, 4, True, 2, size=2), empty=True), "empty=True mas content tem 2"),
 ])
@@ -99,8 +99,8 @@ def _alterar(corpo, **campos):
 
 def test_REV02_status_de_paginas_do_importador_com_chave_unica():
     repetida = [json.dumps({"content": [REG(1), REG(1)], "totalElements": 2, "last": True}).encode()]
-    assert status_de_paginas(repetida) == "completa"                    # movimentacao: lancamentos repetem a chave
-    assert status_de_paginas(repetida, chave_unica=True) == "incompleta"  # listagem de RP: nao pode
+    assert status_de_paginas(repetida) == "completa"                    # movement: entries repeat the key
+    assert status_de_paginas(repetida, chave_unica=True) == "incompleta"  # RP listing: not allowed
     unica = [json.dumps({"content": [REG(1), REG(2)], "totalElements": 2, "last": True}).encode()]
     assert status_de_paginas(unica, chave_unica=True) == "completa"
 
@@ -108,11 +108,11 @@ def test_REV02_status_de_paginas_do_importador_com_chave_unica():
 def test_REV15_identidade_do_conteudo_e_da_chave():
     a, b = REG(1, proc=1.5), {"proc": 1.5, "aproc": 0, "empenho": 1, "anoempenho": 2025, "entidade": 1}
     assert contrato.chave_negocio(a) == (1, 2025, 1)
-    assert contrato.impressao_registro(a) == contrato.impressao_registro(b)     # ordem das chaves nao importa
+    assert contrato.impressao_registro(a) == contrato.impressao_registro(b)     # the order of the keys does not matter
     assert contrato.impressao_registro(a) != contrato.impressao_registro(REG(1, proc=1.51))
 
 
-# ------------------------------------------------------------------ item 3: ordenacao pedida e eco conferido
+# ------------------------------------------------------------------ item 3: requested order and echo checked
 def test_REV03_listagem_pede_a_ordem_em_dois_campos(ambiente):
     p = ambiente["portal"]
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1)], 0, 1, True, 1, sort=SORT_ECO))]
@@ -120,11 +120,11 @@ def test_REV03_listagem_pede_a_ordem_em_dois_campos(ambiente):
     assert s["status"] == "completa"
     m = ambiente["armazem"].ler_manifesto(s["manifesto"])
     assert m["parametros"]["sort"] == ["anoempenho,asc", "empenho,asc"]
-    assert "sort=anoempenho%2Casc&sort=empenho%2Casc" in m["respostas"][0]["url"]   # parametro repetido (doseq)
+    assert "sort=anoempenho%2Casc&sort=empenho%2Casc" in m["respostas"][0]["url"]   # repeated parameter (doseq)
 
 
 def test_REV03_servidor_que_ignora_a_ordem_pedida(ambiente):
-    p = ambiente["portal"]   # a API real ecoa sort=[] quando nao aplica ordem nenhuma
+    p = ambiente["portal"]   # the real API echoes sort=[] when it applies no order at all
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1)], 0, 1, True, 1, sort=[]))]
     s = _listar(ambiente)
     assert s["status"] == "incompleta" and "não aplicou a ordenação pedida" in s["observacao"]
@@ -146,12 +146,12 @@ def test_REV03_sort_ecoado_confere():
     assert not contrato.sort_ecoado_confere("anoempenho,asc", pedido)
 
 
-# ------------------------------------------------------------------ item 6: contrato minimo dos catalogos
+# ------------------------------------------------------------------ item 6: minimal contract of the catalogs
 ENTIDADES_OK = [{"id": 1, "nome": "MUNICIPIO", "cnpj": None, "tipo": "A"}]
 
 
 @pytest.mark.parametrize("corpo, trecho", [
-    ({"erro": "não autorizado"}, "não é uma lista"),        # o exemplo da revisao: HTTP 200 com objeto de erro
+    ({"erro": "não autorizado"}, "não é uma lista"),        # the review's example: HTTP 200 with an error object
     ([], "vazio"),
     ([{"nome": "SEM ID"}], "não tem 'id' inteiro"),
     ([{"id": "1"}], "não tem 'id' inteiro"),
@@ -187,7 +187,7 @@ def test_REV06_publicacoes_fora_do_contrato_nao_baixam_pdf(ambiente):
     assert len(feitos) == 1 and feitos[0]["status"] == "falhou" and "publicações" in feitos[0]["observacao"]
 
 
-# ------------------------------------------------------------------ itens 17, 18 e 50: manifesto
+# ------------------------------------------------------------------ items 17, 18 and 50: manifest
 def test_REV18_manifesto_tem_inicio_fim_e_forma(ambiente):
     p = ambiente["portal"]
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1), REG(2)], 0, 3, False, 2, size=2))]
@@ -198,7 +198,7 @@ def test_REV18_manifesto_tem_inicio_fim_e_forma(ambiente):
     c = m["contrato_api"]
     assert c["versao"] == contrato.VERSAO and len(c["forma_sha256"]) == 64
     assert "$.content[].proc:number" in c["forma"] and "$.totalElements:number" in c["forma"]
-    # o banco e a verificacao ignoram os campos novos (aditivos, como segunda_leitura)
+    # the database and the verification ignore the new fields (additive, like segunda_leitura)
     from rp import banco
     assert banco.verificar(ambiente["con"], ambiente["armazem"]) == []
 
@@ -213,11 +213,11 @@ def test_REV50_forma_detecta_campo_novo_removido_e_tipo_diferente():
     assert contrato.comparar_formas(base, novo)["novos"] == ["$.content[].extra"]
     assert contrato.comparar_formas(novo, base)["removidos"] == ["$.content[].extra"]
     nulo = contrato.forma([json.dumps({"content": [REG(1, proc=None)], "totalElements": 1}).encode()])
-    assert contrato.comparar_formas(base, nulo)["igual"]      # campo opcional que veio vazio nao e mudanca de tipo
+    assert contrato.comparar_formas(base, nulo)["igual"]      # an optional field that came empty is not a type change
     assert contrato.forma([b"%PDF-1.4 ..."]) is None
 
 
-# ------------------------------------------------------------------ item 8: prazo total absoluto (servidor local)
+# ------------------------------------------------------------------ item 8: absolute total deadline (local server)
 class _Lento(BaseHTTPRequestHandler):
     def log_message(self, *a):
         pass
@@ -230,12 +230,12 @@ class _Lento(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            if self.path == "/corpo-lento":         # cabecalhos na hora; 40 bytes de corpo, 1 a cada 0,25 s (10 s)
+            if self.path == "/corpo-lento":         # headers right away; 40 bytes of body, 1 every 0.25 s (10 s)
                 self.send_response(200)
                 self.send_header("Content-Length", "40")
                 self.end_headers()
                 self._pingar(b"x" * 40, 0.25)
-            elif self.path == "/cabecalho-lento":   # a linha de status e os cabecalhos chegam a conta-gotas (~8 s)
+            elif self.path == "/cabecalho-lento":   # the status line and the headers arrive drip by drip (~8 s)
                 self._pingar(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok", 0.2)
             else:
                 self.send_response(200)
@@ -243,7 +243,7 @@ class _Lento(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(b"ok")
         except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError):
-            return                                   # o cliente desistiu: fim
+            return                                   # the client gave up: end
 
 
 @pytest.fixture
@@ -261,15 +261,15 @@ def servidor_lento(monkeypatch):
 
 @pytest.mark.parametrize("caminho", ["/corpo-lento", "/cabecalho-lento"])
 def test_REV08_prazo_total_e_absoluto_com_servidor_que_pinga(servidor_lento, caminho):
-    # leitura de 1 s nunca esgota (chega 1 byte a cada 0,2-0,25 s); o prazo total de 1,5 s tem de valer mesmo assim.
-    # Codigo anterior: o corpo so era conferido ao fim de um bloco de 64 KiB (10 s) e o cabecalho nunca.
+    # a 1 s read never times out (1 byte arrives every 0.2-0.25 s); the 1.5 s total deadline must hold anyway.
+    # Previous code: the body was only checked at the end of a 64 KiB block (10 s) and the header never.
     get = transporte_requests("teste", 10 ** 6, prazo_total=1.5, timeout_conexao=1)
     antes = {t.ident for t in threading.enumerate() if t.name == "rp-http"}
     inicio = time.monotonic()
     with pytest.raises(RespostaRecusada, match="prazo total"):
         get(servidor_lento + caminho, 1.0)
     assert time.monotonic() - inicio < 3.0
-    if caminho == "/corpo-lento":   # com a resposta em maos, a conexao e derrubada: a thread de leitura termina logo
+    if caminho == "/corpo-lento":   # with the response in hand, the connection is dropped: the reading thread ends soon
         limite = time.monotonic() + 2.0
         while time.monotonic() < limite and any(t.name == "rp-http" and t.ident not in antes
                                                for t in threading.enumerate()):
@@ -285,7 +285,7 @@ def test_REV08_resposta_rapida_continua_normal(servidor_lento):
 
 def test_REV08_com_prazo_total_repassa_erro_e_resultado():
     assert com_prazo_total(lambda e: 42, 1) == 42
-    with pytest.raises(KeyError):                # erro de programa propaga com o tipo original (nunca vira "rede")
+    with pytest.raises(KeyError):                # a program error propagates with its original type (never turns into "rede")
         com_prazo_total(lambda e: {}["x"], 1)
     vencidos = []
     with pytest.raises(RespostaRecusada):
@@ -293,9 +293,9 @@ def test_REV08_com_prazo_total_repassa_erro_e_resultado():
     assert vencidos and vencidos[0]["vencido"] is True
 
 
-# ------------------------------------------------------------------ itens 20 e 21: importador
+# ------------------------------------------------------------------ items 20 and 21: importer
 def test_REV21_fuso_convertido_e_nao_sobrescrito():
-    assert importar._iso("2026-09-29T10:00:00") == "2026-09-29T10:00:00-03:00"          # sem fuso: Brasilia
+    assert importar._iso("2026-09-29T10:00:00") == "2026-09-29T10:00:00-03:00"          # no time zone: Brasilia
     assert importar._iso("2026-09-29T13:00:00+00:00") == "2026-09-29T10:00:00-03:00"    # 13h UTC = 10h BRT
     assert importar._iso("2026-09-29T10:00:00-03:00") == "2026-09-29T10:00:00-03:00"
 
@@ -307,7 +307,7 @@ def test_REV20_mesmo_uid_com_outro_conteudo_e_conflito(ambiente):
               coletor={"nome": "teste", "versao": "1", "sha256_codigo": None})
     original = [{"url": "u", "corpo": b'{"content": []}'}]
     assert importar._gravar(con, arm, "etapa02/api/x", respostas=original, **kw) == 1
-    assert importar._gravar(con, arm, "etapa02/api/x", respostas=original, **kw) == 0     # mesmo conteudo: nada
+    assert importar._gravar(con, arm, "etapa02/api/x", respostas=original, **kw) == 0     # same content: nothing
     with pytest.raises(importar.ConflitoDeImportacao, match="bytes"):
         importar._gravar(con, arm, "etapa02/api/x", respostas=[{"url": "u", "corpo": b'{"content": [1]}'}], **kw)
     with pytest.raises(importar.ConflitoDeImportacao, match="parâmetros"):

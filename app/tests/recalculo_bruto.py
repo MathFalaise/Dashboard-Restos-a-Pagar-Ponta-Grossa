@@ -1,19 +1,19 @@
-"""Recalculo INDEPENDENTE a partir do JSON bruto do armazem (Subetapa 05.1; etapa05/CONTRATO_ANALITICO.md).
+"""INDEPENDENT recalculation from the store's raw JSON (sub-stage 05.1; docs/stages/05-analysis/ANALYTICAL_CONTRACT.md).
 
-Oraculo de validacao das metricas numericas da Etapa 05 (regime "bruto", contrato secao 4.1):
-  * le os valores so do armazem (manifesto -> objetos -> JSON da API, Decimal -> centavos);
-  * do banco usa apenas a camada 0 (tabela `coleta`, para achar os snapshots) e o limite de processamento
-    (`normalizacao_execucao.ultima_coleta_id` da normalizacao da derivacao atual);
-  * NAO importa rp.painel, rp.derivar nem rp.normalizar: nada aqui reaproveita a implementacao de producao, que e
-    justamente o que se valida.
-Generaliza registros_brutos / recalcular de test_homologacao_real.py (04.6) para pontos de serie com a situacao do
-dado (contrato secao 2), diferencas (posterior - anterior), composicao por dimensao (contrato M-05 a M-08),
-contribuicoes por empenho (contrato M-09 a M-11) e o historico de um empenho nos cortes (M-12).
-Anomalias e verificacoes NAO sao recalculadas aqui (regime "derivacao"): seria uma segunda implementacao das regras.
-A unica excecao e a elegibilidade do retrato (revisao critica, item 1): retrato com a mesma chave (entidade,
-anoempenho, empenho) mais de uma vez nunca e o vigente. Aqui ela e decidida lendo o bruto, nao a anomalia CHAVE-DUP
-gravada - e o que permite conferir a regra do painel em vez de repeti-la.
-So suporta o retrato atual (sem "como estava em").
+Validation oracle for the numeric metrics of stage 05 ("bruto" regime, contract section 4.1):
+  * reads values only from the store (manifest -> objects -> API JSON, Decimal -> cents);
+  * from the database it only uses layer 0 (the `coleta` table, to find the snapshots) and the processing limit
+    (`normalizacao_execucao.ultima_coleta_id` of the current derivation's normalization);
+  * it does NOT import rp.painel, rp.derivar or rp.normalizar: nothing here reuses the production implementation,
+    which is exactly what is being validated.
+It generalizes registros_brutos / recalcular from test_homologacao_real.py (04.6) to series points with the data
+situation (contract section 2), differences (later - earlier), composition by dimension (contract M-05 to M-08),
+contributions per commitment (contract M-09 to M-11) and a commitment's history across cut-offs (M-12).
+Anomalies and checks are NOT recalculated here ("derivacao" regime): that would be a second implementation of the
+rules. The only exception is snapshot eligibility (critical review, item 1): a snapshot with the same key (entidade,
+anoempenho, empenho) more than once is never the current one. Here it is decided by reading the raw data, not the
+recorded CHAVE-DUP anomaly - which is what lets us check the panel's rule instead of repeating it.
+It only supports the current snapshot (no "as it was on").
 """
 import json
 import re
@@ -28,7 +28,7 @@ SEM_SNAPSHOT = ("nao_processado", "ambiguo", "incompleto", "sem_coleta")
 
 
 def centavos(v):
-    """Valor da API (lido como Decimal) -> centavos inteiros. Ausente = 0 (o registro existe, o campo nao veio)."""
+    """API value (read as Decimal) -> integer cents. Missing = 0 (the record exists, the field did not come)."""
     if v is None:
         return 0
     c = Decimal(str(v)) * 100
@@ -38,7 +38,7 @@ def centavos(v):
 
 
 def valores_do_item(r):
-    """Campos monetarios de um item da API, em centavos, com as formulas documentadas (Etapa 02)."""
+    """Monetary fields of an API item, in cents, with the documented formulas (stage 02)."""
     v = {nome: centavos(r.get(api)) for api, nome in CAMPOS.items()}
     v["s1"] = v["proc"] + v["aproc"] - v["pago_proc"] - v["pago_aproc"] - v["cancelado_aproc"]
     v["s2"] = v["aproc"] - v["liquidado"] - v["cancelado_aproc"]
@@ -48,7 +48,7 @@ def valores_do_item(r):
 
 
 def indicadores(itens):
-    """Os 14 indicadores de `SOMAS` (consulta.py), recalculados de itens brutos."""
+    """The 14 indicators of `SOMAS` (consulta.py), recalculated from raw items."""
     s = dict.fromkeys(("registros", "inscricao_processada", "inscricao_nao_processada", "inscricao_total",
                        "pago_processado", "pago_nao_processado", "pagamentos", "estornos_de_pagamento", "liquidacoes",
                        "cancelamentos", "retencoes", "saldo_total", "saldo_a_liquidar", "saldo_liquidado_a_pagar"), 0)
@@ -72,15 +72,15 @@ def indicadores(itens):
 
 
 def categoria(v):
-    """CAT v1 pela definicao documentada (contrato M-05), sobre os centavos do item."""
+    """CAT v1 by the documented definition (contract M-05), over the item's cents."""
     if v["proc"] > 0 and v["aproc"] > 0:
         return "ambos"
     return "processado" if v["proc"] > 0 else "nao_processado" if v["aproc"] > 0 else "sem_saldo_abertura"
 
 
 def tipo_credor(cnpj):
-    """Tipo do credor pela definicao documentada (contrato M-07): CNPJ completo -> pessoa juridica; CPF mascarado
-    pela API ou 11 digitos -> pessoa fisica; resto -> nao identificado."""
+    """Creditor type by the documented definition (contract M-07): complete CNPJ -> legal entity; CPF masked by the
+    API or 11 digits -> individual; anything else -> not identified."""
     s = str(cnpj or "")
     if re.fullmatch(r"\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}", s):
         return "pessoa jurídica"
@@ -89,15 +89,15 @@ def tipo_credor(cnpj):
     return "não identificado"
 
 
-# dimensoes orcamentarias da composicao (contrato M-08): chave do grupo a partir do item da API (chave ausente = None)
+# budget dimensions of the composition (contract M-08): group key from the API item (missing key = None)
 CHAVES_ORCAMENTARIAS = {"fonte_recurso": ("fonteRecurso", "descricaoFonte"), "orgao": ("orgao",), "funcao": ("funcao",),
                         "programa": ("programa",), "elemento": ("elemento",)}
 
 
 def composicao(itens, exercicio):
-    """Composicao de um conjunto de itens brutos (contrato M-05 a M-08): por dimensao, {chave: somas}; faixa so com o
-    valor inscrito de cada parte positiva (R3). Chaves: categoria e tipo como texto; faixa 'a'/'b'/'f'/'g';
-    orcamentarias como tupla dos valores do item (fonte: codigo e descricao)."""
+    """Composition of a set of raw items (contract M-05 to M-08): per dimension, {key: sums}; band only with the
+    inscribed value of each positive part (R3). Keys: category and type as text; band 'a'/'b'/'f'/'g'; budget ones as
+    a tuple of the item's values (source: code and description)."""
     saida = {d: {} for d in ("categoria", "faixa", "tipo_credor", *CHAVES_ORCAMENTARIAS)}
 
     def somar(d, chave, registros, insc, s1=None):
@@ -117,7 +117,7 @@ def composicao(itens, exercicio):
         somar("tipo_credor", tipo_credor(r.get("cnpj")), 1, insc, v["s1"])
         for d, chaves in CHAVES_ORCAMENTARIAS.items():
             somar(d, tuple(r.get(k) for k in chaves), 1, insc, v["s1"])
-        anterior = r["anoempenho"] == exercicio - 1          # FAIXA v1: b/g para exercicio-1, a/f para os demais
+        anterior = r["anoempenho"] == exercicio - 1          # FAIXA v1: b/g for exercicio-1, a/f for the others
         if v["proc"] > 0:
             somar("faixa", "b" if anterior else "a", 1, v["proc"])
         if v["aproc"] > 0:
@@ -126,7 +126,7 @@ def composicao(itens, exercicio):
 
 
 def diferenca(anterior, posterior):
-    """Contrato secao 1.5: posterior - anterior; ausencia em qualquer lado = None (nunca zero)."""
+    """Contract section 1.5: later - earlier; absence on either side = None (never zero)."""
     if anterior is None or posterior is None:
         return None
     for x in (anterior, posterior):
@@ -136,8 +136,8 @@ def diferenca(anterior, posterior):
 
 
 def fechamento(total_c, componentes):
-    """Contrato secao 4.2: diferenca = soma dos componentes - total; aprova so se 0. Sem tolerancia, sem ajuste.
-    `componentes`: lista de (rotulo, centavos)."""
+    """Contract section 4.2: difference = sum of the components - total; passes only if 0. No tolerance, no adjustment.
+    `componentes`: list of (label, cents)."""
     for rotulo, v in [("total", total_c)] + list(componentes):
         if isinstance(v, bool) or not isinstance(v, int):
             raise TypeError(f"fechamento exige centavos inteiros: {rotulo} = {v!r}")
@@ -147,7 +147,7 @@ def fechamento(total_c, componentes):
 
 
 class Bruto:
-    """Leitura independente de um banco do projeto + armazem. `con` pode ser somente leitura."""
+    """Independent reading of a project database + store. `con` may be read-only."""
 
     def __init__(self, con, armazem):
         self.con, self.armazem, self._cache = con, armazem, {}
@@ -157,7 +157,7 @@ class Bruto:
             raise ValueError("banco sem derivacao atual sobre normalizacao v4 (ultima_coleta_id)")
         self.limite = row[0]
 
-    # ---------------------------------------------------------------- leitura do bruto
+    # ---------------------------------------------------------------- reading the raw data
     def _json(self, coleta_id):
         if coleta_id not in self._cache:
             rel = self.con.execute("SELECT manifesto FROM coleta WHERE id=?", (coleta_id,)).fetchone()[0]
@@ -170,14 +170,14 @@ class Bruto:
         return [r for corpo in self._json(coleta_id) for r in corpo["content"]]
 
     def repetida(self, coleta_id):
-        """O retrato tem a mesma chave (entidade, anoempenho, empenho) mais de uma vez no bruto?"""
+        """Does the snapshot have the same key (entidade, anoempenho, empenho) more than once in the raw data?"""
         chaves = [(r["entidade"], r["anoempenho"], r["empenho"]) for r in self.itens(coleta_id)]
         return len(chaves) != len(set(chaves))
 
     def uid(self, coleta_id):
         return self.con.execute("SELECT snapshot_uid FROM coleta WHERE id=?", (coleta_id,)).fetchone()[0]
 
-    # ---------------------------------------------------------------- catalogos (do bruto)
+    # ---------------------------------------------------------------- catalogs (from the raw data)
     def _ultima(self, tipo, entidade=None):
         sql = "SELECT id FROM coleta WHERE tipo=? AND status='completa' AND id <= ?"
         p = [tipo, self.limite]
@@ -191,14 +191,14 @@ class Bruto:
         return set() if not cid else {x["id"] for corpo in self._json(cid) for x in corpo}
 
     def exercicios_oficiais(self, entidade):
-        """Exercicios do catalogo oficial da entidade, ou None se nao ha catalogo dela."""
+        """Fiscal years in the entity's official catalog, or None if there is no catalog for it."""
         cid = self._ultima("exercicios", entidade)
         if not cid:
             return None
         anos = {x["id"]["exercicio"] for corpo in self._json(cid) for x in corpo}
         return anos or None
 
-    # ---------------------------------------------------------------- cortes e situacao (contrato secao 2)
+    # ---------------------------------------------------------------- cut-offs and situation (contract section 2)
     def _listagens(self, entidade, exercicio, data_final=None):
         sql = ("SELECT id, status, entidade, data_final FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL "
                "AND exercicio=? AND data_inicial=?")
@@ -210,18 +210,18 @@ class Bruto:
         return self.con.execute(sql + " ORDER BY coletada_em, snapshot_uid", p).fetchall()
 
     def vigente(self, entidade, exercicio, data_final):
-        """Coleta completa e processada mais recente do corte sem chave repetida (ou None)."""
+        """Most recent complete and processed collection of the cut-off without a repeated key (or None)."""
         ok = [cid for cid, st, _, _ in self._listagens(entidade, exercicio, data_final)
               if st == "completa" and cid <= self.limite and not self.repetida(cid)]
         return ok[-1] if ok else None
 
     def cortes_do_exercicio(self, exercicio):
-        """Universo da serie (contrato secao 2.4): cortes com snapshot processado de QUALQUER entidade."""
+        """Series universe (contract section 2.4): cut-offs with a processed snapshot of ANY entity."""
         return sorted({df for cid, st, _, df in self._listagens(None, exercicio)
                        if st == "completa" and cid <= self.limite})
 
     def situacao(self, entidade, exercicio, data_final):
-        """Situacao de uma entidade num corte, com a precedencia do contrato (secao 2.2)."""
+        """Situation of an entity at a cut-off, with the contract's precedence (section 2.2)."""
         anos = self.exercicios_oficiais(entidade)
         if anos is not None and exercicio not in anos:
             return "inexistente"
@@ -233,14 +233,14 @@ class Bruto:
         linhas = self._listagens(entidade, exercicio, data_final)
         if any(st == "completa" and c > self.limite for c, st, _, _ in linhas):
             return "nao_processado"
-        if any(st == "completa" for _, st, _, _ in linhas):      # processada, mas toda com chave repetida
+        if any(st == "completa" for _, st, _, _ in linhas):      # processed, but all with a repeated key
             return "ambiguo"
         if any(st != "completa" for _, st, _, _ in linhas):
             return "incompleto"
         return "sem_coleta"
 
     def ponto(self, exercicio, data_final, entidade=None):
-        """Ponto de serie (contrato secao 2.3): situacao, valores (None sem valor) e snapshots usados."""
+        """Series point (contract section 2.3): situation, values (None without a value) and snapshots used."""
         if entidade is not None:
             sit = self.situacao(entidade, exercicio, data_final)
             cid = self.vigente(entidade, exercicio, data_final) if sit in TEM_VALOR else None
@@ -250,7 +250,7 @@ class Bruto:
         if not self._listagens(None, exercicio):
             return {"situacao": "exercicio_sem_cobertura", "tem_valor": False, "entidades": {}, "valores": None,
                     "coletas": []}
-        # catalogo de entidades + entidades com snapshot processado no corte (contrato secao 2.1)
+        # entity catalog + entities with a processed snapshot at the cut-off (contract section 2.1)
         universo = self.entidades_do_catalogo() | {e for c, st, e, _ in self._listagens(None, exercicio, data_final)
                                                    if st == "completa" and c <= self.limite}
         sits = {e: self.situacao(e, exercicio, data_final) for e in sorted(universo)}
@@ -264,7 +264,7 @@ class Bruto:
         return {"situacao": sit, "tem_valor": True, "entidades": sits, "valores": indicadores(itens), "coletas": coletas}
 
     def serie(self, exercicio, entidade=None):
-        """Todos os pontos do universo do exercicio, com a diferenca para o ponto adjacente anterior (secao 2.6)."""
+        """All points of the fiscal year's universe, with the difference to the previous adjacent point (section 2.6)."""
         pontos, anterior = [], None
         for df in self.cortes_do_exercicio(exercicio):
             pt = {"data_final": df, **self.ponto(exercicio, df, entidade)}
@@ -277,20 +277,20 @@ class Bruto:
             anterior = pt
         return pontos
 
-    # ---------------------------------------------------------------- serie entre exercicios (contrato M-03, M-04)
+    # ---------------------------------------------------------------- series across fiscal years (contract M-03, M-04)
     def sem_cobertura(self, exercicio):
         return not self._listagens(None, exercicio)
 
     def corte_representativo(self, exercicio):
-        """(data_final, aberto): 31/12 com Municipio disponivel; senao o ultimo corte com Municipio disponivel."""
+        """(data_final, open): 31/12 with the Municipality available; otherwise the last cut-off with the Municipality available."""
         disp = [df for df in self.cortes_do_exercicio(exercicio) if self.ponto(exercicio, df)["tem_valor"]]
         if f"{exercicio}-12-31" in disp:
             return f"{exercicio}-12-31", False
         return (disp[-1], True) if disp else (None, None)
 
     def a_mais_f(self, exercicio, coletas):
-        """Abertura de RP de exercicios anteriores a exercicio-1: proc e aproc dos itens com anoempenho diferente de
-        exercicio-1 (faixas 'a' e 'f'; so a parte positiva entra em faixa), recalculado do bruto."""
+        """Opening RP of years before exercicio-1: proc and aproc of the items with anoempenho other than exercicio-1
+        (bands 'a' and 'f'; only the positive part goes into a band), recalculated from the raw data."""
         total = 0
         for c in coletas:
             for r in self.itens(c):
@@ -299,19 +299,19 @@ class Bruto:
                     total += (v["proc"] if v["proc"] > 0 else 0) + (v["aproc"] if v["aproc"] > 0 else 0)
         return total
 
-    # ---------------------------------------------------------------- composicao (contrato M-05 a M-08)
+    # ---------------------------------------------------------------- composition (contract M-05 to M-08)
     def composicao(self, exercicio, data_final, entidade=None):
-        """Composicao do ponto (situacao do contrato secao 2): None sem valor; senao `composicao()` dos itens."""
+        """Composition of the point (contract section 2 situation): None without a value; otherwise `composicao()` of the items."""
         pt = self.ponto(exercicio, data_final, entidade)
         if not pt["tem_valor"]:
             return {"situacao": pt["situacao"], "composicao": None}
         itens = [r for c in pt["coletas"] for r in self.itens(c)]
         return {"situacao": pt["situacao"], "composicao": composicao(itens, exercicio)}
 
-    # ---------------------------------------------------------------- historico de um empenho (contrato M-12)
+    # ---------------------------------------------------------------- history of a commitment (contract M-12)
     def empenho_nos_cortes(self, entidade, anoempenho, empenho, exercicio):
-        """Para cada corte do universo do exercicio: situacao da entidade e os valores (valores_do_item) de cada
-        ocorrencia da chave no snapshot vigente (lista vazia = empenho ausente do corte)."""
+        """For each cut-off of the fiscal year's universe: the entity's situation and the values (valores_do_item) of each
+        occurrence of the key in the current snapshot (empty list = commitment missing from the cut-off)."""
         saida = []
         for df in self.cortes_do_exercicio(exercicio):
             sit = self.situacao(entidade, exercicio, df)
@@ -322,11 +322,11 @@ class Bruto:
             saida.append({"data_final": df, "situacao": sit, "ocorrencias": ocorrencias})
         return saida
 
-    # ---------------------------------------------------------------- contribuicoes (contrato M-09 a M-11)
+    # ---------------------------------------------------------------- contributions (contract M-09 to M-11)
     def contribuicoes(self, exercicio, df_anterior, df_posterior, entidade=None, metrica="s1", top=10):
-        """Contribuicao de cada empenho para a variacao de `metrica` ('s1' ou 'pagamentos') entre dois cortes do
-        mesmo exercicio. Bloqueia o par se faltar valor num lado, se o Municipio tiver conjuntos de entidades
-        diferentes ou se houver chave repetida num lado."""
+        """Contribution of each commitment to the variation of `metrica` ('s1' or 'pagamentos') between two cut-offs of the
+        same fiscal year. Blocks the pair if a value is missing on one side, if the Municipality has different sets
+        of entities or if there is a repeated key on one side."""
         if metrica not in ("s1", "pagamentos"):
             raise ValueError("metrica do contrato: 's1' ou 'pagamentos'")
         a, b = self.ponto(exercicio, df_anterior, entidade), self.ponto(exercicio, df_posterior, entidade)
@@ -358,7 +358,7 @@ class Bruto:
                 classe, c = "so_anterior", 0 - ant[k]
             linhas.append({"chave": k, "classe": classe, "contribuicao_c": c})
         variacao = sum(post.values()) - sum(ant.values())
-        linhas.sort(key=lambda x: (-x["contribuicao_c"], x["chave"]))       # ordem do contrato (M-10)
+        linhas.sort(key=lambda x: (-x["contribuicao_c"], x["chave"]))       # contract order (M-10)
         aum = [x for x in linhas if x["contribuicao_c"] > 0]
         red = sorted((x for x in linhas if x["contribuicao_c"] < 0), key=lambda x: (x["contribuicao_c"], x["chave"]))
         grupos = [("top_aumentos", sum(x["contribuicao_c"] for x in aum[:top])),

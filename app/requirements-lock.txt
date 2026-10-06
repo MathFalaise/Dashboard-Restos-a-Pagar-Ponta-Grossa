@@ -1,14 +1,14 @@
-# Trava das versoes EXATAS do ambiente que produziu e homologou os resultados (auditoria DEP-01), agora COM HASHES
-# (revisao critica, decisao D5 de 06/10/2026). Python 3.14.3. Unica versao atualizada: urllib3 2.7.0 -> 2.8.0
-# (06/10/2026, autorizada pelo responsavel), que corrige PYSEC-2026-4175, -4176 e -4177 acusadas pelo pip-audit.
-# requirements.txt fixa so as dependencias diretas; as transitivas (urllib3, idna, charset-normalizer, certifi)
-# variavam entre instalacoes. Instalar exatamente este ambiente: pip install -r requirements-lock.txt
-# Com hashes, o pip passa a exigir que CADA arquivo baixado tenha um dos SHA-256 abaixo (--require-hashes implicito).
-# Hashes so do ambiente homologado: Python 3.14 em Windows (win_amd64) e Linux (manylinux x86_64), conferidos com os
-# publicados no PyPI e com os arquivos baixados. Outras versoes do Python usam requirements-dev.txt (sem hash).
-# Atualizar uma versao = gerar os hashes de novo (ver app/README.md, "Dependencias").
+# Lock of the EXACT versions of the environment that produced and homologated the results (audit DEP-01), now WITH HASHES
+# (critical review, decision D5 of 06/10/2026). Python 3.14.3. Only version updated: urllib3 2.7.0 -> 2.8.0
+# (06/10/2026, authorized by the owner), which fixes PYSEC-2026-4175, -4176 and -4177 flagged by pip-audit.
+# requirements.txt pins only the direct dependencies; the transitive ones (urllib3, idna, charset-normalizer, certifi)
+# varied between installs. To install exactly this environment: pip install -r requirements-lock.txt
+# With hashes, pip requires EACH downloaded file to have one of the SHA-256 below (implicit --require-hashes).
+# Hashes only for the homologated environment: Python 3.14 on Windows (win_amd64) and Linux (manylinux x86_64), checked against
+# the ones published on PyPI and the downloaded files. Other Python versions use requirements-dev.txt (no hashes).
+# Updating a version = generating the hashes again (see app/README.md, "Dependencias").
 
-# execucao
+# runtime
 requests==2.34.2 \
     --hash=sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0
 urllib3==2.8.0 \
@@ -27,7 +27,7 @@ pymupdf==1.28.2 \
     --hash=sha256:397d6715c1f0df7548a92d0afd8ce370fc48fa47aeefac16be2bc04a16a8227f \
     --hash=sha256:ebd244918798502d7b4504c90410d1711a4d7675a32584ca30f1bab419ecbffe
 
-# testes
+# tests
 pytest==9.1.1 \
     --hash=sha256:37a86b45efb9a47a61a36449063e8e18d0cab3161329fc099eb21783169c4f0c
 pluggy==1.6.0 \

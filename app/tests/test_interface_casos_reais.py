@@ -1,9 +1,10 @@
-"""Casos de regressao da interface (secao 19 da especificacao da 04.5) sobre o ARMAZEM REAL do projeto.
+"""Interface regression cases (section 19 of the 04.5 specification) over the project's REAL store.
 
-Mesma montagem de test_casos_reais.py (fixture `real` do conftest: banco temporario montado so com leitura de
-snapshots/). Aqui os valores sao conferidos na PAGINA, no elemento <data value> (centavos exatos), para garantir que a
-interface mostra o que as etapas anteriores estabeleceram. Valores esperados: etapa02/RELATORIO_ETAPA02.md secao 4,
-etapa04/RELATORIO_04_3.md, etapa04/RELATORIO_04_4.md secoes 7-13 e etapa04/lotes/consistencia_rreo.md.
+Same setup as test_casos_reais.py (the conftest `real` fixture: a temporary database built by only reading
+data/snapshots/). Here the values are checked ON THE PAGE, in the <data value> element (exact cents), to make sure
+the interface shows what the earlier stages established. Expected values:
+docs/stages/02-accounting-validation/REPORT.md section 4, docs/stages/04-pipeline/REPORT_04_3.md,
+docs/stages/04-pipeline/REPORT_04_4.md sections 7-13 and docs/stages/04-pipeline/batches/consistencia_rreo.md.
 """
 import re
 
@@ -35,7 +36,7 @@ def test_11963_2016_detalhe(app):
     assert v["derivado-s1_saldo_total_c"] == 0
     canc = corpo[corpo.index("Cancelamento de processado"):]
     canc = canc[:canc.index("</tr>")]
-    assert "CANC v1 (não recomendada)" in canc and "valor analítico (não oficial)" in canc      # nunca oficial
+    assert "CANC v1 (não recomendada)" in canc and "valor analítico (não oficial)" in canc      # never official
 
 
 def test_2401751_2023_e_seu_par(app):
@@ -47,7 +48,7 @@ def test_2401751_2023_e_seu_par(app):
     assert "Lado com execução</dt><dd>B" in a and "não está determinada" in a
     snap_a = re.search(r"Snapshot</dt><dd><code>([0-9a-f]{32})", a).group(1)
     snap_b = re.search(r"Snapshot</dt><dd><code>([0-9a-f]{32})", b).group(1)
-    assert snap_a != snap_b                                   # dois registros brutos, separados
+    assert snap_a != snap_b                                   # two raw records, kept apart
 
 
 def test_entidade_5_empenho_1485_2025(app):
@@ -79,7 +80,7 @@ def test_pares_de_2026(app):
     assert "não é consolidação" in corpo and "CONS-PAR" in corpo and "não são exibidas" in corpo
     origem = corpo[corpo.index("Origem do dado (snapshots usados)"):]
     origem = origem[:origem.index("</details>")]
-    assert len(re.findall(r"<code>[0-9a-f]{32}</code>", origem)) == 2      # snapshots das entidades 1 e 15
+    assert len(re.findall(r"<code>[0-9a-f]{32}</code>", origem)) == 2      # snapshots of entities 1 and 15
 
 
 def test_divergencias_h_i_de_2026(app):
@@ -98,7 +99,7 @@ def test_674_426_01(app):
     assert v["coe-entidade-2024"] == 67442601 and v["coe-consolidado-2024"] == 66976165
     assert v["coe-entidade-2025"] == v["coe-consolidado-2025"] == 92570262
     linha = re.search(r'id="coe-entidade-2024".*?</tr>', corpo, re.S).group(0)
-    assert "parcialmente explicada" in linha and "R$ 18.531.766,29" in linha      # API hoje = abertura publicada depois
+    assert "parcialmente explicada" in linha and "R$ 18.531.766,29" in linha      # API today = opening published later
     assert "PDFs do RREO" in linha and len(re.findall(r"<code>[0-9a-f]{32}</code>", linha)) >= 3   # 2 PDFs + API
 
 
@@ -113,7 +114,7 @@ def test_resumo_do_municipio_com_entidade_fora_do_catalogo(app, real):
 
 
 def test_indicadores_da_interface_iguais_aos_da_camada_painel(app, real):
-    """A interface nao recalcula nada: cada cartao mostra exatamente o valor da camada painel."""
+    """The interface recomputes nothing: each card shows exactly the panel layer's value."""
     mostrados = [i for _, ids in paginas.GRUPOS for i in ids]
     for ex, df, ent in ((2024, "2024-12-31", None), (2025, "2025-06-30", 1), (2026, "2026-08-31", None)):
         v = dados(ok(app, "/", exercicio=ex, data_final=df, entidade=ent))
@@ -123,7 +124,7 @@ def test_indicadores_da_interface_iguais_aos_da_camada_painel(app, real):
 
 
 def test_desempenho_das_telas_no_banco_completo(app):
-    """Nenhuma tela carrega o banco inteiro: todas respondem em poucos segundos mesmo no banco completo."""
+    """No screen loads the whole database: all of them answer in a few seconds even on the full database."""
     import time
     for caminho, params in (("/", {}), ("/entidades", dict(exercicio=2025, data_final="2025-12-31")),
                             ("/empenhos", dict(exercicio=2025, data_final="2025-12-31")),

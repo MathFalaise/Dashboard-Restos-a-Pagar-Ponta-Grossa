@@ -1,5 +1,5 @@
-"""Decisoes do responsavel sobre as pendencias da revisao critica (06/10/2026): D1, D2, D4, D5, D6 e D7.
-SINTETICO = banco temporario com registros inventados (fixture `mundo`) ou arquivos inventados em tmp_path."""
+"""The owner's decisions on the critical review's pending items (06/10/2026): D1, D2, D4, D5, D6 and D7.
+SINTETICO = temporary database with invented records (fixture `mundo`) or invented files in tmp_path."""
 import gzip
 import os
 import shutil
@@ -21,10 +21,10 @@ def _cfg(tmp_path):
     return carregar(dados_locais=tmp_path / "l", snapshots=tmp_path / "s", backups=tmp_path / "b")
 
 
-# ------------------------------------------------------------------ D6: retencao sem apagar
+# ------------------------------------------------------------------ D6: retention without deleting
 def test_D6_comprimir_backup_devolve_os_mesmos_bytes_e_nao_sobrescreve(tmp_path):
     arq = tmp_path / "x.sqlite"
-    conteudo = os.urandom(3 << 20) + b"fim"            # SINTETICO, maior que um bloco de leitura
+    conteudo = os.urandom(3 << 20) + b"fim"            # SINTETICO, larger than a read block
     arq.write_bytes(conteudo)
     gz = banco.comprimir_backup(arq)
     assert gz.name == "x.sqlite.gz" and not arq.exists()
@@ -32,8 +32,8 @@ def test_D6_comprimir_backup_devolve_os_mesmos_bytes_e_nao_sobrescreve(tmp_path)
     arq.write_bytes(b"outro")
     with pytest.raises(FileExistsError):
         banco.comprimir_backup(arq)
-    assert arq.read_bytes() == b"outro" and gzip.decompress(gz.read_bytes()) == conteudo   # nada foi tocado
-    assert sorted(p.name for p in tmp_path.iterdir()) == ["x.sqlite", "x.sqlite.gz"]       # nem temporario
+    assert arq.read_bytes() == b"outro" and gzip.decompress(gz.read_bytes()) == conteudo   # nothing was touched
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["x.sqlite", "x.sqlite.gz"]       # no temporary file either
 
 
 def test_D6_retencao_comprime_o_backup_antigo_em_vez_de_apagar(tmp_path):
@@ -42,7 +42,7 @@ def test_D6_retencao_comprime_o_backup_antigo_em_vez_de_apagar(tmp_path):
     feitos = []
     for i in range(5):
         feitos.append(banco.backup(con, cfg, f"antes-apagar-{i}", operacional=True))
-        time.sleep(1.05)                                # carimbo por segundo
+        time.sleep(1.05)                                # per-second timestamp
     pasta = cfg.backups_operacionais
     assert sorted(p.name for p in pasta.glob("*.sqlite")) == [p.name for p in feitos[2:]]
     gz = sorted(pasta.glob("*.sqlite.gz"))
@@ -62,13 +62,13 @@ def test_D6_comprimir_backups_lista_antes_e_mantem_os_recentes(tmp_path):
     nomes = [f"2026093{i}-000000_antes-apagar-{i}.sqlite" for i in range(6)]
     for n in nomes:
         (pasta / n).write_bytes(b"SQLite format 3\x00" + n.encode() * 1000)   # SINTETICO
-    (pasta / "PRESERVAR.txt").write_text(nomes[5] + "\n", encoding="utf-8")   # o mais novo, mas preservado
+    (pasta / "PRESERVAR.txt").write_text(nomes[5] + "\n", encoding="utf-8")   # the newest, but preserved
     simulado = banco.comprimir_backups_operacionais(cfg, manter=3, simular=True)
     assert [x["arquivo"] for x in simulado] == [nomes[0], nomes[1], nomes[5]]
-    assert sorted(p.name for p in pasta.glob("*.sqlite")) == sorted(nomes)       # simular nao toca em nada
+    assert sorted(p.name for p in pasta.glob("*.sqlite")) == sorted(nomes)       # simulating touches nothing
     feito = banco.comprimir_backups_operacionais(cfg, manter=3, simular=False)
     assert [x["arquivo"] for x in feito] == [nomes[0] + ".gz", nomes[1] + ".gz", nomes[5] + ".gz"]
-    assert sorted(p.name for p in pasta.glob("*.sqlite")) == nomes[2:5]          # os 3 recentes da retencao
+    assert sorted(p.name for p in pasta.glob("*.sqlite")) == nomes[2:5]          # the 3 most recent of the retention
     assert all(x["bytes_depois"] < x["bytes_antes"] for x in feito)
     assert gzip.decompress((pasta / (nomes[5] + ".gz")).read_bytes()) == b"SQLite format 3\x00" + nomes[5].encode() * 1000
 
@@ -78,7 +78,7 @@ def test_D6_logs_de_mais_de_90_dias_saem_e_o_resto_fica(tmp_path):
               "rp-sem-data.log"):
         (tmp_path / n).write_text("x", encoding="utf-8")
     removidos = cli.podar_logs(tmp_path, date(2026, 10, 6))
-    assert removidos == ["rp-2026-01-01.log", "rp-2026-07-07.log"]                 # 91 e 278 dias
+    assert removidos == ["rp-2026-01-01.log", "rp-2026-07-07.log"]                 # 91 and 278 days
     assert sorted(p.name for p in tmp_path.iterdir()) == ["outro.log", "rp-2026-07-08.log", "rp-2026-10-06.log",
                                                          "rp-sem-data.log"]
 
@@ -92,18 +92,18 @@ def test_D6_espaco_por_pasta(tmp_path):
     assert e["banco"] == cfg.banco.stat().st_size and e["backups"] > 0 and e["armazem"] == 0
 
 
-# ------------------------------------------------------------------ D2: bruto novo fora do Git
+# ------------------------------------------------------------------ D2: new raw data outside Git
 @pytest.mark.skipif(shutil.which("git") is None or not (RAIZ_PROJETO / ".git").exists(), reason="sem git/repositorio")
 def test_D2_snapshot_novo_e_ignorado_e_os_versionados_continuam_no_git():
     def git(*a):
         return subprocess.run(["git", *a], cwd=RAIZ_PROJETO, capture_output=True, text=True, encoding="utf-8")
-    assert git("check-ignore", "-q", "--no-index", "snapshots/coletas/2099/01/novo.json").returncode == 0
-    assert git("check-ignore", "-q", "--no-index", "snapshots/objetos/ab/" + "a" * 64 + ".zlib").returncode == 0
-    versionados = git("ls-files", "snapshots/coletas").stdout.split()
-    assert len(versionados) >= 466        # a base homologada continua versionada
+    assert git("check-ignore", "-q", "--no-index", "data/snapshots/coletas/2099/01/novo.json").returncode == 0
+    assert git("check-ignore", "-q", "--no-index", "data/snapshots/objetos/ab/" + "a" * 64 + ".zlib").returncode == 0
+    versionados = git("ls-files", "data/snapshots/coletas").stdout.split()
+    assert len(versionados) >= 466        # the homologated base is still versioned
 
 
-# ------------------------------------------------------------------ D1: bloquear e dizer como recoletar
+# ------------------------------------------------------------------ D1: block and say how to re-collect
 def test_D1_portao_da_chave_repetida_diz_o_comando_de_recoleta_e_nao_recoleta_sozinho(mundo):
     from test_revisao_duplicidade import R1, R2, T1, T2, _cenario, _portao
     snaps, _, _ = _cenario(mundo, [(T1, [R1, R2]), (T2, [R1, R2, R2])])
@@ -113,13 +113,13 @@ def test_D1_portao_da_chave_repetida_diz_o_comando_de_recoleta_e_nao_recoleta_so
     uid = snaps[1]["snapshot_uid"]
     assert p["detalhe"]["recoletar"] == [f"python -m rp recoletar --snapshot {uid}"]
     assert "MAIS TARDE" in p["detalhe"]["nota"] and "segunda leitura" in p["detalhe"]["nota"]
-    assert mundo.con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0] == coletas    # nada foi coletado sozinho
+    assert mundo.con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0] == coletas    # nothing was collected on its own
 
 
-# ------------------------------------------------------------------ D5: trava com hashes
+# ------------------------------------------------------------------ D5: lock file with hashes
 def _trava():
     import re
-    texto = (APP / "requirements-lock.txt").read_text(encoding="utf-8").replace("\\" + "\n", " ")   # continuacao
+    texto = (APP / "requirements-lock.txt").read_text(encoding="utf-8").replace("\\" + "\n", " ")   # continuation
     pacotes = {}
     for linha in texto.splitlines():
         linha = linha.split("#", 1)[0].strip()
@@ -141,7 +141,7 @@ def test_D5_todo_pacote_da_trava_tem_hash_e_as_versoes_batem_com_os_requirements
                 assert trava[nome.lower()][0] == versao, (arq, nome)
 
 
-# ------------------------------------------------------------------ D4: integridade relacional por gatilhos (v5)
+# ------------------------------------------------------------------ D4: relational integrity through triggers (v5)
 def _processado(mundo):
     from conftest import registro_sintetico as _reg
     mundo.catalogos({1: [2025]})
@@ -183,7 +183,7 @@ def test_D4_linha_orfa_e_recusada_na_gravacao(mundo, sql, mensagem):
 def test_D4_mudar_valor_continua_permitido_e_o_portao_e_quem_acusa(mundo):
     from rp import portoes
     _, did = _processado(mundo)
-    with mundo.con:          # UPDATE de valor nao passa pelos gatilhos de ligacao: e o hash recalculado que acusa
+    with mundo.con:          # an UPDATE of a value does not go through the link triggers: the recomputed hash is what flags it
         mundo.con.execute("UPDATE visao_valor SET valor_c = valor_c + 1 WHERE derivacao_id=? AND componente='S1'", (did,))
     r = portoes.avaliar(mundo.cfg.banco, mundo.armazem)
     p = next(x for x in r["portoes"] if x["id"] == "hash_resultado_confere")
@@ -192,7 +192,7 @@ def test_D4_mudar_valor_continua_permitido_e_o_portao_e_quem_acusa(mundo):
 
 def test_D4_banco_v4_migra_para_v5_com_backup_e_sem_mudar_linha(tmp_path, monkeypatch):
     cfg = _cfg(tmp_path)
-    monkeypatch.setattr(banco, "VERSAO_ESQUEMA", 4)        # um banco v4 de verdade, como o ativo antes da v5
+    monkeypatch.setattr(banco, "VERSAO_ESQUEMA", 4)        # a real v4 database, like the active one before v5
     con = banco.abrir(cfg)
     assert banco.versao_esquema(con) == 4 and banco.impressao_esquema(con) == banco.IMPRESSAO_ESQUEMA[4]
     tabelas = [t for (t,) in con.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")]
@@ -200,18 +200,18 @@ def test_D4_banco_v4_migra_para_v5_com_backup_e_sem_mudar_linha(tmp_path, monkey
     situacoes = con.execute("SELECT * FROM regra_situacao ORDER BY id").fetchall()
     con.close()
     monkeypatch.undo()
-    novo = banco.abrir(cfg)                                # migra para a v5, com backup antes
+    novo = banco.abrir(cfg)                                # migrates to v5, with a backup first
     assert banco.versao_esquema(novo) == 5 and banco.impressao_esquema(novo) == banco.IMPRESSAO_ESQUEMA[5]
     depois = {t: novo.execute(f"SELECT * FROM {t} ORDER BY 1").fetchall() for t in antes}
     assert {t: v for t, v in depois.items() if t != "esquema_versao"} == {t: v for t, v in antes.items()
                                                                           if t != "esquema_versao"}
-    assert [r[:-2] for r in novo.execute("SELECT * FROM regra_situacao ORDER BY id")] == situacoes   # + 2 colunas vazias
+    assert [r[:-2] for r in novo.execute("SELECT * FROM regra_situacao ORDER BY id")] == situacoes   # + 2 empty columns
     (backup,) = novo.execute("SELECT backup_antes FROM esquema_versao WHERE versao = 5").fetchone()
     assert "antes-migracao-v4-v5" in backup
     novo.close()
 
 
-# ------------------------------------------------------------------ D7: promocao em dois trilhos
+# ------------------------------------------------------------------ D7: promotion on two tracks
 TESTE_OK = "tests/test_decisoes_revisao.py::test_D6_espaco_por_pasta"
 
 
@@ -231,7 +231,7 @@ def test_D7_promocao_exige_teste_de_regressao_existente(mundo):
             _decidir(mundo.con, teste_regressao=teste)
     with pytest.raises(DecisaoInvalida, match="fonte"):
         _decidir(mundo.con, teste_regressao=TESTE_OK, fonte=" ")
-    assert _decidir(mundo.con, teste_regressao=TESTE_OK)            # trilho 1: nao compoe indicador
+    assert _decidir(mundo.con, teste_regressao=TESTE_OK)            # track 1: does not make up an indicator
 
 
 def test_D7_regra_do_indicador_exige_conferencia_ou_ressalva_que_aparece_na_metodologia(mundo):

@@ -1,24 +1,24 @@
-"""Camada de consulta do dashboard: SOMENTE LEITURA sobre o banco do projeto.
+"""Dashboard query layer: READ-ONLY over the project database.
 
-Fluxo:  API Elotech -> coleta -> snapshot imutavel -> normalizacao -> derivacao -> ESTA CAMADA -> dashboard.
-  * Nao chama a API: le o banco aberto em modo read-only (URI mode=ro + PRAGMA query_only). A coleta continua
-    sendo do coletor; nenhuma tela depende do portal estar no ar.
-  * Indicador principal = registros da API Elotech (somas de campos e formulas S1-S3). O RREO so aparece na
-    reconciliacao, lado a lado; uma divergencia nunca altera o valor da API.
-  * Todo valor sai com: natureza (da_fonte, publicado, derivado, analitico, diferenca), regras usadas com a
-    situacao de governanca, fonte declarada, rotulo de retrato e proveniencia (derivacao -> normalizacao ->
-    snapshot -> resposta HTTP -> objeto bruto -> endpoint).
-  * Regra que nao esteja 'operacional' com compoe_indicador_publicado = 1 nunca entra num indicador publicado
-    (RegraNaoOperacional). Valor calculado por regra nao operacional sai como 'analitico'.
-  * Um exercicio historico e o estado da base na data da coleta, nao o que era conhecido naquele ano.
-  * Entidade fora do catalogo oficial do exercicio NAO e entidade com RP zero: aparece como nao aplicavel e nao
-    entra no total do Municipio.
-  * So entram snapshots que a normalizacao em uso processou: snapshot novo, ainda nao processado, vira aviso
-    (nunca um corte com valor zero).
-  * Retrato com a mesma chave de empenho mais de uma vez (anomalia CHAVE-DUP) nunca e o vigente, como na derivacao:
-    nenhuma copia e somada duas vezes nem escolhida. Vale o retrato valido anterior do corte, com aviso; sem ele, o
-    dado fica 'ambiguo' (indisponivel). Revisao critica, itens 1, 13 e 14.
-  * Nivel 'publico' (padrao) nunca devolve identificacao de credor em listas nem agregados (ver publico.py).
+Flow:  Elotech API -> collection -> immutable snapshot -> normalization -> derivation -> THIS LAYER -> dashboard.
+  * It does not call the API: it reads the database opened read-only (URI mode=ro + PRAGMA query_only). Collecting
+    is still the collector's job; no screen depends on the portal being up.
+  * Main indicator = records from the Elotech API (sums of fields and the S1-S3 formulas). The RREO only appears in
+    the reconciliation, side by side; a divergence never changes the API value.
+  * Every value comes out with: nature (da_fonte, publicado, derivado, analitico, diferenca), rules used with their
+    governance situation, declared source, snapshot label and provenance (derivation -> normalization -> snapshot ->
+    HTTP response -> raw object -> endpoint).
+  * A rule that is not 'operacional' with compoe_indicador_publicado = 1 never enters a published indicator
+    (RegraNaoOperacional). A value computed by a non-operational rule comes out as 'analitico'.
+  * A historical fiscal year is the state of the base on the collection date, not what was known in that year.
+  * An entity outside the year's official catalog is NOT an entity with zero RP: it shows as not applicable and does
+    not enter the Municipality total.
+  * Only snapshots processed by the normalization in use come in: a new, not yet processed snapshot becomes a
+    warning (never a cut-off with a zero value).
+  * A snapshot with the same commitment key more than once (CHAVE-DUP anomaly) is never the current one, as in the
+    derivation: no copy is summed twice nor picked. The previous valid snapshot of the cut-off applies, with a
+    warning; without one, the data is 'ambiguo' (unavailable). Critical review, items 1, 13 and 14.
+  * The 'publico' level (default) never returns creditor identification in lists or aggregates (see publico.py).
 """
 import json
 import re
@@ -31,15 +31,15 @@ from ..comparador import comparar as _comparar
 from . import explicacoes, fontes, publico
 
 VERSAO = "rp-painel/1"
-ESQUEMA_MINIMO = 4          # regra_situacao, regra_parametro e rreo_extracao existem a partir da v4
+ESQUEMA_MINIMO = 4          # regra_situacao, regra_parametro and rreo_extracao exist from v4 on
 NIVEIS = ("publico", "interno")
 MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro",
          "novembro", "dezembro"]
 LIMITE_LISTA = 500
 CATEGORIAS = ("processado", "nao_processado", "ambos", "sem_saldo_abertura")
-ORDEM_COLUNAS = "abcdefghijkL"          # ordem das colunas no Anexo VII do RREO
-# Situacao do dado de uma entidade num corte. So 'com_dados' e 'sem_rp' tem valor; 'sem_rp' e o unico zero de
-# verdade (a entidade existia e a API devolveu zero registros). Os demais nunca viram R$ 0,00.
+ORDEM_COLUNAS = "abcdefghijkL"          # order of the columns in the RREO Annex VII
+# Data situation of an entity at a cut-off. Only 'com_dados' and 'sem_rp' have a value; 'sem_rp' is the only true
+# zero (the entity existed and the API returned zero records). The others never become R$ 0,00.
 SITUACOES_DO_DADO = {
     "com_dados": "dado existente",
     "sem_rp": "entidade existente, sem RP neste corte (zero registros na API)",
@@ -51,8 +51,8 @@ SITUACOES_DO_DADO = {
                "nenhuma ocorrência é escolhida",
     "divergente": "dado com diferença em relação ao RREO (a diferença é mostrada; o valor da API não muda)",
 }
-# Situacao de um PONTO de serie (etapa05/CONTRATO_ANALITICO.md secao 2): estende a taxonomia acima, sem outra
-# paralela. 'municipio_indisponivel' entra na 05.2; 'exercicio_sem_cobertura' entra na 05.3.
+# Situation of a series POINT (docs/stages/05-analysis/ANALYTICAL_CONTRACT.md section 2): extends the taxonomy
+# above, without a parallel one. 'municipio_indisponivel' comes in 05.2; 'exercicio_sem_cobertura' comes in 05.3.
 SITUACOES_DO_PONTO = {
     **{k: v for k, v in SITUACOES_DO_DADO.items() if k != "divergente"},
     "municipio_indisponivel": "Município indisponível: alguma entidade do catálogo do exercício sem snapshot processado "
@@ -60,13 +60,13 @@ SITUACOES_DO_PONTO = {
     "exercicio_sem_cobertura": "exercício sem cobertura: nenhuma coleta deste exercício no banco",
 }
 TEM_VALOR = ("com_dados", "sem_rp")
-# Indicadores da serie no exercicio (contrato M-01 e M-02)
+# Indicators of the series within the fiscal year (contract M-01 and M-02)
 INDICADORES_DA_SERIE = ("inscricao_total", "pagamentos", "liquidacoes", "cancelamentos", "saldo_total")
 ROTULO_POSTERIOR_A_COLETA = "corte posterior à coleta: valores até a data da coleta"
 ROTULO_EXERCICIO_EM_ABERTO = "exercício em aberto: último corte com o Município disponível"
 INDICADORES_ENTRE_EXERCICIOS = ("inscricao_total", "pagamentos", "cancelamentos", "saldo_total")
-CONTINUIDADE = "continuidade fechamento→abertura"          # descricao gravada pela derivacao (ANOM-CONT v1)
-# Composicao do corte (Subetapa 05.4; contrato M-05 a M-08): cada dimensao fecha SOZINHA com o total do corte.
+CONTINUIDADE = "continuidade fechamento→abertura"          # description recorded by the derivation (ANOM-CONT v1)
+# Cut-off composition (sub-stage 05.4; contract M-05 to M-08): each dimension adds up ON ITS OWN to the cut-off total.
 ROTULO_CATEGORIA = {"processado": "processado", "nao_processado": "não processado",
                     "ambos": "processado e não processado", "sem_saldo_abertura": "sem saldo de abertura"}
 FAIXAS = ("a", "b", "f", "g")
@@ -78,15 +78,15 @@ ROTULO_COMPOSICAO = {"categoria": "Categoria (CAT v1)", "faixa": "Faixa (FAIXA v
 MEDIDAS_DA_COMPOSICAO = ("registros", "inscricao_total_c", "saldo_total_c")
 TEXTO_FAIXA = "composição dos registros da API segundo a regra FAIXA v1"
 SEM_CLASSIFICACAO = "sem classificação (campo ausente no registro da API)"
-# Investigacao de variacoes (Subetapa 05.5; contrato M-09 a M-12); as metricas ficam em METRICAS_DA_VARIACAO.
+# Investigation of variations (sub-stage 05.5; contract M-09 to M-12); the metrics live in METRICAS_DA_VARIACAO.
 CLASSES_DA_CHAVE = {"nos_dois": "nos dois cortes", "so_posterior": "presente só no corte posterior",
                     "so_anterior": "ausente no corte posterior"}
 TOP_DA_VARIACAO = 10
 CAMPOS_DO_HISTORICO = ("proc_c", "aproc_c", "pago_proc_c", "pago_aproc_c", "liquidado_c", "cancelado_aproc_c",
                        "s1_saldo_total_c")
-# Qualidade dos dados (Subetapa 05.6; contrato secao 6): estruturas gravadas pela derivacao, so lidas (regime
-# "derivacao"). O significado de "falhas" depende da verificacao (R5): catalogo por descricao literal e regra;
-# descricao fora do catalogo sai com os numeros brutos e "significado nao catalogado", nunca por analogia.
+# Data quality (sub-stage 05.6; contract section 6): structures recorded by the derivation, only read ("derivacao"
+# regime). The meaning of "falhas" depends on the check (R5): catalog by literal description and rule; a description
+# outside the catalog comes out with the raw numbers and "significado nao catalogado", never by analogy.
 SITUACOES_DAS_DIFERENCAS = ("sem diferença",) + explicacoes.SITUACOES
 NAO_CATALOGADA = "significado não catalogado"
 INTERPRETACOES_DE_VERIFICACAO = {
@@ -114,18 +114,18 @@ INTERPRETACOES_DE_VERIFICACAO = {
 
 
 def diferenca(anterior, posterior):
-    """Unica regra de diferenca da Etapa 05 (contrato secao 1.5): posterior - anterior, em centavos inteiros. Ausencia
-    em qualquer lado devolve None: diferenca nunca e calculada contra zero implicito."""
+    """The single difference rule of stage 05 (contract section 1.5): later - earlier, in integer cents. Absence on
+    either side returns None: a difference is never computed against an implicit zero."""
     if anterior is None or posterior is None:
         return None
     return posterior - anterior
 
-# Expressao unica do cancelamento de um registro: usada no indicador, no agrupamento e na coluna da lista (a
-# interface nao soma campos por conta propria).
+# Single expression for a record's cancellation: used in the indicator, the grouping and the list column (the
+# interface does not sum fields on its own).
 EXPR_CANCELAMENTOS = "r.cancelado_aproc_c + r.cancelado_proc_c"
-# Expressao unica dos pagamentos de um registro (indicador, agrupamento e variacao da 05.5; contrato M-09 e M-11).
+# Single expression for a record's payments (indicator, grouping and the 05.5 variation; contract M-09 and M-11).
 EXPR_PAGAMENTOS = "r.pago_proc_c + r.pago_aproc_c"
-# Metricas da investigacao de variacoes (05.5; contrato M-10 e M-11): so estas duas.
+# Metrics of the variation investigation (05.5; contract M-10 and M-11): only these two.
 METRICAS_DA_VARIACAO = {
     "s1": {"rotulo": "Saldo de RP (S1)", "sql": "d.s1_saldo_total_c", "indicador": "saldo_total",
            "formula": "S1 v1 = proc + aproc − pagoProc − pagoAProc − canceladoAProc", "natureza_do_operando": "derivado",
@@ -135,8 +135,8 @@ METRICAS_DA_VARIACAO = {
                    "regras": set()},
 }
 
-# Indicadores do corte: todos calculados sobre os registros da API (rp_registro) e os derivados por registro
-# (rp_derivado). `rreo` = colunas do RREO com que o indicador e comparado na reconciliacao (nunca substituido).
+# Cut-off indicators: all computed over the API records (rp_registro) and the per-record derived values
+# (rp_derivado). `rreo` = RREO columns the indicator is compared with in the reconciliation (never replaced).
 SOMAS = [
     dict(id="registros", rotulo="Registros de RP no corte", sql="COUNT(*)", colunas=[], regras=[],
          formula="número de registros devolvidos pela API"),
@@ -173,7 +173,7 @@ SOMAS = [
          colunas=["proc_c", "pago_proc_c", "liquidado_c", "pago_aproc_c"], regras=[("S3", 1)],
          formula="soma de S3 = proc − pagoProc + liquidado − pagoAProc"),
 ]
-# regras de que os indicadores e os agrupamentos dependem (S1-S3 nos saldos, CAT no agrupamento por categoria)
+# rules the indicators and groupings depend on (S1-S3 in the balances, CAT in the grouping by category)
 REGRAS_DO_INDICADOR = {("S1", 1), ("S2", 1), ("S3", 1), ("CAT", 1)}
 
 DIMENSOES = {
@@ -213,8 +213,9 @@ class EsquemaAntigo(ErroDoPainel):
 
 
 def fechamento(total, componentes):
-    """Contrato secao 4.2: diferenca = soma dos componentes - total; fecha so com diferenca 0. Sem tolerancia e sem
-    componente de ajuste; valor que nao seja inteiro (inclusive bool e float) e erro, nunca convertido."""
+    """Contract section 4.2: difference = sum of the components - total; it closes only with a 0 difference. No
+    tolerance and no adjustment component; a value that is not an integer (bool and float included) is an error,
+    never converted."""
     for v in (total, *componentes):
         if isinstance(v, bool) or not isinstance(v, int):
             raise ErroDoPainel(f"fechamento exige inteiros: {v!r}")
@@ -224,19 +225,19 @@ def fechamento(total, componentes):
 
 
 def _data_br(iso):
-    """'2026-09-30T01:31:08-03:00' ou '2026-09-30' -> '30/09/2026'."""
+    """'2026-09-30T01:31:08-03:00' or '2026-09-30' -> '30/09/2026'."""
     return f"{iso[8:10]}/{iso[5:7]}/{iso[:4]}" if iso else None
 
 
 def _instante_br(iso):
-    """Data (fim do dia) ou data e hora, no formato brasileiro."""
+    """Date (end of day) or date and time, in the Brazilian format."""
     if not iso:
         return None
     return _data_br(iso) if len(iso) == 10 or iso[11:19] == "23:59:59" else f"{_data_br(iso)} {iso[11:16]}"
 
 
 def instante(em):
-    """rp.instante (o mesmo da derivacao e do CLI), com o erro da camada painel."""
+    """rp.instante (the same as the derivation's and the CLI's), with the panel layer's error."""
     try:
         return _instante(em)
     except DataInvalida as e:
@@ -248,18 +249,18 @@ def _in(n):
 
 
 class Painel:
-    """Consultas de leitura para o dashboard. Use Painel.abrir(caminho_do_banco) (conexao so de leitura)."""
+    """Read queries for the dashboard. Use Painel.abrir(database_path) (read-only connection)."""
 
     def __init__(self, con, nivel="publico"):
         if nivel not in NIVEIS:
             raise NivelInvalido(f"nivel precisa ser um de {NIVEIS}: {nivel!r}")
         self.con, self.nivel = con, nivel
-        # tipo de credor calculado no SQL pela mesma funcao da camada publica (registrar funcao nao escreve no banco)
+        # creditor type computed in SQL by the same function as the public layer (registering a function does not write to the database)
         con.create_function("tipo_credor", 1, publico.tipo_credor, deterministic=True)
 
     @classmethod
     def abrir(cls, caminho, nivel="publico"):
-        """Conexao SOMENTE LEITURA ao banco (o painel nunca escreve). Exige esquema v4 ou mais novo."""
+        """READ-ONLY connection to the database (the panel never writes). Requires schema v4 or newer."""
         p = Path(caminho).expanduser()
         if not p.is_file():
             raise FileNotFoundError(f"banco nao encontrado: {p}")
@@ -287,13 +288,13 @@ class Painel:
     def __exit__(self, *_):
         self.fechar()
 
-    # ------------------------------------------------------------------ contexto
+    # ------------------------------------------------------------------ context
     def contexto(self):
-        """Derivacao atual mais recente, a normalizacao sobre a qual ela foi feita e o maior id de coleta que essa
-        normalizacao leu (normalizacao_execucao.ultima_coleta_id). Os ids de coleta so crescem (a camada 0 nao
-        apaga), entao toda coleta com id ate esse limite ja estava no banco quando a normalizacao rodou.
-        Normalizacao anterior ao esquema v4 (sem o registro): limite = maior coleta com linha na camada 1, o que
-        e conservador (snapshot vazio mais novo que ela fica como nao processado, nunca como zero)."""
+        """Most recent current derivation, the normalization it was made on and the highest collection id that
+        normalization read (normalizacao_execucao.ultima_coleta_id). Collection ids only grow (layer 0 does not
+        delete), so every collection with an id up to that limit was already in the database when the normalization
+        ran. A normalization older than schema v4 (without the column): limit = highest collection with a row in
+        layer 1, which is conservative (a newer empty snapshot shows as not processed, never as zero)."""
         d = self.con.execute("SELECT id, normalizacao_id, derivador_versao, executada_em, hash_resultado FROM "
                              "derivacao_execucao WHERE vigencia_em IS NULL ORDER BY id DESC LIMIT 1").fetchone()
         if not d:
@@ -311,22 +312,22 @@ class Painel:
                 "painel": VERSAO}
 
     def _ambiguas(self, ctx):
-        """Coletas com chave repetida (CHAVE-DUP) na derivacao do contexto: nunca sao o retrato vigente. A derivacao
-        atual cobre todas as coletas completas, inclusive as anteriores a qualquer `em`."""
+        """Collections with a repeated key (CHAVE-DUP) in the context's derivation: never the current snapshot. The current
+        derivation covers all complete collections, including the ones before any `em`."""
         did = ctx["derivacao"]["id"]
         if getattr(self, "_ambiguas_de", None) != did:
             self._ambiguas_de, self._ambiguas_cache = did, vigencia.coletas_ambiguas(self.con, did)
         return self._ambiguas_cache
 
     def _vigentes(self, ctx, em):
-        """Snapshot vigente de cada corte de listagem: a regra unica de `vigencia.coletas_vigentes` (a mesma da
-        derivacao), restrita aos snapshots que a normalizacao do contexto processou."""
+        """Current snapshot of each listing cut-off: the single rule of `vigencia.coletas_vigentes` (the same as the
+        derivation's), restricted to the snapshots the context's normalization processed."""
         return vigencia.coletas_vigentes(self.con, em, excluir=self._ambiguas(ctx), limite_coleta=ctx["limite_coleta"])
 
     def _cortes_ambiguos(self, ctx, em):
-        """Cortes (entidade, exercicio, data_inicial, data_final) com retrato processado ate `em` que tem chave
-        repetida. Entram no universo de cortes (R1: corte sem dado aparece com a situacao, nunca omitido), mas o
-        retrato ambiguo nunca e somado."""
+        """Cut-offs (entidade, exercicio, data_inicial, data_final) with a snapshot processed up to `em` that has a repeated
+        key. They enter the universe of cut-offs (R1: a cut-off without data appears with its situation, never
+        omitted), but the ambiguous snapshot is never summed."""
         amb = self._ambiguas(ctx)
         if not amb:
             return set()
@@ -337,8 +338,8 @@ class Painel:
             (*sorted(amb), ctx["limite_coleta"], *p))}
 
     def _retrato_recusado(self, ctx, e, exercicio, di, data_final, em, usado):
-        """Aviso quando o retrato mais novo do corte (processado, ate `em`) tem chave repetida e o painel usa o
-        anterior valido, ou None. So consulta o banco se houver coleta ambigua."""
+        """Warning when the cut-off's newest snapshot (processed, up to `em`) has a repeated key and the panel uses the
+        previous valid one, or None. Only queries the database if there is an ambiguous collection."""
         if not self._ambiguas(ctx):
             return None
         filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
@@ -357,10 +358,10 @@ class Painel:
         return self.con.execute("SELECT COUNT(*) FROM coleta WHERE tipo='rp_listagem' AND id > ?",
                                 (ctx["limite_coleta"],)).fetchone()[0]
 
-    # ------------------------------------------------------------------ catalogo historico de entidades
+    # ------------------------------------------------------------------ historical entity catalog
     def _catalogo(self, ctx, em):
-        """Catalogo de entidades e, por entidade, o catalogo de exercicios: os snapshots mais recentes ate `em`
-        (mesma escolha de derivar._entidades_do_catalogo), entre os processados."""
+        """Entity catalog and, per entity, the fiscal year catalog: the most recent snapshots up to `em` (same choice as
+        derivar._entidades_do_catalogo), among the processed ones."""
         nid, lim = ctx["normalizacao"]["id"], ctx["limite_coleta"]
         filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
         ents, snap_ent = {}, None
@@ -376,7 +377,7 @@ class Painel:
         for e, cid, uid, quando in self.con.execute(
                 "SELECT entidade, id, snapshot_uid, coletada_em FROM coleta WHERE tipo='exercicios' AND "
                 "status='completa' AND id <= ?" + filtro + " ORDER BY coletada_em, snapshot_uid", (lim, *p)):
-            exerc[e] = {"coleta_id": cid, "snapshot_uid": uid, "coletada_em": quando}   # fica o mais recente
+            exerc[e] = {"coleta_id": cid, "snapshot_uid": uid, "coletada_em": quando}   # the most recent one stays
         for info in exerc.values():
             info["exercicios"] = sorted(x for (x,) in self.con.execute(
                 "SELECT exercicio FROM exercicio_ref WHERE normalizacao_id=? AND coleta_id=?", (nid, info["coleta_id"])))
@@ -390,7 +391,7 @@ class Painel:
         return "no catálogo oficial" if exercicio in info["exercicios"] else "fora do catálogo oficial"
 
     def entidades(self, exercicio=None, em=None):
-        """Catalogo historico: para cada entidade, periodo oficial, periodo observado e situacao no exercicio."""
+        """Historical catalog: for each entity, official period, observed period and situation in the fiscal year."""
         ctx, em = self.contexto(), instante(em)
         cat = self._catalogo(ctx, em)
         observados = {}
@@ -415,11 +416,11 @@ class Painel:
                          "é conhecida. 'Fora do catálogo oficial' significa que a entidade não existia no exercício, "
                          "o que é diferente de ter RP zero: ela não entra no total do Município.")}
 
-    # ------------------------------------------------------------------ corte
+    # ------------------------------------------------------------------ cut-off
     def _estado_sem_snapshot(self, ctx, e, exercicio, di, data_final, em):
-        """Por que uma entidade nao tem snapshot processado no corte: nunca coletado, coletado e ainda nao
-        processado, ou so coletas incompletas/com falha. Olha todas as coletas do corte ate `em` (inclusive as
-        posteriores a normalizacao em uso)."""
+        """Why an entity has no processed snapshot at the cut-off: never collected, collected and not yet processed, or
+        only incomplete/failed collections. Looks at every collection of the cut-off up to `em` (including the ones
+        after the normalization in use)."""
         filtro_em, p_em = (" AND coletada_em <= ?", (em,)) if em else ("", ())
         linhas = self.con.execute(
             "SELECT id, status FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND entidade=? AND "
@@ -499,7 +500,7 @@ class Painel:
 
     @staticmethod
     def _retrato(exercicio, data_final, coletadas, em, snapshots=None):
-        """Rotulo obrigatorio de todo valor: retrato atual ou 'como a base estava em', com os snapshots usados."""
+        """Mandatory label of every value: current snapshot or 'as the base was on', with the snapshots used."""
         if not coletadas:
             return None
         ini, fim = min(coletadas), max(coletadas)
@@ -509,18 +510,18 @@ class Painel:
         texto = f"Como a base estava em {_instante_br(em)}: {base}" if em else f"Estado atual da base para o {base}"
         return {"tipo": "historico" if em else "atual", "texto": texto, "exercicio": exercicio, "data_final": data_final,
                 "coletado_de": ini, "coletado_ate": fim, "como_estava_em": em, "snapshots": snapshots or [],
-                "corte_posterior_a_coleta": data_final > ini[:10],   # ex.: corte 31/12 coletado em setembro
+                "corte_posterior_a_coleta": data_final > ini[:10],   # e.g. a 31/12 cut-off collected in September
                 "nota": fontes.METODOLOGIA["importante"]}
 
     def cortes(self, em=None):
-        """Cortes com snapshot processado: entidades cobertas e se o total do Municipio esta disponivel."""
+        """Cut-offs with a processed snapshot: covered entities and whether the Municipality total is available."""
         ctx, em = self.contexto(), instante(em)
         vig, cat = self._vigentes(ctx, em), self._catalogo(ctx, em)
         por_corte = {}
         for (e, ex, di, df) in vig:
             if di == f"{ex}-01-01":
                 por_corte.setdefault((ex, df), set()).add(e)
-        for (e, ex, di, df) in self._cortes_ambiguos(ctx, em):     # so retrato ambiguo: aparece, indisponivel
+        for (e, ex, di, df) in self._cortes_ambiguos(ctx, em):     # only an ambiguous snapshot: shown, unavailable
             if di == f"{ex}-01-01":
                 por_corte.setdefault((ex, df), set())
         saida = []
@@ -531,7 +532,7 @@ class Painel:
                           "fora_do_catalogo": c["fora_do_catalogo"]})
         return {"como_estava_em": em, "cortes": saida, "snapshots_nao_processados": self._pendentes(ctx)}
 
-    # ------------------------------------------------------------------ governanca e proveniencia
+    # ------------------------------------------------------------------ governance and provenance
     def _regras_publicaveis(self, usadas):
         atual = governanca.situacao_atual(self.con)
         saida = []
@@ -569,16 +570,17 @@ class Painel:
     def _uids(self, coletas):
         return [self.con.execute("SELECT snapshot_uid FROM coleta WHERE id=?", (c,)).fetchone()[0] for c in coletas]
 
-    # ------------------------------------------------------------------ indicadores
+    # ------------------------------------------------------------------ indicators
     def _de_coletas(self, coletas):
-        """Filtro dos registros de um conjunto de coletas pela chave primaria (resposta_id IN ...)."""
+        """Filter of the records of a set of collections by the primary key (resposta_id IN ...)."""
         ph = _in(len(coletas))
         return (f"r.resposta_id IN (SELECT id FROM resposta_bruta WHERE coleta_id IN ({ph})) AND r.coleta_id IN ({ph})",
                 (*coletas, *coletas))
 
     def _somas(self, ctx, coletas, filtro_extra="", params_extra=()):
-        """Somas de SOMAS sobre os registros das coletas (com filtro opcional). Sem filtro, confere que a derivacao
-        cobre todo registro do corte: se nao cobrir, nao ha total (erro, nunca um total menor)."""
+        """SOMAS sums over the collections' records (with an optional filter). Without a filter, checks that the
+        derivation covers every record of the cut-off: if it does not, there is no total (an error, never a smaller
+        total)."""
         filtro, p = self._de_coletas(coletas)
         linha = self.con.execute(
             f"SELECT {', '.join(s['sql'] for s in SOMAS)} FROM rp_registro r JOIN rp_derivado d ON d.derivacao_id=? "
@@ -589,7 +591,7 @@ class Painel:
             return valores
         n = self.con.execute(f"SELECT COUNT(*) FROM rp_registro r WHERE r.normalizacao_id=? AND {filtro}",
                              (ctx["normalizacao"]["id"], *p)).fetchone()[0]
-        if n != valores["registros"]:   # a derivacao cobre todo registro processado; se nao cobrir, nao ha total
+        if n != valores["registros"]:   # the derivation covers every processed record; if it does not, there is no total
             raise ErroDoPainel(f"derivacao {ctx['derivacao']['id']} sem os valores derivados de {n - valores['registros']} "
                                "registro(s) do corte: reprocesse ('python -m rp processar')")
         return valores
@@ -599,7 +601,7 @@ class Painel:
         return [{"coluna": c, "campo_api": fontes.CAMPOS[c][0], "rotulo": fontes.CAMPOS[c][1]} for c in colunas]
 
     def indicadores(self, exercicio, data_final, entidade=None, em=None):
-        """Indicadores do corte (uma entidade ou o Municipio) a partir dos registros da API Elotech."""
+        """Cut-off indicators (one entity or the Municipality) from the Elotech API records."""
         ctx, em = self.contexto(), instante(em)
         corte = self._corte(ctx, exercicio, data_final, entidade, em)
         regras_usadas = self._regras_publicaveis(REGRAS_DO_INDICADOR)
@@ -641,12 +643,13 @@ class Painel:
 
     @staticmethod
     def _conferencia_saldo(somas, rec, exercicio, data_final):
-        """Saldo S1 da API (indicador, regra operacional) ao lado da coluna L do RREO do mesmo corte: comparacao,
-        nunca substituicao. Nao usa RREO-COL: o saldo e o da formula S1 e o L e o impresso no PDF."""
+        """API S1 balance (indicator, operational rule) next to the RREO's L column of the same cut-off: a comparison,
+        never a replacement. It does not use RREO-COL: the balance is the S1 formula's and L is the one printed in
+        the PDF."""
         linhas = [x for x in rec.get("linhas", []) if x["coluna"] == "L"]
         if not linhas:
             return None
-        x = linhas[0]              # o L do RREO e o mesmo nas linhas de RREO-COL v1 e v2 (mesmo PDF)
+        x = linhas[0]              # the RREO's L is the same in the RREO-COL v1 and v2 rows (same PDF)
         dif = somas["saldo_total"] - x["rreo_c"]
         achadas, situacao = explicacoes.explicar(exercicio, data_final, x["escopo"], "L", None) if dif else ([], "sem diferença")
         return {"escopo": x["escopo"], "periodo": x["periodo"],
@@ -663,7 +666,7 @@ class Painel:
 
     @staticmethod
     def _situacao_do_ponto(r, entidade):
-        """Situacao de um ponto (contrato secao 2.2) a partir do resultado de `indicadores`."""
+        """Situation of a point (contract section 2.2) from the result of `indicadores`."""
         if entidade is not None:
             return r["entidades"][0]["situacao_do_dado"]["codigo"]
         if not r["disponivel"]:
@@ -672,12 +675,12 @@ class Painel:
         return "sem_rp" if all(e["situacao_do_dado"]["codigo"] == "sem_rp" for e in somadas) else "com_dados"
 
     def evolucao(self, exercicio, entidade=None, em=None):
-        """Serie dos cortes do exercicio (Subetapa 05.2; contrato M-01 e M-02).
-        * Universo: TODOS os cortes processados do exercicio, de qualquer entidade, para qualquer escopo. Corte sem
-          dado para o escopo aparece com a situacao (R1), nunca omitido e nunca com valor zero.
-        * Cada ponto: situacao, valores dos indicadores (None sem valor), retrato, rotulos (R4) e proveniencia.
-        * Diferenca para o ponto adjacente anterior: posterior - anterior, so quando os dois tem valor (nunca pula
-          lacuna); natureza 'diferenca', com a proveniencia dos dois lados."""
+        """Series of the fiscal year's cut-offs (sub-stage 05.2; contract M-01 and M-02).
+        * Universe: ALL processed cut-offs of the fiscal year, of any entity, for any scope. A cut-off without data
+          for the scope appears with its situation (R1), never omitted and never with a zero value.
+        * Each point: situation, indicator values (None without a value), snapshot, labels (R4) and provenance.
+        * Difference to the previous adjacent point: later - earlier, only when both have a value (it never skips a
+          gap); nature 'diferenca', with the provenance of both sides."""
         ctx, em = self.contexto(), instante(em)
         universo = self._universo_do_exercicio(ctx, self._vigentes(ctx, em), exercicio, em)
         serie, anterior = [], None
@@ -698,7 +701,7 @@ class Painel:
             anterior = ponto
         par = regras.parametros(self.con, "PAR-24", 1)
         envolve_pares = entidade is None or entidade in (par["entidade_copia"], par["entidade_original"])
-        pares = self.con.execute(          # copias 24xxxxx distintas com par em algum corte do exercicio
+        pares = self.con.execute(          # distinct 24xxxxx copies with a pair at some cut-off of the fiscal year
             "SELECT COUNT(DISTINCT anoempenho_a || '/' || empenho_a) FROM espelhamento_par WHERE derivacao_id=? AND "
             "exercicio=?", (ctx["derivacao"]["id"], exercicio)).fetchone()[0] if envolve_pares else 0
         return {"exercicio": exercicio, "entidade": entidade, "como_estava_em": em, "fonte": fontes.ELOTECH["rotulo"],
@@ -710,7 +713,7 @@ class Painel:
 
     @staticmethod
     def _diferenca_de_pontos(anterior, ponto):
-        """Diferenca entre pontos adjacentes (contrato secao 2.6): valores None quando algum lado nao tem valor."""
+        """Difference between adjacent points (contract section 2.6): None values when either side has no value."""
         motivo = None
         if not (anterior["tem_valor"] and ponto["tem_valor"]):
             lacuna = anterior if not anterior["tem_valor"] else ponto
@@ -724,7 +727,7 @@ class Painel:
                                  "posterior": ponto["valores"]["saldo_total"]["proveniencia"]}}
 
     def _sem_cobertura(self, exercicio, em):
-        """Contrato secao 2.1: nenhuma coleta de listagem do exercicio (de qualquer entidade e situacao) ate `em`."""
+        """Contract section 2.1: no listing collection for the fiscal year (of any entity and situation) up to `em`."""
         filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
         return not self.con.execute("SELECT 1 FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND "
                                     "exercicio=? AND data_inicial=?" + filtro + " LIMIT 1",
@@ -745,21 +748,21 @@ class Painel:
         return {**base, "motivo": "Município indisponível em todos os cortes do exercício"}
 
     def corte_representativo(self, exercicio, em=None):
-        """Corte que representa o exercicio na serie entre exercicios (contrato secao 2.5; R8): 31/12 se o Municipio
-        estiver disponivel nele; senao o ultimo corte com o Municipio disponivel ('exercicio em aberto'); senao nenhum
-        (lacuna para todos os escopos). O mesmo corte vale para todo escopo."""
+        """Cut-off that represents the fiscal year in the series across years (contract section 2.5; R8): 31/12 if the
+        Municipality is available there; otherwise the last cut-off with the Municipality available ('exercicio em
+        aberto'); otherwise none (a gap for every scope). The same cut-off applies to every scope."""
         ctx, em = self.contexto(), instante(em)
         return self._corte_representativo(ctx, self._vigentes(ctx, em), self._catalogo(ctx, em), exercicio, em)
 
     def serie_entre_exercicios(self, entidade=None, em=None):
-        """Serie por exercicio (Subetapa 05.3; contrato M-03 e M-04).
-        * Universo: todos os exercicios entre o primeiro e o ultimo com coleta de listagem; exercicio sem nenhuma
-          coleta aparece como 'exercicio_sem_cobertura'.
-        * Cada exercicio no corte representativo (R8), o mesmo para todos os escopos; valores None sem dado.
-        * Todo ponto com valor carrega o retrato 'Estado atual da base para o exercicio de A, corte ..., coletado em
-          ...': o passado e o estado atual da base, nao o que se sabia na epoca.
-        * Fechamento de A x abertura de A+1: (a)+(f)(A+1) - S1(A) pela FAIXA v1 (R2); no Municipio, so com as entidades
-          exclusivas de um lado sem registros (R7); com a verificacao de continuidade da derivacao (ANOM-CONT v1)."""
+        """Series by fiscal year (sub-stage 05.3; contract M-03 and M-04).
+        * Universe: every fiscal year between the first and the last with a listing collection; a year without any
+          collection appears as 'exercicio_sem_cobertura'.
+        * Each fiscal year at its representative cut-off (R8), the same for every scope; None values without data.
+        * Every point with a value carries the snapshot 'Estado atual da base para o exercicio de A, corte ...,
+          coletado em ...': the past is the current state of the base, not what was known at the time.
+        * Closing of A x opening of A+1: (a)+(f)(A+1) - S1(A) by FAIXA v1 (R2); in the Municipality, only with the
+          entities exclusive to one side having no records (R7); with the derivation's continuity check (ANOM-CONT v1)."""
         ctx, em = self.contexto(), instante(em)
         vig, cat = self._vigentes(ctx, em), self._catalogo(ctx, em)
         filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
@@ -783,7 +786,7 @@ class Painel:
 
     def _ponto_do_exercicio(self, ctx, vig, cat, ex, entidade, em):
         rep = self._corte_representativo(ctx, vig, cat, ex, em)
-        # mesmo formato da serie no exercicio (05.2): todo indicador presente, com valor_c None quando nao ha valor
+        # same format as the series within the fiscal year (05.2): every indicator present, with valor_c None when there is no value
         ponto = {"exercicio": ex, "data_final": rep["data_final"], "aberto": rep["aberto"], "retrato": None,
                  "rotulos": [], "entidades": [], "tem_valor": False,
                  "valores": {i["id"]: {"rotulo": i["rotulo"], "valor_c": None, "natureza": "derivado",
@@ -808,7 +811,7 @@ class Painel:
         return ponto
 
     def _fechamento_abertura(self, ctx, vig, cat, a, b, entidade, em):
-        """Contrato M-04: (a)+(f)(A+1) - S1(A), cada um no corte representativo; R7 no Municipio."""
+        """Contract M-04: (a)+(f)(A+1) - S1(A), each at its representative cut-off; R7 in the Municipality."""
         item = {"de": a["exercicio"], "para": b["exercicio"], "natureza": "diferenca",
                 "sinal": "(a)+(f) da abertura de A+1 − S1 do fechamento de A", "regras": ["S1 v1", "FAIXA v1"],
                 "s1_de_c": None, "a_mais_f_para_c": None, "diferenca_c": None, "motivo_indisponivel": None,
@@ -839,8 +842,8 @@ class Painel:
         return item
 
     def _continuidade(self, ctx, de, entidade, entidades):
-        """Verificacao ANOM-CONT v1 gravada pela derivacao (regime 'derivacao'): uma linha por entidade e par de
-        exercicios; aqui so se le e se soma no Municipio."""
+        """ANOM-CONT v1 check recorded by the derivation ("derivacao" regime): one row per entity and pair of fiscal years;
+        here it is only read and summed for the Municipality."""
         linhas = []
         for escopo_json, verificados, falhas in self.con.execute(
                 "SELECT escopo_json, verificados, falhas FROM verificacao WHERE derivacao_id=? AND descricao=?",
@@ -855,7 +858,7 @@ class Painel:
                 "nota": "a abertura usada pela derivação é o snapshot de A+1 de maior data final"}
 
     def por_dimensao(self, dimensao, exercicio, data_final, entidade=None, em=None):
-        """Totais por fonte de recurso, programacao orcamentaria, orgao, categoria etc. (lista fechada de dimensoes)."""
+        """Totals by funding source, budget program, agency, category etc. (closed list of dimensions)."""
         if dimensao not in DIMENSOES:
             raise ErroDoPainel(f"dimensao precisa ser uma de {sorted(DIMENSOES)}")
         ctx, em = self.contexto(), instante(em)
@@ -873,8 +876,8 @@ class Painel:
                 "linhas": linhas, "proveniencia": self._proveniencia(ctx, corte["somar"], f"somas agrupadas por {dimensao}")}
 
     def _por_grupo(self, ctx, coletas, colunas):
-        """Consulta unica de agrupamento (por_dimensao, categorias do indicador e composicao): registros e somas por
-        valor de `colunas` (expressoes SQL fixas deste modulo), INCLUSIVE o grupo nulo, em ordem de S1 decrescente."""
+        """Single grouping query (por_dimensao, indicator categories and composition): records and sums per value of
+        `colunas` (fixed SQL expressions of this module), INCLUDING the null group, in descending S1 order."""
         grupo = ", ".join(colunas)
         filtro, p = self._de_coletas(coletas)
         k = len(colunas)
@@ -890,8 +893,8 @@ class Painel:
                     (ctx["derivacao"]["id"], ctx["normalizacao"]["id"], *p))]
 
     def _por_faixa(self, ctx, coletas):
-        """Valor inscrito por faixa (FAIXA v1; R3): proc por faixa do processado e aproc por faixa do nao processado. Um
-        registro com as duas partes entra em dois grupos, por isso so os VALORES fecham; a contagem e por parte."""
+        """Inscribed value by band (FAIXA v1; R3): proc by the processed band and aproc by the not processed band. A record
+        with both parts goes into two groups, so only the VALUES add up; the count is per part."""
         filtro, p = self._de_coletas(coletas)
         saida = {}
         for coluna, valor in (("d.faixa_processado", "r.proc_c"), ("d.faixa_nao_processado", "r.aproc_c")):
@@ -904,15 +907,16 @@ class Painel:
         return saida
 
     def composicao(self, exercicio, data_final, entidade=None, em=None):
-        """Composicao da inscricao e do saldo de um corte (Subetapa 05.4; contrato M-05 a M-08), por categoria, faixa,
-        tipo de credor e dimensao orcamentaria.
-        * Cada dimensao fecha SOZINHA com o total do corte, por medida (secao 4.2: soma dos grupos - total = 0, sem
-          tolerancia nem ajuste). Dimensao que nao fecha nao e exibida: sai sem grupos, com o motivo e o fechamento.
-        * Grupos fixos (categoria, faixa, tipo de credor) aparecem todos, com 0 quando nao tem registros (zero do
-          grupo); nas dimensoes orcamentarias o grupo 'sem classificacao' (campo ausente na API) aparece sempre.
-        * Faixa (R3): so o valor inscrito fecha; a contagem de registros por faixa e por parte e nao e somada.
-        * Cada grupo traz o filtro da lista de empenhos cujo total e o proprio grupo.
-        * Corte sem valor para o escopo: indisponivel, com a situacao (nunca grupos com zero)."""
+        """Composition of a cut-off's inscription and balance (sub-stage 05.4; contract M-05 to M-08), by category, band,
+        creditor type and budget dimension.
+        * Each dimension adds up ON ITS OWN to the cut-off total, per measure (section 4.2: sum of the groups - total =
+          0, with no tolerance or adjustment). A dimension that does not add up is not shown: it comes out without
+          groups, with the reason and the closing.
+        * Fixed groups (category, band, creditor type) all appear, with 0 when they have no records (the group's zero);
+          in the budget dimensions the 'sem classificacao' group (field missing in the API) always appears.
+        * Band (R3): only the inscribed value adds up; the record count per band is per part and is not summed.
+        * Each group carries the commitment list filter whose total is the group itself.
+        * A cut-off without a value for the scope: unavailable, with the situation (never groups with zero)."""
         ctx, em = self.contexto(), instante(em)
         corte = self._corte(ctx, exercicio, data_final, entidade, em)
         codigo = self._situacao_do_ponto(corte, entidade)
@@ -936,7 +940,8 @@ class Painel:
         return saida
 
     def _pares_no_corte(self, ctx, exercicio, data_final, entidade):
-        """Copias 24xxxxx distintas com par no corte (PAR-24 v1), quando o escopo envolve as entidades do par; senao 0."""
+        """Distinct 24xxxxx copies with a pair at the cut-off (PAR-24 v1), when the scope involves the pair's entities;
+        otherwise 0."""
         par = regras.parametros(self.con, "PAR-24", 1)
         if entidade is not None and entidade not in (par["entidade_copia"], par["entidade_original"]):
             return 0
@@ -946,7 +951,7 @@ class Painel:
             (ctx["derivacao"]["id"], exercicio, f"{exercicio}-01-01", data_final)).fetchone()[0]
 
     def _dimensao(self, ctx, coletas, uids, regras_usadas, d, total, exercicio):
-        """Grupos e fechamento de UMA dimensao da composicao (ver `composicao`)."""
+        """Groups and closing of ONE composition dimension (see `composicao`)."""
         codigos = {"categoria": ("S1", "CAT"), "faixa": ("FAIXA",)}.get(d, ("S1",))
         regs = [r for r in regras_usadas if r["codigo"] in codigos]
         medidas = ("inscricao_total_c",) if d == "faixa" else MEDIDAS_DA_COMPOSICAO
@@ -1002,8 +1007,9 @@ class Painel:
 
     @staticmethod
     def _rotulo_do_grupo(d, k, i, descricoes):
-        """Identificador, rotulo e filtro da lista de empenhos de um grupo (ver `composicao`). Grupo sem filtro exato
-        (valor nao previsto, codigo com mais de uma descricao) sai com filtro None e o motivo, nunca com lista errada."""
+        """Identifier, label and commitment list filter of a group (see `composicao`). A group without an exact filter
+        (unexpected value, a code with more than one description) comes out with filter None and the reason, never
+        with a wrong list."""
         v = k[0]
         if d in DIMENSOES_ORCAMENTARIAS and all(x is None for x in k):
             return {"ident": "sem", "chave": None, "rotulo": SEM_CLASSIFICACAO, "filtro": {"sem_classificacao": d}}
@@ -1026,16 +1032,16 @@ class Painel:
         nome = {"orgao": "órgão", "funcao": "função", "programa": "programa", "elemento": "elemento"}[d]
         return {"ident": str(v), "chave": v, "rotulo": f"{nome} {v}", "filtro": {d: v}}
 
-    # ------------------------------------------------------------------ investigacao de variacoes (05.5)
+    # ------------------------------------------------------------------ investigation of variations (05.5)
     def _universo_do_exercicio(self, ctx, vig, exercicio, em):
-        """Cortes processados do exercicio, de qualquer entidade (contrato secao 2.4), inclusive o corte cujo unico
-        retrato tem chave repetida: ele aparece com a situacao 'ambiguo', sem valor."""
+        """Processed cut-offs of the fiscal year, of any entity (contract section 2.4), including the cut-off whose only
+        snapshot has a repeated key: it appears with the situation 'ambiguo', without a value."""
         di = f"{exercicio}-01-01"
         return sorted({df for (e, ex, d0, df) in set(vig) | self._cortes_ambiguos(ctx, em) if ex == exercicio and d0 == di})
 
     def _valores_por_chave(self, ctx, coletas, expr):
-        """{(entidade, anoempenho, empenho): [ocorrencias]} com o valor de `expr` (expressao fixa deste modulo) e a
-        origem de cada registro (snapshot, resposta HTTP, posicao no content[] e SHA-256 do objeto bruto)."""
+        """{(entidade, anoempenho, empenho): [occurrences]} with the value of `expr` (a fixed expression of this module)
+        and the origin of each record (snapshot, HTTP response, position in content[] and SHA-256 of the raw object)."""
         filtro, p = self._de_coletas(coletas)
         mapa = {}
         for e, ano, emp, v, uid, ordem, sha, indice, rid in self.con.execute(
@@ -1050,17 +1056,17 @@ class Painel:
 
     def variacao(self, exercicio, anterior, posterior, entidade=None, metrica="s1", em=None, limite=50, deslocamento=0,
                  top=TOP_DA_VARIACAO):
-        """Variacao de uma metrica entre dois cortes do MESMO exercicio, explicada pelas contribuicoes de cada empenho
-        (Subetapa 05.5; contrato M-09 a M-11).
-        * Par escolhido explicitamente (anterior < posterior), adjacente ou nao. Fica indisponivel, com o motivo, se
-          um lado nao tem valor no escopo; no Municipio, se o conjunto de entidades somadas difere (R6); se a mesma
-          chave (entidade, anoempenho, empenho) aparece mais de uma vez num lado (lista das chaves; nada e escolhido).
-        * Variacao total = indicador homologado do posterior - do anterior. Contribuicao por chave, sempre posterior -
-          anterior: nos dois cortes = post - ant; so no posterior = post; so no anterior = 0 - ant.
-        * Fechamento ao centavo (secao 4.2) da lista, dos grupos do resumo e das classes; se falhar, o par e
-          bloqueado (criterio de parada da 05.5), nunca exibido com resto.
-        * Lista completa (chaves com contribuicao != 0) em ordem de contribuicao decrescente, desempate pela chave;
-          paginada, com subtotal da pagina e acumulado ate ela."""
+        """Variation of a metric between two cut-offs of the SAME fiscal year, explained by each commitment's
+        contributions (sub-stage 05.5; contract M-09 to M-11).
+        * Pair chosen explicitly (earlier < later), adjacent or not. It is unavailable, with the reason, if one side
+          has no value in the scope; in the Municipality, if the set of summed entities differs (R6); if the same key
+          (entidade, anoempenho, empenho) appears more than once on one side (list of the keys; nothing is picked).
+        * Total variation = homologated indicator of the later - of the earlier. Contribution per key, always later -
+          earlier: in both cut-offs = later - earlier; only in the later = later; only in the earlier = 0 - earlier.
+        * Closing to the cent (section 4.2) of the list, the summary groups and the classes; if it fails, the pair is
+          blocked (05.5 stopping criterion), never shown with a remainder.
+        * Full list (keys with contribution != 0) in descending contribution order, tie-break by key; paginated, with
+          the page subtotal and the running total up to it."""
         if metrica not in METRICAS_DA_VARIACAO:
             raise ErroDoPainel(f"metrica precisa ser uma de {sorted(METRICAS_DA_VARIACAO)}")
         if isinstance(top, bool) or not isinstance(top, int) or top < 1:
@@ -1097,7 +1103,7 @@ class Painel:
                            "snapshots": self._uids(corte["somar"]) if codigo in TEM_VALOR else [],
                            "entidades_no_total": sorted(e["entidade"] for e in corte["entidades"] if e["entra_no_total"]),
                            "total_c": None, "coletas": corte["somar"]}
-            if lados[nome]["tem_valor"]:   # total do corte: o indicador homologado (exibido mesmo com o par indisponivel)
+            if lados[nome]["tem_valor"]:   # cut-off total: the homologated indicator (shown even with the pair unavailable)
                 lados[nome]["total_c"] = self._somas(ctx, corte["somar"])[m["indicador"]]
         publico_ = {nome: {k: v for k, v in l.items() if k != "coletas"} for nome, l in lados.items()}
         saida.update(anterior=publico_["anterior"], posterior=publico_["posterior"])
@@ -1138,7 +1144,7 @@ class Painel:
         aumentos = [x for x in itens if x["contribuicao_c"] > 0]
         reducoes = sorted((x for x in itens if x["contribuicao_c"] < 0), key=lambda x: (x["contribuicao_c"], x["_k"]))
         zeros = [x for x in itens if x["contribuicao_c"] == 0]
-        lista = aumentos + [x for x in itens if x["contribuicao_c"] < 0]      # ordem do contrato: decrescente
+        lista = aumentos + [x for x in itens if x["contribuicao_c"] < 0]      # contract order: descending
         for i, x in enumerate(lista, 1):
             x["posicao"] = i
         for x in itens:
@@ -1185,10 +1191,10 @@ class Painel:
         return saida
 
     def historico_empenho(self, entidade, anoempenho, empenho, exercicio, em=None):
-        """Um empenho em cada corte do exercicio (Subetapa 05.5; contrato M-12): os valores do registro em cada corte
-        do universo (secao 2.4), sem formula nova. Corte sem valor para a entidade aparece com a situacao; corte com
-        valor em que a chave nao aparece, como 'empenho ausente deste corte'; chave repetida mostra todas as
-        ocorrencias, sem escolher."""
+        """One commitment at each cut-off of the fiscal year (sub-stage 05.5; contract M-12): the record's values at each
+        cut-off of the universe (section 2.4), without a new formula. A cut-off without a value for the entity appears
+        with its situation; a cut-off with a value where the key does not appear, as 'empenho ausente deste corte'; a
+        repeated key shows all occurrences, without choosing."""
         ctx, em = self.contexto(), instante(em)
         vig, cat = self._vigentes(ctx, em), self._catalogo(ctx, em)
         governo = self._naturezas_derivados()
@@ -1221,15 +1227,16 @@ class Painel:
                 "nota": ("Mais de uma ocorrência num corte = a mesma chave apareceu mais de uma vez no snapshot; nenhuma é "
                          "descartada.") if repetida else None}
 
-    # ------------------------------------------------------------------ qualidade dos dados (05.6)
+    # ------------------------------------------------------------------ data quality (05.6)
     def qualidade(self):
-        """Anomalias, verificacoes e situacao das diferencas com o RREO (Subetapa 05.6; contrato secao 6), cada uma
-        segundo a sua natureza e lidas da derivacao atual, sem nenhuma regra nova.
-        * Anomalias: uma linha por ocorrencia, em TODO snapshot processado (inclusive retratos anteriores e coletas
-          por tipo de pesquisa); por tipo, a contagem da derivacao e quantas estao em snapshots vigentes.
-        * Verificacoes: de conjunto; a situacao e interpretada pela descricao (R5); nunca viram lista de empenhos.
-        * Diferencas com o RREO: as cinco situacoes separadas, contadas por coluna x documento x regra de agregacao
-          (as mesmas linhas da reconciliacao); 'sem diferenca' nunca e contada como explicada."""
+        """Anomalies, checks and the situation of the differences with the RREO (sub-stage 05.6; contract section 6), each
+        according to its nature and read from the current derivation, with no new rule.
+        * Anomalies: one row per occurrence, in EVERY processed snapshot (including earlier snapshots and collections
+          by search type); per type, the derivation's count and how many are in current snapshots.
+        * Checks: set-level; the situation is interpreted from the description (R5); they never become a list of
+          commitments.
+        * Differences with the RREO: the five situations apart, counted per column x document x aggregation rule (the
+          same rows as the reconciliation); 'sem diferenca' is never counted as explained."""
         ctx = self.contexto()
         did = ctx["derivacao"]["id"]
         governo = governanca.situacao_atual(self.con)
@@ -1292,9 +1299,9 @@ class Painel:
         return saida
 
     def _escopo_das_anomalias(self, descricao, escopo):
-        """Filtros da lista de anomalias que a mesma regra grava para o escopo de um item de verificacao: a
-        continuidade grava no snapshot de abertura de A+1 da entidade; o pareamento, no snapshot da entidade-copia do
-        corte (derivar._continuidade e _pareamento)."""
+        """Filters of the anomaly list that the same rule records for the scope of a check item: continuity records on the
+        entity's A+1 opening snapshot; pairing, on the copy entity's snapshot of the cut-off (derivar._continuidade
+        and _pareamento)."""
         if descricao == CONTINUIDADE:
             return {"exercicio": escopo["para"], "entidade": escopo["entidade"]}
         par = regras.parametros(self.con, "PAR-24", 1)
@@ -1302,7 +1309,7 @@ class Painel:
 
     @staticmethod
     def _situacao_da_verificacao(natureza, verificados, falhas):
-        """Situacao exibida de uma verificacao (contrato E-02), pela natureza catalogada da descricao."""
+        """Displayed situation of a check (contract E-02), by the catalogued nature of the description."""
         if natureza == "conformidade":
             return "sem falha" if falhas == 0 else "com falhas"
         if natureza == "colunas_com_diferenca":
@@ -1312,8 +1319,8 @@ class Painel:
         return NAO_CATALOGADA
 
     def _situacao_das_diferencas(self, did):
-        """Contrato E-03: as cinco situacoes, por regra de agregacao (linhas da reconciliacao: coluna x documento x
-        regra) e na coerencia entre publicacoes; conferencia com a verificacao CONC-RREO, que conta por snapshot do PDF."""
+        """Contract E-03: the five situations, per aggregation rule (reconciliation rows: column x document x rule) and in
+        the consistency between publications; cross-checked with the CONC-RREO check, which counts per PDF snapshot."""
         rec = self.reconciliacao()
         linhas = rec["linhas"]
         regras_ = sorted({x["regra_agregacao"]["regra"] for x in linhas})
@@ -1347,12 +1354,12 @@ class Painel:
                          "por coluna do RREO, documento e regra de agregação (RREO-COL v1 e v2 separadas).")}
 
     def anomalias(self, tipo, limite=50, deslocamento=0, exercicio=None, entidade=None, data_final=None):
-        """Ocorrencias de UM tipo de anomalia (contrato E-01) COM chave de empenho, paginadas, com o snapshot de cada
-        uma; as sem chave completa ficam so no agregado (`sem_chave` conta as do filtro). Filtros opcionais de escopo
-        (exercicio, entidade, corte) servem a ligacao vinda de uma verificacao. A ligacao ao registro (drill-down) e
-        exata so quando o snapshot da ocorrencia e o vigente do corte (o detalhe do empenho mostra o retrato
-        vigente); ocorrencia em retrato anterior leva aos retratos do corte; em coleta que nao e corte do painel
-        (tipo de pesquisa, data inicial fora de 01/01), nao tem ligacao."""
+        """Occurrences of ONE anomaly type (contract E-01) WITH a commitment key, paginated, with each one's snapshot; the
+        ones without a complete key stay only in the aggregate (`sem_chave` counts the filter's). Optional scope
+        filters (fiscal year, entity, cut-off) serve the link coming from a check. The link to the record (drill-down)
+        is exact only when the occurrence's snapshot is the current one of the cut-off (the commitment detail shows
+        the current snapshot); an occurrence in an earlier snapshot leads to the cut-off's snapshots; in a collection
+        that is not a panel cut-off (search type, start date other than 01/01), there is no link."""
         ctx = self.contexto()
         did = ctx["derivacao"]["id"]
         if not self.con.execute("SELECT 1 FROM anomalia_tipo WHERE codigo=?", (tipo,)).fetchone():
@@ -1398,7 +1405,7 @@ class Painel:
                          "retrato e por corte em que a condição vale. Ocorrência sem entidade, ano e número do empenho "
                          "fica só na contagem por tipo.")}
 
-    # ------------------------------------------------------------------ registros
+    # ------------------------------------------------------------------ records
     def _registros(self, ctx, coletas, filtro_extra="", params=(), limite=None, deslocamento=0, ordem="saldo"):
         ordens = {"saldo": "d.s1_saldo_total_c DESC, r.entidade, r.anoempenho, r.empenho, r.resposta_id, r.indice",
                   "empenho": "r.entidade, r.anoempenho, r.empenho, r.resposta_id, r.indice"}
@@ -1434,12 +1441,13 @@ class Painel:
     def _filtros_empenho(categoria=None, fonte_recurso=None, programatica=None, tipo_credor=None, cnpj=None,
                          anoempenho=None, empenho=None, faixa=None, orgao=None, funcao=None, programa=None,
                          elemento=None, sem_classificacao=None):
-        """SQL (sempre parametrizado) dos filtros da listagem de empenhos. Filtro so escolhe registros; nunca muda valor.
-        cnpj: so CNPJ completo (14 digitos) de pessoa juridica; CPF nunca e aceito como filtro.
-        anoempenho / empenho: busca de um empenho pelo ano e/ou numero (igualdade exata).
-        faixa (05.4): a/b escolhem pela faixa do processado, f/g pela do nao processado (FAIXA v1).
-        orgao, funcao, programa, elemento (05.4): codigo exato como a API devolve (texto de digitos).
-        sem_classificacao (05.4): registros sem o campo da dimensao orcamentaria indicada (valor nulo)."""
+        """SQL (always parameterized) of the commitment list filters. A filter only chooses records; it never changes a
+        value.
+        cnpj: only a complete CNPJ (14 digits) of a legal entity; a CPF is never accepted as a filter.
+        anoempenho / empenho: search for a commitment by year and/or number (exact match).
+        faixa (05.4): a/b choose by the processed band, f/g by the not processed band (FAIXA v1).
+        orgao, funcao, programa, elemento (05.4): exact code as the API returns it (text of digits).
+        sem_classificacao (05.4): records without the field of the indicated budget dimension (null value)."""
         sql, params, eco = "", [], {}
         for nome, valor in (("anoempenho", anoempenho), ("empenho", empenho)):
             if valor is not None:
@@ -1496,9 +1504,9 @@ class Painel:
                  categoria=None, fonte_recurso=None, programatica=None, tipo_credor=None, cnpj=None, anoempenho=None,
                  empenho=None, faixa=None, orgao=None, funcao=None, programa=None, elemento=None,
                  sem_classificacao=None):
-        """Lista paginada de registros do corte, com filtros opcionais, e os totais do conjunto filtrado.
-        No nivel publico, sem nenhuma identificacao do credor (so o tipo).
-        Conjunto vazio: `sem_resultado` e totais None (nunca R$ 0,00), com a mensagem do motivo."""
+        """Paginated list of the cut-off's records, with optional filters, and the totals of the filtered set.
+        At the public level, with no creditor identification at all (only the type).
+        An empty set: `sem_resultado` and None totals (never R$ 0,00), with the reason message."""
         limite, deslocamento = max(1, min(int(limite), LIMITE_LISTA)), max(0, int(deslocamento))
         filtro, params, eco = self._filtros_empenho(categoria, fonte_recurso, programatica, tipo_credor, cnpj,
                                                     anoempenho, empenho, faixa, orgao, funcao, programa, elemento,
@@ -1530,15 +1538,15 @@ class Painel:
                                                                         "escolhe linhas")}
 
     def _naturezas_derivados(self):
-        """Natureza de cada derivado por registro: 'derivado' se a regra compoe indicador publicado, senao 'analitico'
-        (ex.: CANC v1, nao recomendada)."""
+        """Nature of each per-record derived value: 'derivado' if the rule makes up a published indicator, otherwise
+        'analitico' (e.g. CANC v1, not recommended)."""
         governo = governanca.situacao_atual(self.con)
         return {c: ("derivado" if governo.get(regra, {}).get("compoe_indicador_publicado") else "analitico")
                 for c, (_, _, regra) in fontes.DERIVADOS.items()}
 
     def detalhe_empenho(self, entidade, anoempenho, empenho, exercicio, data_final=None, em=None):
-        """Detalhe de UM empenho num corte (padrao: o ultimo corte processado do exercicio para a entidade):
-        campos da fonte com nome tecnico e amigavel, derivados com a regra, par espelhado, movimentacao e proveniencia."""
+        """Detail of ONE commitment at a cut-off (default: the entity's last processed cut-off of the fiscal year): source
+        fields with technical and friendly names, derived values with the rule, mirrored pair, movements and provenance."""
         ctx, em = self.contexto(), instante(em)
         if data_final is None:
             cortes = sorted(df for (e, ex, d0, df) in self._vigentes(ctx, em)
@@ -1621,8 +1629,8 @@ class Painel:
         return {"coletada": True, "snapshot": self._snapshot(c[0]), "lancamentos": lanc}
 
     def pares(self, exercicio, data_final, em=None):
-        """Pares espelhados (regra PAR-24) do corte: os dois lados continuam registros separados; nada e removido
-        nem somado duas vezes por esta consulta. A natureza das copias continua nao determinada."""
+        """Mirrored pairs (rule PAR-24) of the cut-off: both sides stay separate records; nothing is removed nor summed
+        twice by this query. The nature of the copies is still not determined."""
         ctx, em = self.contexto(), instante(em)
         did, _ = self._derivacao_da_vigencia(ctx, em)
         if did is None:
@@ -1657,7 +1665,7 @@ class Painel:
                          "determinada; a consolidação só existe como visão analítica experimental (CONS-PAR).")}
 
     def fornecedores(self, exercicio, data_final, entidade=None, em=None, limite=100):
-        """Totais por credor. No nivel publico, so por tipo de credor (sem identificacao)."""
+        """Totals per creditor. At the public level, only per creditor type (without identification)."""
         ctx, em = self.contexto(), instante(em)
         corte = self._corte(ctx, exercicio, data_final, entidade, em)
         if not corte["disponivel"]:
@@ -1676,11 +1684,11 @@ class Painel:
                 "linhas": linhas[:max(1, min(int(limite), LIMITE_LISTA))],
                 "proveniencia": self._proveniencia(ctx, corte["somar"], "somas por credor")}
 
-    # ------------------------------------------------------------------ retratos
+    # ------------------------------------------------------------------ snapshots
     def retratos(self, entidade, exercicio, data_final):
-        """Todos os retratos (snapshots) de um corte: cada coleta e um retrato independente; nenhum substitui outro.
-        Para cada retrato completo e processado: registros, inscricao, saldo S1 e a diferenca para o retrato
-        anterior comparavel (tambem completo e processado)."""
+        """All snapshots of a cut-off: each collection is an independent snapshot; none replaces another.
+        For each complete and processed snapshot: records, inscription, S1 balance and the difference to the previous
+        comparable snapshot (also complete and processed)."""
         ctx = self.contexto()
         di = f"{exercicio}-01-01"
         vig = self._vigentes(ctx, None).get((entidade, exercicio, di, data_final))
@@ -1717,7 +1725,7 @@ class Painel:
                          "substituído. O vigente é o mais recente completo.")}
 
     def retratos_multiplos(self):
-        """Cortes (entidade, exercicio, data final) com mais de um retrato de listagem processado."""
+        """Cut-offs (entity, fiscal year, end date) with more than one processed listing snapshot."""
         ctx = self.contexto()
         return [{"entidade": e, "exercicio": ex, "data_final": df, "retratos": n}
                 for e, ex, df, n in self.con.execute(
@@ -1727,9 +1735,9 @@ class Painel:
                     (ctx["limite_coleta"],))]
 
     def entidades_do_corte(self, exercicio, data_final, em=None):
-        """Visao por entidade de um corte. Distingue: entidade existente com RP (valores), entidade existente sem RP
-        (zero de verdade), entidade fora do catalogo oficial do exercicio (nao existia: sem valor, nunca zero) e
-        entidade sem snapshot (nao coletado: sem valor)."""
+        """Per-entity view of a cut-off. It distinguishes: an existing entity with RP (values), an existing entity without
+        RP (a true zero), an entity outside the year's official catalog (it did not exist: no value, never zero) and an
+        entity without a snapshot (not collected: no value)."""
         ctx, em = self.contexto(), instante(em)
         corte = self._corte(ctx, exercicio, data_final, None, em)
         regs = self._regras_publicaveis(REGRAS_DO_INDICADOR)
@@ -1761,7 +1769,7 @@ class Painel:
                          "nunca como zero. Entidade existente sem RP aparece com zero.")}
 
     def comparar_retratos(self, snapshot_a, snapshot_b):
-        """Comparacao de dois retratos do mesmo corte (comparador somente leitura)."""
+        """Comparison of two snapshots of the same cut-off (read-only comparator)."""
         ctx = self.contexto()
         for ref in (snapshot_a, snapshot_b):
             row = self.con.execute("SELECT id FROM coleta WHERE snapshot_uid=?", (ref,)).fetchone()
@@ -1770,7 +1778,7 @@ class Painel:
             if row[0] > ctx["limite_coleta"]:
                 raise ErroDoPainel(f"snapshot {ref} ainda não processado: rode 'python -m rp processar'")
         r = _comparar(self.con, snapshot_a, snapshot_b, ctx["normalizacao"]["id"], ctx["derivacao"]["id"])
-        if self.nivel != "interno":   # identificacao de credor nao sai no nivel publico
+        if self.nivel != "interno":   # creditor identification does not go out at the public level
             for alt in r["alterados"]:
                 alt["campos"] = [c if c["campo"] not in publico.CAMPOS_RESTRITOS else
                                  {"campo": c["campo"], "antes": "[restrito]", "depois": "[restrito]"} for c in alt["campos"]]
@@ -1778,7 +1786,7 @@ class Painel:
         r["fonte"] = fontes.ELOTECH["rotulo"]
         return r
 
-    # ------------------------------------------------------------------ reconciliacao com o RREO
+    # ------------------------------------------------------------------ reconciliation with the RREO
     def _derivacao_da_vigencia(self, ctx, em):
         if em is None:
             return ctx["derivacao"]["id"], ctx["normalizacao"]["id"]
@@ -1787,8 +1795,8 @@ class Painel:
         return (row[0], row[1]) if row else (None, None)
 
     def _linhas_conciliacao(self, did, nid, filtros, params):
-        """Linhas da conciliacao. O mesmo PDF (mesmo SHA-256) coletado em mais de um snapshot aparece uma vez,
-        com os demais snapshots listados em pdf.mesmo_pdf_coletado_tambem_em (os valores sao os mesmos bytes)."""
+        """Reconciliation rows. The same PDF (same SHA-256) collected in more than one snapshot appears once, with the
+        other snapshots listed in pdf.mesmo_pdf_coletado_tambem_em (the values are the same bytes)."""
         governo = governanca.situacao_atual(self.con)
         pdfs, extracoes, vistos = {}, {}, {}
         saida = []
@@ -1867,7 +1875,7 @@ class Painel:
                           "em cada valor", "linhas": linhas}
 
     def reconciliacao(self, exercicio=None, data_final=None, escopo=None, somente_diferencas=False, em=None):
-        """Area de reconciliacao API Elotech x RREO: valor de cada lado, diferenca, regra, PDF, extracao e explicacao."""
+        """Elotech API x RREO reconciliation area: each side's value, difference, rule, PDF, extraction and explanation."""
         ctx, em = self.contexto(), instante(em)
         did, nid = self._derivacao_da_vigencia(ctx, em)
         if did is None:
@@ -1893,8 +1901,8 @@ class Painel:
                          "principal (somas dos campos da API) não depende dela.")}
 
     def documentos_rreo(self, em=None):
-        """Indice dos RREOs conciliados: um item por documento (PDF) e escopo, com quantas colunas diferem em cada
-        regra de agregacao. O detalhe coluna a coluna fica em `reconciliacao`."""
+        """Index of the reconciled RREOs: one item per document (PDF) and scope, with how many columns differ in each
+        aggregation rule. The column-by-column detail lives in `reconciliacao`."""
         r = self.reconciliacao(em=em)
         docs = {}
         for x in r["linhas"]:
@@ -1911,7 +1919,7 @@ class Painel:
                 "pdfs_sem_valores_transcritos": r.get("pdfs_sem_valores_transcritos", []), "nota": r.get("nota")}
 
     def _api_do_corte(self, ctx, vig, cat, escopo, exercicio, data_final, ent_rreo):
-        """Soma de S1 e (a)+(f) (RP de exercicios anteriores pela regra FAIXA) da API no corte, ou None se indisponivel."""
+        """Sum of S1 and (a)+(f) (RP of previous years by the FAIXA rule) from the API at the cut-off, or None if unavailable."""
         corte = self._corte(ctx, exercicio, data_final, ent_rreo if escopo == "entidade" else None, None, vig, cat)
         if not corte["disponivel"]:
             return None
@@ -1920,9 +1928,9 @@ class Painel:
                 "retrato": corte["retrato"]["texto"]}
 
     def _s1_e_a_mais_f(self, ctx, coletas):
-        """Definicao unica (contrato M-04) de S1 e de (a)+(f) de um conjunto de coletas: soma de S1 v1, e soma de proc
-        com faixa 'a' + soma de aproc com faixa 'f' (FAIXA v1). Usada pela coerencia entre publicacoes e pela serie entre
-        exercicios."""
+        """Single definition (contract M-04) of S1 and of (a)+(f) for a set of collections: sum of S1 v1, and sum of proc
+        with band 'a' + sum of aproc with band 'f' (FAIXA v1). Used by the consistency between publications and by the
+        series across fiscal years."""
         filtro, p = self._de_coletas(coletas)
         s1, af = self.con.execute(
             f"SELECT SUM(d.s1_saldo_total_c), SUM(CASE WHEN d.faixa_processado='a' THEN r.proc_c ELSE 0 END) + "
@@ -1932,9 +1940,10 @@ class Painel:
         return s1 or 0, af or 0
 
     def coerencia_entre_publicacoes(self):
-        """Saldo final L do RREO de dezembro de A x (a)+(f) (RP de exercicios anteriores) de cada RREO de A+1:
-        duas publicacoes comparadas entre si. Ao lado, os mesmos agregados calculados hoje com a API (soma de S1 no
-        fechamento de A e (a)+(f) no corte de A+1), para mostrar qual publicacao a base atual reproduz."""
+        """Closing balance L of December's RREO of A x (a)+(f) (RP of previous years) of each RREO of A+1: two
+        publications compared with each other. Next to them, the same aggregates computed today with the API (sum of
+        S1 at the closing of A and (a)+(f) at the cut-off of A+1), to show which publication the current base
+        reproduces."""
         ctx = self.contexto()
         nid = ctx["normalizacao"]["id"]
         regs = self._regras_publicaveis({("S1", 1), ("FAIXA", 1)})
@@ -1946,7 +1955,7 @@ class Painel:
                 "(SELECT sha256 FROM resposta_bruta b WHERE b.coleta_id = v.coleta_id ORDER BY ordem LIMIT 1) "
                 "FROM rreo_valor v JOIN coleta c ON c.id = v.coleta_id WHERE v.normalizacao_id=? AND "
                 "v.linha='TOTAL (III)' ORDER BY v.exercicio, v.data_final, c.coletada_em, c.snapshot_uid", (nid,)):
-            if sha in vistos:   # o mesmo PDF coletado outra vez: um documento so
+            if sha in vistos:   # the same PDF collected again: a single document
                 continue
             vistos.add(sha)
             docs.setdefault((escopo, ex), []).append({"coleta_id": rc, "data_final": df, "emitido_em": emit, "sha256": sha})
@@ -1984,7 +1993,7 @@ class Painel:
                         "nota": ("O saldo que fecha A deveria ser o RP de exercícios anteriores que abre A+1; diferença "
                                  "indica alteração da base entre as duas emissões. Os valores da API são o estado atual "
                                  "da base, não o da época de cada emissão.")})
-        ultima = {}   # por (escopo, A): a comparacao com a publicacao mais recente de A+1 (a primeira, em empate)
+        ultima = {}   # per (scope, A): the comparison with the most recent publication of A+1 (the first one, on a tie)
         for x in saida:
             k = (x["escopo"], x["de"])
             if k not in ultima or x["data_final_para"] > ultima[k]["data_final_para"]:
@@ -1997,8 +2006,8 @@ class Painel:
                               "reconciliação).")}
 
     def visao_analitica(self, exercicio, data_final, em=None):
-        """Visoes do Municipio calculadas pela derivacao: projecao nas colunas do RREO (RREO-COL v1/v2) e visoes
-        analiticas CONS-PAR. Nenhuma delas e indicador publicado."""
+        """Municipality views computed by the derivation: projection onto the RREO columns (RREO-COL v1/v2) and the
+        CONS-PAR analytical views. None of them is a published indicator."""
         ctx, em = self.contexto(), instante(em)
         did, _ = self._derivacao_da_vigencia(ctx, em)
         if did is None:
@@ -2026,7 +2035,7 @@ class Painel:
                          "valor publicado de fato está na reconciliação. Nenhuma visão analítica entra no indicador "
                          "publicado, e o lado original de um par nunca é apagado.")}
 
-    # ------------------------------------------------------------------ catalogo, fontes, metodologia
+    # ------------------------------------------------------------------ catalog, sources, methodology
     def regras(self):
         atual = governanca.situacao_atual(self.con)
         params = {}
@@ -2052,7 +2061,7 @@ class Painel:
                                "e-SIC, normas e notas técnicas -> fonte externa (evidência registrada)"]}
 
     def metodologia(self):
-        """Textos de metodologia e as datas 'como estava em' com derivacao propria (reconciliacao historica)."""
+        """Methodology texts and the 'as it was on' dates with their own derivation (historical reconciliation)."""
         datas = [v for (v,) in self.con.execute("SELECT DISTINCT vigencia_em FROM derivacao_execucao WHERE vigencia_em "
                                                 "IS NOT NULL ORDER BY vigencia_em")]
         return {**fontes.METODOLOGIA, "datas_como_estava_em_com_derivacao": datas,

@@ -1,8 +1,8 @@
-# Pacote instalavel com o comando `rp` (revisao critica, item 38). Instalar SEMPRE em modo editavel, de dentro de
+# Installable package with the `rp` command (critical review, item 38). ALWAYS install in editable mode, from inside
 # app/:  python -m pip install -e .
-# O pacote acha config.toml, o armazem (../snapshots) e os backups a partir da pasta app/ (rp/config.py, RAIZ_APP);
-# instalado como copia em site-packages, ele nao os encontraria. Os testes continuam com `python -m pytest tests`.
-# Sem [tool.pytest]: a configuracao dos testes mora em tests/conftest.py.
+# The package finds config.toml, the store (../data/snapshots) and the backups from the app/ folder (rp/config.py, RAIZ_APP);
+# installed as a copy in site-packages, it would not find them. Tests still run with `python -m pytest tests`.
+# No [tool.pytest]: the test configuration lives in tests/conftest.py.
 [build-system]
 requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
@@ -12,7 +12,7 @@ name = "restos-a-pagar-pg"
 dynamic = ["version"]
 description = "Coletor, processamento e painel somente leitura dos Restos a Pagar de Ponta Grossa"
 requires-python = ">=3.11"
-# mesmas versoes de requirements.txt; o ambiente homologado inteiro esta em requirements-lock.txt
+# same versions as requirements.txt; the whole homologated environment is in requirements-lock.txt
 dependencies = ["requests==2.34.2", "pymupdf==1.28.2"]
 
 [project.optional-dependencies]
