@@ -20,6 +20,7 @@ from ..painel.consulta import (CATEGORIAS, COMPOSICOES, DIMENSOES_ORCAMENTARIAS,
                                ROTULO_CATEGORIA, ROTULO_COMPOSICAO, TEXTO_FAIXA)
 from . import formato as fm
 from . import grafico
+from . import portal as P
 from .formato import esc
 
 TAMANHO_PAGINA = 50
@@ -190,8 +191,24 @@ def _origem_indicador(v):
     ])
 
 
-def _origem_conjunto(prov, resumo="Origem do dado (snapshots usados)"):
-    """<details> com a fonte, a derivacao e cada snapshot (uid, recorte, coleta, endpoint) de um conjunto de valores."""
+def _registro_tecnico(conteudo, resumo="Registro técnico (auditoria)"):
+    """O que foi coletado (snapshot, hash, derivacao): prova de onde o numero veio, mesmo se o portal mudar depois."""
+    return f'<details class="registro-tecnico"><summary>{esc(resumo)}</summary>{conteudo}</details>'
+
+
+def _origem_conjunto(prov, resumo="Origem do dado: onde conferir no Portal"):
+    """<details> com a integra no portal de cada snapshot do conjunto (as paginas exatas que o coletor consultou), a
+    tela de consulta e as condicoes; o registro tecnico (uid, recorte, coleta, endpoint, derivacao) fica recolhido."""
+    portal, coleta = [], ""
+    for s in prov["snapshots"]:
+        urls = [r["url"] for r in s.get("respostas") or [] if str(r.get("url", "")).startswith(P.API)]
+        if s.get("endpoint") != F.ELOTECH["endpoints"]["rp_listagem"] or not urls:
+            continue
+        coleta = fm.data_br(s["coletada_em"], True)
+        paginas = (P.link(urls[0], "íntegra no corte") if len(urls) == 1 else
+                   "íntegra no corte, páginas " + " · ".join(P.link(u, str(i + 1)) for i, u in enumerate(urls)))
+        portal.append(f"<li>Entidade {esc(s['entidade'])}, {esc(fm.data_br(s['data_inicial']))} a "
+                      f"{esc(fm.data_br(s['data_final']))}: {paginas} · {P.link(P.url_consulta(s['entidade']), 'tela de consulta')}</li>")
     itens = "".join(f"<li><code>{esc(s['snapshot_uid'])}</code> — entidade {esc(s['entidade'])}, "
                     f"{esc(fm.data_br(s['data_inicial']))} a {esc(fm.data_br(s['data_final']))}, coletado em "
                     f"{esc(fm.data_br(s['coletada_em'], True))}, endpoint <code>{esc(s['endpoint'])}</code></li>"
@@ -199,8 +216,12 @@ def _origem_conjunto(prov, resumo="Origem do dado (snapshots usados)"):
     d = prov["derivacao"]
     usada = prov.get("derivacao_usada", d["id"])
     hash_ = f" (hash <code>{esc(d['hash_resultado'])}</code>)" if usada == d["id"] else ""
-    return (f'<details class="origem"><summary>{esc(resumo)}</summary><p>Fonte: {esc(F.ELOTECH["rotulo"])}. '
-            f'Derivação {esc(usada)}{hash_}, normalização {esc(prov["normalizacao"]["id"])}.</p><ul>{itens}</ul></details>')
+    tecnico = _registro_tecnico(f'<p>Fonte: {esc(F.ELOTECH["rotulo"])}. Derivação {esc(usada)}{hash_}, normalização '
+                                f'{esc(prov["normalizacao"]["id"])}.</p><ul>{itens}</ul>',
+                                "Origem do dado (snapshots usados): registro técnico")
+    onde = (f"<ul>{''.join(portal)}</ul>" + P.condicoes(prov["snapshots"][0]["data_final"], coleta, montante=True)
+            if portal else "<p>Sem íntegra da listagem de RP neste conjunto.</p>")
+    return f'<details class="origem"><summary>{esc(resumo)}</summary>{onde}{tecnico}</details>'
 
 
 def _cartao(v):
@@ -212,11 +233,13 @@ def _cartao(v):
     classe = "indicador destaque" if v["id"] in DESTAQUES else "indicador"
     return (f'<div class="{classe}"><p class="rotulo">{esc(v["rotulo"])}</p><p class="numero">{numero}</p>'
             f'{fm.selo("elotech", v["natureza"], v["regras"], v["formula"])}'
-            f'<details class="origem"><summary>Origem do dado</summary>{_origem_indicador(v)}</details></div>')
+            f'<details class="origem"><summary>Origem do dado: onde conferir no Portal</summary>{P.como_conferir_montante(v)}'
+            f"{_registro_tecnico(_origem_indicador(v))}</details></div>")
 
 
 def _pdf(pdf, extracao=None):
     partes = [("Documento", esc(f"{pdf['rotulo']} — arquivo {pdf['id_arquivo']} de {fm.data_br(pdf['data_arquivo'])}")),
+              ("No portal", P.como_conferir_pdf(pdf)),
               ("Emitido em (rodapé)", esc(pdf["emitido_em"] or "não lido")),
               ("Snapshot do PDF", f"<code>{esc(pdf['snapshot_uid'])}</code> (coletado em {esc(fm.data_br(pdf['coletada_em'], True))})"),
               ("SHA-256 do PDF", f"<code>{esc(pdf['objeto_bruto_sha256'])}</code>")]
@@ -270,6 +293,9 @@ def resumo(p, q):
         for nome, ids in GRUPOS:
             partes.append(f'<section class="grupo"><h2>{esc(nome)}</h2><div class="cartoes">'
                           + "".join(_cartao(v[i]) for i in ids) + "</div></section>")
+        ret = ind["retrato"]
+        partes.append(P.secao_onde_conferir(ind["entidades"], sel["exercicio"], sel["data_final"],
+                                            fm.data_br(ret["coletado_de"], True) if ret else ""))
     partes.append(_entidades_abrangidas(ind))
     partes.append(_aviso_retratos(ind, sel))
     if ind["disponivel"]:
@@ -874,19 +900,28 @@ def _classes_da_variacao(r):
 
 
 def _origem_contribuicao(x, sel):
-    partes = []
+    """Cada lado da variacao: o empenho naquele corte na integra do portal e o detalhe do empenho; o registro tecnico
+    (snapshot, pagina, posicao, objeto bruto) fica recolhido."""
+    c = x["chave"]
+    portal, tecnico = [], []
     for nome, df in (("anterior", sel["anterior"]), ("posterior", sel["posterior"])):
         lado = x[nome]
         if lado is None:
-            partes.append(f"<li>{esc(nome.capitalize())}: ausente do corte.</li>")
+            portal.append(f"<li>{esc(nome.capitalize())} ({esc(fm.data_br(df))}): ausente do corte.</li>")
             continue
-        pv, c = lado["proveniencia"], x["chave"]
+        pv = lado["proveniencia"]
         detalhe = fm.link("/empenho", "detalhe", entidade=c["entidade"], anoempenho=c["anoempenho"], empenho=c["empenho"],
                           exercicio=sel["exercicio"], data_final=df, em=sel["em"])
-        partes.append(f"<li>{esc(nome.capitalize())}: snapshot <code>{esc(pv['snapshot_uid'])}</code>, página "
-                      f"{esc(pv['resposta_ordem'])}, posição {esc(pv['indice_no_content'])}, objeto bruto "
-                      f"<code>{esc(pv['objeto_bruto_sha256'][:16])}…</code> ({detalhe})</li>")
-    return f'<details class="origem"><summary>origem</summary><ul>{"".join(partes)}</ul></details>'
+        portal.append(f"<li>{esc(nome.capitalize())} ({esc(fm.data_br(df))}): "
+                      + P.link(P.url_integra(c["entidade"], sel["exercicio"], df, 0, c["empenho"], c["anoempenho"]),
+                               "este empenho no corte") + "</li>")
+        tecnico.append(f"<li>{esc(nome.capitalize())}: snapshot <code>{esc(pv['snapshot_uid'])}</code>, página "
+                       f"{esc(pv['resposta_ordem'])}, posição {esc(pv['indice_no_content'])}, objeto bruto "
+                       f"<code>{esc(pv['objeto_bruto_sha256'][:16])}…</code> ({detalhe})</li>")
+    portal.append(f"<li>{P.link(P.url_empenho(c['entidade'], c['anoempenho'], c['empenho']), 'Detalhe do empenho no portal')}"
+                  " (aba Movimentação: lançamentos com data)</li>")
+    return (f'<details class="origem"><summary>onde conferir</summary><ul>{"".join(portal)}</ul>'
+            f'{_registro_tecnico("<ul>" + "".join(tecnico) + "</ul>") if tecnico else ""}</details>')
 
 
 def _lista_da_variacao(r, sel, pagina, base):
@@ -1347,14 +1382,14 @@ def empenho(p, q):
     for i, o in enumerate(d["ocorrencias"], 1):
         if len(d["ocorrencias"]) > 1:
             corpo.append(f"<h2>Ocorrência {i} de {len(d['ocorrencias'])} no snapshot</h2>")
-        corpo.append(_detalhe_ocorrencia(o))
+        corpo.append(_detalhe_ocorrencia(o, d["chave"]))
     if d.get("nota"):
         corpo.append(f'<p class="nota">{esc(d["nota"])}</p>')
-    corpo.append(_movimentacao(d["movimentacao"]))
+    corpo.append(_movimentacao(d["movimentacao"], d["chave"]))
     return titulo, "".join(corpo)
 
 
-def _detalhe_ocorrencia(o):
+def _detalhe_ocorrencia(o, chave):
     c, dv, cred = o["campos"], o["derivados"], o["credor"]
     ident = fm.lista_definicoes([
         ("Entidade", esc(c["entidade"]["valor"])),
@@ -1403,7 +1438,7 @@ def _detalhe_ocorrencia(o):
     partes.append(f'<section class="grupo"><h2>Classificação orçamentária</h2>{outros}</section>')
     if o["par_espelhado"]:
         partes.append(_par(o["par_espelhado"]))
-    partes.append(_origem_registro(o["proveniencia"]))
+    partes.append(_origem_registro(o["proveniencia"], chave))
     return "".join(partes)
 
 
@@ -1421,11 +1456,14 @@ def _par(par):
             ]) + f'<p class="nota">{esc(par["nota"])}</p></section>')
 
 
-def _origem_registro(pv):
+def _origem_registro(pv, chave):
+    """Onde conferir este empenho no portal (visivel) e o registro tecnico da coleta (recolhido)."""
     s = pv["snapshot"]
     parametros = ", ".join(f"{k}={v}" for k, v in sorted(s["parametros"].items()))
-    return ('<section class="grupo origem-dado" id="origem"><details><summary>Origem do dado (fonte, endpoint, '
-            "snapshot, hash)</summary>"
+    return ('<section class="grupo origem-dado" id="origem"><h2>Origem do dado: onde conferir no Portal</h2>'
+            + P.como_conferir_registro(s, chave, pv)
+            + P.condicoes(s["data_final"], fm.data_br(s["coletada_em"], True))
+            + "<details><summary>Registro técnico (auditoria): fonte, endpoint, snapshot, hash</summary>"
             + fm.lista_definicoes([
                 ("Fonte", esc(F.ELOTECH["rotulo"])),
                 ("Endpoint", f"<code>{esc(s['endpoint'])}</code>"),
@@ -1443,14 +1481,17 @@ def _origem_registro(pv):
             ]) + "</details></section>")
 
 
-def _movimentacao(m):
+def _movimentacao(m, chave):
+    no_portal = (f'<p>{P.link(P.url_empenho(chave["entidade"], chave["anoempenho"], chave["empenho"]), "Movimentação no portal")}'
+                 " (detalhe do empenho, aba Movimentação: todos os lançamentos até hoje, com a data de cada um).</p>")
     if not m.get("coletada"):
-        return f'<section class="grupo"><h2>Movimentações</h2><p>{esc(m.get("nota") or "não coletada")}.</p></section>'
+        return (f'<section class="grupo"><h2>Movimentações</h2><p>{esc(m.get("nota") or "não coletada")}.</p>'
+                f"{no_portal}</section>")
     linhas = [[esc(fm.data_br(l["data"])), esc(l["tipo_lancamento"]), esc(l["descricao"]), fm.valor(l["valor_c"]),
                esc(l["efeito"] or "—"), esc(l["liquidacao_referida"] or "—")] for l in m["lancamentos"]]
     s = m["snapshot"]
     return ('<section class="grupo"><h2>Movimentações</h2>'
-            + fm.selo("elotech", "da_fonte")
+            + fm.selo("elotech", "da_fonte") + no_portal
             + f'<p class="nota">Snapshot <code>{esc(s["snapshot_uid"])}</code>, coletado em '
             + f'{esc(fm.data_br(s["coletada_em"], True))}, endpoint <code>{esc(s["endpoint"])}</code>. Efeito e '
             + "liquidação referida são interpretação (MOV-REF v1, operacional).</p>"
@@ -1621,8 +1662,13 @@ def _coerencia(p):
 def _origem_coerencia(x):
     pdfs = " e ".join(f"<code>{esc(u)}</code>" for u in x["pdfs"])
     api = [u for lado in ("de", "para") for u in (x["api_snapshots"][lado] or [])]
-    return (f'<details class="origem"><summary>origem</summary>PDFs do RREO (snapshots): {pdfs}. Snapshots da API: '
-            + (" ".join(f"<code>{esc(u)}</code>" for u in api) or "—") + ".</details>")
+    no_portal = " e ".join(P.link(P.url_pdf(i), f"PDF de {ex}") for i, ex in zip(x.get("pdfs_arquivo") or [],
+                                                                                 (x["de"], x["para"])) if i)
+    return (f'<details class="origem"><summary>onde conferir</summary><p>No portal: {no_portal or "—"} (coluna L do '
+            "primeiro; colunas (a) e (f) do segundo).</p>"
+            + _registro_tecnico(f"PDFs do RREO (snapshots): {pdfs}. Snapshots da API: "
+                                + (" ".join(f"<code>{esc(u)}</code>" for u in api) or "—") + ".")
+            + "</details>")
 
 
 # ---------------------------------------------------------------------------------------------- pares (tecnico)

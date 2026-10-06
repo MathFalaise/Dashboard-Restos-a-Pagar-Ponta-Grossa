@@ -15,7 +15,7 @@ import time
 from urllib.parse import parse_qsl, urlsplit
 
 import pytest
-from conftest import chamar, dados, ok, registro_sintetico as _reg
+from conftest import chamar, dados, ok, registro_sintetico as _reg, links_permitidos
 
 import recalculo_bruto as rb
 from rp.interface import Aplicacao
@@ -220,7 +220,7 @@ def test_SINTETICO_tela_valores_links_e_texto_da_faixa(composicao):
             q = dict(parse_qsl(urlsplit(href.replace("&amp;", "&")).query))
             lista = dados(ok(app, "/empenhos", **q))
             assert lista["tot-registros"] > 0
-        assert all(h.startswith("/") for h in re.findall(r'href="([^"]*)"', corpo))
+        assert links_permitidos(corpo)
         assert "style=" not in corpo and "<script" not in corpo
     corpo = ok(app, "/composicao", exercicio=2025, data_final="2025-12-31", dimensao="faixa")
     secao = re.search(r'<section class="grupo" id="composicao-faixa">.*?</section>', corpo, re.S).group(0)

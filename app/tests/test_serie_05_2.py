@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 
 import pytest
-from conftest import RAIZ_PROJETO, chamar, dados, ok, registro_sintetico as _reg
+from conftest import RAIZ_PROJETO, chamar, dados, ok, registro_sintetico as _reg, links_permitidos
 
 import recalculo_bruto as rb
 from rp.interface import Aplicacao
@@ -91,7 +91,7 @@ def test_SINTETICO_tela_mostra_lacunas_e_o_grafico_e_conforme(serie_sintetica):
     svg = re.search(r"<svg.*?</svg>", corpo, re.S).group(0)
     assert "style=" not in svg and "<style" not in svg and "<script" not in corpo.lower()
     assert svg.count('class="ponto"') == 3 and svg.count('class="lacuna"') == 1
-    assert all(h.startswith("/") for h in re.findall(r'href="([^"]*)"', corpo))
+    assert links_permitidos(corpo)
     assert re.search(r'role="img" aria-labelledby="graf-s1-t graf-s1-d"', svg)
     zero = ok(app, "/evolucao", exercicio=2026, entidade=15)
     svg0 = re.search(r"<svg.*?</svg>", zero, re.S).group(0)

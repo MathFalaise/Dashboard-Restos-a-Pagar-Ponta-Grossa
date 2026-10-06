@@ -23,6 +23,7 @@ from conftest import RAIZ_PROJETO, chamar, dados, ok, registro_sintetico as _reg
 from rp import consultas, derivar, execucoes, governanca
 from rp.interface import Aplicacao, aplicacao, criar_servidor, paginas
 from rp.interface import formato as fm
+from rp.interface import portal
 from rp.painel import Painel, publico
 
 PASTA_INTERFACE = RAIZ_PROJETO / "app" / "rp" / "interface"
@@ -124,7 +125,8 @@ def test_01_interface_nao_chama_a_api(app_producao, producao, sem_rede):
                 nomes = [base] + [f"{base}.{a.name}".replace("rp..", "rp.") for a in no.names]
             for n in nomes:
                 assert not any(n == p or n.startswith(p + ".") for p in proibidos), (arq.name, n)
-        assert "pontagrossa.pr.gov.br" not in arq.read_text(encoding="utf-8")
+        if arq.name != "portal.py":   # portal.py so monta os links "onde conferir" (texto do href), nunca conecta
+            assert "pontagrossa.pr.gov.br" not in arq.read_text(encoding="utf-8")
 
 
 # ================================================================== 2. banco somente leitura
@@ -418,7 +420,13 @@ def test_cabecalhos_de_seguranca_e_nenhum_recurso_externo(app_producao):
         assert cab["Referrer-Policy"] == "no-referrer" and cab["X-Frame-Options"] == "DENY"
         if caminho != "/estilo.css":
             assert "<script" not in corpo.lower() and " src=" not in corpo.lower()
-            assert all(h.startswith("/") for h in re.findall(r'href="([^"]*)"', corpo)), caminho
+            # link para fora so para o portal oficial (onde conferir o valor), marcado rel="external"; nenhum recurso
+            # externo e carregado (sem src) e a interface continua funcionando sem rede
+            for tag in re.findall(r"<a\s[^>]*>", corpo):
+                href = re.search(r'href="([^"]*)"', tag).group(1)
+                assert href.startswith(("/", "#")) or (href.startswith(portal.SITE + "/") or href.startswith(portal.API + "/")) \
+                    and 'rel="external' in tag, (caminho, tag)
+            assert all(h.startswith(("/", "#", portal.DOMINIO + "/")) for h in re.findall(r'href="([^"]*)"', corpo)), caminho
     assert "@import" not in aplicacao.ESTILO.decode() and "url(" not in aplicacao.ESTILO.decode()
 
 
