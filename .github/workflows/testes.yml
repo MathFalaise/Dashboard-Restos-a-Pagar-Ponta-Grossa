@@ -106,6 +106,6 @@ jobs:
           python - <<'EOF'
           import json, os
           d = json.load(open("iniciar.json", encoding="utf-8"))
-          assert os.path.samefile(d["snapshots"], os.path.join(os.environ["GITHUB_WORKSPACE"], "snapshots")), d
+          assert os.path.samefile(d["snapshots"], os.path.join(os.environ["GITHUB_WORKSPACE"], "data", "snapshots")), d
           print(d)
           EOF
