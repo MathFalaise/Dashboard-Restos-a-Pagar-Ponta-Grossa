@@ -72,13 +72,16 @@ def regras(lista):
                      for r in lista) or "—"
 
 
-def situacao_regra(codigo_versao, situacao):
+def situacao_regra(codigo_versao, situacao, ressalva=None):
     """'RREO-COL v2' + situacao -> texto com o rotulo explicito: regra experimental = ANALISE EXPERIMENTAL; nao
-    recomendada = analise nao recomendada. So regra operacional sai sem destaque."""
+    recomendada = analise nao recomendada. So regra operacional sai sem destaque; promovida sem conferencia
+    independente (decisao D7) sai como "operacional com ressalva", com o motivo."""
     if situacao == "experimental":
         return f'{esc(codigo_versao)} <span class="selo-analise">ANÁLISE EXPERIMENTAL</span>'
     if situacao == "nao_recomendada":
         return f'{esc(codigo_versao)} <span class="selo-analise">ANÁLISE — REGRA NÃO RECOMENDADA</span>'
+    if situacao == "operacional" and ressalva:
+        return f"{esc(codigo_versao)} (operacional com ressalva: {esc(ressalva)})"
     return f"{esc(codigo_versao)} ({esc(SITUACAO_REGRA.get(situacao, situacao))})"
 
 

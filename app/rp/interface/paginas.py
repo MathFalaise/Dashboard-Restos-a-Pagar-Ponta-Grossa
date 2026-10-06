@@ -1663,7 +1663,8 @@ def pares(p, q):
 def metodologia(p, q):
     m = p.metodologia()
     f = p.fontes()
-    regras = [[esc(r["codigo"]), esc(r["versao"]), fm.situacao_regra(f"{r['codigo']} v{r['versao']}", r["situacao"]),
+    regras = [[esc(r["codigo"]), esc(r["versao"]),
+               fm.situacao_regra(f"{r['codigo']} v{r['versao']}", r["situacao"], r.get("ressalva")),
                "sim" if r["compoe_indicador_publicado"] else "não", esc(r["status_evidencia"]), esc(r["definicao"])]
               for r in p.regras()]
     campos = [[esc(rot), f"<code>{esc(api)}</code>", esc(sig), esc(st),

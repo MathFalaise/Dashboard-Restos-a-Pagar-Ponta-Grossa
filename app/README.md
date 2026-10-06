@@ -114,6 +114,8 @@ Os testes são conferidos por quem disponibiliza. Se um portão falhar, o retrat
 - HTTP: só falha transitória (tempo esgotado, conexão) é repetida; erro de TLS e URL inválida falham na hora; erro de programação no transporte não é tratado como rede.
 - Migração de esquema é uma transação única (falha no meio não deixa o esquema pela metade); banco novo é montado num temporário e publicado no fim.
 - O catálogo de regras gravado no banco precisa ser o do código: editar uma regra, parâmetro ou decisão já gravados é recusado (crie versão nova).
+- Esquema v5 (decisão D4, 06/10/2026): gatilhos `ri_*` recusam na gravação a linha derivada sem a origem na mesma normalização (derivado, movimentação interpretada, par espelhado), a anomalia de coleta inexistente, o snapshot inexistente citado em `coletas_json`, a regra inexistente na derivação e apagar a camada 1 de uma normalização que ainda tem derivações. Nenhuma tabela foi recriada nem linha alterada; o portão `integridade_relacional` continua lendo, como segunda defesa.
+- Promoção de regra a operacional (decisão D7, desde 06/10/2026), em dois trilhos: regra que **não** compõe indicador publicado exige evidência documentada e teste de regressão existente; regra que compõe exige também conferência independente registrada (evidência externa) ou, sem ela em 30 dias (prazo do e-SIC), uma ressalva escrita, que a metodologia mostra como "operacional com ressalva". O banco recusa por gatilho a promoção fora desses critérios. Promoção nova só por `decidir-regra`, nunca por evento versionado.
 - `verificar` confere cada coleta com o seu manifesto campo a campo e relata objeto sem manifesto e arquivo temporário abandonado (nunca apaga).
 - Hash de objeto é validado antes de virar caminho de arquivo; descompressão tem teto; manifesto nunca é sobrescrito, nem por duas gravações simultâneas.
 - Backup nunca sobrescreve outro backup (sufixo `-2`, `-3`... no mesmo segundo); o `--motivo` não escolhe pasta.
@@ -326,6 +328,12 @@ Situação de governança de cada regra (histórico de decisões e parâmetros):
 
 ```bash
 python -m rp painel regras
+```
+
+Registrar uma decisão de governança (acrescenta ao histórico, nunca edita). Promover a operacional exige `--teste` e, se a regra compõe o indicador publicado (`--compoe-indicador`), `--evidencia` (id da evidência externa) ou `--ressalva`:
+
+```bash
+python -m rp decidir-regra --codigo RREO-COL --versao 2 --situacao operacional --status "FORTE EVIDÊNCIA" --compoe-indicador --motivo "..." --fonte "etapa04/RELATORIO_04_4.md secao 14" --teste "tests/test_x.py::test_y" --evidencia 3
 ```
 
 Testes (nenhum acessa a internet; os da interface bloqueiam qualquer conexão para fora e sobem um servidor HTTP em 127.0.0.1; `test_casos_reais.py`, `test_interface_casos_reais.py` e `test_homologacao_real.py` montam um banco temporário a partir do armazém real `../snapshots`, só com leitura; `test_homologacao_real.py` recalcula os indicadores direto do JSON bruto da API):

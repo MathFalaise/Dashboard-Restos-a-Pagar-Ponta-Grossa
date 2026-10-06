@@ -14,12 +14,13 @@ from .comparador import CorteDiferente
 from .config import ConfiguracaoInvalida, carregar
 from .evidencias import EvidenciaInvalida
 from .execucoes import ExclusaoRecusada
+from .governanca import SITUACOES, STATUS, DecisaoInvalida
 from .http import Cliente
 from .painel.consulta import ErroDoPainel
 
 ERROS_ESPERADOS = (ParametroInvalido, CorteDiferente, ExclusaoRecusada, ConfiguracaoInvalida, banco.MigracaoPendente,
                    banco.BancoEmPastaSincronizada, ManifestoInvalido, ObjetoCorrompido, FileExistsError,
-                   FileNotFoundError, KeyError, EvidenciaInvalida, ErroDoPainel, DataInvalida)
+                   FileNotFoundError, KeyError, EvidenciaInvalida, ErroDoPainel, DataInvalida, DecisaoInvalida)
 CONSULTAS_PAINEL = ("contexto", "cortes", "entidades", "indicadores", "evolucao", "dimensao", "empenhos", "empenho",
                     "fornecedores", "pares", "retratos", "comparar-retratos", "reconciliacao", "coerencia", "analitica",
                     "regras", "evidencias", "fontes", "metodologia", "dicionario")
@@ -123,6 +124,19 @@ def _main(argv=None):
     p.add_argument("--entidade", type=int, required=True)
     p.add_argument("--exercicio", type=int, required=True)
     p.add_argument("--data-final", required=True)
+    p = sub.add_parser("decidir-regra", help="acrescenta uma decisao de governanca sobre uma versao de regra "
+                                             "(nunca edita); promocao a operacional segue a decisao D7")
+    p.add_argument("--codigo", required=True)
+    p.add_argument("--versao", type=int, required=True)
+    p.add_argument("--situacao", choices=SITUACOES, required=True)
+    p.add_argument("--status", choices=STATUS, required=True, help="status da evidencia")
+    p.add_argument("--compoe-indicador", action="store_true", help="compoe o indicador publicado (so operacional)")
+    p.add_argument("--motivo", required=True)
+    p.add_argument("--fonte", required=True, help="evidencia documentada (relatorio, secao)")
+    p.add_argument("--origem", default="decisao do responsavel pelo projeto")
+    p.add_argument("--teste", help="teste de regressao: tests/<arquivo>.py::<teste> (obrigatorio na promocao)")
+    p.add_argument("--evidencia", type=int, help="id da evidencia externa da conferencia independente")
+    p.add_argument("--ressalva", help="sem conferencia independente no prazo: o motivo (aparece na metodologia)")
     p = sub.add_parser("registrar-evidencia", help="registra documento externo (e-SIC, norma, nota...) com SHA-256")
     p.add_argument("--tipo", choices=sorted(TIPOS_EVIDENCIA), required=True)
     p.add_argument("--descricao", required=True)
@@ -299,6 +313,14 @@ def _main(argv=None):
         r["por_tipo_status"] = con.execute("SELECT tipo, status, COUNT(*) FROM coleta GROUP BY 1,2").fetchall()
         r["espaco_bytes"] = banco.espaco(cfg)
         print(json.dumps(r, ensure_ascii=False, indent=1))
+        return 0
+    if a.cmd == "decidir-regra":
+        from . import governanca
+        ident = governanca.registrar_decisao(con, a.codigo, a.versao, a.situacao, a.status, a.compoe_indicador, a.motivo,
+                                             a.fonte, a.origem, evidencia_externa_id=a.evidencia,
+                                             teste_regressao=a.teste, ressalva=a.ressalva)
+        print(json.dumps({"decisao": ident, **governanca.situacao_atual(con)[(a.codigo, a.versao)]},
+                         ensure_ascii=False, indent=1))
         return 0
     if a.cmd == "registrar-evidencia":
         from . import evidencias

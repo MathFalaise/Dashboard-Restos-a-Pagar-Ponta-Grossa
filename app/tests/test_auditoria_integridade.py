@@ -44,6 +44,10 @@ def test_DB01_alteracao_direta_em_tabela_derivada_reprova_o_portao(mundo):
 def test_DB02_linha_orfa_nas_tabelas_sem_FK_reprova_o_portao(mundo):
     _, did = _mundo_processado(mundo)
     regra = mundo.con.execute("SELECT id FROM regra WHERE codigo='ANOM-REG'").fetchone()[0]
+    # desde o esquema v5 (decisao D4) os gatilhos ri_* recusam essas linhas na gravacao; sem eles (banco v4 ou
+    # esquema adulterado) o portao continua sendo a defesa que le
+    for (nome,) in mundo.con.execute("SELECT name FROM sqlite_master WHERE type='trigger' AND name LIKE 'ri_%'").fetchall():
+        mundo.con.execute(f"DROP TRIGGER {nome}")
     with mundo.con:
         mundo.con.execute("INSERT INTO anomalia VALUES (?,?,?,?,?,?,?,?)", (did, regra, "LIQ-NEG", 9999, 1, 2024, 1, None))
         mundo.con.execute("INSERT INTO rp_derivado SELECT derivacao_id, 9999, indice, coleta_id, entidade, anoempenho, "
