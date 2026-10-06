@@ -23,9 +23,9 @@ Código de **produção**:
 
 ## Onde fica cada coisa (`config.toml`)
 
-- **Banco ativo e logs:** `~/RestosAPagar_local/` (pasta do usuário, em qualquer sistema), fora do OneDrive. Outra pasta: variável de ambiente `RP_DADOS_LOCAIS` (caminho relativo = a partir de `app/`). O banco fica em `<pasta>/banco/restos_a_pagar.sqlite` e os logs em `<pasta>/logs/`.
+- **Banco ativo e logs:** `~/RestosAPagar_local/` (pasta do usuário, em qualquer sistema), fora do OneDrive. Outra pasta: variável de ambiente `RP_DADOS_LOCAIS` (caminho relativo = a partir de `app/`). O banco fica em `<pasta>/banco/restos_a_pagar.sqlite` e os logs em `<pasta>/logs/` (um arquivo por dia; os de mais de 90 dias saem sozinhos).
 - **Outro arquivo de configuração:** variável `RP_CONFIG` ou `python -m rp --config ARQUIVO ...`.
-- **Snapshots brutos** (`../snapshots`) e **backups** (`../backups`): no projeto. São arquivos gravados uma única vez.
+- **Snapshots brutos** (`../snapshots`) e **backups** (`../backups`): no projeto. São arquivos gravados uma única vez. Só os 466 snapshots da base homologada estão no Git: desde 06/10/2026 (decisão D2) `snapshots/` está no `.gitignore` e um snapshot novo só é versionado com `git add -f`. Guarde a pasta inteira (por exemplo, no OneDrive): o banco só é reconstruível com ela.
 - Se o banco se perder: `python -m rp reconstruir --destino NOVO.sqlite` refaz tudo a partir de `snapshots/` (depois, `python -m rp processar` recria normalização e derivação com os mesmos hashes).
 - Backup com mais de 100 MB (limite por arquivo do GitHub) fica só na cópia local, listado pelo nome no `.gitignore` e nunca apagado. Hoje: `backups/20260930-145737_antes-migracao-v3-v4.sqlite` (120,5 MB). O repositório não depende dele: o armazém `snapshots/` basta para reconstruir o banco.
 
@@ -63,7 +63,7 @@ python -m rp processar --normalizacao 1 --em 2026-09-29T23:59:59-03:00
 
 4. Confira: `python -m rp verificar` (sem problemas), `python -m rp portoes` (apto) e `python -m pytest tests`. Os hashes de resultado devem ser os do projeto (`2f6b4e29…` e `b8a0b2ed…`). Para provar que o banco novo é equivalente a outro (ex.: o de outra máquina), camada a camada: `python -m rp comparar-bancos --banco NOVO.sqlite --outro OUTRO.sqlite` (código de saída 0 = equivalentes).
 
-Para reproduzir exatamente o ambiente homologado, inclusive as dependências transitivas, instale `requirements-lock.txt` em vez de `requirements-dev.txt`.
+Para reproduzir exatamente o ambiente homologado, inclusive as dependências transitivas, instale `requirements-lock.txt` em vez de `requirements-dev.txt` (Python 3.14, Windows ou Linux de 64 bits). A trava tem o SHA-256 de cada arquivo: o pip recusa qualquer pacote que não seja exatamente o conferido. Atualizar uma versão exige gerar os hashes de novo (`pip download` do pacote para `win_amd64` e `manylinux` x86_64, Python 3.14, conferindo com os publicados no PyPI). O CI roda o `pip-audit` sobre a trava: versão travada com vulnerabilidade conhecida reprova.
 
 Opcional: `python -m pip install -e .` (dentro de `app/`, sempre em modo editável) instala o comando `rp`, que funciona de qualquer pasta: `rp verificar` = `python -m rp verificar`. Instalado como cópia, o pacote não acharia `config.toml` nem o armazém.
 
@@ -109,11 +109,13 @@ Os testes são conferidos por quem disponibiliza. Se um portão falhar, o retrat
 - Soma = total não basta para dizer que a coleta está completa (auditoria técnica e revisão crítica, `../auditoria/`). A coleta de listagem PEDE a ordem (anoempenho, empenho) e só é `completa` se, além disso: cada página traz `number`, `numberOfElements`, `size`, `totalPages`, `first` e `empty` coerentes e ecoa a ordem pedida; nenhum registro idêntico reaparece em página seguinte; a ordem cresce na troca de página; nenhuma chave (entidade, anoempenho, empenho) se repete no retrato, dentro ou entre páginas; todo registro é da entidade pedida; e, com mais de uma página, uma segunda leitura de todas elas vem igual (os hashes vão para o manifesto, em `segunda_leitura`). Entidade ou exercício fora do catálogo vigente fica na observação: a API responde 200 vazio para entidade inexistente. O contrato observado da API está em `../auditoria/CONTRATO_API_ELOTECH.md`.
 - Catálogo (entidades, exercícios, publicações) só é `completa` se cumprir um contrato mínimo: JSON válido não basta, porque um objeto de erro com HTTP 200 também é JSON.
 - O manifesto de cada snapshot novo grava quando a coleta terminou (`coleta_finalizada_em`) e a estrutura da resposta (`contrato_api`: caminhos, tipos e o SHA-256 deles).
-- Retrato com a mesma chave de empenho mais de uma vez (anomalia CHAVE-DUP), exata ou conflitante, nunca é o vigente do corte: derivação, painel e consultas usam o retrato válido anterior (com aviso) ou mostram o dado como indisponível. Nada é apagado: as ocorrências ficam no banco e na tela de qualidade.
+- Retrato com a mesma chave de empenho mais de uma vez (anomalia CHAVE-DUP), exata ou conflitante, nunca é o vigente do corte: derivação, painel e consultas usam o retrato válido anterior (com aviso) ou mostram o dado como indisponível. Nada é apagado: as ocorrências ficam no banco e na tela de qualidade. O portão `retrato_sem_chave_repetida` traz o comando de recoleta de cada retrato; recolete **mais tarde** (a segunda leitura da coleta já releu as páginas na hora), sem recoleta automática.
 - `importar-etapas-anteriores`: o mesmo snapshot com outro conteúdo (bytes ou parâmetros) é conflito, nunca "já existe, então ignora"; carimbo com fuso é convertido para Brasília, não sobrescrito.
 - HTTP: só falha transitória (tempo esgotado, conexão) é repetida; erro de TLS e URL inválida falham na hora; erro de programação no transporte não é tratado como rede.
 - Migração de esquema é uma transação única (falha no meio não deixa o esquema pela metade); banco novo é montado num temporário e publicado no fim.
 - O catálogo de regras gravado no banco precisa ser o do código: editar uma regra, parâmetro ou decisão já gravados é recusado (crie versão nova).
+- Esquema v5 (decisão D4, 06/10/2026): gatilhos `ri_*` recusam na gravação a linha derivada sem a origem na mesma normalização (derivado, movimentação interpretada, par espelhado), a anomalia de coleta inexistente, o snapshot inexistente citado em `coletas_json`, a regra inexistente na derivação e apagar a camada 1 de uma normalização que ainda tem derivações. Nenhuma tabela foi recriada nem linha alterada; o portão `integridade_relacional` continua lendo, como segunda defesa.
+- Promoção de regra a operacional (decisão D7, desde 06/10/2026), em dois trilhos: regra que **não** compõe indicador publicado exige evidência documentada e teste de regressão existente; regra que compõe exige também conferência independente registrada (evidência externa) ou, sem ela em 30 dias (prazo do e-SIC), uma ressalva escrita, que a metodologia mostra como "operacional com ressalva". O banco recusa por gatilho a promoção fora desses critérios. Promoção nova só por `decidir-regra`, nunca por evento versionado.
 - `verificar` confere cada coleta com o seu manifesto campo a campo e relata objeto sem manifesto e arquivo temporário abandonado (nunca apaga).
 - Hash de objeto é validado antes de virar caminho de arquivo; descompressão tem teto; manifesto nunca é sobrescrito, nem por duas gravações simultâneas.
 - Backup nunca sobrescreve outro backup (sufixo `-2`, `-3`... no mesmo segundo); o `--motivo` não escolhe pasta.
@@ -203,10 +205,16 @@ Ver o que seria apagado:
 python -m rp apagar-execucao --tipo derivacao --id 3 --simular
 ```
 
-Apagar UMA execução inteira (confirmação repetindo o id; faz backup operacional antes e verifica a integridade depois). A pasta `backups_operacionais/` mantém os 3 mais recentes; um arquivo listado em `backups_operacionais/PRESERVAR.txt` (um nome por linha) nunca é apagado pela retenção:
+Apagar UMA execução inteira (confirmação repetindo o id; faz backup operacional antes e verifica a integridade depois). A pasta `backups_operacionais/` mantém os 3 mais recentes como estão e **comprime** os mais antigos (`<nome>.gz`, conferido byte a byte antes de remover o original; nada é apagado). Um arquivo listado em `backups_operacionais/PRESERVAR.txt` (um nome por linha) não entra na retenção:
 
 ```bash
 python -m rp apagar-execucao --tipo derivacao --id 3 --confirmar 3
+```
+
+Comprimir os backups operacionais antigos que já existem, inclusive os preservados (sem `--confirmar`, só lista; os 3 mais recentes ficam como estão). Para voltar a um backup: `python -m gzip -d <nome>.sqlite.gz`:
+
+```bash
+python -m rp comprimir-backups --confirmar
 ```
 
 Devolver ao disco o espaço de execuções apagadas (VACUUM):
@@ -251,7 +259,7 @@ Cópia do banco para `backups/`:
 python -m rp backup --motivo manual
 ```
 
-Contagens:
+Contagens e espaço ocupado por pasta (banco, armazém, backups, backups operacionais, logs):
 
 ```bash
 python -m rp situacao
@@ -274,7 +282,13 @@ Abre em `http://127.0.0.1:8050/` (use `--porta` para outra porta e `--banco` par
 - **Fluxo:** API Elotech → coletor → snapshot imutável → normalização → derivação → `rp/painel` → `rp/interface`. A interface nunca chama a API da Elotech: funciona com a internet desligada e com o portal fora do ar. A coleta continua sendo outro processo.
 - **Somente leitura:** cada requisição abre o banco em modo só leitura (URI `mode=ro` + `PRAGMA query_only`); só GET e HEAD; nada de JavaScript, CDN, fonte externa ou imagem externa; cabeçalhos de segurança com CSP restritiva.
 - **Telas:** Resumo (indicadores do corte, entidades abrangidas, retratos e conferência com o RREO), Evolução no exercício (todos os cortes, lacunas, diferenças e gráfico), Série entre exercícios (2016–2026, fechamento × abertura), Composição do saldo (por dimensão, com fechamento), Variação entre cortes (contribuição de cada empenho), Entidades, Empenhos (filtros, inclusive faixa e classificação orçamentária, busca por ano e número do empenho e paginação), detalhe de um empenho (valores, classificação, par espelhado, movimentação e origem do dado), o empenho em todos os cortes do exercício, Retratos e comparação de retratos, Reconciliação com o RREO (e coerência entre publicações), Qualidade dos dados (anomalias, verificações e situação das diferenças), Metodologia e fontes, e a área técnica de pares espelhados.
-- **Fonte e natureza:** todo valor mostra fonte (API Elotech ou RREO Anexo VII), natureza (`da_fonte`, `publicado`, `derivado`, `analitico`, `diferenca`) e regra; a origem (snapshot, derivação, resposta HTTP, hash do objeto bruto) fica num bloco "Origem do dado".
+- **Fonte e natureza:** todo valor mostra fonte (API Elotech ou RREO Anexo VII), natureza (`da_fonte`, `publicado`, `derivado`, `analitico`, `diferenca`) e regra. O bloco "Origem do dado: onde conferir no Portal" leva ao lugar do Portal da Transparência onde o valor se encontra, com as condições de cada caminho (`rp/interface/portal.py`):
+  - **íntegra** na API do próprio portal (`portaltransparencia-api/empenhos/restos-a-pagar`), com o corte (`dataFinal`) e, para um empenho, `empenho`/`anoempenho`: o dado exato do corte, consultado hoje (lançamento com data até o corte feito depois da coleta muda o resultado);
+  - **tela de consulta** (`/{entidade}/restos-a-pagar`): exercício escolhido no topo do portal, sempre o ano inteiro como está hoje (equivale ao corte 31/12), sem totais, retenção ou estorno;
+  - **detalhe do empenho** (`/{entidade}/empenhos/detalhe`, com o ano do empenho): valores e aba Movimentação;
+  - **montante** (cartões, totais): o portal não soma; a página traz a íntegra de cada entidade do total, página a página, e cada cartão diz em que campo e em que coluna da tela o valor aparece;
+  - **RREO:** link direto do PDF e a página do Anexo VII.
+  O registro técnico (snapshot, derivação, resposta HTTP, hash do objeto bruto) continua no mesmo bloco, recolhido: é a prova do que foi coletado se o portal mudar depois. Os links apontam só para o domínio oficial, marcados `rel="external"`; nenhum recurso externo é carregado e a interface continua funcionando sem rede.
 - **Retrato:** toda tela de valores diz exercício, corte, data da coleta, tipo de retrato (atual ou "como estava em") e snapshots usados ("Estado atual da base para o exercício de 2024, corte 31/12/2024, coletado em 30/09/2026"). O campo "Como estava em" mostra o retrato vigente numa data.
 - **Situação do dado:** dado existente; entidade existente sem RP (o único zero); entidade inexistente no exercício; corte não coletado; corte coletado, mas ainda não processado; dado indisponível (só coleta incompleta ou com falha); dado indisponível porque o retrato do corte repete uma chave de empenho (CHAVE-DUP); diferença em relação ao RREO. Só as duas primeiras têm valor. Filtro sem registro mostra "Nenhum resultado encontrado", nunca R$ 0,00.
 - **Dados pessoais:** listas e totais sem nome, código ou documento do credor (só o tipo); detalhe com nome de pessoa jurídica sem documento; nome de pessoa física omitido; filtro de credor só por CNPJ completo de pessoa jurídica. Não há modo interno na interface.
@@ -320,6 +334,12 @@ Situação de governança de cada regra (histórico de decisões e parâmetros):
 
 ```bash
 python -m rp painel regras
+```
+
+Registrar uma decisão de governança (acrescenta ao histórico, nunca edita). Promover a operacional exige `--teste` e, se a regra compõe o indicador publicado (`--compoe-indicador`), `--evidencia` (id da evidência externa) ou `--ressalva`:
+
+```bash
+python -m rp decidir-regra --codigo RREO-COL --versao 2 --situacao operacional --status "FORTE EVIDÊNCIA" --compoe-indicador --motivo "..." --fonte "etapa04/RELATORIO_04_4.md secao 14" --teste "tests/test_x.py::test_y" --evidencia 3
 ```
 
 Testes (nenhum acessa a internet; os da interface bloqueiam qualquer conexão para fora e sobem um servidor HTTP em 127.0.0.1; `test_casos_reais.py`, `test_interface_casos_reais.py` e `test_homologacao_real.py` montam um banco temporário a partir do armazém real `../snapshots`, só com leitura; `test_homologacao_real.py` recalcula os indicadores direto do JSON bruto da API):

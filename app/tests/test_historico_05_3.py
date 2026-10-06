@@ -13,7 +13,7 @@ import re
 import time
 
 import pytest
-from conftest import chamar, dados, ok, registro_sintetico as _reg
+from conftest import chamar, dados, ok, registro_sintetico as _reg, links_permitidos
 
 import recalculo_bruto as rb
 from rp.interface import Aplicacao
@@ -122,7 +122,7 @@ def test_SINTETICO_tela_retrato_lacunas_e_grafico(historico):
     assert "R$" not in linha
     svg = re.search(r"<svg.*?</svg>", corpo, re.S).group(0)
     assert svg.count('class="ponto"') == 5 and svg.count('class="lacuna"') == 2 and "style=" not in svg
-    assert all(h.startswith("/") for h in re.findall(r'href="([^"]*)"', corpo))
+    assert links_permitidos(corpo)
     assert not PROIBIDO.search(re.sub(r"<[^>]+>", " ", corpo))
     v = dados(ok(app, "/historico"))
     assert (v["fa-2024-s1"], v["fa-2024-af"], v["fa-2024-dif"]) == (13000, 12500, -500)

@@ -13,8 +13,23 @@ cada versao e um HISTORICO de decisoes em `regra_situacao` (tambem imutavel: so 
 A situacao atual de uma regra e a decisao mais recente (decidido_em, depois id). A decisao antiga continua la.
 Os eventos abaixo sao a transcricao versionada dessas decisoes; `semear` os copia para o banco (INSERT OR IGNORE).
 Decisao nova = evento novo no fim da lista (ou `registrar_decisao`), nunca edicao de um evento antigo.
+
+Promocao a operacional (decisao D7 da revisao critica, valida desde POLITICA_PROMOCAO_DESDE), em dois trilhos:
+  * regra que NAO compoe indicador publicado (qualidade, anomalias, pareamento): evidencia documentada (`fonte`)
+    + teste de regressao (`teste_regressao` = "tests/<arquivo>.py::<teste>", que precisa existir);
+  * regra que compoe indicador publicado: o mesmo + conferencia independente registrada (`evidencia_externa_id`:
+    RREO, e-SIC...). Se ela nao existir ou o e-SIC nao responder no prazo (PRAZO_CONFERENCIA_DIAS), a saida
+    documentada e promover com `ressalva` (o motivo), que aparece na metodologia: "operacional com ressalva".
+Promocao nova so por `registrar_decisao` (ou `python -m rp decidir-regra`), nunca por evento novo em EVENTOS; o
+banco v5 recusa por gatilho a promocao fora dos criterios.
 """
+from pathlib import Path
+
 from . import agora
+from .banco import POLITICA_PROMOCAO_DESDE
+
+PRAZO_CONFERENCIA_DIAS = 30            # e-SIC: 20 dias + 10 de prorrogacao (Lei 12.527/2011, art. 11)
+TESTES = Path(__file__).resolve().parents[1] / "tests"
 
 SITUACOES = ("operacional", "experimental", "nao_recomendada", "supersedida", "aposentada")
 STATUS = ("CONFIRMADO", "FORTE EVIDÊNCIA", "HIPÓTESE", "NÃO DETERMINADO")
@@ -87,13 +102,45 @@ def semear(con, R):
                     (R[(codigo, versao)], situacao, status, compoe, R[sup] if sup else None, motivo, fonte, quando, origem))
 
 
+def teste_existe(referencia):
+    """'tests/<arquivo>.py::<teste>' existe (arquivo e funcao) em app/tests?"""
+    arq, _, nome = str(referencia or "").partition("::")
+    if not (arq.startswith("tests/") and arq.endswith(".py") and nome.isidentifier() and nome.startswith("test")):
+        return False
+    caminho = TESTES.parent / arq
+    try:
+        return (caminho.resolve().is_relative_to(TESTES.resolve())
+                and f"def {nome}(" in caminho.read_text(encoding="utf-8"))
+    except OSError:
+        return False
+
+
+def _conferir_promocao(situacao, compoe, fonte, teste_regressao, evidencia_externa_id, ressalva):
+    """Criterios da decisao D7 para uma promocao a operacional (ver docstring do modulo)."""
+    if situacao != "operacional":
+        return
+    if not str(fonte or "").strip():
+        raise DecisaoInvalida("promocao a operacional exige evidencia documentada (fonte)")
+    if not teste_existe(teste_regressao):
+        raise DecisaoInvalida("promocao a operacional exige teste de regressao existente "
+                              f"('tests/<arquivo>.py::<teste>'): {teste_regressao!r}")
+    if compoe and evidencia_externa_id is None and not str(ressalva or "").strip():
+        raise DecisaoInvalida("regra que compoe indicador publicado exige conferencia independente (evidencia externa "
+                              f"registrada) ou, sem ela no prazo de {PRAZO_CONFERENCIA_DIAS} dias, ressalva documentada")
+
+
 def registrar_decisao(con, codigo, versao, situacao, status_evidencia, compoe_indicador_publicado, motivo, fonte, origem,
-                      supersedida_por=None, evidencia_externa_id=None, decidido_em=None):
-    """Acrescenta uma decisao ao historico (nunca edita). Devolve o id do evento."""
+                      supersedida_por=None, evidencia_externa_id=None, decidido_em=None, teste_regressao=None,
+                      ressalva=None):
+    """Acrescenta uma decisao ao historico (nunca edita). Devolve o id do evento. Promocao a operacional segue os
+    criterios da decisao D7 (docstring do modulo)."""
     if situacao not in SITUACOES or status_evidencia not in STATUS:
         raise DecisaoInvalida(f"situacao/status invalido: {situacao!r}, {status_evidencia!r}")
     if compoe_indicador_publicado and situacao != "operacional":
         raise DecisaoInvalida("so regra operacional pode compor o indicador publicado")
+    if ressalva is not None and situacao != "operacional":
+        raise DecisaoInvalida("ressalva so existe na promocao a operacional")
+    _conferir_promocao(situacao, compoe_indicador_publicado, fonte, teste_regressao, evidencia_externa_id, ressalva)
     ids = {(c, v): i for i, c, v in con.execute("SELECT id, codigo, versao FROM regra")}
     if (codigo, versao) not in ids or (supersedida_por and tuple(supersedida_por) not in ids):
         raise DecisaoInvalida(f"regra inexistente: {codigo} v{versao} / {supersedida_por}")
@@ -102,32 +149,36 @@ def registrar_decisao(con, codigo, versao, situacao, status_evidencia, compoe_in
         raise DecisaoInvalida(f"evidencia externa {evidencia_externa_id} nao registrada")
     with con:
         return con.execute("INSERT INTO regra_situacao (regra_id, situacao, status_evidencia, compoe_indicador_publicado, "
-                           "supersedida_por, motivo, fonte, evidencia_externa_id, decidido_em, origem_decisao) "
-                           "VALUES (?,?,?,?,?,?,?,?,?,?)",
+                           "supersedida_por, motivo, fonte, evidencia_externa_id, decidido_em, origem_decisao, "
+                           "teste_regressao, ressalva) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
                            (ids[(codigo, versao)], situacao, status_evidencia, int(bool(compoe_indicador_publicado)),
                             ids[tuple(supersedida_por)] if supersedida_por else None, motivo, fonte, evidencia_externa_id,
-                            decidido_em or agora(), origem)).lastrowid
+                            decidido_em or agora(), origem, teste_regressao,
+                            str(ressalva).strip() if ressalva is not None else None)).lastrowid
 
 
 def situacao_atual(con):
     """{(codigo, versao): decisao mais recente} com o historico completo de cada regra."""
     atual = {}
     for (codigo, versao, uso, status0, rid, sid, situacao, status, compoe, sup, motivo, fonte, evid, quando,
-         origem) in con.execute(
+         origem, teste, ressalva) in con.execute(
             "SELECT r.codigo, r.versao, r.uso, r.status_evidencia, r.id, s.id, s.situacao, s.status_evidencia, "
             "s.compoe_indicador_publicado, s.supersedida_por, s.motivo, s.fonte, s.evidencia_externa_id, s.decidido_em, "
-            "s.origem_decisao FROM regra r LEFT JOIN regra_situacao s ON s.regra_id = r.id "
+            "s.origem_decisao, s.teste_regressao, s.ressalva FROM regra r LEFT JOIN regra_situacao s "
+            "ON s.regra_id = r.id "
             "ORDER BY r.codigo, r.versao, s.decidido_em, s.id"):
         item = atual.setdefault((codigo, versao), {"codigo": codigo, "versao": versao, "uso_original": uso,
                                                    "status_evidencia_original": status0, "historico": []})
         if sid is not None:
             decisao = {"situacao": situacao, "status_evidencia": status, "compoe_indicador_publicado": bool(compoe),
                        "supersedida_por": sup, "motivo": motivo, "fonte": fonte, "evidencia_externa_id": evid,
-                       "decidido_em": quando, "origem_decisao": origem}
+                       "decidido_em": quando, "origem_decisao": origem, "teste_regressao": teste, "ressalva": ressalva}
             item["historico"].append(decisao)
-            item.update({k: decisao[k] for k in ("situacao", "status_evidencia", "compoe_indicador_publicado")})
+            item.update({k: decisao[k] for k in ("situacao", "status_evidencia", "compoe_indicador_publicado",
+                                                 "ressalva")})
     for item in atual.values():   # regra sem decisao registrada: nao pode compor o indicador publicado
         item.setdefault("situacao", None)
         item.setdefault("status_evidencia", item["status_evidencia_original"])
         item.setdefault("compoe_indicador_publicado", False)
+        item.setdefault("ressalva", None)
     return atual

@@ -1,21 +1,42 @@
-# Trava das versoes EXATAS do ambiente que produziu e homologou os resultados (auditoria DEP-01).
-# Python 3.14.3 (Windows). Gerado do ambiente ativo em 02/10/2026; NENHUMA versao foi atualizada.
+# Trava das versoes EXATAS do ambiente que produziu e homologou os resultados (auditoria DEP-01), agora COM HASHES
+# (revisao critica, decisao D5 de 06/10/2026). Python 3.14.3. Unica versao atualizada: urllib3 2.7.0 -> 2.8.0
+# (06/10/2026, autorizada pelo responsavel), que corrige PYSEC-2026-4175, -4176 e -4177 acusadas pelo pip-audit.
 # requirements.txt fixa so as dependencias diretas; as transitivas (urllib3, idna, charset-normalizer, certifi)
 # variavam entre instalacoes. Instalar exatamente este ambiente: pip install -r requirements-lock.txt
-# Sem hashes de pacote: gerar com hashes exige baixar os pacotes (pendente de autorizacao).
+# Com hashes, o pip passa a exigir que CADA arquivo baixado tenha um dos SHA-256 abaixo (--require-hashes implicito).
+# Hashes so do ambiente homologado: Python 3.14 em Windows (win_amd64) e Linux (manylinux x86_64), conferidos com os
+# publicados no PyPI e com os arquivos baixados. Outras versoes do Python usam requirements-dev.txt (sem hash).
+# Atualizar uma versao = gerar os hashes de novo (ver app/README.md, "Dependencias").
 
 # execucao
-requests==2.34.2
-urllib3==2.7.0
-idna==3.19
-charset-normalizer==3.5.1
-certifi==2026.7.22
-pymupdf==1.28.2
+requests==2.34.2 \
+    --hash=sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0
+urllib3==2.8.0 \
+    --hash=sha256:0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3
+idna==3.19 \
+    --hash=sha256:815e7be7a7806d54abb586dc943addc79e8b2ee16915059658cbeff4b1b43bf4
+charset-normalizer==3.5.1 \
+    --hash=sha256:15f024313246a4ed976c60f440bb8d257815513a681d212ff74fd46f7d715a90 \
+    --hash=sha256:6df0ec430f9a831772c23ca5a224cba36517a58a84bb32c32bb59a9fa67c47f6 \
+    --hash=sha256:70055ff39b97c99e7ae40ea3e393fb62aa2e44dbd9b29f8d14f42fb0025c3959 \
+    --hash=sha256:a6dac12ff6b846103483683f60c5f8fee205121adc58ffd87e90a90a3af69e99 \
+    --hash=sha256:c658c50ac0c98cd755a2dd50b7977d3bca7df401dcc47fbdfa87db53ef7d4e8b
+certifi==2026.7.22 \
+    --hash=sha256:62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775
+pymupdf==1.28.2 \
+    --hash=sha256:397d6715c1f0df7548a92d0afd8ce370fc48fa47aeefac16be2bc04a16a8227f \
+    --hash=sha256:ebd244918798502d7b4504c90410d1711a4d7675a32584ca30f1bab419ecbffe
 
 # testes
-pytest==9.1.1
-pluggy==1.6.0
-iniconfig==2.3.0
-packaging==26.3
-colorama==0.4.6
-Pygments==2.21.0
+pytest==9.1.1 \
+    --hash=sha256:37a86b45efb9a47a61a36449063e8e18d0cab3161329fc099eb21783169c4f0c
+pluggy==1.6.0 \
+    --hash=sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746
+iniconfig==2.3.0 \
+    --hash=sha256:f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12
+packaging==26.3 \
+    --hash=sha256:d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c
+colorama==0.4.6 \
+    --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
+Pygments==2.21.0 \
+    --hash=sha256:2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9
