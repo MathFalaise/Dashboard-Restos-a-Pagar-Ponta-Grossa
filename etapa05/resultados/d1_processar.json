@@ -1,0 +1,1165 @@
+{
+ "normalizacao": 14,
+ "resumo": {
+  "respostas": 613,
+  "ignoradas_sem_pagina": 0,
+  "rp_registro": 266787,
+  "movimentacao_lancamento": 2352,
+  "rreo_valor": 1529,
+  "problemas": [
+   {
+    "coleta_id": 403,
+    "extrator": "rp-rreo-coordenadas/1",
+    "erro": "LayoutDesconhecido: período não encontrado no RREO (coleta 403)"
+   },
+   {
+    "coleta_id": 426,
+    "extrator": "rp-rreo-coordenadas/1",
+    "erro": "LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']"
+   },
+   {
+    "coleta_id": 431,
+    "extrator": "rp-rreo-coordenadas/1",
+    "erro": "LayoutDesconhecido: período não encontrado no RREO (coleta 431)"
+   }
+  ]
+ },
+ "derivacao": 25,
+ "hash_resultado": "b6f80d879ee89d5f17c42de25c6ff3c030b5c7d238a1235035b6b18f23e1802f",
+ "verificacoes": [
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2016, \"entidade\": 1, \"para\": 2017, \"snapshots\": [\"dcc16aed2e054fbd821a1ddd95571b36\", \"e0c86ce96e0746a8b40d5bf58214f203\"]}",
+   6740,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2017, \"entidade\": 1, \"para\": 2018, \"snapshots\": [\"e0c86ce96e0746a8b40d5bf58214f203\", \"9284d9cec98e43bc9fea3f406596d2ff\"]}",
+   7711,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2018, \"entidade\": 1, \"para\": 2019, \"snapshots\": [\"9284d9cec98e43bc9fea3f406596d2ff\", \"bdc10a6a27954a8f9c0d9afea1d5915e\"]}",
+   5962,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2019, \"entidade\": 1, \"para\": 2020, \"snapshots\": [\"bdc10a6a27954a8f9c0d9afea1d5915e\", \"709a5aae1fad4f83bc0173ffcd6812e6\"]}",
+   5906,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2020, \"entidade\": 1, \"para\": 2021, \"snapshots\": [\"709a5aae1fad4f83bc0173ffcd6812e6\", \"2526a2bcc80c4c08a563f6c779689512\"]}",
+   5098,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2021, \"entidade\": 1, \"para\": 2022, \"snapshots\": [\"2526a2bcc80c4c08a563f6c779689512\", \"e00b50948a1b46e0bff2a59f1d216fd3\"]}",
+   2737,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2022, \"entidade\": 1, \"para\": 2023, \"snapshots\": [\"e00b50948a1b46e0bff2a59f1d216fd3\", \"2fea61a1f29945d0873063760cdae460\"]}",
+   3097,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2023, \"entidade\": 1, \"para\": 2024, \"snapshots\": [\"2fea61a1f29945d0873063760cdae460\", \"452e4fecc15f4b36bcae56bdd2341a43\"]}",
+   4235,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2024, \"entidade\": 1, \"para\": 2025, \"snapshots\": [\"452e4fecc15f4b36bcae56bdd2341a43\", \"03a8b62445f74e5f94f3235abfbe825c\"]}",
+   4651,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2025, \"entidade\": 1, \"para\": 2026, \"snapshots\": [\"03a8b62445f74e5f94f3235abfbe825c\", \"0721d7864c934566b0ba4a5fd65d6ae8\"]}",
+   3990,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2016, \"entidade\": 3, \"para\": 2017, \"snapshots\": [\"9aeaf10abb8445f7872394bc7153ddc0\", \"4ee03a845bf44017909e35b585a669f0\"]}",
+   45,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2017, \"entidade\": 3, \"para\": 2018, \"snapshots\": [\"4ee03a845bf44017909e35b585a669f0\", \"13fb741120604e4697a1a922e0581ef3\"]}",
+   44,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2018, \"entidade\": 3, \"para\": 2019, \"snapshots\": [\"13fb741120604e4697a1a922e0581ef3\", \"65fc145fa4e04f90911f0272a8d49a65\"]}",
+   44,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2019, \"entidade\": 3, \"para\": 2020, \"snapshots\": [\"65fc145fa4e04f90911f0272a8d49a65\", \"5320413a9abf47ef9ce81a153e3011ee\"]}",
+   33,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2020, \"entidade\": 3, \"para\": 2021, \"snapshots\": [\"5320413a9abf47ef9ce81a153e3011ee\", \"2158092c9ac840d7b1dfc3923274e4f2\"]}",
+   28,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2021, \"entidade\": 3, \"para\": 2022, \"snapshots\": [\"2158092c9ac840d7b1dfc3923274e4f2\", \"5cdf814216d7476586dbaed31d46b223\"]}",
+   26,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2022, \"entidade\": 3, \"para\": 2023, \"snapshots\": [\"5cdf814216d7476586dbaed31d46b223\", \"c70a1ddf6dfe4b5e8e8fe871f92ea6b4\"]}",
+   27,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2023, \"entidade\": 3, \"para\": 2024, \"snapshots\": [\"c70a1ddf6dfe4b5e8e8fe871f92ea6b4\", \"b5c08b1f31c74167b8c5805c9e198409\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2024, \"entidade\": 3, \"para\": 2025, \"snapshots\": [\"b5c08b1f31c74167b8c5805c9e198409\", \"db8f88baa0c849cc9dd1456d8d91cb5c\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2025, \"entidade\": 3, \"para\": 2026, \"snapshots\": [\"db8f88baa0c849cc9dd1456d8d91cb5c\", \"7e32eee3616d4b999204efa4233f51b0\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2016, \"entidade\": 4, \"para\": 2017, \"snapshots\": [\"d3f501fabace4affb2d032aef7727bab\", \"a61fc059853546619f20b9256b6721fc\"]}",
+   32,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2017, \"entidade\": 4, \"para\": 2018, \"snapshots\": [\"a61fc059853546619f20b9256b6721fc\", \"c6820cca9d304bd1941bfef51fb52027\"]}",
+   23,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2018, \"entidade\": 4, \"para\": 2019, \"snapshots\": [\"c6820cca9d304bd1941bfef51fb52027\", \"2d00d5b98c2d4137bfdd5608fa422048\"]}",
+   13,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2019, \"entidade\": 4, \"para\": 2020, \"snapshots\": [\"2d00d5b98c2d4137bfdd5608fa422048\", \"c08a2724fd7e4873aa51b34c1f64905f\"]}",
+   15,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2020, \"entidade\": 4, \"para\": 2021, \"snapshots\": [\"c08a2724fd7e4873aa51b34c1f64905f\", \"916777e2c4f94e64b29d21988b411ee5\"]}",
+   32,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2021, \"entidade\": 4, \"para\": 2022, \"snapshots\": [\"916777e2c4f94e64b29d21988b411ee5\", \"7816a226d2794231ad407cf8a9fcc59e\"]}",
+   4,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2022, \"entidade\": 4, \"para\": 2023, \"snapshots\": [\"7816a226d2794231ad407cf8a9fcc59e\", \"5e61d2ca8a6a457bac7d599c2b222e08\"]}",
+   8,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2023, \"entidade\": 4, \"para\": 2024, \"snapshots\": [\"5e61d2ca8a6a457bac7d599c2b222e08\", \"3f6b920143834d1ca7cc5cbd5f63b740\"]}",
+   14,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2024, \"entidade\": 4, \"para\": 2025, \"snapshots\": [\"3f6b920143834d1ca7cc5cbd5f63b740\", \"2257e1a55fa94d48801c43ed2dbaa239\"]}",
+   8,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2025, \"entidade\": 4, \"para\": 2026, \"snapshots\": [\"2257e1a55fa94d48801c43ed2dbaa239\", \"876d9b7def8243ab851f3829a84081e1\"]}",
+   4,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2016, \"entidade\": 5, \"para\": 2017, \"snapshots\": [\"60c275f20eb94169a3aa171dfe11dadf\", \"18a44fa413d345bb9456f349666829d1\"]}",
+   135,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2017, \"entidade\": 5, \"para\": 2018, \"snapshots\": [\"18a44fa413d345bb9456f349666829d1\", \"f5585bfa04534ffa826ca8b5f0d6dad4\"]}",
+   31,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2018, \"entidade\": 5, \"para\": 2019, \"snapshots\": [\"f5585bfa04534ffa826ca8b5f0d6dad4\", \"05433000ffce423e84eeb37147bb9b48\"]}",
+   96,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2019, \"entidade\": 5, \"para\": 2020, \"snapshots\": [\"05433000ffce423e84eeb37147bb9b48\", \"6f0a356f7a234bd8ba227c50712875f1\"]}",
+   321,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2020, \"entidade\": 5, \"para\": 2021, \"snapshots\": [\"6f0a356f7a234bd8ba227c50712875f1\", \"84092e088e2a41e2a0a8fd23232c0085\"]}",
+   379,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2021, \"entidade\": 5, \"para\": 2022, \"snapshots\": [\"84092e088e2a41e2a0a8fd23232c0085\", \"bac2235c006441fcb78d3e0125cda81f\"]}",
+   440,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2022, \"entidade\": 5, \"para\": 2023, \"snapshots\": [\"bac2235c006441fcb78d3e0125cda81f\", \"a155e9cf6164430b840d0986f7d29eb8\"]}",
+   473,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2023, \"entidade\": 5, \"para\": 2024, \"snapshots\": [\"a155e9cf6164430b840d0986f7d29eb8\", \"5772133ff47549d680455413820e9763\"]}",
+   593,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2024, \"entidade\": 5, \"para\": 2025, \"snapshots\": [\"5772133ff47549d680455413820e9763\", \"b80233da0bb74dce8a06c7d6a4faaba8\"]}",
+   414,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2025, \"entidade\": 5, \"para\": 2026, \"snapshots\": [\"b80233da0bb74dce8a06c7d6a4faaba8\", \"f457ab2c901d472b801d98c9dff9572d\"]}",
+   360,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2016, \"entidade\": 6, \"para\": 2017, \"snapshots\": [\"ce80e767ccd842eba1eb25b4670cbbd9\", \"15dd9527f2184ad0a63e4226134098ef\"]}",
+   273,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2017, \"entidade\": 6, \"para\": 2018, \"snapshots\": [\"15dd9527f2184ad0a63e4226134098ef\", \"114c2115fdd445f6af06e21713bf909d\"]}",
+   243,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2018, \"entidade\": 6, \"para\": 2019, \"snapshots\": [\"114c2115fdd445f6af06e21713bf909d\", \"66e252a00e31458eab3c78a875984606\"]}",
+   252,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2019, \"entidade\": 6, \"para\": 2020, \"snapshots\": [\"66e252a00e31458eab3c78a875984606\", \"85a5f869fa7449429ae01ced5448dad6\"]}",
+   265,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2020, \"entidade\": 6, \"para\": 2021, \"snapshots\": [\"85a5f869fa7449429ae01ced5448dad6\", \"42f1a3599a58443a81f5b1cd81f94a21\"]}",
+   445,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2021, \"entidade\": 6, \"para\": 2022, \"snapshots\": [\"42f1a3599a58443a81f5b1cd81f94a21\", \"4a172ad4ebd84be99bb5684918bfddf7\"]}",
+   395,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2022, \"entidade\": 6, \"para\": 2023, \"snapshots\": [\"4a172ad4ebd84be99bb5684918bfddf7\", \"ea797df54ffe4fe4a266abdfdba2fe91\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2023, \"entidade\": 6, \"para\": 2024, \"snapshots\": [\"ea797df54ffe4fe4a266abdfdba2fe91\", \"8bb2609f37e045c09a8c3b4cfdeace26\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2024, \"entidade\": 6, \"para\": 2025, \"snapshots\": [\"8bb2609f37e045c09a8c3b4cfdeace26\", \"cf4b547ba3854210b0c95dc51e0c3917\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2025, \"entidade\": 6, \"para\": 2026, \"snapshots\": [\"cf4b547ba3854210b0c95dc51e0c3917\", \"312fa757e5904636bd9ba50ce03ece6e\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2016, \"entidade\": 8, \"para\": 2017, \"snapshots\": [\"33d8e91eff8c4846810a3dd00eb9121d\", \"9686f07e284e4190889c5c229389f939\"]}",
+   30,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2017, \"entidade\": 8, \"para\": 2018, \"snapshots\": [\"9686f07e284e4190889c5c229389f939\", \"9f3f36c166ef499c98538e639d120d57\"]}",
+   2,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2018, \"entidade\": 8, \"para\": 2019, \"snapshots\": [\"9f3f36c166ef499c98538e639d120d57\", \"3cd68ac684f242fc93186be45b7a0642\"]}",
+   20,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2019, \"entidade\": 8, \"para\": 2020, \"snapshots\": [\"3cd68ac684f242fc93186be45b7a0642\", \"97c160c8793045c38b52f9e29299a210\"]}",
+   25,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2020, \"entidade\": 8, \"para\": 2021, \"snapshots\": [\"97c160c8793045c38b52f9e29299a210\", \"4c1e384bee254daf8191bbfd137bc5a1\"]}",
+   19,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2021, \"entidade\": 8, \"para\": 2022, \"snapshots\": [\"4c1e384bee254daf8191bbfd137bc5a1\", \"dd54b22f5aa44a568ea03eba039a2f79\"]}",
+   13,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2022, \"entidade\": 8, \"para\": 2023, \"snapshots\": [\"dd54b22f5aa44a568ea03eba039a2f79\", \"0e21dbeddebb468e8d9c72a751c6a2d0\"]}",
+   4,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2023, \"entidade\": 8, \"para\": 2024, \"snapshots\": [\"0e21dbeddebb468e8d9c72a751c6a2d0\", \"e7f648fa1ffa4fdfa6266cd786253432\"]}",
+   10,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2024, \"entidade\": 8, \"para\": 2025, \"snapshots\": [\"e7f648fa1ffa4fdfa6266cd786253432\", \"7a07ffb1a11646878e85a700725ff613\"]}",
+   1,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2025, \"entidade\": 8, \"para\": 2026, \"snapshots\": [\"7a07ffb1a11646878e85a700725ff613\", \"c4944a4442f04fe1ad521963e4813f5d\"]}",
+   8,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2016, \"entidade\": 9, \"para\": 2017, \"snapshots\": [\"f21d1092b84a4560af28831cb3f00212\", \"c5fb9da6f03546d5a4bfa3659392f263\"]}",
+   201,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2017, \"entidade\": 9, \"para\": 2018, \"snapshots\": [\"c5fb9da6f03546d5a4bfa3659392f263\", \"bea8a090f0fd4781aa2284f3556fbd94\"]}",
+   243,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2018, \"entidade\": 9, \"para\": 2019, \"snapshots\": [\"bea8a090f0fd4781aa2284f3556fbd94\", \"3ce398f887954e708d8a52c6c9ff05bf\"]}",
+   229,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2019, \"entidade\": 9, \"para\": 2020, \"snapshots\": [\"3ce398f887954e708d8a52c6c9ff05bf\", \"015e88ae56b74330aed7216b2ef50d2a\"]}",
+   212,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2020, \"entidade\": 9, \"para\": 2021, \"snapshots\": [\"015e88ae56b74330aed7216b2ef50d2a\", \"5b7b8961600e42618b571fa00acd6dc7\"]}",
+   256,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2021, \"entidade\": 9, \"para\": 2022, \"snapshots\": [\"5b7b8961600e42618b571fa00acd6dc7\", \"e25deebf611645f8941642d7e86f9a6c\"]}",
+   49,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2022, \"entidade\": 9, \"para\": 2023, \"snapshots\": [\"e25deebf611645f8941642d7e86f9a6c\", \"f3a63b8c1c8045868c3b771aaedd6293\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2023, \"entidade\": 9, \"para\": 2024, \"snapshots\": [\"f3a63b8c1c8045868c3b771aaedd6293\", \"1889b34914ed4033b6a2fe3b1ba837b8\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2024, \"entidade\": 9, \"para\": 2025, \"snapshots\": [\"1889b34914ed4033b6a2fe3b1ba837b8\", \"daf1e5ec07564d22bd1c83d4e3ee585a\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2025, \"entidade\": 9, \"para\": 2026, \"snapshots\": [\"daf1e5ec07564d22bd1c83d4e3ee585a\", \"7820142dc0594da3803217c47a933555\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2016, \"entidade\": 10, \"para\": 2017, \"snapshots\": [\"da3c602fadae444897ebde845b328bdb\", \"5d47286ee6774f13b9fb4cd15c11c170\"]}",
+   33,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2017, \"entidade\": 10, \"para\": 2018, \"snapshots\": [\"5d47286ee6774f13b9fb4cd15c11c170\", \"a5896d39a45e45ac9086fd79fa045014\"]}",
+   58,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2018, \"entidade\": 10, \"para\": 2019, \"snapshots\": [\"a5896d39a45e45ac9086fd79fa045014\", \"f6676255265747edb3a2715b56e6194a\"]}",
+   12,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2019, \"entidade\": 10, \"para\": 2020, \"snapshots\": [\"f6676255265747edb3a2715b56e6194a\", \"4447dce67ffa4f46a3832618d77faadf\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2020, \"entidade\": 10, \"para\": 2021, \"snapshots\": [\"4447dce67ffa4f46a3832618d77faadf\", \"d2ee798cef6445b1808d3c6383ebc615\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2021, \"entidade\": 10, \"para\": 2022, \"snapshots\": [\"d2ee798cef6445b1808d3c6383ebc615\", \"a099c87d8f57476c9546c763fb74b6f7\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2022, \"entidade\": 10, \"para\": 2023, \"snapshots\": [\"a099c87d8f57476c9546c763fb74b6f7\", \"6351940677c14b29a0a8b01961af3ae7\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2023, \"entidade\": 10, \"para\": 2024, \"snapshots\": [\"6351940677c14b29a0a8b01961af3ae7\", \"e974124012bd4918862fd4306eaa9c48\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2024, \"entidade\": 10, \"para\": 2025, \"snapshots\": [\"e974124012bd4918862fd4306eaa9c48\", \"7a1db3dfc0e64d88b36727708c0e9e63\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2025, \"entidade\": 10, \"para\": 2026, \"snapshots\": [\"7a1db3dfc0e64d88b36727708c0e9e63\", \"d81490bb30754dcab719831ae2bc6f29\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2016, \"entidade\": 11, \"para\": 2017, \"snapshots\": [\"438c6f573d0246f79d2de46be965ae71\", \"72ef11180b324093adb5e025adc13e3d\"]}",
+   285,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2017, \"entidade\": 11, \"para\": 2018, \"snapshots\": [\"72ef11180b324093adb5e025adc13e3d\", \"517064052f05409aaa57e8ac01b00b39\"]}",
+   327,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2018, \"entidade\": 11, \"para\": 2019, \"snapshots\": [\"517064052f05409aaa57e8ac01b00b39\", \"e0c1bcbc20504e88a6203cad6dde6b8f\"]}",
+   193,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2019, \"entidade\": 11, \"para\": 2020, \"snapshots\": [\"e0c1bcbc20504e88a6203cad6dde6b8f\", \"2c54ac01b28b45739333702178cc8a03\"]}",
+   32,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2020, \"entidade\": 11, \"para\": 2021, \"snapshots\": [\"2c54ac01b28b45739333702178cc8a03\", \"75555d8964dc45c0b26610d65b25636c\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2021, \"entidade\": 11, \"para\": 2022, \"snapshots\": [\"75555d8964dc45c0b26610d65b25636c\", \"5e2f55dd25e144b28a8eb928c242bd49\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2022, \"entidade\": 11, \"para\": 2023, \"snapshots\": [\"5e2f55dd25e144b28a8eb928c242bd49\", \"4e25c59281a648b6bd404423d7a2d038\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2023, \"entidade\": 11, \"para\": 2024, \"snapshots\": [\"4e25c59281a648b6bd404423d7a2d038\", \"5cb533e21b304c20908e5c6e9df5a6e4\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2024, \"entidade\": 11, \"para\": 2025, \"snapshots\": [\"5cb533e21b304c20908e5c6e9df5a6e4\", \"26734419d8dd4c9ea1cb6b7d919403f5\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2025, \"entidade\": 11, \"para\": 2026, \"snapshots\": [\"26734419d8dd4c9ea1cb6b7d919403f5\", \"86502fad0a7f4f37b5588e4896bfe941\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2016, \"entidade\": 15, \"para\": 2017, \"snapshots\": [\"4c0af66ba2984e8b9382bdd6e6a28271\", \"b336e88eafbe4fad8be29835b2a00945\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2017, \"entidade\": 15, \"para\": 2018, \"snapshots\": [\"b336e88eafbe4fad8be29835b2a00945\", \"cdabfced2f094d17a9655f2693fb60cc\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2018, \"entidade\": 15, \"para\": 2019, \"snapshots\": [\"cdabfced2f094d17a9655f2693fb60cc\", \"9514f66669cf49bba534ef48f74204e4\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2019, \"entidade\": 15, \"para\": 2020, \"snapshots\": [\"9514f66669cf49bba534ef48f74204e4\", \"ac003b1cb35e4141a9410271065a730a\"]}",
+   0,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2020, \"entidade\": 15, \"para\": 2021, \"snapshots\": [\"ac003b1cb35e4141a9410271065a730a\", \"6baaff53138441b9b937783ff34e209a\"]}",
+   1656,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2021, \"entidade\": 15, \"para\": 2022, \"snapshots\": [\"6baaff53138441b9b937783ff34e209a\", \"1e445583190d4039ae0aeb7a7beb8143\"]}",
+   750,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2022, \"entidade\": 15, \"para\": 2023, \"snapshots\": [\"1e445583190d4039ae0aeb7a7beb8143\", \"9c55525266134b9e80137b0b21c5d15e\"]}",
+   766,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2023, \"entidade\": 15, \"para\": 2024, \"snapshots\": [\"9c55525266134b9e80137b0b21c5d15e\", \"b3ee67f5759b4d41a38ef677f82a6d19\"]}",
+   847,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2024, \"entidade\": 15, \"para\": 2025, \"snapshots\": [\"b3ee67f5759b4d41a38ef677f82a6d19\", \"fc06f3332dc14b7bb8de8aa8edd6539d\"]}",
+   1353,
+   0
+  ],
+  [
+   "continuidade fechamento\u2192abertura",
+   "{\"de\": 2025, \"entidade\": 15, \"para\": 2026, \"snapshots\": [\"fc06f3332dc14b7bb8de8aa8edd6539d\", \"93add92209274b4a98e103cb45ab6fba\"]}",
+   1516,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2016-12-31\", \"data_inicial\": \"2016-01-01\", \"exercicio\": 2016, \"snapshots\": [\"dcc16aed2e054fbd821a1ddd95571b36\", \"4c0af66ba2984e8b9382bdd6e6a28271\"]}",
+   0,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2017-12-31\", \"data_inicial\": \"2017-01-01\", \"exercicio\": 2017, \"snapshots\": [\"e0c86ce96e0746a8b40d5bf58214f203\", \"b336e88eafbe4fad8be29835b2a00945\"]}",
+   0,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2018-12-31\", \"data_inicial\": \"2018-01-01\", \"exercicio\": 2018, \"snapshots\": [\"9284d9cec98e43bc9fea3f406596d2ff\", \"cdabfced2f094d17a9655f2693fb60cc\"]}",
+   0,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2019-12-31\", \"data_inicial\": \"2019-01-01\", \"exercicio\": 2019, \"snapshots\": [\"bdc10a6a27954a8f9c0d9afea1d5915e\", \"9514f66669cf49bba534ef48f74204e4\"]}",
+   0,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2020-12-31\", \"data_inicial\": \"2020-01-01\", \"exercicio\": 2020, \"snapshots\": [\"709a5aae1fad4f83bc0173ffcd6812e6\", \"ac003b1cb35e4141a9410271065a730a\"]}",
+   0,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2021-12-31\", \"data_inicial\": \"2021-01-01\", \"exercicio\": 2021, \"snapshots\": [\"2526a2bcc80c4c08a563f6c779689512\", \"6baaff53138441b9b937783ff34e209a\"]}",
+   0,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2022-12-31\", \"data_inicial\": \"2022-01-01\", \"exercicio\": 2022, \"snapshots\": [\"e00b50948a1b46e0bff2a59f1d216fd3\", \"1e445583190d4039ae0aeb7a7beb8143\"]}",
+   0,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2023-12-31\", \"data_inicial\": \"2023-01-01\", \"exercicio\": 2023, \"snapshots\": [\"2fea61a1f29945d0873063760cdae460\", \"9c55525266134b9e80137b0b21c5d15e\"]}",
+   0,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2024-12-31\", \"data_inicial\": \"2024-01-01\", \"exercicio\": 2024, \"snapshots\": [\"452e4fecc15f4b36bcae56bdd2341a43\", \"b3ee67f5759b4d41a38ef677f82a6d19\"]}",
+   1,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2025-02-28\", \"data_inicial\": \"2025-01-01\", \"exercicio\": 2025, \"snapshots\": [\"f97383f2518c450b8cc05d1a0da6249f\", \"34174f1aa8914460886ecfc34f7dbcc2\"]}",
+   20,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2025-04-30\", \"data_inicial\": \"2025-01-01\", \"exercicio\": 2025, \"snapshots\": [\"d1325c03e7a744dbb5d71368dccc4f35\", \"d15b4dccb4d848eb984f8e220ffb63ab\"]}",
+   20,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2025-06-30\", \"data_inicial\": \"2025-01-01\", \"exercicio\": 2025, \"snapshots\": [\"832fbe61f1124b4eb5a2f16ab8917691\", \"41dee9b530e94bfabd6dc473869f9ce4\"]}",
+   20,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2025-08-31\", \"data_inicial\": \"2025-01-01\", \"exercicio\": 2025, \"snapshots\": [\"a3e13aeebf0c42d09669bcfe27c96f34\", \"8f07dde10fe14f37a6e03c82b5f9a20b\"]}",
+   20,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2025-10-31\", \"data_inicial\": \"2025-01-01\", \"exercicio\": 2025, \"snapshots\": [\"01a3a3f66d2c4cda8b38dabc9f52b6ba\", \"75d6cc07c60d4e94a0626ab5956be7e0\"]}",
+   20,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2025-12-31\", \"data_inicial\": \"2025-01-01\", \"exercicio\": 2025, \"snapshots\": [\"03a8b62445f74e5f94f3235abfbe825c\", \"fc06f3332dc14b7bb8de8aa8edd6539d\"]}",
+   20,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2026-02-28\", \"data_inicial\": \"2026-01-01\", \"exercicio\": 2026, \"snapshots\": [\"743955ae86fe4620869650ca7bfa7a6a\", \"ed2aa190336f42888a596e532505dcc0\"]}",
+   731,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2026-04-30\", \"data_inicial\": \"2026-01-01\", \"exercicio\": 2026, \"snapshots\": [\"40b8d3f3814a4e51858959857cb1bb83\", \"1ec22f0bddaa4f38b3d4244fafadf99f\"]}",
+   731,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2026-06-30\", \"data_inicial\": \"2026-01-01\", \"exercicio\": 2026, \"snapshots\": [\"5b414f03f61d46b0889553e82ec46632\", \"17852e2bd47c4134be4e01f4ac68fb75\"]}",
+   731,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2026-08-31\", \"data_inicial\": \"2026-01-01\", \"exercicio\": 2026, \"snapshots\": [\"748bfc35e2f148cea52bd58c6d02f379\", \"428988024c82428ca6467b45676e7587\"]}",
+   731,
+   0
+  ],
+  [
+   "pareamento de cópias 24xxxxx",
+   "{\"data_final\": \"2026-09-30\", \"data_inicial\": \"2026-01-01\", \"exercicio\": 2026, \"snapshots\": [\"38eb99eb305749baa45c812f1ead06af\", \"93add92209274b4a98e103cb45ab6fba\"]}",
+   731,
+   0
+  ],
+  [
+   "RREO sem valores extraídos (ver problemas da normalização)",
+   "{\"rreo_snapshot\": \"d369f5b945054a96ba9acd1966f659a1\"}",
+   1,
+   1
+  ],
+  [
+   "RREO sem valores extraídos (ver problemas da normalização)",
+   "{\"rreo_snapshot\": \"722468ea426746d19ff55275aa270fa1\"}",
+   1,
+   1
+  ],
+  [
+   "RREO sem valores extraídos (ver problemas da normalização)",
+   "{\"rreo_snapshot\": \"36f1ef8e4bbc480987a7c7a07c4c5260\"}",
+   1,
+   1
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-08-31\", \"escopo\": \"entidade\", \"exercicio\": 2026, \"rreo_col\": 1, \"rreo_snapshot\": \"3e6f0e378f3f45cf960e1f88f90e34ad\"}",
+   12,
+   5
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-06-30\", \"escopo\": \"entidade\", \"exercicio\": 2025, \"rreo_col\": 1, \"rreo_snapshot\": \"cd5d8f39f05c54e8940f516219a6b21d\"}",
+   12,
+   9
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-10-31\", \"escopo\": \"entidade\", \"exercicio\": 2025, \"rreo_col\": 1, \"rreo_snapshot\": \"ad5fc0328c7155e6958967a3c3380dbf\"}",
+   12,
+   9
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2025, \"rreo_col\": 1, \"rreo_snapshot\": \"0d8e25c0d886587297020e20be89e38a\"}",
+   12,
+   10
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2025, \"rreo_col\": 1, \"rreo_snapshot\": \"9ae688bd9b705b40a0650b8ef96771ae\"}",
+   12,
+   9
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-02-28\", \"escopo\": \"entidade\", \"exercicio\": 2026, \"rreo_col\": 1, \"rreo_snapshot\": \"60c2f6918a925d1ca97f2aa9320320c1\"}",
+   12,
+   12
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-04-30\", \"escopo\": \"consolidado\", \"exercicio\": 2026, \"rreo_col\": 1, \"rreo_snapshot\": \"ed85bfafa18555198365d9cf6411bc91\"}",
+   12,
+   4
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-04-30\", \"escopo\": \"entidade\", \"exercicio\": 2026, \"rreo_col\": 1, \"rreo_snapshot\": \"56e85f8cae6158f782a8e5022d5d13cc\"}",
+   12,
+   4
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-06-30\", \"escopo\": \"consolidado\", \"exercicio\": 2026, \"rreo_col\": 1, \"rreo_snapshot\": \"fd695fd03ff650c7864c1d868715aacd\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-06-30\", \"escopo\": \"entidade\", \"exercicio\": 2026, \"rreo_col\": 1, \"rreo_snapshot\": \"4a865eb752a15c238757027864c3c946\"}",
+   12,
+   5
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-08-31\", \"escopo\": \"consolidado\", \"exercicio\": 2026, \"rreo_col\": 1, \"rreo_snapshot\": \"4f6f8687479255e991efed5d791be577\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-08-31\", \"escopo\": \"entidade\", \"exercicio\": 2026, \"rreo_col\": 1, \"rreo_snapshot\": \"1a8534f4103152cd9c42cfc0fc0ae954\"}",
+   12,
+   5
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-02-28\", \"escopo\": \"entidade\", \"exercicio\": 2025, \"rreo_col\": 1, \"rreo_snapshot\": \"e20d0ae2274f4c988b8ba5cba5b3d92e\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-02-28\", \"escopo\": \"consolidado\", \"exercicio\": 2025, \"rreo_col\": 1, \"rreo_snapshot\": \"9b0c7d24f1d340dfb861b0c4b85da4dd\"}",
+   12,
+   8
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-04-30\", \"escopo\": \"entidade\", \"exercicio\": 2025, \"rreo_col\": 1, \"rreo_snapshot\": \"03bb83620c0d4998ba1e257249bb9510\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-04-30\", \"escopo\": \"consolidado\", \"exercicio\": 2025, \"rreo_col\": 1, \"rreo_snapshot\": \"543e0e03095e4248b12af5a86768573b\"}",
+   12,
+   8
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-06-30\", \"escopo\": \"consolidado\", \"exercicio\": 2025, \"rreo_col\": 1, \"rreo_snapshot\": \"ac618fdc44fc4dc99e3ad2c2878ed0f9\"}",
+   12,
+   10
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-08-31\", \"escopo\": \"entidade\", \"exercicio\": 2025, \"rreo_col\": 1, \"rreo_snapshot\": \"ccfe4fb54fbb4d29b7af6175a5e7d90e\"}",
+   12,
+   9
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-08-31\", \"escopo\": \"consolidado\", \"exercicio\": 2025, \"rreo_col\": 1, \"rreo_snapshot\": \"bb4599f691734b6fb3e1771208ae71c7\"}",
+   12,
+   10
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-10-31\", \"escopo\": \"consolidado\", \"exercicio\": 2025, \"rreo_col\": 1, \"rreo_snapshot\": \"259d399cd48b411db67c688e8e1832e1\"}",
+   12,
+   10
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-02-28\", \"escopo\": \"consolidado\", \"exercicio\": 2026, \"rreo_col\": 1, \"rreo_snapshot\": \"2a2e913b352d4c829bab9411f2b2c6f3\"}",
+   12,
+   12
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2024-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2024, \"rreo_col\": 1, \"rreo_snapshot\": \"53322928f0bc4e5da1082568260fd995\"}",
+   12,
+   11
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2024-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2024, \"rreo_col\": 1, \"rreo_snapshot\": \"7d7adc78dd7a434dbe54fb6c215737f3\"}",
+   12,
+   11
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2022-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2022, \"rreo_col\": 1, \"rreo_snapshot\": \"d517a48ab16740969ded7889abcfeafc\"}",
+   12,
+   6
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2022-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2022, \"rreo_col\": 1, \"rreo_snapshot\": \"9e38c42c338044d395921c0b6603cecc\"}",
+   12,
+   6
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2023-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2023, \"rreo_col\": 1, \"rreo_snapshot\": \"e39aa09a97184209b059aad664efcb47\"}",
+   12,
+   8
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2023-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2023, \"rreo_col\": 1, \"rreo_snapshot\": \"e13b6a7df5874180ae7f779ad268c2b4\"}",
+   12,
+   9
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2020-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2020, \"rreo_col\": 1, \"rreo_snapshot\": \"e6e777f9bd494db28e66da5e5546acdc\"}",
+   12,
+   6
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2020-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2020, \"rreo_col\": 1, \"rreo_snapshot\": \"4a2087a6f6dd475d932340b4459fa3b1\"}",
+   12,
+   8
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2021-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2021, \"rreo_col\": 1, \"rreo_snapshot\": \"87a10e658ef0436eb15fe0b5b786a839\"}",
+   12,
+   0
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2021-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2021, \"rreo_col\": 1, \"rreo_snapshot\": \"793319c544454280940b9ba78a81b5f8\"}",
+   12,
+   6
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2017-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2017, \"rreo_col\": 1, \"rreo_snapshot\": \"aa268a9330b541ec986ba6031dee7e64\"}",
+   12,
+   11
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2017-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2017, \"rreo_col\": 1, \"rreo_snapshot\": \"b1deaab5a0ab44ac81bfe28a4656ff02\"}",
+   12,
+   8
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-08-31\", \"escopo\": \"entidade\", \"exercicio\": 2026, \"rreo_col\": 2, \"rreo_snapshot\": \"3e6f0e378f3f45cf960e1f88f90e34ad\"}",
+   12,
+   5
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-06-30\", \"escopo\": \"entidade\", \"exercicio\": 2025, \"rreo_col\": 2, \"rreo_snapshot\": \"cd5d8f39f05c54e8940f516219a6b21d\"}",
+   12,
+   8
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-10-31\", \"escopo\": \"entidade\", \"exercicio\": 2025, \"rreo_col\": 2, \"rreo_snapshot\": \"ad5fc0328c7155e6958967a3c3380dbf\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2025, \"rreo_col\": 2, \"rreo_snapshot\": \"0d8e25c0d886587297020e20be89e38a\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2025, \"rreo_col\": 2, \"rreo_snapshot\": \"9ae688bd9b705b40a0650b8ef96771ae\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-02-28\", \"escopo\": \"entidade\", \"exercicio\": 2026, \"rreo_col\": 2, \"rreo_snapshot\": \"60c2f6918a925d1ca97f2aa9320320c1\"}",
+   12,
+   12
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-04-30\", \"escopo\": \"consolidado\", \"exercicio\": 2026, \"rreo_col\": 2, \"rreo_snapshot\": \"ed85bfafa18555198365d9cf6411bc91\"}",
+   12,
+   4
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-04-30\", \"escopo\": \"entidade\", \"exercicio\": 2026, \"rreo_col\": 2, \"rreo_snapshot\": \"56e85f8cae6158f782a8e5022d5d13cc\"}",
+   12,
+   4
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-06-30\", \"escopo\": \"consolidado\", \"exercicio\": 2026, \"rreo_col\": 2, \"rreo_snapshot\": \"fd695fd03ff650c7864c1d868715aacd\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-06-30\", \"escopo\": \"entidade\", \"exercicio\": 2026, \"rreo_col\": 2, \"rreo_snapshot\": \"4a865eb752a15c238757027864c3c946\"}",
+   12,
+   5
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-08-31\", \"escopo\": \"consolidado\", \"exercicio\": 2026, \"rreo_col\": 2, \"rreo_snapshot\": \"4f6f8687479255e991efed5d791be577\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-08-31\", \"escopo\": \"entidade\", \"exercicio\": 2026, \"rreo_col\": 2, \"rreo_snapshot\": \"1a8534f4103152cd9c42cfc0fc0ae954\"}",
+   12,
+   5
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-02-28\", \"escopo\": \"entidade\", \"exercicio\": 2025, \"rreo_col\": 2, \"rreo_snapshot\": \"e20d0ae2274f4c988b8ba5cba5b3d92e\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-02-28\", \"escopo\": \"consolidado\", \"exercicio\": 2025, \"rreo_col\": 2, \"rreo_snapshot\": \"9b0c7d24f1d340dfb861b0c4b85da4dd\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-04-30\", \"escopo\": \"entidade\", \"exercicio\": 2025, \"rreo_col\": 2, \"rreo_snapshot\": \"03bb83620c0d4998ba1e257249bb9510\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-04-30\", \"escopo\": \"consolidado\", \"exercicio\": 2025, \"rreo_col\": 2, \"rreo_snapshot\": \"543e0e03095e4248b12af5a86768573b\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-06-30\", \"escopo\": \"consolidado\", \"exercicio\": 2025, \"rreo_col\": 2, \"rreo_snapshot\": \"ac618fdc44fc4dc99e3ad2c2878ed0f9\"}",
+   12,
+   8
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-08-31\", \"escopo\": \"entidade\", \"exercicio\": 2025, \"rreo_col\": 2, \"rreo_snapshot\": \"ccfe4fb54fbb4d29b7af6175a5e7d90e\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-08-31\", \"escopo\": \"consolidado\", \"exercicio\": 2025, \"rreo_col\": 2, \"rreo_snapshot\": \"bb4599f691734b6fb3e1771208ae71c7\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2025-10-31\", \"escopo\": \"consolidado\", \"exercicio\": 2025, \"rreo_col\": 2, \"rreo_snapshot\": \"259d399cd48b411db67c688e8e1832e1\"}",
+   12,
+   7
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2026-02-28\", \"escopo\": \"consolidado\", \"exercicio\": 2026, \"rreo_col\": 2, \"rreo_snapshot\": \"2a2e913b352d4c829bab9411f2b2c6f3\"}",
+   12,
+   12
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2024-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2024, \"rreo_col\": 2, \"rreo_snapshot\": \"53322928f0bc4e5da1082568260fd995\"}",
+   12,
+   11
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2024-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2024, \"rreo_col\": 2, \"rreo_snapshot\": \"7d7adc78dd7a434dbe54fb6c215737f3\"}",
+   12,
+   11
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2022-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2022, \"rreo_col\": 2, \"rreo_snapshot\": \"d517a48ab16740969ded7889abcfeafc\"}",
+   12,
+   5
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2022-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2022, \"rreo_col\": 2, \"rreo_snapshot\": \"9e38c42c338044d395921c0b6603cecc\"}",
+   12,
+   5
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2023-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2023, \"rreo_col\": 2, \"rreo_snapshot\": \"e39aa09a97184209b059aad664efcb47\"}",
+   12,
+   8
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2023-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2023, \"rreo_col\": 2, \"rreo_snapshot\": \"e13b6a7df5874180ae7f779ad268c2b4\"}",
+   12,
+   9
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2020-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2020, \"rreo_col\": 2, \"rreo_snapshot\": \"e6e777f9bd494db28e66da5e5546acdc\"}",
+   12,
+   4
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2020-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2020, \"rreo_col\": 2, \"rreo_snapshot\": \"4a2087a6f6dd475d932340b4459fa3b1\"}",
+   12,
+   8
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2021-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2021, \"rreo_col\": 2, \"rreo_snapshot\": \"87a10e658ef0436eb15fe0b5b786a839\"}",
+   12,
+   0
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2021-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2021, \"rreo_col\": 2, \"rreo_snapshot\": \"793319c544454280940b9ba78a81b5f8\"}",
+   12,
+   4
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2017-12-31\", \"escopo\": \"consolidado\", \"exercicio\": 2017, \"rreo_col\": 2, \"rreo_snapshot\": \"aa268a9330b541ec986ba6031dee7e64\"}",
+   12,
+   11
+  ],
+  [
+   "conciliação RREO × API (colunas com diferença)",
+   "{\"data_final\": \"2017-12-31\", \"escopo\": \"entidade\", \"exercicio\": 2017, \"rreo_col\": 2, \"rreo_snapshot\": \"b1deaab5a0ab44ac81bfe28a4656ff02\"}",
+   12,
+   8
+  ]
+ ]
+}
