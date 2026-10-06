@@ -209,8 +209,8 @@ def test_REV49_cli_codigo_de_saida_e_banco_so_leitura(ambiente, tmp_path, monkey
     arq.parent.mkdir()
     texto = open(APP_CONFIG, encoding="utf-8").read()
     arq.write_text(texto.replace('"~/RestosAPagar_local"', json.dumps(str(cfg.dados_locais)))
-                   .replace('"../snapshots"', json.dumps(str(cfg.snapshots)))
-                   .replace('"../backups"', json.dumps(str(cfg.backups))), encoding="utf-8")
+                   .replace('"../data/snapshots"', json.dumps(str(cfg.snapshots)))
+                   .replace('"../data/backups"', json.dumps(str(cfg.backups))), encoding="utf-8")
     monkeypatch.setattr(cli, "Cliente", lambda _cfg: ambiente["coletor"].cliente)
     ambiente["con"].commit()
     mtime = cfg.banco.stat().st_mtime_ns

@@ -6,18 +6,18 @@ Código de **produção**:
 - **Revisão corretiva 01–04.4:** camada de consulta somente leitura para o futuro dashboard (`rp/painel`), governança e parâmetros das regras, evidência externa e registro do método de extração do RREO (esquema v4).
 - **04.5:** interface pública somente leitura (`rp/interface`), sobre a camada `rp/painel`: `python -m rp interface`.
 - **04.6:** homologação da interface: situação de cada dado, busca por empenho, resultado vazio sem R$ 0,00, análise experimental rotulada, configuração portátil, portões de uma carga nova (`python -m rp portoes`) e procedimento de instalação e atualização.
-- **04.7:** encerramento técnico da Etapa 04, sem mudança de código: plano atualizado (`../etapa04/PLANO_ETAPA04.md`), relatório consolidado (`../etapa04/RELATORIO_ETAPA04_FINAL.md`) e ponto de restauração (tag `etapa-04-final`).
-- **05.1:** contrato analítico da Etapa 05 (`../etapa05/CONTRATO_ANALITICO.md`) e ferramenta de recálculo independente a partir do JSON bruto (`tests/recalculo_bruto.py`), sem mudança no código de produção.
+- **04.7:** encerramento técnico da Etapa 04, sem mudança de código: plano atualizado (`../docs/stages/04-pipeline/PLAN.md`), relatório consolidado (`../docs/stages/04-pipeline/FINAL_REPORT.md`) e ponto de restauração (tag `etapa-04-final`).
+- **05.1:** contrato analítico da Etapa 05 (`../docs/stages/05-analysis/ANALYTICAL_CONTRACT.md`) e ferramenta de recálculo independente a partir do JSON bruto (`tests/recalculo_bruto.py`), sem mudança no código de produção.
 - **05.2:** evolução dentro do exercício: tela `/evolucao` com todos os cortes do exercício (corte sem dado aparece como lacuna, com o motivo), diferença entre cortes vizinhos e gráfico SVG gerado no servidor; `Painel.evolucao` passou a listar todos os cortes para qualquer escopo (R1).
 - **05.3:** série entre exercícios (`/historico`): cada exercício no corte representativo (31/12, ou o último corte com o Município completo), com o retrato "estado atual da base" em todo ponto; fechamento de A × abertura de A+1 pela FAIXA v1 e a verificação de continuidade da derivação.
 - **05.4:** composição do saldo (`/composicao`): inscrição e saldo do corte por categoria, faixa (FAIXA v1, só em valores), tipo de credor, fonte de recurso, órgão, função, programa e elemento, com o grupo "sem classificação"; cada dimensão só aparece se fechar com o total do corte, e cada grupo leva à lista de empenhos correspondente (filtros novos de faixa e classificação orçamentária).
 - **05.5:** investigação de variações (`/variacao`): para dois cortes do mesmo exercício, a variação do saldo S1 ou dos pagamentos explicada empenho por empenho (classes, maiores aumentos e reduções, lista completa paginada), com fechamento ao centavo; e o empenho em todos os cortes do exercício (`/empenho/cortes`).
 - **05.6:** qualidade dos dados (`/qualidade`): anomalias da derivação por tipo, com as ocorrências e a ligação ao registro quando há chave de empenho; verificações de conjunto interpretadas pela descrição (catálogo do contrato); e as diferenças com o RREO contadas pelas cinco situações (sem diferença, explicada, parcialmente explicada, hipótese, não determinada).
-- **05.7:** homologação e encerramento da Etapa 05 (`../etapa05/RELATORIO_ETAPA05_FINAL.md`): regressão completa, valores homologados da 04.6 inalterados, 100.201 valores das telas novas conferidos com a camada painel, acessibilidade básica, interface sem rede e instalação limpa; tag `etapa-05-final` (commit `b38e884`).
-- **Pós-05:** encerramento formal e consolidação técnica (`../etapa05/CONSOLIDACAO_POS_05.md`): a seleção de exercício e corte nunca troca o que foi pedido. Corte não processado aparece como indisponível, com a situação do dado e os cortes processados do exercício. Inclui o mapa da dívida técnica, o procedimento da D1, a proposta de CI e as auditorias de dados e licenças.
-- **Revisão crítica (05/10/2026):** resposta item a item em `../auditoria/REVISAO_CRITICA_RESPOSTA.md`. Retrato com chave de empenho repetida nunca é o vigente; a coleta pede a ordem e confere o eco; catálogos com contrato mínimo; prazo total absoluto por requisição; contrato da API documentado (`../auditoria/CONTRATO_API_ELOTECH.md`) e comando `diagnosticar-api`; impressão do esquema; marcador de testes `dados_reais`; CI e pacote instalável.
+- **05.7:** homologação e encerramento da Etapa 05 (`../docs/stages/05-analysis/FINAL_REPORT.md`): regressão completa, valores homologados da 04.6 inalterados, 100.201 valores das telas novas conferidos com a camada painel, acessibilidade básica, interface sem rede e instalação limpa; tag `etapa-05-final` (commit `b38e884`).
+- **Pós-05:** encerramento formal e consolidação técnica (`../docs/stages/05-analysis/POST_05_CONSOLIDATION.md`): a seleção de exercício e corte nunca troca o que foi pedido. Corte não processado aparece como indisponível, com a situação do dado e os cortes processados do exercício. Inclui o mapa da dívida técnica, o procedimento da D1, a proposta de CI e as auditorias de dados e licenças.
+- **Revisão crítica (05/10/2026):** resposta item a item em `../docs/audits/CRITICAL_REVIEW_RESPONSE.md`. Retrato com chave de empenho repetida nunca é o vigente; a coleta pede a ordem e confere o eco; catálogos com contrato mínimo; prazo total absoluto por requisição; contrato da API documentado (`../docs/audits/ELOTECH_API_CONTRACT.md`) e comando `diagnosticar-api`; impressão do esquema; marcador de testes `dados_reais`; CI e pacote instalável.
 
-**Fontes** (detalhe em `../etapa04/ARQUITETURA_FONTES.md`):
+**Fontes** (detalhe em `../docs/stages/04-pipeline/SOURCE_ARCHITECTURE.md`):
 - API do Portal da Transparência de Ponta Grossa (Elotech/Oxy Transparência) → fonte primária dos dados operacionais de RP;
 - RREO Anexo VII → publicação oficial independente, usada só para reconciliação e auditoria. Uma divergência nunca altera o valor da API.
 
@@ -25,9 +25,9 @@ Código de **produção**:
 
 - **Banco ativo e logs:** `~/RestosAPagar_local/` (pasta do usuário, em qualquer sistema), fora do OneDrive. Outra pasta: variável de ambiente `RP_DADOS_LOCAIS` (caminho relativo = a partir de `app/`). O banco fica em `<pasta>/banco/restos_a_pagar.sqlite` e os logs em `<pasta>/logs/` (um arquivo por dia; os de mais de 90 dias saem sozinhos).
 - **Outro arquivo de configuração:** variável `RP_CONFIG` ou `python -m rp --config ARQUIVO ...`.
-- **Snapshots brutos** (`../snapshots`) e **backups** (`../backups`): no projeto. São arquivos gravados uma única vez. Só os 466 snapshots da base homologada estão no Git: desde 06/10/2026 (decisão D2) `snapshots/` está no `.gitignore` e um snapshot novo só é versionado com `git add -f`. Guarde a pasta inteira (por exemplo, no OneDrive): o banco só é reconstruível com ela.
-- Se o banco se perder: `python -m rp reconstruir --destino NOVO.sqlite` refaz tudo a partir de `snapshots/` (depois, `python -m rp processar` recria normalização e derivação com os mesmos hashes).
-- Backup com mais de 100 MB (limite por arquivo do GitHub) fica só na cópia local, listado pelo nome no `.gitignore` e nunca apagado. Hoje: `backups/20260930-145737_antes-migracao-v3-v4.sqlite` (120,5 MB). O repositório não depende dele: o armazém `snapshots/` basta para reconstruir o banco.
+- **Snapshots brutos** (`../data/snapshots`) e **backups** (`../data/backups`): no projeto. São arquivos gravados uma única vez. Só os 466 snapshots da base homologada estão no Git: desde 06/10/2026 (decisão D2) `data/snapshots/` está no `.gitignore` e um snapshot novo só é versionado com `git add -f`. Guarde a pasta inteira (por exemplo, no OneDrive): o banco só é reconstruível com ela.
+- Se o banco se perder: `python -m rp reconstruir --destino NOVO.sqlite` refaz tudo a partir de `data/snapshots/` (depois, `python -m rp processar` recria normalização e derivação com os mesmos hashes).
+- Backup com mais de 100 MB (limite por arquivo do GitHub) fica só na cópia local, listado pelo nome no `.gitignore` e nunca apagado. Hoje: `data/backups/20260930-145737_antes-migracao-v3-v4.sqlite` (120,5 MB). O repositório não depende dele: o armazém `data/snapshots/` basta para reconstruir o banco.
 
 ## Instalação em outra máquina
 
@@ -45,7 +45,7 @@ python -m venv .venv
 
 No Windows, use uma pasta de caminho curto para a cópia do projeto: com o ambiente numa pasta muito profunda, o caminho de uma biblioteca nativa passa de 260 caracteres e não carrega. A instalação limpa da 05.7 viu isso com o `charset_normalizer`, dependência do `requests`: o `requests` emite `RequestsDependencyWarning` e fica sem detecção de codificação de texto.
 
-2. Reconstrua o banco a partir do armazém `../snapshots` no caminho do banco ativo, `<pasta local>/banco/restos_a_pagar.sqlite` (o comando nunca sobrescreve um arquivo existente):
+2. Reconstrua o banco a partir do armazém `../data/snapshots` no caminho do banco ativo, `<pasta local>/banco/restos_a_pagar.sqlite` (o comando nunca sobrescreve um arquivo existente):
 
 ```bash
 python -m rp reconstruir --destino ~/RestosAPagar_local/banco/restos_a_pagar.sqlite
@@ -73,13 +73,13 @@ Opcional: `python -m pip install -e .` (dentro de `app/`, sempre em modo editáv
 
 Sempre COLETAR → VALIDAR → PROCESSAR → TESTAR → VERIFICAR → DISPONIBILIZAR. Nunca coletar por cima do banco e publicar: a coleta nova vira um snapshot a mais, e o retrato anterior continua no armazém e no banco.
 
-1. **Referência do bruto**, antes de coletar (o arquivo nunca é sobrescrito): `python -m rp portoes --gravar-referencia ../etapa04/resultados/referencia_AAAAMMDD.json`
+1. **Referência do bruto**, antes de coletar (o arquivo nunca é sobrescrito): `python -m rp portoes --gravar-referencia ../docs/stages/04-pipeline/results/referencia_AAAAMMDD.json`
 2. **Backup:** `python -m rp backup --motivo antes-carga-AAAAMMDD`
 3. **Coletar:** `coletar-catalogos`, `coletar-listagem` de cada entidade e corte, `coletar-rreo` (e `coletar-movimentacao` quando necessário). Coleta que termina `incompleta` ou `falhou` fica registrada, mas não vira retrato válido.
 4. **Validar:** `python -m rp verificar`, e `comparar-snapshots` / `comparar` para ver o que mudou em relação ao retrato anterior.
 5. **Processar:** `python -m rp processar` (e `--em` para as datas históricas que se queira reconciliar).
-6. **Testar:** `python -m pytest tests` e, em `../etapa03/validacao`, os 26 testes da investigação.
-7. **Verificar os portões:** `python -m rp portoes --referencia ../etapa04/resultados/referencia_AAAAMMDD.json`. Só com `"apto_sem_ressalvas": true` (apto e nenhum portão sem verificação, exceto os testes, conferidos à mão) e os testes passando a carga é disponibilizada. `"apto"` considera só os portões verificáveis; a lista do que não foi verificado sai em `"nao_verificados"`.
+6. **Testar:** `python -m pytest tests` e, em `../docs/stages/03-data-model/validation`, os 26 testes da investigação.
+7. **Verificar os portões:** `python -m rp portoes --referencia ../docs/stages/04-pipeline/results/referencia_AAAAMMDD.json`. Só com `"apto_sem_ressalvas": true` (apto e nenhum portão sem verificação, exceto os testes, conferidos à mão) e os testes passando a carga é disponibilizada. `"apto"` considera só os portões verificáveis; a lista do que não foi verificado sai em `"nao_verificados"`.
 8. **Disponibilizar:** reiniciar `python -m rp interface`. A interface lê a derivação atual mais recente; nenhum snapshot é substituído.
 
 Portões verificados por `portoes` (somente leitura):
@@ -106,7 +106,7 @@ Os testes são conferidos por quem disponibiliza. Se um portão falhar, o retrat
 - `config.toml` é validado: a API só em `https`, sem credencial na URL; números fora de faixa e `user_agent` com quebra de linha são recusados.
 - HTTP: redirecionamento não é seguido (um 3xx fica registrado como falha); o corpo de cada resposta tem teto (`limite_resposta_bytes`, 64 MiB); `Retry-After` do servidor é limitado a 300 s. Três prazos: conexão (`timeout_conexao_segundos`, 30 s), silêncio entre dois pedaços da resposta (`timeout_segundos`) e prazo total ABSOLUTO da requisição (3 × `timeout_segundos`), que vale mesmo contra um servidor que manda um byte por vez.
 - A paginação para quando a soma das páginas passa de `totalElements` ou chega a 10.000 páginas (servidor que ignore `page` não prende o coletor).
-- Soma = total não basta para dizer que a coleta está completa (auditoria técnica e revisão crítica, `../auditoria/`). A coleta de listagem PEDE a ordem (anoempenho, empenho) e só é `completa` se, além disso: cada página traz `number`, `numberOfElements`, `size`, `totalPages`, `first` e `empty` coerentes e ecoa a ordem pedida; nenhum registro idêntico reaparece em página seguinte; a ordem cresce na troca de página; nenhuma chave (entidade, anoempenho, empenho) se repete no retrato, dentro ou entre páginas; todo registro é da entidade pedida; e, com mais de uma página, uma segunda leitura de todas elas vem igual (os hashes vão para o manifesto, em `segunda_leitura`). Entidade ou exercício fora do catálogo vigente fica na observação: a API responde 200 vazio para entidade inexistente. O contrato observado da API está em `../auditoria/CONTRATO_API_ELOTECH.md`.
+- Soma = total não basta para dizer que a coleta está completa (auditoria técnica e revisão crítica, `../docs/audits/`). A coleta de listagem PEDE a ordem (anoempenho, empenho) e só é `completa` se, além disso: cada página traz `number`, `numberOfElements`, `size`, `totalPages`, `first` e `empty` coerentes e ecoa a ordem pedida; nenhum registro idêntico reaparece em página seguinte; a ordem cresce na troca de página; nenhuma chave (entidade, anoempenho, empenho) se repete no retrato, dentro ou entre páginas; todo registro é da entidade pedida; e, com mais de uma página, uma segunda leitura de todas elas vem igual (os hashes vão para o manifesto, em `segunda_leitura`). Entidade ou exercício fora do catálogo vigente fica na observação: a API responde 200 vazio para entidade inexistente. O contrato observado da API está em `../docs/audits/ELOTECH_API_CONTRACT.md`.
 - Catálogo (entidades, exercícios, publicações) só é `completa` se cumprir um contrato mínimo: JSON válido não basta, porque um objeto de erro com HTTP 200 também é JSON.
 - O manifesto de cada snapshot novo grava quando a coleta terminou (`coleta_finalizada_em`) e a estrutura da resposta (`contrato_api`: caminhos, tipos e o SHA-256 deles).
 - Retrato com a mesma chave de empenho mais de uma vez (anomalia CHAVE-DUP), exata ou conflitante, nunca é o vigente do corte: derivação, painel e consultas usam o retrato válido anterior (com aviso) ou mostram o dado como indisponível. Nada é apagado: as ocorrências ficam no banco e na tela de qualidade. O portão `retrato_sem_chave_repetida` traz o comando de recoleta de cada retrato; recolete **mais tarde** (a segunda leitura da coleta já releu as páginas na hora), sem recoleta automática.
@@ -253,7 +253,7 @@ Registrar no banco manifestos que ainda não estão lá:
 python -m rp sincronizar
 ```
 
-Cópia do banco para `backups/`:
+Cópia do banco para `data/backups/`:
 
 ```bash
 python -m rp backup --motivo manual
@@ -265,7 +265,7 @@ Contagens e espaço ocupado por pasta (banco, armazém, backups, backups operaci
 python -m rp situacao
 ```
 
-Registrar documento externo (e-SIC, norma, nota técnica): guarda o arquivo com SHA-256, grava manifesto imutável em `snapshots/evidencias/` e a linha em `evidencia_externa`:
+Registrar documento externo (e-SIC, norma, nota técnica): guarda o arquivo com SHA-256, grava manifesto imutável em `data/snapshots/evidencias/` e a linha em `evidencia_externa`:
 
 ```bash
 python -m rp registrar-evidencia --tipo e-SIC --descricao "Resposta sobre as cópias 24xxxxx" --arquivo resposta.pdf --origem "e-SIC, protocolo n." --data 2026-10-15
@@ -339,16 +339,16 @@ python -m rp painel regras
 Registrar uma decisão de governança (acrescenta ao histórico, nunca edita). Promover a operacional exige `--teste` e, se a regra compõe o indicador publicado (`--compoe-indicador`), `--evidencia` (id da evidência externa) ou `--ressalva`:
 
 ```bash
-python -m rp decidir-regra --codigo RREO-COL --versao 2 --situacao operacional --status "FORTE EVIDÊNCIA" --compoe-indicador --motivo "..." --fonte "etapa04/RELATORIO_04_4.md secao 14" --teste "tests/test_x.py::test_y" --evidencia 3
+python -m rp decidir-regra --codigo RREO-COL --versao 2 --situacao operacional --status "FORTE EVIDÊNCIA" --compoe-indicador --motivo "..." --fonte "docs/stages/04-pipeline/REPORT_04_4.md secao 14" --teste "tests/test_x.py::test_y" --evidencia 3
 ```
 
-Testes (nenhum acessa a internet; os da interface bloqueiam qualquer conexão para fora e sobem um servidor HTTP em 127.0.0.1; `test_casos_reais.py`, `test_interface_casos_reais.py` e `test_homologacao_real.py` montam um banco temporário a partir do armazém real `../snapshots`, só com leitura; `test_homologacao_real.py` recalcula os indicadores direto do JSON bruto da API):
+Testes (nenhum acessa a internet; os da interface bloqueiam qualquer conexão para fora e sobem um servidor HTTP em 127.0.0.1; `test_casos_reais.py`, `test_interface_casos_reais.py` e `test_homologacao_real.py` montam um banco temporário a partir do armazém real `../data/snapshots`, só com leitura; `test_homologacao_real.py` recalcula os indicadores direto do JSON bruto da API):
 
 ```bash
 python -m pytest tests
 ```
 
-Os testes que usam dados reais (fixtures `real` e `producao`: armazém `../snapshots` e bruto das Etapas 01/02, com dados de credores) recebem sozinhos o marcador `dados_reais`. Só os sintéticos, num ambiente sem o bruto:
+Os testes que usam dados reais (fixtures `real` e `producao`: armazém `../data/snapshots` e bruto das Etapas 01/02, com dados de credores) recebem sozinhos o marcador `dados_reais`. Só os sintéticos, num ambiente sem o bruto:
 
 ```bash
 python -m pytest tests -m "not dados_reais"

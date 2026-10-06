@@ -210,7 +210,7 @@ def test_pasta_local_configuravel_por_variavel_de_ambiente(tmp_path, monkeypatch
                      encoding="utf-8")
     cfg = carregar(outro)
     assert cfg.dados_locais == (tmp_path / "cfg" / "local").resolve()
-    assert cfg.snapshots == (tmp_path / "snapshots").resolve()
+    assert cfg.snapshots == (tmp_path / "data" / "snapshots").resolve()     # "../data/snapshots" desde 06/10/2026
 
 
 # ================================================================== secao 27: portoes de uma carga nova

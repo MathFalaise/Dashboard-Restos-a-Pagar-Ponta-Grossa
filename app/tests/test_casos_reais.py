@@ -127,7 +127,7 @@ def _consistencia_da_04_4():
     """Linhas de etapa04/lotes/consistencia_rreo.md: (escopo, de) -> (L de A, (a)+(f) de A+1, diferenca, API S1, API a+f)."""
     c = lambda s: None if s.strip() in ("—", "") else int(re.sub(r"[^\d-]", "", s.split("(")[0]))
     saida = {}
-    for linha in (RAIZ_PROJETO / "etapa04/lotes/consistencia_rreo.md").read_text(encoding="utf-8").splitlines()[2:]:
+    for linha in (RAIZ_PROJETO / "docs/stages/04-pipeline/batches/consistencia_rreo.md").read_text(encoding="utf-8").splitlines()[2:]:
         cel = [x.strip() for x in linha.strip("|").split("|")]
         de = int(cel[1][:4])
         saida[(cel[0], de)] = tuple(c(x) for x in cel[2:7])
