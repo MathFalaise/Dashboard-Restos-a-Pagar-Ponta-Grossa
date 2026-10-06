@@ -114,3 +114,28 @@ def test_D1_portao_da_chave_repetida_diz_o_comando_de_recoleta_e_nao_recoleta_so
     assert p["detalhe"]["recoletar"] == [f"python -m rp recoletar --snapshot {uid}"]
     assert "MAIS TARDE" in p["detalhe"]["nota"] and "segunda leitura" in p["detalhe"]["nota"]
     assert mundo.con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0] == coletas    # nada foi coletado sozinho
+
+
+# ------------------------------------------------------------------ D5: trava com hashes
+def _trava():
+    import re
+    texto = (APP / "requirements-lock.txt").read_text(encoding="utf-8").replace("\\" + "\n", " ")   # continuacao
+    pacotes = {}
+    for linha in texto.splitlines():
+        linha = linha.split("#", 1)[0].strip()
+        if linha:
+            m = re.match(r"^([A-Za-z0-9_.-]+)==([^\s]+)((?:\s+--hash=sha256:[0-9a-f]{64})*)\s*$", linha)
+            assert m, f"linha fora do formato: {linha!r}"
+            pacotes[m.group(1).lower()] = (m.group(2), re.findall(r"[0-9a-f]{64}", m.group(3)))
+    return pacotes
+
+
+def test_D5_todo_pacote_da_trava_tem_hash_e_as_versoes_batem_com_os_requirements():
+    trava = _trava()
+    assert trava and all(hashes for _, hashes in trava.values()), "pacote sem hash na trava"
+    for arq in ("requirements.txt", "requirements-dev.txt"):
+        for linha in (APP / arq).read_text(encoding="utf-8").splitlines():
+            linha = linha.split("#", 1)[0].strip()
+            if linha and not linha.startswith("-r"):
+                nome, versao = linha.split("==")
+                assert trava[nome.lower()][0] == versao, (arq, nome)
