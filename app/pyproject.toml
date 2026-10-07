@@ -22,7 +22,7 @@ dev = ["pytest==9.1.1"]
 rp = "rp.cli:main"
 
 [tool.setuptools]
-packages = ["rp", "rp.painel", "rp.interface"]
+packages = ["rp", "rp.painel", "rp.painel.consulta", "rp.interface", "rp.interface.paginas"]
 
 [tool.setuptools.package-data]
 rp = ["esquema.sql"]

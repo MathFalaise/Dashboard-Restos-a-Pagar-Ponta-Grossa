@@ -245,8 +245,10 @@ def test_09_mudanca_de_regra_exige_nova_versao(mundo):
 def test_parametros_de_negocio_nao_estao_espalhados_no_codigo():
     """2,400,000, the pair's entities 1/15 and the RREO entity come from regra_parametro, not from constants."""
     raiz = RAIZ_PROJETO / "app" / "rp"
-    for arq in ("derivar.py", "comparador.py", "painel/consulta.py"):
-        fonte = (raiz / arq).read_text(encoding="utf-8")
+    arquivos = [raiz / "derivar.py", raiz / "comparador.py", *sorted((raiz / "painel" / "consulta").glob("*.py"))]
+    assert len(arquivos) > 3                            # the panel package was found
+    for arq in arquivos:
+        fonte = arq.read_text(encoding="utf-8")
         codigo = "\n".join(l.split("#")[0] for l in fonte.splitlines())
         assert not re.search(r"2[._]?400[._]?000", codigo), arq
         assert not re.search(r"\b(ENT_ORIGINAL|ENT_COPIA|BASE_COPIA|ENTIDADE_RREO)\b", codigo), arq

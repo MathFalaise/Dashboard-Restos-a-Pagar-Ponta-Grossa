@@ -99,7 +99,9 @@ def test_SINTETICO_variacao_par_pedido_nunca_e_trocado(app):
 
 
 def test_nenhuma_tela_anuncia_troca_de_corte():
-    fonte = (Path(__file__).resolve().parents[1] / "rp" / "interface" / "paginas.py").read_text(encoding="utf-8")
+    pasta = Path(__file__).resolve().parents[1] / "rp" / "interface" / "paginas"
+    fonte = "\n".join(p.read_text(encoding="utf-8") for p in sorted(pasta.glob("*.py")))
+    assert "def variacao(" in fonte                     # the pages package was read
     for texto in ("mostrado outro corte", "mostrado o exercício mais recente", "mostrado o par",
                   "mostrado o corte imediatamente anterior"):
         assert texto not in fonte
