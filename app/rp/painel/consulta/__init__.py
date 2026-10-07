@@ -22,7 +22,7 @@ Flow:  Elotech API -> collection -> immutable snapshot -> normalization -> deriv
 
 Modules: comum (constants, exceptions, helpers), nucleo (connection, context, cut-offs, provenance)
 and one mixin per topic: indicadores, serie, composicao, variacao, qualidade, empenhos, retratos,
-reconciliacao, documentacao. Painel joins them; callers keep using `from rp.painel.consulta import ...`.
+reconciliacao, documentacao, visao (overview, stage 06). Painel joins them; callers keep using `from rp.painel.consulta import ...`.
 """
 from .comum import (CADEIA, CAMPOS_DO_HISTORICO, CAMPOS_REGISTRO, CATEGORIAS, CLASSES_DA_CHAVE, COMPOSICOES,
                     CONTINUIDADE, DERIVADOS, diferenca, DIMENSOES, DIMENSOES_ORCAMENTARIAS, DINHEIRO, ErroDoPainel,
@@ -43,10 +43,11 @@ from .empenhos import Empenhos
 from .retratos import Retratos
 from .reconciliacao import Reconciliacao
 from .documentacao import Documentacao
+from .visao import Visao
 
 
 class Painel(Nucleo, Indicadores, Serie, Composicao, Variacao, Qualidade, Empenhos, Retratos, Reconciliacao,
-             Documentacao):
+             Documentacao, Visao):
     """Read queries for the dashboard. Use Painel.abrir(database_path) (read-only connection)."""
 
 

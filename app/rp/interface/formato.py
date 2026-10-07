@@ -48,6 +48,39 @@ def valor(c, ident=None, ausencia="sem valor"):
     return f'<data class="{classe}"{atributo_id} value="{c}">{esc(moeda(c))}</data>'
 
 
+UNIDADES_ABREVIADAS = ((10 ** 11, "bi"), (10 ** 8, "mi"), (10 ** 5, "mil"))     # in cents
+
+
+def abreviado(c):
+    """Cents (int) -> 'R$ 78,7 mi' / 'R$ 1,2 bi' / 'R$ 950,3 mil': one decimal, rounded half up with integer
+    arithmetic, in the largest unit where the value shows as at least 1,0. Below that, the exact value."""
+    if c is None:
+        return None
+    if isinstance(c, bool) or not isinstance(c, int):
+        raise TypeError(f"valor monetario precisa ser inteiro em centavos: {c!r}")
+    for unidade, nome in UNIDADES_ABREVIADAS:
+        decimos = (abs(c) * 20 + unidade) // (2 * unidade)
+        if decimos >= 10:
+            return ("-" if c < 0 else "") + f"R$ {decimos // 10:,}".replace(",", ".") + f",{decimos % 10} {nome}"
+    return moeda(c)
+
+
+def valor_abreviado(c, ident=None, ausencia="sem valor"):
+    """<data> with the exact value in cents (machine-readable and in the hint) and the abbreviated text."""
+    if c is None:
+        return f'<span class="sem-valor">{esc(ausencia)}</span>'
+    atributo_id = f' id="{esc(ident)}"' if ident else ""
+    classe = "valor negativo" if c < 0 else "valor"
+    return f'<data class="{classe}"{atributo_id} value="{c}" title="{esc(moeda(c))}">{esc(abreviado(c))}</data>'
+
+
+def percentual(decimos):
+    """Tenths of a percentage point (int) -> '38,3%'. None -> None."""
+    if decimos is None:
+        return None
+    return ("-" if decimos < 0 else "") + f"{abs(decimos) // 10},{abs(decimos) % 10}%"
+
+
 def contagem(n, ident=None, ausencia="sem valor"):
     if n is None:
         return f'<span class="sem-valor">{esc(ausencia)}</span>'

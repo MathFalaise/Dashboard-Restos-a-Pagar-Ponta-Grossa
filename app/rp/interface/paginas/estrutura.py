@@ -6,8 +6,9 @@ from .. import formato as fm, portal as P
 from ..formato import esc
 
 TAMANHO_PAGINA = 50
-MENU = [("/", "Resumo"), ("/evolucao", "Evolução no exercício"), ("/historico", "Série entre exercícios"),
-        ("/composicao", "Composição do saldo"), ("/variacao", "Variação entre cortes"), ("/entidades", "Entidades"),
+MENU = [("/", "Visão geral"), ("/resumo", "Resumo do corte"), ("/evolucao", "Evolução no exercício"),
+        ("/historico", "Série entre exercícios"), ("/composicao", "Composição do saldo"),
+        ("/variacao", "Variação entre cortes"), ("/entidades", "Entidades"),
         ("/empenhos", "Empenhos"), ("/retratos", "Retratos"), ("/reconciliacao", "Reconciliação com o RREO"),
         ("/qualidade", "Qualidade dos dados"), ("/metodologia", "Metodologia e fontes"),
         ("/pares", "Técnico: pares espelhados")]
