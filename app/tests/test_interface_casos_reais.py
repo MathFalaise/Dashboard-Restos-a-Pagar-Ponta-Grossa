@@ -104,7 +104,7 @@ def test_674_426_01(app):
 
 
 def test_resumo_do_municipio_com_entidade_fora_do_catalogo(app, real):
-    corpo = ok(app, "/", exercicio=2016, data_final="2016-12-31")
+    corpo = ok(app, "/resumo", exercicio=2016, data_final="2016-12-31")
     v = dados(corpo)
     esperado = real["painel"].indicadores(2016, "2016-12-31")["valores"]
     assert v["ind-saldo_total"] == esperado["saldo_total"]["valor_c"]
@@ -117,7 +117,7 @@ def test_indicadores_da_interface_iguais_aos_da_camada_painel(app, real):
     """The interface recomputes nothing: each card shows exactly the panel layer's value."""
     mostrados = [i for _, ids in paginas.GRUPOS for i in ids]
     for ex, df, ent in ((2024, "2024-12-31", None), (2025, "2025-06-30", 1), (2026, "2026-08-31", None)):
-        v = dados(ok(app, "/", exercicio=ex, data_final=df, entidade=ent))
+        v = dados(ok(app, "/resumo", exercicio=ex, data_final=df, entidade=ent))
         esperado = real["painel"].indicadores(ex, df, ent)["valores"]
         assert sorted(k[4:] for k in v if k.startswith("ind-")) == sorted(mostrados)
         assert {k: v[f"ind-{k}"] for k in mostrados} == {k: esperado[k]["valor_c"] for k in mostrados}, (ex, df, ent)
@@ -126,7 +126,7 @@ def test_indicadores_da_interface_iguais_aos_da_camada_painel(app, real):
 def test_desempenho_das_telas_no_banco_completo(app):
     """No screen loads the whole database: all of them answer in a few seconds even on the full database."""
     import time
-    for caminho, params in (("/", {}), ("/entidades", dict(exercicio=2025, data_final="2025-12-31")),
+    for caminho, params in (("/", {}), ("/resumo", {}), ("/entidades", dict(exercicio=2025, data_final="2025-12-31")),
                             ("/empenhos", dict(exercicio=2025, data_final="2025-12-31")),
                             ("/reconciliacao", {}), ("/pares", dict(exercicio=2026, data_final="2026-08-31"))):
         t = time.perf_counter()

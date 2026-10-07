@@ -170,7 +170,7 @@ def test_tela_igual_ao_painel(real, app_real, ex, ent):
     serie = real["painel"].evolucao(ex, ent)["serie"]
     corpo = ok(app_real, "/evolucao", exercicio=ex, entidade=ent)
     v = dados(corpo)
-    assert corpo.count("<tr><td><a href=\"/?") == len(serie)                     # one row per cut-off of the universe
+    assert corpo.count("<tr><td><a href=\"/resumo?") == len(serie)                     # one row per cut-off of the universe
     svg = re.search(r"<svg.*?</svg>", corpo, re.S).group(0)
     assert svg.count('class="ponto"') == len(serie) and svg.count('class="lacuna"') == sum(1 for x in serie
                                                                                           if not x["tem_valor"])
@@ -193,7 +193,7 @@ def test_tela_igual_ao_painel(real, app_real, ex, ent):
 
 def test_metodologia_e_navegacao(app_real):
     assert SITUACOES_DO_PONTO["municipio_indisponivel"] in ok(app_real, "/metodologia")
-    resumo = ok(app_real, "/", exercicio=2025, data_final="2025-12-31")
+    resumo = ok(app_real, "/resumo", exercicio=2025, data_final="2025-12-31")
     assert 'href="/evolucao?exercicio=2025"' in resumo
     assert '<a href="/evolucao"' in resumo                                         # menu item
 

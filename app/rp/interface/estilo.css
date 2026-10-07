@@ -7,6 +7,7 @@
   --texto: #fafaf9; --suave: #a6a39c; --borda: rgba(250, 250, 249, .08); --borda-forte: rgba(250, 250, 249, .2);
   --pilula: rgba(250, 250, 249, .14);
   --azul: #8fb4ff; --verde: #6fd08c; --laranja: #f0b35a; --roxo: #b9a2ff; --cinza: #a6a39c; --vermelho: #ff8a80;
+  --ciano: #5fd3d3; --amarelo: #e6d36a; --rosa: #f29ccf;
   --sans: Geist, "Helvetica Neue", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
   --serif: Faustina, Georgia, "Times New Roman", serif;
   --raio: 14px;
@@ -157,6 +158,67 @@ data.valor.negativo { color: var(--vermelho); }
 .grafico text { fill: var(--suave); font-size: 22px; font-family: var(--sans); }
 .grafico .rotulo-lacuna { fill: var(--suave); font-style: italic; }
 
+/* ------------------------------------------------------------------ overview (BI): key numbers, pies and columns */
+.subtitulo { margin: -8px 0 14px; color: var(--suave); font-size: 14px; }
+.numeros-chave { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 16px 0 20px; }
+.numero-chave { background: var(--superficie); border: 1px solid var(--borda); border-radius: var(--raio);
+                padding: 16px 18px; }
+.numero-chave .rotulo { margin: 0; color: var(--suave); font-size: 13px; font-weight: 500; }
+.numero-chave .grande { margin: 6px 0 2px; font-family: var(--serif); font-size: 34px; line-height: 1.15;
+                        letter-spacing: -.01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.numero-chave .grande data { color: var(--texto); }
+.numero-chave .exato { margin: 0; font-size: 12px; color: var(--suave); font-variant-numeric: tabular-nums; }
+.numero-chave .nota-numero { margin: 6px 0 0; font-size: 12.5px; color: var(--suave); }
+.numero-saldo_total { border-color: rgba(240, 179, 90, .5); }
+.numero-pagamentos .nota-numero { color: var(--verde); }
+.painel-bi { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.bloco { background: var(--superficie); border: 1px solid var(--borda); border-radius: var(--raio); padding: 16px 18px;
+         min-width: 0; }
+.bloco.largo { grid-column: 1 / -1; }
+.bloco h2 { margin: 0 0 4px; font-family: var(--serif); font-size: 20px; font-weight: 400; }
+.bloco .leitura { margin: 0 0 12px; font-size: 13.5px; color: var(--suave); }
+.bloco .aviso { margin: 8px 0; }
+.ver-detalhes { margin: 8px 0 0; font-size: 12.5px; }
+details.exatos { margin-top: 10px; font-size: 12.5px; }
+details.exatos .rolagem { margin-top: 8px; }
+.pizza { display: flex; align-items: center; gap: 18px; margin: 0; }
+.pizza svg { flex: 0 0 auto; width: 220px; height: 220px; }
+.pizza .fatia.c1, .colunas .coluna.c1 { fill: var(--azul); }
+.pizza .fatia.c2, .colunas .coluna.c2 { fill: var(--laranja); }
+.pizza .fatia.c3, .colunas .coluna.c3 { fill: var(--verde); }
+.pizza .fatia.c4, .colunas .coluna.c4 { fill: var(--roxo); }
+.pizza .fatia.c5, .colunas .coluna.c5 { fill: var(--ciano); }
+.pizza .fatia.c6, .colunas .coluna.c6 { fill: var(--amarelo); }
+.pizza .fatia.c7, .colunas .coluna.c7 { fill: var(--vermelho); }
+.pizza .fatia.c8, .colunas .coluna.c8 { fill: #6f6c66; }
+.pizza .fatia.c9, .colunas .coluna.c9 { fill: var(--rosa); }
+.pizza .fatia { stroke: var(--superficie); stroke-width: 1.5; }
+.pizza .setor:hover .fatia, .pizza .setor:focus .fatia { opacity: .78; }
+.pizza .centro-valor { fill: var(--texto); font-family: var(--serif); font-size: 23px; }
+.pizza .centro-rotulo { fill: var(--suave); font-family: var(--sans); font-size: 13px; }
+.legenda { list-style: none; margin: 0; padding: 0; flex: 1 1 auto; min-width: 0; font-size: 13px; }
+.legenda li { display: flex; align-items: baseline; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--borda); }
+.legenda li:last-child { border-bottom: 0; }
+.legenda-rotulo { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.legenda-valor { flex: 0 0 auto; color: var(--suave); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.legenda-valor strong { color: var(--texto); font-weight: 600; margin-left: 4px; }
+.amostra { flex: 0 0 auto; display: inline-block; width: 10px; height: 10px; border-radius: 3px; }
+.amostra.c1 { background: var(--azul); } .amostra.c2 { background: var(--laranja); }
+.amostra.c3 { background: var(--verde); } .amostra.c4 { background: var(--roxo); }
+.amostra.c5 { background: var(--ciano); } .amostra.c6 { background: var(--amarelo); }
+.amostra.c7 { background: var(--vermelho); } .amostra.c8 { background: #6f6c66; }
+.amostra.c9 { background: var(--rosa); }
+.legenda-series { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-bottom: 6px; }
+.legenda-series li { border: 0; padding: 0; align-items: center; }
+.colunas { margin: 0; }
+.colunas svg { width: 100%; max-width: 820px; height: auto; display: block; margin: 0 auto; }
+.colunas .grade { stroke: var(--borda); stroke-width: 1; }
+.colunas .eixo, .colunas .zero { stroke: var(--borda-forte); stroke-width: 2; }
+.colunas .lacuna { fill: none; stroke: var(--suave); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.colunas text { fill: var(--suave); font-family: var(--sans); font-size: 19px; }
+.colunas .rotulo-lacuna { font-style: italic; font-size: 16px; }
+.colunas .grupo-colunas:hover .coluna, .colunas .grupo-colunas:focus .coluna { opacity: .78; }
+
 /* ------------------------------------------------------------------ footer and focus */
 .rodape { border-top: 1px solid var(--borda); color: var(--suave); font-size: 12px; padding: 14px 20px 28px;
           max-width: 1280px; margin: 0 auto; }
@@ -180,6 +242,17 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   .filtros select, .filtros input { width: 100%; min-width: 0; }
   .filtros button { width: 100%; }
   .selo-analise { white-space: normal; }
+  .numeros-chave { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .numero-chave { padding: 12px; }
+  .numero-chave .grande { font-size: 24px; }
+  .painel-bi { grid-template-columns: 1fr; }
+  .bloco { padding: 14px 12px; }
+  .pizza { flex-direction: column; align-items: stretch; }
+  .pizza svg { align-self: center; width: 200px; height: 200px; }
+}
+@media (min-width: 641px) and (max-width: 1000px) {
+  .numeros-chave { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .painel-bi { grid-template-columns: 1fr; }
 }
 
 /* ------------------------------------------------------------------ print: light and without navigation */

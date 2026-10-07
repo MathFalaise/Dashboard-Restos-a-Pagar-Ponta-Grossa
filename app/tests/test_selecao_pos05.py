@@ -19,7 +19,7 @@ from conftest import chamar, dados, registro_sintetico as _reg
 from rp.interface import Aplicacao
 
 T0 = "2026-09-29T20:00:00-03:00"
-ROTAS_DO_CORTE = ("/", "/composicao", "/entidades", "/empenhos", "/pares")
+ROTAS_DO_CORTE = ("/resumo", "/composicao", "/entidades", "/empenhos", "/pares")
 ROTAS_DO_EXERCICIO = ROTAS_DO_CORTE + ("/evolucao", "/variacao")
 
 
@@ -47,7 +47,7 @@ def _pagina(app, caminho, **params):
 
 def test_SINTETICO_padrao_sem_pedido_continua_o_mesmo(app):
     for params in ({}, {"exercicio": 2025}):
-        corpo, h1 = _pagina(app, "/", **params)
+        corpo, h1 = _pagina(app, "/resumo", **params)
         assert "corte 30/04/2025" in h1                      # most recent with the full Municipality (30/06 does not have it)
         assert "nenhum outro corte é mostrado" not in corpo and dados(corpo)
         corpo, h1 = _pagina(app, "/variacao", **params)
@@ -68,7 +68,7 @@ def test_SINTETICO_corte_pedido_nao_processado_nunca_e_trocado(app):
         assert "R$ 0,00" not in corpo, rota
         if rota != "/entidades":                                           # entities: situation per row
             assert 'id="indisponivel"' in corpo, rota
-    corpo, _ = _pagina(app, "/", exercicio=2025, data_final="2025-03-31")
+    corpo, _ = _pagina(app, "/resumo", exercicio=2025, data_final="2025-03-31")
     assert "corte não coletado" in corpo                                   # data situation, from the panel layer
 
 

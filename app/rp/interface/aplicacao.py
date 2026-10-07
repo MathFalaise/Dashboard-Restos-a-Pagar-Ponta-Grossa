@@ -37,7 +37,7 @@ CABECALHOS = [
     ("Cache-Control", "no-store"),
 ]
 ROTAS = {
-    "/": paginas.resumo, "/evolucao": paginas.evolucao, "/historico": paginas.historico, "/composicao": paginas.composicao, "/variacao": paginas.variacao, "/empenho/cortes": paginas.empenho_cortes, "/qualidade": paginas.qualidade, "/entidades": paginas.entidades, "/empenhos": paginas.empenhos, "/empenho": paginas.empenho,
+    "/": paginas.visao, "/resumo": paginas.resumo, "/evolucao": paginas.evolucao, "/historico": paginas.historico, "/composicao": paginas.composicao, "/variacao": paginas.variacao, "/empenho/cortes": paginas.empenho_cortes, "/qualidade": paginas.qualidade, "/entidades": paginas.entidades, "/empenhos": paginas.empenhos, "/empenho": paginas.empenho,
     "/retratos": paginas.retratos, "/comparar": paginas.comparar, "/reconciliacao": paginas.reconciliacao,
     "/pares": paginas.pares, "/metodologia": paginas.metodologia,
 }
@@ -149,7 +149,7 @@ class Aplicacao:
                  '<meta name="viewport" content="width=device-width, initial-scale=1">'
                  f'<title>{paginas.esc(titulo)}</title>'
                  f'<link rel="stylesheet" href="/estilo.css"></head><body><main><h1>{paginas.esc(titulo)}</h1>'
-                 f'<p class="aviso">{paginas.esc(mensagem)}</p><p><a href="/">Voltar ao resumo</a></p></main></body></html>')
+                 f'<p class="aviso">{paginas.esc(mensagem)}</p><p><a href="/">Voltar à visão geral</a></p></main></body></html>')
         return self._responder(start_response, metodo, status, "text/html; charset=utf-8", corpo.encode("utf-8"), extra)
 
     @staticmethod
