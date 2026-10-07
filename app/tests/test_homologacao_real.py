@@ -98,7 +98,7 @@ def test_indicadores_recalculados_do_bruto_iguais_ao_painel_e_a_tela(app, real, 
     esperado = recalcular(itens)
     painel = {k: v["valor_c"] for k, v in ind["valores"].items() if k in esperado}
     assert painel == esperado, (ex, df, ent)
-    tela = dados(ok(app, "/", exercicio=ex, data_final=df, entidade=ent))
+    tela = dados(ok(app, "/resumo", exercicio=ex, data_final=df, entidade=ent))
     mostrados = [i for _, ids in paginas.GRUPOS for i in ids]
     assert {k: tela[f"ind-{k}"] for k in mostrados} == {k: esperado[k] for k in mostrados}, (ex, df, ent)
 
@@ -196,7 +196,7 @@ def test_indicador_principal_usa_elotech_e_sobrevive_sem_rreo(real, tmp_path):
     assert _indicadores(copia, RREO_CORTES) == antes
     app = Aplicacao(copia)
     for ex, df, ent in RREO_CORTES:
-        corpo = ok(app, "/", exercicio=ex, data_final=df, entidade=ent)
+        corpo = ok(app, "/resumo", exercicio=ex, data_final=df, entidade=ent)
         assert "sem RREO transcrito" in corpo and 'id="conf-rreo"' not in corpo
         assert {k: v for k, v in dados(corpo).items() if k.startswith("ind-")} == {
             f"ind-{k}": antes[(ex, df, ent)][k] for _, ids in paginas.GRUPOS for k in ids}
@@ -222,7 +222,7 @@ def test_alterar_o_rreo_nao_altera_a_api_e_a_divergencia_aparece(real, tmp_path)
     assert conf["rreo"]["valor_c"] == conf0["rreo"]["valor_c"] + delta
     assert conf["diferenca_c"] == conf0["diferenca_c"] - delta and conf["situacao_do_dado"]["codigo"] == "divergente"
     assert all(x["diferenca_c"] != 0 and x["api_c"] != x["rreo_c"] for x in rec)   # no column "closed" by force
-    corpo = ok(Aplicacao(copia), "/", exercicio=2026, data_final="2026-08-31")
+    corpo = ok(Aplicacao(copia), "/resumo", exercicio=2026, data_final="2026-08-31")
     v = dados(corpo)
     assert v["ind-saldo_total"] == v["conf-api"] == antes[(2026, "2026-08-31", None)]["saldo_total"]
     assert v["conf-dif"] == v["conf-api"] - v["conf-rreo"] != 0 and "diferença" in corpo
@@ -248,7 +248,7 @@ def test_todo_indicador_principal_tem_proveniencia_ate_o_bruto(app, real):
     con = real["con"]
     for c in real["painel"].cortes()["cortes"]:
         ex, df = c["exercicio"], c["data_final"]
-        corpo = ok(app, "/", exercicio=ex, data_final=df)
+        corpo = ok(app, "/resumo", exercicio=ex, data_final=df)
         if 'id="indisponivel"' in corpo:
             assert not re.search(r'id="ind-', corpo)
             continue
@@ -285,7 +285,7 @@ def test_valor_publicado_aponta_para_pdf_extracao_e_snapshot(app, real):
 
 
 def test_diferenca_aponta_para_as_duas_fontes(app, real):
-    corpo = ok(app, "/", exercicio=2024, data_final="2024-12-31")
+    corpo = ok(app, "/resumo", exercicio=2024, data_final="2024-12-31")
     conf = corpo[corpo.index('id="conferencia-rreo"'):]
     conf = conf[:conf.index("</section>")]
     assert 'id="conf-api"' in conf and 'id="conf-rreo"' in conf and 'id="conf-dif"' in conf
@@ -299,7 +299,7 @@ def test_todo_corte_diz_exercicio_corte_coleta_tipo_e_snapshot(app, real):
     for c in real["painel"].cortes()["cortes"]:
         ex, df = c["exercicio"], c["data_final"]
         br = f"{df[8:10]}/{df[5:7]}/{df[:4]}"
-        for caminho in ("/", "/entidades", "/empenhos"):
+        for caminho in ("/resumo", "/entidades", "/empenhos"):
             corpo = ok(app, caminho, exercicio=ex, data_final=df)
             h1 = re.search(r"<h1>(.*?)</h1>", corpo).group(1)
             assert f"exercício {ex}, corte {br}" in h1 and "(estado atual da base)" in h1, (caminho, h1)
@@ -308,7 +308,7 @@ def test_todo_corte_diz_exercicio_corte_coleta_tipo_e_snapshot(app, real):
                 texto = re.search(r'id="retrato">(.*?)</p>', corpo).group(1)
                 assert texto.startswith(f"Estado atual da base para o exercício de {ex}, corte {br}, coletado ")
                 assert "Retrato</dt><dd>atual" in corpo and "Snapshots usados" in corpo
-    corpo = ok(app, "/", exercicio=2025, data_final="2025-12-31", em="2026-09-30")
+    corpo = ok(app, "/resumo", exercicio=2025, data_final="2025-12-31", em="2026-09-30")
     assert "(como a base estava em 30/09/2026)" in re.search(r"<h1>(.*?)</h1>", corpo).group(1)
     assert "Retrato</dt><dd>histórico — como a base estava em 30/09/2026" in corpo
 
@@ -418,18 +418,20 @@ def test_regras_experimentais_so_aparecem_rotuladas_como_analise(app, real):
         api = linha.split("</td>")[2]
         assert "valor analítico" in api and "dado da fonte" not in api and "valor publicado" not in api
     for ex, df in ((2026, "2026-08-31"), (2024, "2024-12-31")):
-        corpo = ok(app, "/", exercicio=ex, data_final=df)
+        corpo = ok(app, "/resumo", exercicio=ex, data_final=df)
         cartoes = corpo[corpo.index('<section class="grupo"><h2>Restos a Pagar inscritos'):corpo.index("Entidades abrangidas")]
         assert "experimental" not in cartoes.lower() and "CONS-PAR" not in cartoes and "RREO-COL" not in cartoes
         assert "CANC" not in cartoes and "analítico" not in cartoes
-    for caminho, params in (("/", {}), ("/entidades", {}), ("/empenhos", {}), ("/retratos", {})):
+    for caminho, params in (("/", {}), ("/resumo", {}), ("/entidades", {}), ("/empenhos", {}), ("/retratos", {})):
         assert "CONS-PAR" not in ok(app, caminho, **params)
 
 
 # ================================================================== section 14: performance
 def test_desempenho_das_operacoes_no_banco_real(app):
-    operacoes = [("abertura", "/", {}), ("troca de exercício", "/", dict(exercicio=2019, data_final="2019-12-31")),
-                 ("filtro de entidade", "/", dict(exercicio=2025, data_final="2025-12-31", entidade=15)),
+    operacoes = [("abertura", "/", {}), ("visão geral de outro exercício", "/", dict(exercicio=2019, data_final="2019-12-31")),
+                 ("resumo do corte", "/resumo", {}),
+                 ("troca de exercício", "/resumo", dict(exercicio=2019, data_final="2019-12-31")),
+                 ("filtro de entidade", "/resumo", dict(exercicio=2025, data_final="2025-12-31", entidade=15)),
                  ("consulta detalhada", "/empenho", dict(entidade=1, anoempenho=2025, empenho=5659, exercicio=2026)),
                  ("busca", "/empenhos", dict(exercicio=2026, data_final="2026-08-31", empenho=5659)),
                  ("navegação", "/empenhos", dict(exercicio=2016, data_final="2016-12-31", pagina=40)),

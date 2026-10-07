@@ -30,6 +30,8 @@ PORTAL = DOMINIO + "/portaltransparencia"
 
 PAGINAS = [
     ("/", {}), ("/", dict(exercicio=2026, data_final="2026-03-31")), ("/", dict(exercicio=2025, data_final="2025-12-31", entidade=15)),
+    ("/resumo", {}), ("/resumo", dict(exercicio=2026, data_final="2026-03-31")),
+    ("/resumo", dict(exercicio=2025, data_final="2025-12-31", entidade=15)),
     ("/evolucao", dict(exercicio=2026)), ("/evolucao", dict(exercicio=2026, entidade=15)),
     ("/historico", {}), ("/historico", dict(entidade=10)),
     *[("/composicao", dict(exercicio=2025, data_final="2025-12-31", dimensao=d)) for d in

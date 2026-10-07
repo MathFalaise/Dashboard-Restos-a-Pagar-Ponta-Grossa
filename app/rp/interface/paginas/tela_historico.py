@@ -44,7 +44,7 @@ def historico(p, q):
                    "titulo": (f"{x['exercicio']}: " + (fm.moeda(x["valores"]["saldo_total"]["valor_c"]) +
                                                       f" (corte {fm.data_br(x['data_final'])})" if x["tem_valor"] else
                                                       f"sem dado — {x['situacao']['texto']}")),
-                   "href": fm.url("/", exercicio=x["exercicio"], data_final=x["data_final"], entidade=entidade, em=em)
+                   "href": fm.url("/resumo", exercicio=x["exercicio"], data_final=x["data_final"], entidade=entidade, em=em)
                    if x["data_final"] else fm.url("/historico", entidade=entidade, em=em)} for x in pontos]
         corpo.append('<section class="grupo"><h2>Saldo de RP no corte representativo (S1)</h2>'
                      + grafico.barras("graf-hist", f"Saldo de RP (S1) por exercício — {escopo}",
@@ -60,7 +60,7 @@ def _tabela_historico(pontos, sel):
     linhas = []
     for x in pontos:
         ex = x["exercicio"]
-        corte = (fm.link("/", fm.data_br(x["data_final"]), exercicio=ex, data_final=x["data_final"],
+        corte = (fm.link("/resumo", fm.data_br(x["data_final"]), exercicio=ex, data_final=x["data_final"],
                          entidade=sel["entidade"], em=sel["em"]) if x["data_final"] else "—")
         situacao = _situacao_curta(x["situacao"]["texto"]) + "".join(f"; {rot}" for rot in x["rotulos"])
         sit = f'<span title="{esc(x["situacao"]["texto"])}">{esc(situacao)}</span>'

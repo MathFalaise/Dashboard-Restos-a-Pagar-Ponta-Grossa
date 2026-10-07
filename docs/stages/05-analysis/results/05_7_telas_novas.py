@@ -2,7 +2,8 @@
 
 Usage (inside app/):  python ../docs/stages/05-analysis/results/05_7_telas_novas.py SAIDA.json [--banco CAMINHO]
 
-Walks through WSGI (no server) the screens of sub-stages 05.2 to 05.6 in every scope and records every
+Walks through WSGI (no server) the screens of sub-stages 05.2 to 05.6, and since 07/10/2026 the overview of stage 06
+(/, every cut-off), in every scope and records every
 <data id value> of each page. For each page, builds the expected value of each id from the panel layer (the same
 query the screen uses) and records: expected ids that are missing, different values and shown ids that were not
 checked. Criterion: all three empty.
@@ -24,7 +25,7 @@ from rp.interface.aplicacao import Aplicacao  # noqa: E402
 from rp.painel import Painel  # noqa: E402
 from rp.painel.consulta import COMPOSICOES  # noqa: E402
 
-_DATA = re.compile(r'<data class="[^"]*" id="([^"]+)" value="(-?\d+)">')
+_DATA = re.compile(r'<data class="[^"]*" id="([^"]+)" value="(-?\d+)"[^>]*>')
 
 
 def pagina(app, caminho, **q):
@@ -126,6 +127,26 @@ def esperado_qualidade(q, o=None):
     return e
 
 
+def esperado_visao(v):
+    """Overview (stage 06, /): key numbers, every part and total of each pie, and the two series."""
+    e = {}
+    if v["disponivel"]:
+        e.update({f"vg-{k}": v["numeros"][k] for k in ("inscricao_total", "pagamentos", "cancelamentos", "saldo_total")})
+        blocos = {"destino": v["destino"], "saldo": v["situacao_do_saldo"], **v["composicao"]}
+        if v["por_entidade"]:
+            blocos["entidade"] = v["por_entidade"]
+        for nome, b in blocos.items():
+            e.update({f"vg-{nome}-{i['chave']}": i["valor_c"] for i in b["itens"]})
+            e[f"vg-{nome}-total"] = b["total_c"]
+    for x in v["evolucao"]:
+        if x["tem_valor"]:
+            e[f"vg-ev-{x['data_final']}-saldo"], e[f"vg-ev-{x['data_final']}-pago"] = x["saldo_total"], x["pagamentos"]
+    for x in v["entre_exercicios"]:
+        if x["tem_valor"]:
+            e[f"vg-ex-{x['exercicio']}-inscrito"], e[f"vg-ex-{x['exercicio']}-saldo"] = x["inscricao_total"], x["saldo_total"]
+    return e
+
+
 def conferir(saida, chave, html, esperado):
     tela = {k: int(v) for k, v in _DATA.findall(html)}
     saida["paginas"][chave] = tela
@@ -158,6 +179,11 @@ def main():
                 return
             conferir(saida, chave, html, esperado)
 
+        for c in cortes:
+            for ent in escopos:
+                visitar(f"visao|{c['exercicio']}|{c['data_final']}|{ent}", "/",
+                        esperado_visao(p.visao_geral(c["exercicio"], c["data_final"], ent)),
+                        exercicio=c["exercicio"], data_final=c["data_final"], entidade=ent)
         for ex in (2025, 2026):
             for ent in escopos:
                 visitar(f"evolucao|{ex}|{ent}", "/evolucao", esperado_evolucao(p, ex, ent), exercicio=ex, entidade=ent)

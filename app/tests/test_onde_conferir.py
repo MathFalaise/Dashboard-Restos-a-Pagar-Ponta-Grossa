@@ -43,7 +43,7 @@ def test_enderecos_do_portal():
 
 
 def test_resumo_traz_a_integra_de_cada_entidade_do_total_e_as_condicoes(app):
-    corpo = ok(app, "/", exercicio=2026, data_final="2026-08-31")
+    corpo = ok(app, "/resumo", exercicio=2026, data_final="2026-08-31")
     secao = corpo[corpo.index('id="onde-conferir"'):]
     secao = secao[:secao.index("</section>")]
     integras = [u for u, _ in _links(secao) if "/empenhos/restos-a-pagar?" in u]
@@ -56,7 +56,7 @@ def test_resumo_traz_a_integra_de_cada_entidade_do_total_e_as_condicoes(app):
 
 
 def test_cartao_diz_em_que_coluna_da_tela_e_guarda_o_registro_tecnico(app):
-    corpo = ok(app, "/", exercicio=2026, data_final="2026-08-31")
+    corpo = ok(app, "/resumo", exercicio=2026, data_final="2026-08-31")
     cartoes = dict(re.findall(r'<data class="valor" id="ind-([a-z_]+)".*?(<details class="origem">.*?</details></details>)',
                               corpo, re.S))
     assert "aba Processados, coluna “Valor Pago”" in cartoes["pago_processado"]

@@ -91,12 +91,12 @@ def test_SINTETICO_interface_mostra_cada_situacao_e_nunca_converte_em_zero(mundo
     assert "há retrato mais novo coletado, ainda não processado" in corpo
     for e, trecho in ((9, "corte coletado, mas ainda não processado"), (5, "dado indisponível"),
                       (8, "corte não coletado"), (3, "não é RP zero")):
-        pagina = ok(app, "/", exercicio=2025, data_final="2025-12-31", entidade=e)
+        pagina = ok(app, "/resumo", exercicio=2025, data_final="2025-12-31", entidade=e)
         assert 'id="indisponivel"' in pagina and trecho in pagina, e
         assert "R$ 0,00" not in pagina and not re.search(r'<data class="valor', pagina), e
         lista = ok(app, "/empenhos", exercicio=2025, data_final="2025-12-31", entidade=e)
         assert 'id="indisponivel"' in lista and "R$ 0,00" not in lista, e
-    zero = ok(app, "/", exercicio=2025, data_final="2025-12-31", entidade=15)
+    zero = ok(app, "/resumo", exercicio=2025, data_final="2025-12-31", entidade=15)
     assert 'id="sem-rp"' in zero and dados(zero)["ind-inscricao_total"] == 0
     vazio = ok(app, "/empenhos", exercicio=2025, data_final="2025-12-31", entidade=15)
     assert 'id="sem-resultado"' in vazio and "zero registros" in vazio and "R$ 0,00" not in vazio
@@ -132,7 +132,8 @@ def test_SINTETICO_banco_da_interface_so_permite_leitura(mundo):
         for sql in ESCRITAS:
             with pytest.raises(sqlite3.DatabaseError):
                 p.con.execute(sql)
-    for caminho, params in (("/", {}), ("/entidades", {}), ("/empenhos", dict(exercicio=2025, data_final="2025-12-31")),
+    for caminho, params in (("/", {}), ("/resumo", {}), ("/entidades", {}),
+                            ("/empenhos", dict(exercicio=2025, data_final="2025-12-31")),
                             ("/retratos", {}), ("/reconciliacao", {}), ("/pares", {}), ("/metodologia", {})):
         chamar(app, caminho, **params)
     assert sha(arquivo) == antes and arquivo.stat().st_mtime_ns == mtime
