@@ -36,7 +36,7 @@ def evolucao(p, q):
                    "titulo": (f"{fm.data_br(x['data_final'])}: " + (fm.moeda(x["valores"]["saldo_total"]["valor_c"])
                                                                      if x["tem_valor"] else
                                                                      f"sem dado — {x['situacao']['texto']}")),
-                   "href": fm.url("/", exercicio=sel["exercicio"], data_final=x["data_final"], entidade=sel["entidade"],
+                   "href": fm.url("/resumo", exercicio=sel["exercicio"], data_final=x["data_final"], entidade=sel["entidade"],
                                   em=sel["em"])} for x in serie]
         corpo.append('<section class="grupo"><h2>Saldo de RP no corte (S1)</h2>'
                      + grafico.barras("graf-s1", f"Saldo de RP (S1) por corte — exercício {sel['exercicio']}, {escopo}",
@@ -58,7 +58,7 @@ def _tabela_serie(serie, sel):
     linhas = []
     for x in serie:
         df = x["data_final"]
-        corte = fm.link("/", fm.data_br(df), exercicio=sel["exercicio"], data_final=df, entidade=sel["entidade"],
+        corte = fm.link("/resumo", fm.data_br(df), exercicio=sel["exercicio"], data_final=df, entidade=sel["entidade"],
                         em=sel["em"])
         if x["tem_valor"]:
             pv = x["valores"]["saldo_total"]["proveniencia"]

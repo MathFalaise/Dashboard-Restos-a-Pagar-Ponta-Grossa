@@ -19,6 +19,7 @@ docs/
   stages/03-data-model/            stage 03: data model and the independent validation suite
   stages/04-pipeline/              stage 04: collector, processing, interface, homologation
   stages/05-analysis/              stage 05: analysis screens, post-05 consolidation, D1 load
+  stages/06-bi/                    stage 06: the overview (home page with key numbers, pies and columns)
   audits/                          technical audit, critical review, source check
   foi-requests/                    access-to-information (e-SIC) requests
   FOLDER_MAP.md                    old folder names → new ones

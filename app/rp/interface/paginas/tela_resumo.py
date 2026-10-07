@@ -1,4 +1,4 @@
-"""Summary screen (/): the indicators of a cut-off."""
+"""Summary screen (/resumo): every indicator of a cut-off, with source, rule and the RREO cross-check."""
 from .. import formato as fm, portal as P
 from ..formato import esc
 from .estrutura import (_avisos, _cartao, _entidades_do_catalogo, erro, _explicacoes, _formulario, GRUPOS, _quando,
@@ -15,7 +15,7 @@ def resumo(p, q):
     titulo = (f"Restos a Pagar — {escopo}, exercício {sel['exercicio']}, corte {fm.data_br(sel['data_final'])} "
               f"({_quando(sel)})")
     partes = [f"<h1>{esc(titulo)}</h1>", _avisos(sel["avisos"]),
-              _formulario("/", sel, _entidades_do_catalogo(p)),
+              _formulario("/resumo", sel, _entidades_do_catalogo(p)),
               '<p class="dica">' + fm.link("/evolucao", f"Ver a evolução de todos os cortes do exercício "
                                                         f"{sel['exercicio']}", exercicio=sel["exercicio"],
                                            entidade=sel["entidade"], em=sel["em"]) + " · "

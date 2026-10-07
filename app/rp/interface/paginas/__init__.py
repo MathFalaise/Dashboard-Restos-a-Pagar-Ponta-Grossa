@@ -32,8 +32,9 @@ from .tela_reconciliacao import reconciliacao
 from .tela_resumo import resumo
 from .tela_retratos import comparar, retratos
 from .tela_variacao import CABECALHO_CONTRIBUICAO, variacao
+from .tela_visao import visao
 
 __all__ = ["CABECALHO_CONTRIBUICAO", "comparar", "composicao", "DESTAQUES", "documento", "empenho", "empenho_cortes",
            "empenhos", "entidades", "erro", "esc", "evolucao", "GRUPOS", "historico", "HISTORICO_COLUNAS", "MENU",
            "metodologia", "NOME_CATEGORIA", "NOME_FAIXA", "pares", "qualidade", "reconciliacao", "resumo", "retratos",
-           "SemDados", "SERIE_COLUNAS", "SITUACAO_CURTA", "TAMANHO_PAGINA", "TOTAL_NA_LISTA", "variacao"]
+           "SemDados", "SERIE_COLUNAS", "SITUACAO_CURTA", "TAMANHO_PAGINA", "TOTAL_NA_LISTA", "variacao", "visao"]

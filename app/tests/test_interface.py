@@ -38,6 +38,8 @@ def sha(caminho):
 def rotas_com_parametros(ex, df, entidade, ano=None, emp=None):
     """One visit to each route, with the typical parameters of a cut-off."""
     visitas = [("/", {}), ("/", dict(exercicio=ex, data_final=df)), ("/", dict(exercicio=ex, data_final=df, entidade=entidade)),
+               ("/resumo", {}), ("/resumo", dict(exercicio=ex, data_final=df)),
+               ("/resumo", dict(exercicio=ex, data_final=df, entidade=entidade)),
                ("/entidades", dict(exercicio=ex, data_final=df)), ("/empenhos", dict(exercicio=ex, data_final=df)),
                ("/empenhos", dict(exercicio=ex, data_final=df, entidade=entidade, categoria="nao_processado", ordem="empenho")),
                ("/retratos", {}), ("/retratos", dict(entidade=entidade, exercicio=ex, data_final=df)),
@@ -158,7 +160,7 @@ def test_03_valor_principal_vem_da_api_elotech(app_producao, producao):
         "SELECT SUM(d.s1_saldo_total_c), SUM(r.liquidado_c), SUM(r.proc_c + r.aproc_c), COUNT(*) FROM rp_registro r "
         "JOIN rp_derivado d ON d.derivacao_id=? AND d.resposta_id=r.resposta_id AND d.indice=r.indice "
         "WHERE r.normalizacao_id=? AND r.coleta_id=?", (did, nid, cid)).fetchone()
-    corpo = ok(app_producao, "/", entidade=1, **CORTE_REAL)
+    corpo = ok(app_producao, "/resumo", entidade=1, **CORTE_REAL)
     v = dados(corpo)
     assert (v["ind-saldo_total"], v["ind-liquidacoes"], v["ind-inscricao_total"], v["ind-registros"]) == (s1, liq, insc, n)
     assert "Fonte dos dados:</strong> Portal da Transparência de Ponta Grossa — API do sistema Elotech/Oxy Transparência" in corpo
@@ -168,7 +170,7 @@ def test_03_valor_principal_vem_da_api_elotech(app_producao, producao):
 
 # ================================================================== 4. the RREO never replaces the Elotech value
 def test_04_rreo_nao_substitui_valor_elotech(app_producao):
-    corpo = ok(app_producao, "/", entidade=1, **CORTE_REAL)
+    corpo = ok(app_producao, "/resumo", entidade=1, **CORTE_REAL)
     v = dados(corpo)
     assert v["conf-api"] == v["ind-saldo_total"]                     # the balance shown is the API's
     assert v["conf-rreo"] != v["conf-api"] and v["conf-dif"] == v["conf-api"] - v["conf-rreo"]
@@ -195,7 +197,7 @@ def test_05_SINTETICO_entidade_fora_do_catalogo_nao_vira_zero(mundo):
     assert not any(k.startswith("ent-15-") for k in v) and v["ent-1-total"] == 1000
     ent_2025 = dados(ok(app, "/entidades", exercicio=2025, data_final="2025-12-31"))
     assert ent_2025["ent-15-total"] == 0 and ent_2025["ent-15-registros"] == 0      # existing, with zero
-    so_15 = ok(app, "/", exercicio=2024, data_final="2024-12-31", entidade=15)
+    so_15 = ok(app, "/resumo", exercicio=2024, data_final="2024-12-31", entidade=15)
     assert 'id="indisponivel"' in so_15 and "não é RP zero" in so_15 and "R$ 0,00" not in so_15
     assert not any(k.startswith("ind-") for k in dados(so_15))
 
@@ -216,7 +218,7 @@ def test_06_SINTETICO_snapshot_anterior_continua_acessivel(mundo):
     assert "-R$ 200.000,00" in ret                               # difference to the previous snapshot
     comp = ok(app, "/comparar", a=a["snapshot_uid"], b=b["snapshot_uid"])
     assert "-R$ 200.000,00" in comp and "1 alterados" in comp
-    antigo = dados(ok(app, "/", exercicio=2025, data_final="2025-12-31", em="2026-09-30"))
+    antigo = dados(ok(app, "/resumo", exercicio=2025, data_final="2025-12-31", em="2026-09-30"))
     assert antigo["ind-inscricao_total"] == 50000000
     assert (mundo.cfg.snapshots / a["manifesto"]).is_file()
 
@@ -226,7 +228,7 @@ def test_07_proveniencia_disponivel_para_todo_valor(app_producao, producao):
     con = producao["con"]
     uids = {u for (u,) in con.execute("SELECT snapshot_uid FROM coleta")}
     shas = {s for (s,) in con.execute("SELECT sha256 FROM objeto_bruto")}
-    corpo = ok(app_producao, "/", entidade=1, **CORTE_REAL)
+    corpo = ok(app_producao, "/resumo", entidade=1, **CORTE_REAL)
     for cartao in corpo.split('<div class="indicador')[1:]:
         assert "<data" in cartao and "Origem do dado" in cartao
         achados = set(re.findall(r"<code>([0-9a-f]{32})</code>", cartao))
@@ -256,7 +258,7 @@ def test_07b_proveniencia_nas_telas_de_entidades_e_empenhos(app_producao, produc
 
 # ================================================================== 8. experimental rule out of the main indicators
 def test_08_regras_experimentais_nao_aparecem_como_indicador(app_producao):
-    corpo = ok(app_producao, "/", entidade=1, **CORTE_REAL)
+    corpo = ok(app_producao, "/resumo", entidade=1, **CORTE_REAL)
     indicadores = corpo[corpo.index('<section class="grupo">'):corpo.index("Entidades abrangidas")]
     for termo in ("CONS-PAR", "RREO-COL", "CANC", "analítico", "experimental"):
         assert termo not in indicadores, termo
@@ -271,7 +273,7 @@ def test_08b_SINTETICO_regra_rebaixada_bloqueia_o_indicador(mundo):
     app = _mundo_basico(mundo)
     governanca.registrar_decisao(mundo.con, "S1", 1, "experimental", "HIPÓTESE", False, "teste SINTETICO", "teste",
                                  "teste", decidido_em="2026-10-01")
-    status, _, corpo = chamar(app, "/", exercicio=2025, data_final="2025-12-31")
+    status, _, corpo = chamar(app, "/resumo", exercicio=2025, data_final="2025-12-31")
     assert status == "400 Bad Request" and "S1 v1" in corpo and "<data" not in corpo
 
 
@@ -290,7 +292,7 @@ def test_09_SINTETICO_dados_sensiveis_nao_aparecem_por_padrao(mundo):
     mundo.processar()
     app = Aplicacao(mundo.cfg.banco)
     base = dict(exercicio=2025, data_final="2025-12-31")
-    paginas_gerais = [ok(app, "/", **base), ok(app, "/entidades", **base), ok(app, "/empenhos", **base),
+    paginas_gerais = [ok(app, "/resumo", **base), ok(app, "/entidades", **base), ok(app, "/empenhos", **base),
                       ok(app, "/empenhos", nivel="interno", **base),     # unknown parameter: stays public
                       ok(app, "/retratos", entidade=1, **base), ok(app, "/comparar", a=a["snapshot_uid"], b=b["snapshot_uid"]),
                       ok(app, "/reconciliacao"), ok(app, "/metodologia")]
@@ -334,7 +336,7 @@ def test_11_SINTETICO_ausencia_de_dado_e_diferente_de_zero(mundo):
     mundo.listagem(1, 2025, "2025-12-31", [_reg(1)], "2026-09-29T20:00:00-03:00")     # entity 15 was not collected
     mundo.processar()
     app = Aplicacao(mundo.cfg.banco)
-    for caminho in ("/", "/empenhos"):
+    for caminho in ("/resumo", "/empenhos"):
         corpo = ok(app, caminho, exercicio=2025, data_final="2025-12-31")
         assert 'id="indisponivel"' in corpo and "não coletado" in corpo and "ausência de dado não é zero" in corpo
         assert "R$ 0,00" not in corpo and not any(k.startswith(("ind-", "tot-")) for k in dados(corpo))
@@ -345,7 +347,7 @@ def test_11_SINTETICO_ausencia_de_dado_e_diferente_de_zero(mundo):
 # ================================================================== 12. money in cents
 def test_12_SINTETICO_valores_monetarios_em_centavos_sem_arredondamento(mundo):
     app = _mundo_basico(mundo)
-    v = dados(ok(app, "/", exercicio=2025, data_final="2025-12-31", entidade=1))
+    v = dados(ok(app, "/resumo", exercicio=2025, data_final="2025-12-31", entidade=1))
     assert (v["ind-inscricao_nao_processada"], v["ind-inscricao_processada"], v["ind-pago_nao_processado"]) == (50010, 7707, 6005)
     assert v["ind-saldo_total"] == 50010 + 7707 - 707 - 6005
     assert fm.moeda(0) == "R$ 0,00" and fm.moeda(1) == "R$ 0,01" and fm.moeda(-5) == "-R$ 0,05"
@@ -359,8 +361,8 @@ def test_12_SINTETICO_valores_monetarios_em_centavos_sem_arredondamento(mundo):
 # ================================================================== 13. independent snapshots
 def test_13_SINTETICO_mesma_consulta_em_snapshots_diferentes_da_retratos_independentes(mundo):
     _, _, app = _dois_retratos(mundo)
-    atual = ok(app, "/", exercicio=2025, data_final="2025-12-31")
-    antigo = ok(app, "/", exercicio=2025, data_final="2025-12-31", em="2026-09-30")
+    atual = ok(app, "/resumo", exercicio=2025, data_final="2025-12-31")
+    antigo = ok(app, "/resumo", exercicio=2025, data_final="2025-12-31", em="2026-09-30")
     assert dados(atual)["ind-inscricao_total"] == 30000000 and dados(antigo)["ind-inscricao_total"] == 50000000
     assert "Estado atual da base para o exercício de 2025, corte 31/12/2025, coletado em 03/10/2026" in atual
     assert "Como a base estava em 30/09/2026: exercício de 2025, corte 31/12/2025, coletado em 29/09/2026" in antigo
@@ -372,7 +374,7 @@ def test_interface_recusa_qualquer_escrita(app_producao, producao):
     antes, camada0 = sha(arquivo), execucoes.hash_camada0(producao["con"])
     n_deriv = producao["con"].execute("SELECT COUNT(*) FROM derivacao_execucao").fetchone()[0]
     for metodo in ("POST", "PUT", "DELETE", "PATCH"):
-        status, cab, _ = chamar(app_producao, "/", metodo=metodo)
+        status, cab, _ = chamar(app_producao, "/resumo", metodo=metodo)
         assert status == "405 Method Not Allowed" and cab["Allow"] == "GET, HEAD"
     with Painel.abrir(arquivo) as p:                   # the same connection the interface uses per request
         for sql in ("UPDATE coleta SET status='falhou'", "DELETE FROM rp_registro", "INSERT INTO evidencia_externa "
@@ -445,14 +447,14 @@ def test_SINTETICO_texto_do_banco_e_escapado(mundo):
 
 
 def test_parametros_invalidos_e_rotas(app_producao):
-    assert chamar(app_producao, "/", exercicio="dois mil")[0] == "400 Bad Request"
-    assert chamar(app_producao, "/", data_final="31/12/2025")[0] == "400 Bad Request"
-    assert chamar(app_producao, "/", em="2026-13-45")[0] == "400 Bad Request"
+    assert chamar(app_producao, "/resumo", exercicio="dois mil")[0] == "400 Bad Request"
+    assert chamar(app_producao, "/resumo", data_final="31/12/2025")[0] == "400 Bad Request"
+    assert chamar(app_producao, "/resumo", em="2026-13-45")[0] == "400 Bad Request"
     assert chamar(app_producao, "/empenhos", categoria="qualquer", **CORTE_REAL)[0] == "400 Bad Request"
     assert chamar(app_producao, "/comparar", a="../../etc", b="x")[0] == "400 Bad Request"
-    assert chamar(app_producao, "/", x="a" * 3000)[0] == "400 Bad Request"
+    assert chamar(app_producao, "/resumo", x="a" * 3000)[0] == "400 Bad Request"
     assert chamar(app_producao, "/nao-existe")[0] == "404 Not Found"
-    status, cab, corpo = chamar(app_producao, "/", metodo="HEAD")
+    status, cab, corpo = chamar(app_producao, "/resumo", metodo="HEAD")
     assert status == "200 OK" and corpo == "" and int(cab["Content-Length"]) > 0
 
 
