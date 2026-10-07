@@ -114,7 +114,7 @@ def test_01_interface_nao_chama_a_api(app_producao, producao, sem_rede):
     assert sem_rede == []                       # no connection attempt and no use of the collector
     proibidos = {"requests", "urllib.request", "http.client", "socket", "rp.http", "rp.coletor", "rp.importar",
                  "rp.armazem", "rp.snapshots", "rp.normalizar", "rp.derivar", "rp.execucoes"}
-    for arq in PASTA_INTERFACE.glob("*.py"):
+    for arq in PASTA_INTERFACE.rglob("*.py"):           # including the paginas/ package
         arvore = ast.parse(arq.read_text(encoding="utf-8"))
         for no in ast.walk(arvore):
             nomes = []

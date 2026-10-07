@@ -156,8 +156,11 @@ def test_interface_nao_carrega_coleta_nem_processamento():
 def test_interface_nao_soma_nem_subtrai_valores_monetarios():
     """Every sum or difference of values comes from the panel layer: the interface has no arithmetic operation on a field
     in cents (key ending in _c) nor a call to sum()."""
-    for arq in ("paginas.py", "formato.py", "aplicacao.py"):
-        arvore = ast.parse((APP / "rp" / "interface" / arq).read_text(encoding="utf-8"))
+    pasta = APP / "rp" / "interface"
+    arquivos = [pasta / "formato.py", pasta / "aplicacao.py", *sorted((pasta / "paginas").glob("*.py"))]
+    assert len(arquivos) > 3                            # the pages package was found
+    for arq in arquivos:
+        arvore = ast.parse(arq.read_text(encoding="utf-8"))
         for no in ast.walk(arvore):
             if isinstance(no, ast.BinOp) and isinstance(no.op, (ast.Add, ast.Sub)):
                 for lado in (no.left, no.right):
@@ -166,7 +169,7 @@ def test_interface_nao_soma_nem_subtrai_valores_monetarios():
                         arq, no.lineno)
             if isinstance(no, ast.Call) and getattr(no.func, "id", None) == "sum":
                 pytest.fail(f"{arq}:{no.lineno} usa sum()")
-        assert "SELECT" not in (APP / "rp" / "interface" / arq).read_text(encoding="utf-8")
+        assert "SELECT" not in arq.read_text(encoding="utf-8")
 
 
 # ================================================================== section 17: search by commitment
