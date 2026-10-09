@@ -20,6 +20,8 @@ from . import derivar
 
 _TABELAS_1 = {
     "rp_registro": ("resposta_id", "indice", None),
+    # schema v6: a database without the table (v5) has no refusal - same content as the table empty
+    "valor_recusado": ("resposta_id", "indice", None),
     "movimentacao_lancamento": ("resposta_id", "indice", None),
     "rreo_extracao": ("resposta_id", None, ("extraida_em",)),
     "rreo_valor": (None, None, None),
@@ -72,6 +74,9 @@ def normalizacao(con, nid=None):
     for tabela, (col_resp, col_ind, fora) in _TABELAS_1.items():
         cols = [r[1] for r in con.execute(f"PRAGMA table_info({tabela})")
                 if r[1] not in ("normalizacao_id", "coleta_id", col_resp, *(fora or ()))]
+        if not cols:              # table that does not exist in this schema version: no row
+            saida["tabelas"][tabela] = {"linhas": 0, "hash": _h().hexdigest()}
+            continue
         sel = ", ".join(f"t.{c}" for c in cols)
         if col_resp:
             sql = (f"SELECT c.snapshot_uid, rb.ordem, {sel} FROM {tabela} t JOIN resposta_bruta rb ON rb.id = t.{col_resp} "

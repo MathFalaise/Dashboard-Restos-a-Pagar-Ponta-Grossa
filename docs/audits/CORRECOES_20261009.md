@@ -92,6 +92,19 @@ Tudo numa cópia do banco ativo, fora do OneDrive. O banco ativo só foi lido, p
 
 Os três RREO de layout desconhecido (coletas 403, 426 e 431) continuam sem transcrição, como já estavam: é a fase E.
 
+### Revisão da fase A
+
+Pontos achados na releitura do diff, que os testes não pegavam, e corrigidos:
+- `comparar-bancos` (`rp/equivalencia.py`) ignorava `valor_recusado`. Dois bancos com recusas diferentes podiam sair
+  como equivalentes. Agora a tabela entra na impressão da normalização; um banco v5, sem a tabela, conta como vazio.
+- `comparar-snapshots` (`rp/comparador.py`) trataria um registro recusado como removido ou novo, e o impacto
+  financeiro sairia errado sem aviso. Agora ele vai para `recusados`, com os campos, e `impacto_completo` vira
+  falso.
+- Comparação do banco ativo (v5, só leitura) com o reconstruído do armazém (v6), com as duas vigências derivadas:
+  camada bruta igual; as 7 tabelas da normalização iguais (só o rótulo `rp-normalizador/1` × `/2` difere, e o
+  comparador acusa isso de propósito); derivação atual `b6f80d87…` e "como estava em 29/09/2026" `b8a0b2ed…`
+  iguais; hash gravado = recalculado nos dois.
+
 ### Mudanças de indicador
 
 Nenhuma. O hash da derivação sobre os dados reais é o homologado, tanto no banco migrado quanto no reconstruído do

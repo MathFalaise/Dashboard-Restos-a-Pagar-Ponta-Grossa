@@ -163,3 +163,32 @@ def test_banco_v5_migra_para_v6_com_backup_e_sem_mudar_linha(tmp_path, monkeypat
     finally:
         restaurado.close()
     novo.close()
+
+
+# ------------------------------------------------------------------ comparisons (review of phase A)
+def test_SINTETICO_comparar_snapshots_nao_chama_recusado_de_removido(mundo):
+    from rp import comparador
+    (s1, s2), nid, did = _cenario(mundo, [(T1, [R1, R2]), (T2, [R1, _sem(R2, "aproc")])])
+    r = comparador.comparar(mundo.con, s1["snapshot_uid"], s2["snapshot_uid"])
+    assert r["contagens"]["removidos"] == 0 and r["contagens"]["novos"] == 0
+    assert r["recusados"]["anterior"] == []
+    [x] = r["recusados"]["posterior"]
+    assert x["chave"] == (1, 2024, 2) and x["campos"] == {"aproc": "ausente"}
+    assert r["impacto_completo"] is False
+
+
+def test_SINTETICO_comparar_bancos_ve_a_diferenca_de_recusa(mundo, tmp_path):
+    from rp import equivalencia
+    _cenario(mundo, [(T1, [R1, dict(R2, aproc=None)])])
+    mundo.con.commit()
+    copia = sqlite3.connect(tmp_path / "copia.sqlite")
+    mundo.con.backup(copia)
+    assert equivalencia.normalizacao(copia) == equivalencia.normalizacao(mundo.con)
+    # the same database except for the nature of one refusal (the trigger forbids it: dropped in the copy only)
+    copia.execute("DROP TRIGGER valor_recusado_sem_update")
+    copia.execute("UPDATE valor_recusado SET natureza='ausente'")
+    a, b = equivalencia.normalizacao(mundo.con), equivalencia.normalizacao(copia)
+    assert a["tabelas"]["valor_recusado"]["linhas"] == b["tabelas"]["valor_recusado"]["linhas"] == 1
+    assert a["tabelas"]["rp_registro"] == b["tabelas"]["rp_registro"]
+    assert a["tabelas"]["valor_recusado"] != b["tabelas"]["valor_recusado"]
+    copia.close()
