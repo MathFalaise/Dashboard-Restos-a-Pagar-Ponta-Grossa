@@ -111,13 +111,14 @@ def pendencias_contabeis(con):
             saida.append({"tipo": "rreo_nao_transcrito", "descricao": "PDF do RREO Anexo VII sem transcrição (layout "
                           "desconhecido): sem conferência independente nesse documento",
                           "documentos": [{"snapshot": u[:8], "rotulo": r, "erro": e} for u, r, e in nao_lidos]})
-        pares = con.execute("SELECT COUNT(*), SUM(inscrito_a_c) FROM espelhamento_par WHERE derivacao_id=?",
-                            (did,)).fetchone()
-        if pares[0]:
+        linhas, distintos = con.execute(
+            "SELECT COUNT(*), COUNT(DISTINCT entidade_a || '/' || anoempenho_a || '/' || empenho_a) FROM espelhamento_par "
+            "WHERE derivacao_id=?", (did,)).fetchone()
+        if linhas:
             saida.append({"tipo": "pares_espelhados", "descricao": "pares entidade 1 x 15 (PAR-24) cuja natureza "
                           "contábil (duplicidade ou transferência) não está determinada; os dois lados entram nos "
                           "indicadores; consolidação só como visão experimental",
-                          "pares_em_todos_os_cortes": pares[0]})
+                          "empenhos_distintos_em_par": distintos, "linhas_de_par_somando_todos_os_cortes": linhas})
     em_uso = {tuple(json.loads(x)) for (x,) in con.execute("SELECT DISTINCT json_array(g.codigo, g.versao) FROM "
                                                              "derivacao_regra d JOIN regra g ON g.id = d.regra_id WHERE "
                                                              "d.derivacao_id=?", (did,))} if did and banco._tem_tabela(
