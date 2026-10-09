@@ -189,7 +189,7 @@ GET .../portaltransparencia-api/empenhos/restos-a-pagar/report?<mesmos filtros>&
     linha, decimal com vírgula e milhar com ponto (`13.454,4`), datas `dd/mm/aaaa`.
     Antes do cabeçalho vêm 3 linhas de título ("Listagem de Restos a Pagar",
     "Gerado em: …", linha vazia).
-  - O CPF de pessoa física aparece mascarado: `****374****`.
+  - O CPF de pessoa física aparece mascarado: `****123****` (exemplo sintético).
 - XLS, PDF, TXT, RTF, DOC e HTML **NÃO TESTADOS**. Interrompi os testes seguintes para não
   gerar mais carga no servidor.
 - **Dados Abertos** ("Conjunto de Dados") tem 6 conjuntos: Pessoal, Licitações,
@@ -285,7 +285,7 @@ A coluna "Rótulo na tela" é o que a própria interface do portal mostra. É a 
 | `descricaoFonte` | texto | `"3062-Prolar/Lotes"` | rótulo "Fonte de Recursos"; às vezes com espaço duplo |
 | `fornecedor` | inteiro | `2775` | código interno do credor |
 | `nome` | texto | `"00.360.305/0001-04 - CAIXA ECONOMICA FEDERAL"` | rótulo "Fornecedor"; **não é só o nome**: vem com o documento na frente |
-| `cnpj` | texto | `"00.360.305/0001-04"` ou `"****374****"` | CNPJ formatado; CPF de pessoa física **mascarado** |
+| `cnpj` | texto | `"00.360.305/0001-04"` ou `"****123****"` (exemplo sintético) | CNPJ formatado; CPF de pessoa física **mascarado** |
 | `proc` | número | `3141530.4` | rótulo "Valor Inscrito", aba Processados |
 | `aproc` | número | `2874.26` | rótulo "Valor Inscrito", aba Não Processados |
 | `canceladoProc` | número | `0` | rótulo "Valor Cancelado", aba Processados |
