@@ -24,8 +24,9 @@ def _listagem(con, armazem, quando, aproc):
     reg = {k: 0 for k in normalizar.DINHEIRO}
     reg.update({"entidade": 998, "anoempenho": 2025, "empenho": 7, "aproc": aproc})
     corpo = json.dumps({"content": [reg], "last": True, "totalElements": 1}).encode()
+    # finalizada_em: a synthetic snapshot is concluded at its own instant (schema v7: available from its conclusion)
     return gravar_snapshot(con, armazem, tipo="rp_listagem", endpoint="/x", parametros=P, coletada_em=quando,
-                           origem_carimbo="relogio_coletor", status="completa", coletor=COL,
+                           origem_carimbo="relogio_coletor", status="completa", coletor=COL, finalizada_em=quando,
                            respostas=[{"url": "x", "http_status": 200, "corpo": corpo}])
 
 

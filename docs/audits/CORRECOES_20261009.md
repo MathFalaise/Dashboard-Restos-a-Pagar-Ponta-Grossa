@@ -7,8 +7,8 @@ Ordem aprovada pelo responsável pelo projeto em 09/10/2026:
 
 | Fase | Itens do pedido | Situação |
 |---|---|---|
-| A | 3 (contrato da API), 2 (campo monetário ausente) | feita (este documento) |
-| B | 4 (precisão temporal dos retratos) | pendente |
+| A | 3 (contrato da API), 2 (campo monetário ausente) | feita |
+| B | 4 (precisão temporal dos retratos) | feita (suíte: 604 passed) |
 | C | 1 (integridade relacional), 7 (proveniência e hashes) | pendente |
 | D | 9 (homologação única), 10 (desempenho) | pendente |
 | E | 5 (pares 1 ↔ 15), 6 (RREO) | pendente |
@@ -120,3 +120,91 @@ armazém.
   rodar `python -m rp processar` depois disso, para registrar a normalização v2. O hash esperado é o mesmo.
 - **`valorALiquidar` e `valorAPagar` da movimentação:** a normalização ainda aceita esses campos nulos. O contrato v2
   já recusa uma coleta nova com eles nulos. Os 2.352 lançamentos gravados não têm nenhum nulo.
+
+## Fase B: precisão temporal dos retratos
+
+### O que mudou
+
+- **Antes:** "como estava em" comparava o INÍCIO da coleta (`coletada_em`) com o instante pedido. Uma coleta que
+  começou antes e terminou depois contava como disponível, embora parte das páginas ainda não tivesse chegado.
+- **Esquema v7 (`app/rp/banco.py`):** a tabela `coleta_tempo` guarda, para cada coleta:
+  - `inicio_em` e `concluida_em`, em forma canônica (fuso de Brasília, segundos);
+  - `fonte_conclusao`: de onde veio a conclusão;
+  - `precisao`: quanto ela é confiável.
+- **Proteções:** a camada bruta (`coleta`) continua imutável. Gatilhos recusam:
+  - instante fora da forma canônica;
+  - conclusão antes do início;
+  - início diferente do da coleta;
+  - edição e exclusão.
+- **De onde vem a conclusão, sempre do manifesto e nunca inventada:**
+  - `manifesto`: a conclusão gravada pelo coletor desde 05/10/2026 (`coleta_finalizada_em`), precisão `exata`;
+  - `ultima_resposta`: o maior `recebida_em` das respostas e da segunda leitura. A precisão segue a origem do
+    carimbo: relógio do coletor, manifesto da Etapa 02 ou cabeçalho HTTP dão `ultima_resposta`; a data do arquivo
+    (Etapas 01/02) dá `aproximada`;
+  - `sem_evidencia`: conclusão nula, precisão `desconhecida`. O retrato vale para o estado atual, mas nunca numa
+    consulta com data.
+- **Bancos anteriores à v7:** as linhas são preenchidas pelos manifestos na primeira abertura
+  (`banco.completar_tempos`), depois da migração com backup. Um manifesto ilegível deixa a coleta sem linha, e o
+  portão acusa.
+- **Regra de vigência v2 (`app/rp/vigencia.py`, `rp-vigencia/2`; derivador `rp-derivador/2`):**
+  - um retrato só vale "como estava em" a partir da conclusão;
+  - "mais recente" ordena por início canônico, depois conclusão, depois `snapshot_uid`. Fusos equivalentes comparam
+    igual, e duas coletas com o mesmo início ficam em ordem pela que terminou por último;
+  - derivação, painel (núcleo, série, empenhos, retratos) e consultas usam o mesmo SQL (`filtro_disponivel`, `ordem`).
+- **Painel:** exige esquema v7 e avisa quando o retrato usado numa consulta com data tem conclusão aproximada.
+- **`verificar`:** recalcula início e conclusão a partir do manifesto e acusa divergência (`tempo_da_coleta`).
+- **Portão novo `tempos_das_coletas`:**
+  - reprova se alguma coleta não tem tempo;
+  - mostra a contagem por precisão;
+  - descreve a limitação das conclusões aproximadas e desconhecidas.
+
+### Testes
+
+- **`app/tests/test_tempo_retratos.py` (12 testes):**
+  - coleta iniciada antes e concluída depois do instante, no painel e na derivação "como estava em";
+  - fusos equivalentes (UTC, -03:00, -05:00);
+  - mesmo início, gravado nas duas ordens;
+  - três retratos sucessivos do mesmo corte, com instantes na fronteira;
+  - conclusão pela última resposta, incluindo a segunda leitura;
+  - data do arquivo aproximada, com aviso no painel;
+  - sem evidência de conclusão: nunca vale com data, e a tela não mostra R$ 0,00;
+  - gatilhos da v7;
+  - migração v6 → v7 preenchida pelos manifestos, com backup e `verificar` limpo;
+  - `verificar` acusando tempo diferente do manifesto;
+  - portão.
+- **Ajustados para a regra nova:**
+  - `test_etapa03_em_producao::test_mesmo_corte_em_datas_diferentes`, que agora prova que, no instante do início, o
+    retrato ainda não vale e, na conclusão, vale;
+  - dois testes sintéticos que gravavam retrato sem conclusão (`test_etapa03_em_producao::test_SINTETICO_alteracao_retroativa_preserva_os_dois_retratos`
+    e `test_etapa04_3::test_snapshot_antigo_e_coleta_nova_do_mesmo_corte_sao_independentes`). Eles passam a gravar
+    a conclusão no próprio instante, como o `conftest` do mundo sintético.
+  - Nenhum teste foi apagado.
+
+### Verificação com os dados reais
+
+Cópia do banco ativo, fora do OneDrive, com o script `scratchpad/verificar_fase.py`:
+
+| Verificação | Resultado |
+|---|---|
+| Situação no banco real antes da mudança | todos os 529 horários no fuso -03:00; nenhuma conclusão antes do início; nenhuma coleta que comece antes e termine depois de 29/09/2026 23:59:59; nenhuma coleta simultânea ou sobreposta do mesmo corte (maior duração: 94 s) |
+| Migração v5 → v7 | um backup (`antes-migracao-v5-v7`); impressão da v7 confere |
+| `coleta_tempo` | 529 de 529 coletas: 63 `manifesto`/`exata`, 321 `ultima_resposta`/`ultima_resposta`, 145 `ultima_resposta`/`aproximada` (data do arquivo, Etapas 01/02); nenhuma `desconhecida` |
+| Normalização sobre a cópia | 266.787 registros idênticos aos da normalização 14 |
+| Derivação atual | `b6f80d879ee89d5f…` = homologada (25) |
+| Derivação "como estava em 29/09/2026 23:59:59" | `b8a0b2ed2328bf09…` = homologada (24) |
+| `verificar` | 0 problemas (agora inclui o tempo de cada coleta) |
+| Portões | apto; 13 de 15 aprovados (`camada_bruta_preservada` e `testes` não verificados por este comando) |
+
+### Mudanças de indicador
+
+Nenhuma nos dados reais: os dois hashes homologados se mantêm. A regra nova só muda o resultado de uma consulta
+"como estava em" num instante entre o início e a conclusão de uma coleta. Nos dados atuais isso cobre janelas de no
+máximo 94 segundos, e nenhuma delas contém um instante já usado por derivação homologada.
+
+### Limitações registradas
+
+- 145 retratos importados das Etapas 01/02 têm conclusão pela data do arquivo (`aproximada`). Uma consulta "como
+  estava em" perto dessas datas mostra aviso no painel.
+- 321 retratos anteriores a 05/10/2026 têm conclusão pela última resposta recebida, não pelo fim da gravação. A
+  diferença é a escrita do manifesto, que leva menos de um segundo.
+- O banco ativo continua na v5 até o código novo abri-lo. A migração faz backup e preenche os tempos pelos manifestos.

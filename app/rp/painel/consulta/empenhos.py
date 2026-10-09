@@ -1,7 +1,7 @@
 """Painel mixin: Commitment lists, commitment detail, mirrored pairs and creditors."""
 import re
 
-from ... import governanca, regras
+from ... import governanca, regras, vigencia
 from .. import fontes, publico
 from .comum import (CADEIA, CAMPOS_REGISTRO, CATEGORIAS, DERIVADOS, DIMENSOES_ORCAMENTARIAS, DINHEIRO, ErroDoPainel,
                     FAIXAS, instante, LIMITE_LISTA, REGRAS_DO_INDICADOR)
@@ -175,10 +175,10 @@ class Empenhos:
                          "conta os dois); a natureza das cópias 24xxxxx não está determinada.")}
 
     def _movimentacao(self, ctx, entidade, anoempenho, empenho, em):
-        filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        filtro, p = vigencia.filtro_disponivel(em, "coleta")
         c = self.con.execute("SELECT id FROM coleta WHERE tipo='movimentacao' AND status='completa' AND entidade=? AND "
                              "anoempenho=? AND empenho=? AND id <= ?" + filtro +
-                             " ORDER BY coletada_em DESC, snapshot_uid DESC LIMIT 1",
+                             " ORDER BY " + vigencia.ordem("coleta", desc=True) + " LIMIT 1",
                              (entidade, anoempenho, empenho, ctx["limite_coleta"], *p)).fetchone()
         if not c:
             return {"coletada": False, "nota": "movimentação deste empenho não coletada"}

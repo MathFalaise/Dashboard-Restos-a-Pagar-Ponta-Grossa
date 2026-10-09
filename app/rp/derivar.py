@@ -32,12 +32,13 @@ import logging
 from collections import OrderedDict, defaultdict
 
 from . import DataInvalida, agora, banco, instante, regras
+from . import vigencia
 from .vigencia import (VERIF_RETRATO_AMBIGUO, VERIF_RETRATO_VALOR_RECUSADO, coletas_ambiguas,  # noqa: F401
                        coletas_vigentes)  # re-exported
 
 log = logging.getLogger("rp.derivar")
 
-VERSAO = "rp-derivador/1"
+VERSAO = "rp-derivador/2"     # /2 (09/10/2026): vigencia by conclusion (vigencia.VERSAO rp-vigencia/2)
 # The pair's entities, the copies' base and the entity of the per-entity RREO do NOT live here: they are parameters
 # of rules PAR-24 v1 and CONC-RREO v1 (regras.PARAMETROS -> regra_parametro table), read on every derivation.
 COMPONENTES = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "L", "S1", "S2", "S3"]
@@ -64,8 +65,9 @@ NOMES_LINHA = CAMPOS_REGISTRO + CAMPOS_DERIVADO
 def derivar(con, nid, em=None):
     """New derivation over normalization `nid`. `em` (ISO with offset): only considers snapshots collected up to
     that date - 'as it was on'. Without `em`, uses all of them (the most recent of each cut-off is the current one).
-    `em` must be in rp.instante's canonical form (the comparison with coletada_em is textual and the panel layer
-    looks the derivation up by that text): another form of the same instant is refused, never compared (audit CLI-01)."""
+    `em` must be in rp.instante's canonical form (the comparison with the conclusion of each collection is textual
+    and the panel layer looks the derivation up by that text): another form of the same instant is refused, never
+    compared (audit CLI-01). A collection is only considered from its CONCLUSION on (vigencia.filtro_disponivel)."""
     if em is not None and instante(em) != em:
         raise DataInvalida(f"vigencia {em!r} fora da forma canonica {instante(em)!r}: use rp.instante")
     regras.semear(con)
@@ -96,8 +98,8 @@ def derivar(con, nid, em=None):
 
 
 def _ate(em, alias="c"):
-    """SQL validity filter over coleta.coletada_em."""
-    return (f" AND {alias}.coletada_em <= ?", (em,)) if em else ("", ())
+    """SQL validity filter: the collection was concluded up to `em` (vigencia.filtro_disponivel)."""
+    return vigencia.filtro_disponivel(em, alias)
 
 
 # --------------------------------------------------------------------------- snapshot selection
@@ -414,7 +416,7 @@ def _entidades_do_catalogo(con, nid, em=None):
     """Entities of the current catalog snapshot (the most recent up to `em`)."""
     filtro, p = _ate(em, "coleta")
     ult = con.execute("SELECT id FROM coleta WHERE tipo='entidades' AND status='completa'" + filtro +
-                      " ORDER BY coletada_em DESC, snapshot_uid DESC LIMIT 1", p).fetchone()
+                      " ORDER BY " + vigencia.ordem("coleta", desc=True) + " LIMIT 1", p).fetchone()
     if not ult:
         return set()
     return {e for (e,) in con.execute("SELECT entidade FROM entidade_ref WHERE normalizacao_id=? AND coleta_id=?", (nid, ult[0]))}
@@ -471,7 +473,7 @@ def _conciliacao(con, did, nid, R, uid, conc, em=None):
     # RREO PDF with no value extracted in this normalization (e.g. unknown layout): recorded, never ignored
     for (cid,) in con.execute("SELECT c.id FROM coleta c WHERE c.tipo='rreo_pdf' AND c.status='completa'" + filtro +
                               " AND NOT EXISTS (SELECT 1 FROM rreo_valor v WHERE v.normalizacao_id=? AND v.coleta_id=c.id) "
-                              "ORDER BY c.coletada_em, c.snapshot_uid", (*p, nid)).fetchall():
+                              "ORDER BY " + vigencia.ordem(), (*p, nid)).fetchall():
         _verif(con, did, regra, "RREO sem valores extraídos (ver problemas da normalização)", {"rreo_snapshot": uid[cid]}, 1, 1)
     docs = con.execute("SELECT DISTINCT v.coleta_id, v.escopo, v.exercicio, v.data_final FROM rreo_valor v "
                        "JOIN coleta c ON c.id = v.coleta_id WHERE v.normalizacao_id=? AND v.linha='TOTAL (III)'" + filtro +

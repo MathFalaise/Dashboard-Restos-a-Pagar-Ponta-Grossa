@@ -4,17 +4,44 @@ Derivation, queries and panel pick the current snapshot through these functions.
 because the interface uses the panel and must not load the deriver (test_homologacao: the interface cannot
 process); `derivar` re-exports the names.
 
-Rule: the current snapshot of (entidade, exercicio, data_inicial, data_final) is the most recent COMPLETE snapshot
-up to `em` (stable tie-break by snapshot_uid) that has NO repeated business key and NO refused money field. A
+Rule (v2, 09/10/2026): the current snapshot of (entidade, exercicio, data_inicial, data_final) is the most recent
+COMPLETE snapshot AVAILABLE at `em` that has NO repeated business key and NO refused money field.
+  * available at `em` = CONCLUDED up to `em` (coleta_tempo.concluida_em, schema v7). Until v1 the START
+    (coletada_em) was compared: a collection started before `em` and finished after it counted as available at `em`,
+    when part of its pages did not exist yet. A snapshot without evidence of its conclusion is never available to a
+    query with a date (it is to the current one, without a date);
+  * most recent = order by start, then conclusion, then snapshot_uid - all in canonical form (rp.instante), so two
+    equivalent time zones compare equal and two collections with the same start are ordered by which ended last;
+  * every instant compared as text is canonical (Brasilia offset): `em` goes through rp.instante, and coleta_tempo
+    refuses a non-canonical instant by trigger.
+The selection SQL lives in filtro_disponivel/ordem below: derivation and panel layer use the same text. A
 snapshot with a repetition (CHAVE-DUP anomaly) or with a money field missing, null or invalid (VALOR-RECUSADO anomaly,
 since 09/10/2026) stays in the database and in the store, it is just not used: the previous valid snapshot of the
 same cut-off applies, or none. Summing it would either count a key twice or leave a record out of the total.
 """
 
+VERSAO = "rp-vigencia/2"
 VERIF_RETRATO_AMBIGUO = "retrato com chave repetida fora da vigência"
 VERIF_RETRATO_VALOR_RECUSADO = "retrato com valor monetário recusado fora da vigência"
 # Anomaly types that keep a snapshot from being the current one, in order of precedence for the reason shown.
 TIPOS_QUE_RECUSAM_O_RETRATO = ("CHAVE-DUP", "VALOR-RECUSADO")
+
+
+def filtro_disponivel(em, alias="c"):
+    """(SQL, params): the collection `alias` is available at `em` - it was CONCLUDED up to `em`. Empty without `em`
+    (the current state: every recorded collection is concluded, since its manifest is written at the end)."""
+    if not em:
+        return "", ()
+    return (f" AND EXISTS (SELECT 1 FROM coleta_tempo t WHERE t.coleta_id = {alias}.id AND t.concluida_em IS NOT NULL "
+            "AND t.concluida_em <= ?)", (em,))
+
+
+def ordem(alias="c", desc=False):
+    """ORDER BY terms for "most recent": canonical start, then conclusion, then snapshot_uid (deterministic)."""
+    d = " DESC" if desc else ""
+    sub = f"(SELECT t.{{}} FROM coleta_tempo t WHERE t.coleta_id = {alias}.id)"
+    return (f"COALESCE({sub.format('inicio_em')}, {alias}.coletada_em){d}, {sub.format('concluida_em')}{d}, "
+            f"{alias}.snapshot_uid{d}")
 
 
 def coletas_recusadas(con, did=None):
@@ -47,13 +74,13 @@ def coletas_vigentes(con, em=None, excluir=None, limite_coleta=None):
     excluir = coletas_ambiguas(con) if excluir is None else excluir
     filtros, params = [], []
     if limite_coleta is not None:
-        filtros.append(" AND id <= ?")
+        filtros.append(" AND c.id <= ?")
         params.append(limite_coleta)
-    if em:
-        filtros.append(" AND coletada_em <= ?")
-        params.append(em)
-    sql = ("SELECT id, entidade, exercicio, data_inicial, data_final FROM coleta WHERE tipo='rp_listagem' "
-           "AND status='completa' AND tipo_pesquisa IS NULL" + "".join(filtros) + " ORDER BY coletada_em, snapshot_uid")
+    f_em, p_em = filtro_disponivel(em)
+    filtros.append(f_em)
+    params.extend(p_em)
+    sql = ("SELECT c.id, c.entidade, c.exercicio, c.data_inicial, c.data_final FROM coleta c WHERE c.tipo='rp_listagem' "
+           "AND c.status='completa' AND c.tipo_pesquisa IS NULL" + "".join(filtros) + " ORDER BY " + ordem())
     vig = {}
     for cid, e, ex, di, df in con.execute(sql, params):
         if cid not in excluir:
