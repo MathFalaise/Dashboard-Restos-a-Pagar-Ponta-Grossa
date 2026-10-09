@@ -575,3 +575,48 @@ A alternativa é tornar o repositório privado (mudança de visibilidade, só co
 
 **Situação:** a privacidade **não** está resolvida. O histórico público continua com os dados até a decisão do
 responsável.
+
+## Validação final (09/10/2026, código do commit `6f1663d`)
+
+Executada sobre uma cópia nova do banco ativo, fora do OneDrive. O banco ativo só foi lido, pela API de backup do
+SQLite.
+
+| # | Verificação | Comando ou método | Resultado real |
+|---|---|---|---|
+| 1 | Banco ativo intacto | SHA-256 do arquivo antes e depois de tudo | `5ed6551f…` antes = depois |
+| 2 | Referência da camada bruta ANTES da carga | `portoes --gravar-referencia` na cópia v5 | 529 coletas, 613 respostas, hashes gravados |
+| 3 | Migração v5 → v8 | abertura pelo código | um backup (`antes-migracao-v5-v8`), impressão da v8 confere |
+| 4 | Manifesto-raiz | `raiz --gravar`, fora da pasta do banco | 529 coletas, 411 objetos; raízes `4065bea9…` / `cfb99745…` |
+| 5 | Normalização v2 | `normalizar` | 266.787 registros, 0 recusas, `rreo_valor` 1.560, 3 PDFs recusados (os já conhecidos) |
+| 6 | Derivações | `derivar` atual e "como estava em 29/09" | `b6f80d879ee89d5f…` e `b8a0b2ed2328bf09…`, **iguais às homologadas** (25 e 24) |
+| 7 | `verificar` | `banco.verificar` | 0 problemas |
+| 8 | Testes sintéticos | `python -m pytest -q tests -m "not dados_reais"` | `470 passed, 169 deselected in 113.00s` |
+| 9 | Testes com dados reais | `python -m pytest -q tests -m dados_reais` | `169 passed, 470 deselected in 187.67s` |
+| 10 | Testes de investigação | `python -m pytest -q tests` (validation) | `26 passed in 11.00s` |
+| 11 | Testes sem o bruto (privacidade) | exportação sem `data/`, `-m "not dados_reais"` | `469 passed, 1 skipped` (o pulado depende de `.git`) |
+| 12 | Comparação com a base homologada | `comparar-bancos` (ativo v5 × cópia v8) | bruto igual; `rp_registro`, movimentação e catálogos iguais; `rreo_valor` 1.529 → 1.560 e `rreo_extracao` diferentes, só pelo extrator v2 (rótulo de versão + 31 células recuperadas); derivações iguais nas duas vigências; tempos e hashes de manifesto "não comparáveis" (o ativo é v5) |
+| 13 | Banco novo só do armazém | reprodução do `homologar` e fases A–C | igual camada a camada à cópia processada (bruto, tempos, manifestos, 7 tabelas da normalização, 2 vigências) |
+| 14 | Regras, parâmetros, decisões | catálogo ativo × cópia | nenhuma linha alterada ou removida; acréscimos: regra `VALOR-OBRIG v1` e tipo de anomalia `VALOR-RECUSADO` |
+| 15 | Restauração de backup | cópia do backup da migração + `integrity_check` | `ok`, versão 5, derivação 25 `b6f80d87…`, bruto igual ao do ativo |
+| 16 | Interface só leitura | 7 páginas pela aplicação WSGI + um POST | 7 × `200 OK`, POST `405`, arquivo do banco idêntico depois |
+| 17 | Homologação oficial | `python -m rp homologar --referencia … --raiz … --saida …` | **`aprovada_com_ressalvas`** (saída 3) em 500,7 s: 21 verificações obrigatórias executadas e aprovadas (19 técnicas + `639 passed` + `26 passed`) |
+
+### Mudanças de resultado em relação ao homologado
+
+- **Indicadores e derivações:** nenhuma mudança. Os dois `hash_resultado` homologados se mantêm.
+- **Normalização do RREO:** 31 células a mais em `rreo_valor`, todas da coluna (e) da linha INTRA e todas iguais a 0.
+  O extrator v1 as omitia em silêncio. Elas não entram na conciliação, que usa só a linha TOTAL (III).
+- **Regra nova:** `VALOR-OBRIG v1`, que recusa o retrato com campo monetário ausente. Nos dados reais não há recusa;
+  a regra não produz valor.
+
+### Estado da homologação
+
+**Aprovação técnica: sim. Aprovação sem ressalvas: não.** Pendências contábeis e de governança abertas, listadas pelo
+próprio comando:
+- **Divergência com o RREO** em 32 documentos (RREO-COL v1: 257 colunas; v2: 231). A causa está explicada só na
+  parte que cresceu entre as coletas de 2026.
+- **79 documentos do Anexo VII não coletados** e **3 coletados e recusados pelo extrator** (2016, 2018, 2019).
+- **Pares 1 ↔ 15** (731 empenhos) de natureza não determinada.
+- **Regra `VALOR-OBRIG v1`** sem decisão de governança.
+
+Não se declara a apuração 100% correta. A privacidade do histórico público também não está resolvida (fase F).
