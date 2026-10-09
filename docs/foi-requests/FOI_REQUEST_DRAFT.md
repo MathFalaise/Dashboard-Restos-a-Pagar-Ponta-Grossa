@@ -10,6 +10,8 @@
 > Se o formulário limitar o tamanho do texto, envie um pedido por bloco (A, B e C), repetindo a introdução em cada um.
 >
 > **Versão 2 (30/09/2026):** acrescenta as perguntas 2, 7, 8 e 9 e corrige o valor da coluna (i) na pergunta 6. A versão 1 continua no histórico do Git.
+>
+> **Versão 3 (09/10/2026):** a pergunta 6 passa a mostrar os valores das duas coletas (29/09 e 06/10/2026), porque a diferença mudou entre elas; a pergunta 10, nova, lista as alterações que a consulta passou a mostrar em períodos já publicados; o item 1 detalha os 731 empenhos por ano. **Situação: não enviado.** Nenhuma resposta foi recebida; nenhuma conclusão do projeto depende de resposta presumida.
 
 ---
 
@@ -23,7 +25,7 @@ Com base na Lei nº 12.527/2011, solicito esclarecimentos sobre dados de Restos 
 
 **1. Por que os registros constam nas duas entidades**
 
-- No exercício 2026, os 731 empenhos inscritos em Restos a Pagar da entidade "Fundação Municipal de Saúde de Ponta Grossa" (entidade 15) aparecem também na entidade "Prefeitura Municipal de Ponta Grossa" (entidade 1).
+- No exercício 2026, os 731 empenhos inscritos em Restos a Pagar da entidade "Fundação Municipal de Saúde de Ponta Grossa" (entidade 15) aparecem também na entidade "Prefeitura Municipal de Ponta Grossa" (entidade 1). São 711 empenhos de 2025, 19 de 2024 e 1 de 2023, com inscrição somada de R$ 31.813.905,47 em cada entidade.
 - Na Prefeitura, eles têm numeração acrescida de 2.400.000. Por exemplo, o empenho 21/2025 da entidade 15 corresponde ao 2400021/2025 da entidade 1.
 - Os dois registros têm o mesmo credor, a mesma data e os mesmos valores inscritos.
 - Por que esses registros constam nas duas entidades?
@@ -55,12 +57,19 @@ Como devem ser interpretadas as diferenças de valores entre registros correspon
 
 **6. Colunas (h) e (i) de 2026**
 
-- Nos RREOs – Anexo VII da Prefeitura do 3º e do 4º bimestres de 2026, as colunas "Liquidados (h)" e "Pagos (i)" dos Restos a Pagar Não Processados são maiores que a soma das colunas "Valor Liquidado" e "Valor Pago" da aba Não Processados da consulta, com período de 01/01/2026 até o fim de cada bimestre:
-  - 3º bimestre (RREO emitido em 29/07/2026): R$ 216.913,24 em (h) e R$ 109.112,43 em (i);
-  - 4º bimestre (RREO emitido em 29/09/2026): R$ 345.479,56 em (h) e R$ 237.728,25 em (i).
+- Nos RREOs – Anexo VII da Prefeitura do 3º e do 4º bimestres de 2026, as colunas "Liquidados (h)" e "Pagos (i)" dos Restos a Pagar Não Processados são maiores que a soma das colunas "Valor Liquidado" e "Valor Pago" da aba Não Processados da consulta, com período de 01/01/2026 até o fim de cada bimestre. A diferença não é a mesma em todas as consultas:
+
+  | Bimestre (RREO emitido em) | Coluna | Consulta de 29/09/2026 | Consulta de 06/10/2026 |
+  |---|---|---|---|
+  | 3º (29/07/2026) | (h) | R$ 216.913,24 | R$ 291.077,24 |
+  | 3º (29/07/2026) | (i) | R$ 109.112,43 | R$ 183.276,43 |
+  | 4º (29/09/2026) | (h) | R$ 345.479,56 | R$ 685.898,72 |
+  | 4º (29/09/2026) | (i) | R$ 237.728,25 | R$ 551.817,35 |
+
+  O aumento entre as duas consultas está descrito na pergunta 10.
 - No 4º bimestre, R$ 49,50 da diferença em (i) correspondem ao empenho 2410946/2025. Ele está só na aba Não Processados, mas a consulta registra o pagamento dele, de julho de 2026, como pagamento de processado. A diferença em (i) ainda sem origem identificada é, portanto, de R$ 237.678,75.
 - As demais colunas coincidem, exceto (k) e (L), que diferem no mesmo valor de (i) porque são calculadas a partir dela.
-- Qual é a origem dessas diferenças?
+- Qual é a origem das diferenças que já existiam na consulta de 29/09/2026?
 
 **7. Lançamentos com data em período já publicado**
 
@@ -77,6 +86,14 @@ Como devem ser interpretadas as diferenças de valores entre registros correspon
 - Como o RREO classifica um Resto a Pagar processado cuja liquidação é estornada depois do encerramento do exercício? A classificação segue a situação do empenho na data de emissão do demonstrativo?
 
 ### C. A consulta de Restos a Pagar do Portal
+
+**10. Alterações da consulta em períodos já publicados (entre 29/09 e 06/10/2026)**
+
+- Para o mesmo período (01/01/2026 até o fim de cada bimestre), a consulta da Prefeitura passou a mostrar valores diferentes entre 29/09 e 06/10/2026, depois de os RREOs desses bimestres já estarem emitidos:
+  - período até 30/04/2026 (RREO emitido em 29/05/2026): cancelamentos de Restos a Pagar Não Processados de R$ 1.270.679,25 que não constavam antes, nos empenhos 14515, 15743, 16817, 16818, 18883, 18890, 19215 e 20903, todos de 2025. A coluna (j) desse RREO, que antes coincidia com a consulta, agora difere desse valor;
+  - período até 30/06/2026 (RREO emitido em 29/07/2026): além desses cancelamentos, pagamentos e liquidações R$ 74.164,00 menores (empenho 16818/2025: de R$ 201.161,57 para R$ 137.997,57; empenho 18883/2025: de R$ 145.423,74 para R$ 134.423,74);
+  - período até 31/08/2026 (RREO emitido em 29/09/2026): pagamentos R$ 314.089,10 menores e liquidações R$ 340.419,16 menores (empenhos 16817, 16818, 18883 e 20903 de 2025 com valores menores; 17442 e 17443 de 2024 com pagamentos maiores).
+- Esses lançamentos foram registrados depois da emissão dos RREOs, com data dentro dos períodos já publicados? Qual é a data de inclusão de cada um no sistema? Os RREOs já publicados serão retificados?
 
 **9. Situação da "Consulta em Restos a Pagar"**
 
@@ -97,4 +114,5 @@ Agradeço a atenção.
 > - colunas (h), (i) e (j): tela Reconciliação com o RREO (`python -m rp painel reconciliacao`) e `docs/stages/04-pipeline/batches/hipotese_canc_2020_2026.md`;
 > - 2410946/2025: `docs/stages/02-accounting-validation/REPORT.md` seção 4 e `docs/stages/03-data-model/REPORT.md` seção 8;
 > - 9459/2023 e 21040/2011: `docs/stages/04-pipeline/batches/LOTE_A.md`, `LOTE_C.md` e `LOTE_M.md`;
-> - menu e parâmetro `restosAPagar`: `docs/stages/01-source-discovery/REPORT.md` seções 2 e 3.
+> - menu e parâmetro `restosAPagar`: `docs/stages/01-source-discovery/REPORT.md` seções 2 e 3;
+> - versão 3, perguntas 6 e 10 e detalhe do item 1: `docs/audits/rreo/DIVERGENCIA_2026.md` e `docs/audits/pares/PARES_1_15.md` (gerados por `divergencia_2026.py` e `pares_1_15.py` sobre o banco processado em 09/10/2026).

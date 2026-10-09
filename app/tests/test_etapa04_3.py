@@ -24,8 +24,9 @@ def _listagem(con, armazem, quando, aproc):
     reg = {k: 0 for k in normalizar.DINHEIRO}
     reg.update({"entidade": 998, "anoempenho": 2025, "empenho": 7, "aproc": aproc})
     corpo = json.dumps({"content": [reg], "last": True, "totalElements": 1}).encode()
+    # finalizada_em: a synthetic snapshot is concluded at its own instant (schema v7: available from its conclusion)
     return gravar_snapshot(con, armazem, tipo="rp_listagem", endpoint="/x", parametros=P, coletada_em=quando,
-                           origem_carimbo="relogio_coletor", status="completa", coletor=COL,
+                           origem_carimbo="relogio_coletor", status="completa", coletor=COL, finalizada_em=quando,
                            respostas=[{"url": "x", "http_status": 200, "corpo": corpo}])
 
 
@@ -159,7 +160,11 @@ def test_nova_normalizacao_nao_sobrescreve_extracao_anterior(producao):
     q = "SELECT coleta_id, linha, coluna, valor_c, extrator_versao FROM rreo_valor WHERE normalizacao_id=? ORDER BY 1,2,3"
     antes = con.execute(q, (producao["nid"],)).fetchall()
     normalizar.normalizar(con)
-    assert con.execute(q, (producao["nid"],)).fetchall() == antes and len(antes) == 517
+    # 517 cells with extractor v1; v2 (09/10/2026) also transcribes column (e) of the all-zero "INTRA" row, which v1
+    # lost in silence: 11 more cells, all of that row and column, all zero
+    assert con.execute(q, (producao["nid"],)).fetchall() == antes and len(antes) == 528
+    intra_e = [r for r in antes if r[1] == "RESTOS A PAGAR (INTRA" and r[2] == "e"]
+    assert len(intra_e) == 11 and all(r[3] == 0 for r in intra_e)
 
 
 # ------------------------------------------------------------------ idempotent import

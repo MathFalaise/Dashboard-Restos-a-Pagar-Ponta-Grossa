@@ -7,7 +7,8 @@ import sys
 from pathlib import Path
 
 import pytest
-from conftest import RAIZ_PROJETO, registro_sintetico as _reg
+from conftest import (CABECALHO_RREO, EXCETO_RREO, RAIZ_PROJETO, TOTAL_RREO, linha_rreo, registro_sintetico as _reg,
+                      textos_da_linha)
 
 from rp import DataInvalida, cli, derivar, governanca, instante, normalizar, regras
 from rp.snapshots import gravar_snapshot
@@ -102,14 +103,23 @@ def _rreo(*numeros):
     return n, cap
 
 
+def _rreo_completo(*extras):
+    """Extractor v2 (09/10/2026): rows are transcribed whole, with the document's identities closing."""
+    v = linha_rreo(a=123456, b=1000, c=500, f=2000, i=300)
+    textos = CABECALHO_RREO + textos_da_linha(EXCETO_RREO, 200, v) + textos_da_linha(TOTAL_RREO, 300, v) + list(extras)
+    cap = _Captura()
+    return normalizar._rreo(cap, 1, 1, {"rotulo": "4º Bimestre"}, _pdf(*textos)), cap
+
+
 def test_NORM02_um_numero_por_celula_e_transcrito():
-    n, cap = _rreo((300, "1.234,56"))
-    assert n == 1 and [(l[7], l[8], l[9]) for l in cap.linhas] == [("TOTAL (III)", "a", 123456)]
+    n, cap = _rreo_completo()
+    assert n == 24 and ("TOTAL (III)", "a", 123456) in [(l[7], l[8], l[9]) for l in cap.linhas]
 
 
 def test_NORM02_dois_numeros_diferentes_na_mesma_celula_nao_sao_descartados_em_silencio():
-    with pytest.raises(normalizar.LayoutDesconhecido, match=r"dois números na coluna \(a\)"):
-        _rreo((295, "1.234,56"), (315, "9.999,99"))
+    # before v2 the message named the column; now the row has 13 numbers and is refused as a whole
+    with pytest.raises(normalizar.LayoutDesconhecido, match=r"13 número\(s\).*transcrição parcial recusada"):
+        _rreo_completo(((315, 300), "9.999,99"))
 
 
 def test_DET01_mensagem_de_layout_desconhecido_igual_com_qualquer_PYTHONHASHSEED(tmp_path):

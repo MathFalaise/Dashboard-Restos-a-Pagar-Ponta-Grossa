@@ -31,12 +31,14 @@ import json
 import logging
 from collections import OrderedDict, defaultdict
 
-from . import DataInvalida, agora, banco, instante, regras
-from .vigencia import VERIF_RETRATO_AMBIGUO, coletas_ambiguas, coletas_vigentes  # noqa: F401 (re-exported)
+from . import DataInvalida, agora, ambiente, banco, hash_do_codigo, instante, regras
+from . import vigencia
+from .vigencia import (VERIF_RETRATO_AMBIGUO, VERIF_RETRATO_VALOR_RECUSADO, coletas_ambiguas,  # noqa: F401
+                       coletas_vigentes)  # re-exported
 
 log = logging.getLogger("rp.derivar")
 
-VERSAO = "rp-derivador/1"
+VERSAO = "rp-derivador/2"     # /2 (09/10/2026): vigencia by conclusion (vigencia.VERSAO rp-vigencia/2)
 # The pair's entities, the copies' base and the entity of the per-entity RREO do NOT live here: they are parameters
 # of rules PAR-24 v1 and CONC-RREO v1 (regras.PARAMETROS -> regra_parametro table), read on every derivation.
 COMPONENTES = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "L", "S1", "S2", "S3"]
@@ -63,8 +65,9 @@ NOMES_LINHA = CAMPOS_REGISTRO + CAMPOS_DERIVADO
 def derivar(con, nid, em=None):
     """New derivation over normalization `nid`. `em` (ISO with offset): only considers snapshots collected up to
     that date - 'as it was on'. Without `em`, uses all of them (the most recent of each cut-off is the current one).
-    `em` must be in rp.instante's canonical form (the comparison with coletada_em is textual and the panel layer
-    looks the derivation up by that text): another form of the same instant is refused, never compared (audit CLI-01)."""
+    `em` must be in rp.instante's canonical form (the comparison with the conclusion of each collection is textual
+    and the panel layer looks the derivation up by that text): another form of the same instant is refused, never
+    compared (audit CLI-01). A collection is only considered from its CONCLUSION on (vigencia.filtro_disponivel)."""
     if em is not None and instante(em) != em:
         raise DataInvalida(f"vigencia {em!r} fora da forma canonica {instante(em)!r}: use rp.instante")
     regras.semear(con)
@@ -75,39 +78,64 @@ def derivar(con, nid, em=None):
         did = con.execute("INSERT INTO derivacao_execucao (normalizacao_id, derivador_versao, regras_json, executada_em, "
                           "vigencia_em) VALUES (?,?,?,?,?)",
                           (nid, VERSAO, json.dumps(sorted(R.values())), agora(), em)).lastrowid
+        v8 = banco._tem_tabela(con, "derivacao_regra")
+        if v8:     # schema v8: the declared rules as a relation (rows citing another rule are refused) + provenance
+            con.execute("INSERT INTO derivacao_regra SELECT e.id, j.value FROM derivacao_execucao e, "
+                        "json_each(e.regras_json) j WHERE e.id=?", (did,))
+            con.execute("UPDATE derivacao_execucao SET sha256_codigo=?, sha256_regras=?, ambiente_json=? WHERE id=?",
+                        (hash_do_codigo(), regras.impressao(con, R.values()), json.dumps(ambiente(), sort_keys=True),
+                         did))
         uid = dict(con.execute("SELECT id, snapshot_uid FROM coleta"))
         ambiguas = _registros(con, did, nid, R, par, em)
+        recusadas = _valores_recusados(con, did, nid, R, em)
         _movimentacao(con, did, nid, em)
-        vig = coletas_vigentes(con, em, excluir=ambiguas)
+        vig = coletas_vigentes(con, em, excluir=ambiguas | recusadas)
         _vigencia_recusada(con, did, R, em, ambiguas, vig, uid)
+        _vigencia_recusada(con, did, R, em, recusadas - ambiguas, vig, uid, VERIF_RETRATO_VALOR_RECUSADO,
+                           ("VALOR-OBRIG", 1), excluidas=ambiguas | recusadas)
         ler = _Leitor(con, did, nid)
         _continuidade(con, did, nid, R, vig, uid, ler)
         pares = _pareamento(con, did, nid, R, vig, uid, par, ler)
         _visoes(con, did, nid, R, vig, pares, uid, em, ler)
         _conciliacao(con, did, nid, R, uid, conc, em)
+        if v8:
+            _ligacoes(con, did)
         h = hash_resultado(con, did)
         con.execute("UPDATE derivacao_execucao SET hash_resultado=? WHERE id=?", (h, did))
     log.info("derivação %d sobre normalização %d (vigência %s): hash %s", did, nid, em or "atual", h[:16])
     return did
 
 
+def _ligacoes(con, did):
+    """Schema v8: the snapshots of each view value and of each reconciliation row as relations with FOREIGN KEYs,
+    from their JSON (which stays: it is part of the homologated hash). A trigger refuses a link the JSON lacks."""
+    con.execute("INSERT INTO visao_valor_coleta SELECT v.derivacao_id, v.id, k.id FROM visao_valor v, "
+                "json_each(v.coletas_json) j JOIN coleta k ON k.snapshot_uid = j.value WHERE v.derivacao_id=?", (did,))
+    con.execute("INSERT INTO conciliacao_rreo_coleta SELECT c.derivacao_id, c.rreo_coleta_id, c.regra_agregacao_id, "
+                "c.coluna, k.id FROM conciliacao_rreo c, json_each(c.coletas_api_json) j JOIN coleta k ON "
+                "k.snapshot_uid = j.value WHERE c.derivacao_id=?", (did,))
+
+
 def _ate(em, alias="c"):
-    """SQL validity filter over coleta.coletada_em."""
-    return (f" AND {alias}.coletada_em <= ?", (em,)) if em else ("", ())
+    """SQL validity filter: the collection was concluded up to `em` (vigencia.filtro_disponivel)."""
+    return vigencia.filtro_disponivel(em, alias)
 
 
 # --------------------------------------------------------------------------- snapshot selection
-def _vigencia_recusada(con, did, R, em, ambiguas, vig, uid):
-    """A check for each cut-off whose most recent snapshot is ambiguous: it is not the current one, and the current one
-    is the previous valid one (or none). It only exists when there is a repeated key; without it, nothing is recorded
-    (the hash does not change)."""
+def _vigencia_recusada(con, did, R, em, ambiguas, vig, uid, descricao=VERIF_RETRATO_AMBIGUO, regra=("ANOM-REG", 1),
+                       excluidas=None):
+    """A check for each cut-off whose most recent snapshot is refused (`ambiguas`: repeated key; or, with another
+    `descricao`, a refused money field): it is not the current one, and the current one is the previous valid one (or
+    none). It only exists when there is such a snapshot; without it, nothing is recorded (the hash does not change).
+    `excluidas`: every refused collection; the most recent snapshot is looked up among the others plus `ambiguas`."""
     if not ambiguas:
         return
-    for corte, cid in sorted(coletas_vigentes(con, em, excluir=frozenset()).items()):
+    excluidas = ambiguas if excluidas is None else excluidas
+    for corte, cid in sorted(coletas_vigentes(con, em, excluir=excluidas - ambiguas).items()):
         if cid in ambiguas:
             e, ex, di, df = corte
             usado = vig.get(corte)
-            _verif(con, did, R[("ANOM-REG", 1)], VERIF_RETRATO_AMBIGUO,
+            _verif(con, did, R[regra], descricao,
                    {"entidade": e, "exercicio": ex, "data_inicial": di, "data_final": df, "snapshot_recusado": uid[cid],
                     "snapshot_vigente": uid[usado] if usado else None}, 1, 1)
 
@@ -216,6 +244,24 @@ def _registros(con, did, nid, R, par, em=None):
             ambiguas.add(cid)
     con.executemany("INSERT INTO anomalia VALUES (?,?,?,?,?,?,?,?)", anomalias)
     return frozenset(ambiguas)
+
+
+def _valores_recusados(con, did, nid, R, em=None):
+    """VALOR-RECUSADO anomaly (rule VALOR-OBRIG v1) for each record of a complete snapshot (up to `em`) with a money
+    field refused by the normalization (valor_recusado). Returns the collections: they are never current, since summing
+    them would leave the record out of the total as if it did not exist. Without refusals nothing is recorded."""
+    filtro, p = _ate(em)
+    por_registro = defaultdict(dict)
+    for rid, i, cid, e, ano, emp, ordem, campo, natureza in con.execute(
+            "SELECT v.resposta_id, v.indice, v.coleta_id, v.entidade, v.anoempenho, v.empenho, b.ordem, v.campo, "
+            "v.natureza FROM valor_recusado v JOIN coleta c ON c.id = v.coleta_id JOIN resposta_bruta b ON "
+            "b.id = v.resposta_id WHERE v.normalizacao_id = ? AND c.status = 'completa'" + filtro +
+            " ORDER BY v.resposta_id, v.indice, v.campo", (nid, *p)):
+        por_registro[(cid, rid, i, e, ano, emp, ordem)][campo] = natureza
+    for (cid, rid, i, e, ano, emp, ordem), campos in por_registro.items():
+        _anomalia(con, did, R[("VALOR-OBRIG", 1)], "VALOR-RECUSADO", cid, e, ano, emp, campos=campos,
+                  posicao=[ordem, i])
+    return frozenset(k[0] for k in por_registro)
 
 
 def _natureza_da_repeticao(con, posicoes):
@@ -389,7 +435,7 @@ def _entidades_do_catalogo(con, nid, em=None):
     """Entities of the current catalog snapshot (the most recent up to `em`)."""
     filtro, p = _ate(em, "coleta")
     ult = con.execute("SELECT id FROM coleta WHERE tipo='entidades' AND status='completa'" + filtro +
-                      " ORDER BY coletada_em DESC, snapshot_uid DESC LIMIT 1", p).fetchone()
+                      " ORDER BY " + vigencia.ordem("coleta", desc=True) + " LIMIT 1", p).fetchone()
     if not ult:
         return set()
     return {e for (e,) in con.execute("SELECT entidade FROM entidade_ref WHERE normalizacao_id=? AND coleta_id=?", (nid, ult[0]))}
@@ -446,7 +492,7 @@ def _conciliacao(con, did, nid, R, uid, conc, em=None):
     # RREO PDF with no value extracted in this normalization (e.g. unknown layout): recorded, never ignored
     for (cid,) in con.execute("SELECT c.id FROM coleta c WHERE c.tipo='rreo_pdf' AND c.status='completa'" + filtro +
                               " AND NOT EXISTS (SELECT 1 FROM rreo_valor v WHERE v.normalizacao_id=? AND v.coleta_id=c.id) "
-                              "ORDER BY c.coletada_em, c.snapshot_uid", (*p, nid)).fetchall():
+                              "ORDER BY " + vigencia.ordem(), (*p, nid)).fetchall():
         _verif(con, did, regra, "RREO sem valores extraídos (ver problemas da normalização)", {"rreo_snapshot": uid[cid]}, 1, 1)
     docs = con.execute("SELECT DISTINCT v.coleta_id, v.escopo, v.exercicio, v.data_final FROM rreo_valor v "
                        "JOIN coleta c ON c.id = v.coleta_id WHERE v.normalizacao_id=? AND v.linha='TOTAL (III)'" + filtro +

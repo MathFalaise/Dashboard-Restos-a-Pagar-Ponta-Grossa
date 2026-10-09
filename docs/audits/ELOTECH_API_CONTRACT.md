@@ -83,6 +83,23 @@ dicionario`) e na Etapa 02.
 | Lógica | `(entidade, anoempenho, empenho)` | `contrato.chave_negocio` |
 | Conteúdo | SHA-256 do registro em JSON canônico | `contrato.impressao_registro` |
 
+### 4.1 Contrato estrito (v2, 09/10/2026)
+
+Desde `rp-api-contrato/2` a coleta não aceita página nem registro fora do formato acima. Medição de 09/10/2026 no
+armazém: as 383 páginas de listagem (266.787 registros) e as 148 de movimentação (2.352 lançamentos) cumprem tudo,
+então nenhuma coleta gravada seria recusada.
+
+| O que é exigido | Onde |
+|---|---|
+| Página: os 11 campos do §3, com tipo (`content`/`sort` lista, `pageable` objeto, `first`/`last`/`empty` booleano, os demais inteiros); `number`, `numberOfElements`, `totalElements` e `totalPages` não negativos; `size` positivo | `contrato.contrato_pagina` |
+| Registro de RP: exatamente as 24 chaves de "todos os registros" do §4, com tipo; os 10 campos monetários numéricos (nunca nulo, texto ou booleano); as 7 chaves de classificação vêm **todas juntas ou nenhuma** (6.956 registros sem as 7, nenhum com parte delas); nenhuma chave fora dessa lista | `contrato.contrato_registro_rp` |
+| Lançamento de movimentação: exatamente `data`, `descricaoTipoLancamento`, `exercicioLiquidacao`, `exercicioPagamento`, `noLiquidacao`, `noPagamento`, `nroDocumento`, `tipoLancamento`, `valor`, `valorALiquidar`, `valorAPagar`, com tipo | `contrato.contrato_registro_mov` |
+
+Qualquer violação deixa o snapshot `incompleta` com o motivo (página, registro, chave e tipo). As respostas ficam
+gravadas. Uma mudança de estrutura nunca é absorvida: a coleta fica indisponível até alguém analisar. O
+`diagnosticar-api` aplica o mesmo contrato à amostra. Mudar o contrato exige nova versão em `contrato.VERSAO` e
+teste de regressão (`app/tests/test_contrato_estrito.py`).
+
 A chave lógica **não pode repetir** num retrato. Repetida, a coleta fica `incompleta` (§6) e um retrato antigo
 ou importado com repetição nunca vira o vigente do corte.
 
@@ -151,4 +168,5 @@ snapshots coletados antes de 05/10/2026 não pediam ordem e têm esse eco vazio.
 |---|---|
 | 29/09/2026 | Etapa 01: endpoint descoberto pela tela do portal; parâmetros, limite de 2000 e erro 500 sem `dataInicial`; versão 3.128.0 |
 | 30/09/2026 | Coleta de produção concluída. Banco ativo: 466 snapshots (247 listagens), nenhum com chave repetida ou registro de outra entidade (conferido em 05/10/2026) |
+| 09/10/2026 | Contrato estrito v2 (§4.1), medido em todas as páginas do armazém; campo monetário ausente, nulo ou inválido passa a ser recusado na normalização (nunca zero) |
 | 05/10/2026 | Sondagem da ordenação (`sondagem_ordenacao.json`, 7 requisições) e primeiro `diagnosticar-api` (resultado `ok`, `diagnostico_api_20261005.json`) |

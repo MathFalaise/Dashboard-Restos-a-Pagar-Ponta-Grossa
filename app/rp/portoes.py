@@ -163,8 +163,8 @@ def avaliar(caminho_banco, armazem, referencia=None):
                      "também que nenhum tenha ficado sem verificação (lista em 'nao_verificados').")}
 
 
-# API monetary fields: a missing one becomes 0 in the normalization (recorded in chaves_ausentes). Until the rule is
-# reviewed, a load with a missing monetary field cannot be made available without a decision (audit NORM-01).
+# API monetary fields. Normalizer v1 typed a missing one as 0 (recorded in chaves_ausentes; audit NORM-01); since v2
+# (09/10/2026) it is refused in valor_recusado. The gate 'campos_monetarios_ausentes' flags both.
 _MONETARIOS = ("proc", "aproc", "canceladoProc", "pagoProc", "pagoProcEstornado", "canceladoAProc", "pagoAProc",
                "pagoAProcEstornado", "liquidado", "retencao")
 
@@ -238,10 +238,20 @@ def _portoes_da_auditoria(con, portao, nid, did_atual):
     portao("integridade_relacional", "FOREIGN KEY do esquema (foreign_key_check) e relações sem FK (órfãos)",
            not fk and not any(orfaos.values()), {"foreign_key_check": [list(r) for r in fk[:10]], **orfaos})
 
+    # Normalizer v1 typed a missing money field as 0 (the key stays in chaves_ausentes); v2 (09/10/2026) refuses it in
+    # valor_recusado and the record composes no indicator. Both fail the gate: an absence is never approved silently.
     cond = " OR ".join(f"chaves_ausentes LIKE '%\"{c}\"%'" for c in _MONETARIOS)
     ausentes = con.execute(f"SELECT COUNT(*) FROM rp_registro WHERE normalizacao_id=? AND ({cond})", (nid,)).fetchone()[0]
-    portao("campos_monetarios_ausentes", "nenhum registro sem campo monetário (a normalização grava ausência como 0)",
-           ausentes == 0, {"registros": ausentes, "normalizacao": nid})
+    recusas = con.execute("SELECT campo, natureza, COUNT(*) FROM valor_recusado WHERE normalizacao_id=? GROUP BY 1, 2 "
+                          "ORDER BY 1, 2", (nid,)).fetchall()
+    recusados = con.execute("SELECT COUNT(*) FROM (SELECT DISTINCT resposta_id, indice FROM valor_recusado WHERE "
+                            "normalizacao_id=?)", (nid,)).fetchone()[0]
+    portao("campos_monetarios_ausentes", "nenhum registro com campo monetário ausente, nulo ou inválido (recusado na "
+           "normalização v2; na v1, gravado como 0)", ausentes == 0 and recusados == 0,
+           {"registros": ausentes + recusados, "gravados_como_zero_v1": ausentes, "recusados_v2": recusados,
+            "campos_recusados": {f"{c}:{n}": q for c, n, q in recusas}, "normalizacao": nid,
+            "nota": "um retrato com valor recusado nunca é o vigente (VALOR-RECUSADO): vale o retrato válido anterior "
+                    "do corte, ou o dado fica indisponível. Analise a resposta da API antes de recoletar"})
 
     desconhecidos = con.execute("SELECT COUNT(*) FROM movimentacao_interpretada WHERE derivacao_id=? AND "
                                 "efeito='desconhecido'", (did_atual,)).fetchone()[0]
@@ -278,6 +288,40 @@ def _portoes_da_revisao(con, portao, did_atual):
                     "A segunda leitura da coleta já releu as páginas na hora: recolete o corte MAIS TARDE com o "
                     "comando em 'recoletar', confira com 'python -m rp verificar' e processe de novo "
                     "('python -m rp processar')"})
+
+    # correction request of 09/10/2026, item 4: every collection has its start and conclusion (coleta_tempo, v7).
+    # Approximate or unknown conclusions are not a failure: they are the documented limitation of old snapshots
+    tem_tempo = con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='coleta_tempo'").fetchone()
+    if tem_tempo:
+        sem = con.execute("SELECT COUNT(*) FROM coleta c LEFT JOIN coleta_tempo t ON t.coleta_id = c.id WHERE "
+                          "t.coleta_id IS NULL").fetchone()[0]
+        precisao = dict(con.execute("SELECT precisao, COUNT(*) FROM coleta_tempo GROUP BY 1 ORDER BY 1").fetchall())
+        fontes_ = dict(con.execute("SELECT fonte_conclusao, COUNT(*) FROM coleta_tempo GROUP BY 1 ORDER BY 1").fetchall())
+        portao("tempos_das_coletas", "toda coleta tem início e conclusão registrados (coleta_tempo): retrato só vale "
+               "'como estava em' a partir da conclusão", sem == 0,
+               {"coletas_sem_tempo": sem, "por_precisao": precisao, "por_fonte_da_conclusao": fontes_,
+                "limitacao": "'aproximada' = conclusão pela data do arquivo (Etapas 01/02); 'desconhecida' = sem "
+                             "evidência de conclusão: o retrato nunca vale numa consulta com data"})
+    else:
+        portao("tempos_das_coletas", "toda coleta tem início e conclusão registrados (coleta_tempo)", None,
+               "não verificado: banco antes da v7")
+
+    # correction request of 09/10/2026, items 1 and 7: every value walks to its snapshots, responses, objects and
+    # manifest hashes through relations (v8), and the current derivation says which code, rules and environment
+    if banco._tem_tabela(con, "derivacao_regra") and did_atual:
+        from . import proveniencia
+        prov = proveniencia.conferir(con, did_atual)
+        portao("proveniencia_completa", "todo valor calculado chega, por relações (v8), aos snapshots, às respostas "
+               "HTTP, aos objetos brutos e ao hash do manifesto; as relações batem com o JSON",
+               all(v == 0 for k, v in prov.items() if k != "valores"), {"derivacao": did_atual, **prov})
+        ident = proveniencia.identificacao(con, did_atual)
+        portao("execucao_identificada", "a derivação atual e a sua normalização registram o hash do código e o "
+               "ambiente; o hash das regras gravado é o recalculado do catálogo",
+               bool(ident["derivacao_sha256_codigo"] and ident["normalizacao_sha256_codigo"] and
+                    ident["sha256_regras_confere"] and ident["ambiente_registrado"]), ident)
+    else:
+        portao("proveniencia_completa", "todo valor calculado chega aos snapshots, respostas, objetos e manifestos",
+               None, "não verificado: banco antes da v8 ou sem derivação")
 
     # item 28: the database schema is the one of its version in the code (structure, without comments or whitespace)
     versao = banco.versao_esquema(con)

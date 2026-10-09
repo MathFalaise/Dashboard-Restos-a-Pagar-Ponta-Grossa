@@ -1,0 +1,953 @@
+{
+ "vigencias": {
+  "2026-09-29T23:59:59-03:00": {
+   "derivacao": 27,
+   "cortes": {
+    "2026-02-28": {
+     "rreo_snapshot": "60c2f6918a925d1ca97f2aa9320320c1",
+     "rreo_emitido_em": "27/mar/2026 12:26",
+     "api_snapshots": [
+      "be2d23c6fef857a2ae9cfb5ad2cb56f2"
+     ],
+     "colunas": {
+      "L": {
+       "rreo": 9788992142,
+       "api": 11025753602,
+       "diferenca_api_menos_rreo": 1236761460
+      },
+      "a": {
+       "rreo": 148899467,
+       "api": 149082417,
+       "diferenca_api_menos_rreo": 182950
+      },
+      "b": {
+       "rreo": 1622794086,
+       "api": 2738668016,
+       "diferenca_api_menos_rreo": 1115873930
+      },
+      "c": {
+       "rreo": 1032721197,
+       "api": 1006449570,
+       "diferenca_api_menos_rreo": -26271627
+      },
+      "d": {
+       "rreo": 7259582,
+       "api": 7442532,
+       "diferenca_api_menos_rreo": 182950
+      },
+      "e": {
+       "rreo": 731712774,
+       "api": 1873858331,
+       "diferenca_api_menos_rreo": 1142145557
+      },
+      "f": {
+       "rreo": 1881153437,
+       "api": 1880970487,
+       "diferenca_api_menos_rreo": -182950
+      },
+      "g": {
+       "rreo": 12159312688,
+       "api": 11830237390,
+       "diferenca_api_menos_rreo": -329075298
+      },
+      "h": {
+       "rreo": 5121103120,
+       "api": 4798627376,
+       "diferenca_api_menos_rreo": -322475744
+      },
+      "i": {
+       "rreo": 4690903463,
+       "api": 4267212262,
+       "diferenca_api_menos_rreo": -423691201
+      },
+      "j": {
+       "rreo": 292283294,
+       "api": 292100344,
+       "diferenca_api_menos_rreo": -182950
+      },
+      "k": {
+       "rreo": 9057279368,
+       "api": 9151895271,
+       "diferenca_api_menos_rreo": 94615903
+      }
+     }
+    },
+    "2026-04-30": {
+     "rreo_snapshot": "56e85f8cae6158f782a8e5022d5d13cc",
+     "rreo_emitido_em": "29/mai/2026 14:05",
+     "api_snapshots": [
+      "9393c957eeb05117bcb3d8f3f0e24bcb"
+     ],
+     "colunas": {
+      "L": {
+       "rreo": 7097440561,
+       "api": 7097440561,
+       "diferenca_api_menos_rreo": 0
+      },
+      "a": {
+       "rreo": 149082417,
+       "api": 149082417,
+       "diferenca_api_menos_rreo": 0
+      },
+      "b": {
+       "rreo": 2738668016,
+       "api": 2738668016,
+       "diferenca_api_menos_rreo": 0
+      },
+      "c": {
+       "rreo": 2230282020,
+       "api": 2230282020,
+       "diferenca_api_menos_rreo": 0
+      },
+      "d": {
+       "rreo": 7449732,
+       "api": 7449732,
+       "diferenca_api_menos_rreo": 0
+      },
+      "e": {
+       "rreo": 650018681,
+       "api": 650018681,
+       "diferenca_api_menos_rreo": 0
+      },
+      "f": {
+       "rreo": 1880970487,
+       "api": 1880970487,
+       "diferenca_api_menos_rreo": 0
+      },
+      "g": {
+       "rreo": 11830237390,
+       "api": 11830237390,
+       "diferenca_api_menos_rreo": 0
+      },
+      "h": {
+       "rreo": 7135413505,
+       "api": 7135477921,
+       "diferenca_api_menos_rreo": 64416
+      },
+      "i": {
+       "rreo": 6921357746,
+       "api": 6921357746,
+       "diferenca_api_menos_rreo": 0
+      },
+      "j": {
+       "rreo": 342428251,
+       "api": 342428251,
+       "diferenca_api_menos_rreo": 0
+      },
+      "k": {
+       "rreo": 6447421880,
+       "api": 6447421880,
+       "diferenca_api_menos_rreo": 0
+      }
+     }
+    },
+    "2026-06-30": {
+     "rreo_snapshot": "4a865eb752a15c238757027864c3c946",
+     "rreo_emitido_em": "29/jul/2026 12:15",
+     "api_snapshots": [
+      "c53d3741c3145ac6b55d8c27491d38bb"
+     ],
+     "colunas": {
+      "L": {
+       "rreo": 5945645733,
+       "api": 5956556976,
+       "diferenca_api_menos_rreo": 10911243
+      },
+      "a": {
+       "rreo": 149082417,
+       "api": 149082417,
+       "diferenca_api_menos_rreo": 0
+      },
+      "b": {
+       "rreo": 2738668016,
+       "api": 2738668016,
+       "diferenca_api_menos_rreo": 0
+      },
+      "c": {
+       "rreo": 2450651029,
+       "api": 2450651029,
+       "diferenca_api_menos_rreo": 0
+      },
+      "d": {
+       "rreo": 7836184,
+       "api": 7836184,
+       "diferenca_api_menos_rreo": 0
+      },
+      "e": {
+       "rreo": 429263220,
+       "api": 429263220,
+       "diferenca_api_menos_rreo": 0
+      },
+      "f": {
+       "rreo": 1880970487,
+       "api": 1880970487,
+       "diferenca_api_menos_rreo": 0
+      },
+      "g": {
+       "rreo": 11830237390,
+       "api": 11830237390,
+       "diferenca_api_menos_rreo": 0
+      },
+      "h": {
+       "rreo": 8009713894,
+       "api": 7988022570,
+       "diferenca_api_menos_rreo": -21691324
+      },
+      "i": {
+       "rreo": 7776438326,
+       "api": 7765527083,
+       "diferenca_api_menos_rreo": -10911243
+      },
+      "j": {
+       "rreo": 418387038,
+       "api": 418387038,
+       "diferenca_api_menos_rreo": 0
+      },
+      "k": {
+       "rreo": 5516382513,
+       "api": 5527293756,
+       "diferenca_api_menos_rreo": 10911243
+      }
+     }
+    },
+    "2026-08-31": {
+     "rreo_snapshot": "3e6f0e378f3f45cf960e1f88f90e34ad",
+     "rreo_emitido_em": "29/set/2026 12:33",
+     "api_snapshots": [
+      "b8208f35bce540a4b53b4c56fe2e9711"
+     ],
+     "colunas": {
+      "L": {
+       "rreo": 4844479117,
+       "api": 4868251942,
+       "diferenca_api_menos_rreo": 23772825
+      },
+      "a": {
+       "rreo": 149082417,
+       "api": 149082417,
+       "diferenca_api_menos_rreo": 0
+      },
+      "b": {
+       "rreo": 2738668016,
+       "api": 2738668016,
+       "diferenca_api_menos_rreo": 0
+      },
+      "c": {
+       "rreo": 2555733059,
+       "api": 2555733059,
+       "diferenca_api_menos_rreo": 0
+      },
+      "d": {
+       "rreo": 7857099,
+       "api": 7857099,
+       "diferenca_api_menos_rreo": 0
+      },
+      "e": {
+       "rreo": 324160275,
+       "api": 324160275,
+       "diferenca_api_menos_rreo": 0
+      },
+      "f": {
+       "rreo": 1880970487,
+       "api": 1880970487,
+       "diferenca_api_menos_rreo": 0
+      },
+      "g": {
+       "rreo": 11830237390,
+       "api": 11830237390,
+       "diferenca_api_menos_rreo": 0
+      },
+      "h": {
+       "rreo": 8559910805,
+       "api": 8525362849,
+       "diferenca_api_menos_rreo": -34547956
+      },
+      "i": {
+       "rreo": 8389314591,
+       "api": 8365541766,
+       "diferenca_api_menos_rreo": -23772825
+      },
+      "j": {
+       "rreo": 801574444,
+       "api": 801574444,
+       "diferenca_api_menos_rreo": 0
+      },
+      "k": {
+       "rreo": 4520318842,
+       "api": 4544091667,
+       "diferenca_api_menos_rreo": 23772825
+      }
+     }
+    }
+   }
+  },
+  "atual": {
+   "derivacao": 26,
+   "cortes": {
+    "2026-02-28": {
+     "rreo_snapshot": "60c2f6918a925d1ca97f2aa9320320c1",
+     "rreo_emitido_em": "27/mar/2026 12:26",
+     "api_snapshots": [
+      "743955ae86fe4620869650ca7bfa7a6a"
+     ],
+     "colunas": {
+      "L": {
+       "rreo": 9788992142,
+       "api": 11025753602,
+       "diferenca_api_menos_rreo": 1236761460
+      },
+      "a": {
+       "rreo": 148899467,
+       "api": 149082417,
+       "diferenca_api_menos_rreo": 182950
+      },
+      "b": {
+       "rreo": 1622794086,
+       "api": 2738668016,
+       "diferenca_api_menos_rreo": 1115873930
+      },
+      "c": {
+       "rreo": 1032721197,
+       "api": 1006449570,
+       "diferenca_api_menos_rreo": -26271627
+      },
+      "d": {
+       "rreo": 7259582,
+       "api": 7442532,
+       "diferenca_api_menos_rreo": 182950
+      },
+      "e": {
+       "rreo": 731712774,
+       "api": 1873858331,
+       "diferenca_api_menos_rreo": 1142145557
+      },
+      "f": {
+       "rreo": 1881153437,
+       "api": 1880970487,
+       "diferenca_api_menos_rreo": -182950
+      },
+      "g": {
+       "rreo": 12159312688,
+       "api": 11830237390,
+       "diferenca_api_menos_rreo": -329075298
+      },
+      "h": {
+       "rreo": 5121103120,
+       "api": 4798627376,
+       "diferenca_api_menos_rreo": -322475744
+      },
+      "i": {
+       "rreo": 4690903463,
+       "api": 4267212262,
+       "diferenca_api_menos_rreo": -423691201
+      },
+      "j": {
+       "rreo": 292283294,
+       "api": 292100344,
+       "diferenca_api_menos_rreo": -182950
+      },
+      "k": {
+       "rreo": 9057279368,
+       "api": 9151895271,
+       "diferenca_api_menos_rreo": 94615903
+      }
+     }
+    },
+    "2026-04-30": {
+     "rreo_snapshot": "56e85f8cae6158f782a8e5022d5d13cc",
+     "rreo_emitido_em": "29/mai/2026 14:05",
+     "api_snapshots": [
+      "40b8d3f3814a4e51858959857cb1bb83"
+     ],
+     "colunas": {
+      "L": {
+       "rreo": 7097440561,
+       "api": 6970372636,
+       "diferenca_api_menos_rreo": -127067925
+      },
+      "a": {
+       "rreo": 149082417,
+       "api": 149082417,
+       "diferenca_api_menos_rreo": 0
+      },
+      "b": {
+       "rreo": 2738668016,
+       "api": 2738668016,
+       "diferenca_api_menos_rreo": 0
+      },
+      "c": {
+       "rreo": 2230282020,
+       "api": 2230282020,
+       "diferenca_api_menos_rreo": 0
+      },
+      "d": {
+       "rreo": 7449732,
+       "api": 7449732,
+       "diferenca_api_menos_rreo": 0
+      },
+      "e": {
+       "rreo": 650018681,
+       "api": 650018681,
+       "diferenca_api_menos_rreo": 0
+      },
+      "f": {
+       "rreo": 1880970487,
+       "api": 1880970487,
+       "diferenca_api_menos_rreo": 0
+      },
+      "g": {
+       "rreo": 11830237390,
+       "api": 11830237390,
+       "diferenca_api_menos_rreo": 0
+      },
+      "h": {
+       "rreo": 7135413505,
+       "api": 7135477921,
+       "diferenca_api_menos_rreo": 64416
+      },
+      "i": {
+       "rreo": 6921357746,
+       "api": 6921357746,
+       "diferenca_api_menos_rreo": 0
+      },
+      "j": {
+       "rreo": 342428251,
+       "api": 469496176,
+       "diferenca_api_menos_rreo": 127067925
+      },
+      "k": {
+       "rreo": 6447421880,
+       "api": 6320353955,
+       "diferenca_api_menos_rreo": -127067925
+      }
+     }
+    },
+    "2026-06-30": {
+     "rreo_snapshot": "4a865eb752a15c238757027864c3c946",
+     "rreo_emitido_em": "29/jul/2026 12:15",
+     "api_snapshots": [
+      "5b414f03f61d46b0889553e82ec46632"
+     ],
+     "colunas": {
+      "L": {
+       "rreo": 5945645733,
+       "api": 5836905451,
+       "diferenca_api_menos_rreo": -108740282
+      },
+      "a": {
+       "rreo": 149082417,
+       "api": 149082417,
+       "diferenca_api_menos_rreo": 0
+      },
+      "b": {
+       "rreo": 2738668016,
+       "api": 2738668016,
+       "diferenca_api_menos_rreo": 0
+      },
+      "c": {
+       "rreo": 2450651029,
+       "api": 2450651029,
+       "diferenca_api_menos_rreo": 0
+      },
+      "d": {
+       "rreo": 7836184,
+       "api": 7836184,
+       "diferenca_api_menos_rreo": 0
+      },
+      "e": {
+       "rreo": 429263220,
+       "api": 429263220,
+       "diferenca_api_menos_rreo": 0
+      },
+      "f": {
+       "rreo": 1880970487,
+       "api": 1880970487,
+       "diferenca_api_menos_rreo": 0
+      },
+      "g": {
+       "rreo": 11830237390,
+       "api": 11830237390,
+       "diferenca_api_menos_rreo": 0
+      },
+      "h": {
+       "rreo": 8009713894,
+       "api": 7980606170,
+       "diferenca_api_menos_rreo": -29107724
+      },
+      "i": {
+       "rreo": 7776438326,
+       "api": 7758110683,
+       "diferenca_api_menos_rreo": -18327643
+      },
+      "j": {
+       "rreo": 418387038,
+       "api": 545454963,
+       "diferenca_api_menos_rreo": 127067925
+      },
+      "k": {
+       "rreo": 5516382513,
+       "api": 5407642231,
+       "diferenca_api_menos_rreo": -108740282
+      }
+     }
+    },
+    "2026-08-31": {
+     "rreo_snapshot": "3e6f0e378f3f45cf960e1f88f90e34ad",
+     "rreo_emitido_em": "29/set/2026 12:33",
+     "api_snapshots": [
+      "748bfc35e2f148cea52bd58c6d02f379"
+     ],
+     "colunas": {
+      "L": {
+       "rreo": 4844479117,
+       "api": 4774474825,
+       "diferenca_api_menos_rreo": -70004292
+      },
+      "a": {
+       "rreo": 149082417,
+       "api": 149082417,
+       "diferenca_api_menos_rreo": 0
+      },
+      "b": {
+       "rreo": 2738668016,
+       "api": 2738668016,
+       "diferenca_api_menos_rreo": 0
+      },
+      "c": {
+       "rreo": 2555733059,
+       "api": 2555733059,
+       "diferenca_api_menos_rreo": 0
+      },
+      "d": {
+       "rreo": 7857099,
+       "api": 7857099,
+       "diferenca_api_menos_rreo": 0
+      },
+      "e": {
+       "rreo": 324160275,
+       "api": 324160275,
+       "diferenca_api_menos_rreo": 0
+      },
+      "f": {
+       "rreo": 1880970487,
+       "api": 1880970487,
+       "diferenca_api_menos_rreo": 0
+      },
+      "g": {
+       "rreo": 11830237390,
+       "api": 11830237390,
+       "diferenca_api_menos_rreo": 0
+      },
+      "h": {
+       "rreo": 8559910805,
+       "api": 8491320933,
+       "diferenca_api_menos_rreo": -68589872
+      },
+      "i": {
+       "rreo": 8389314591,
+       "api": 8334132856,
+       "diferenca_api_menos_rreo": -55181735
+      },
+      "j": {
+       "rreo": 801574444,
+       "api": 926760471,
+       "diferenca_api_menos_rreo": 125186027
+      },
+      "k": {
+       "rreo": 4520318842,
+       "api": 4450314550,
+       "diferenca_api_menos_rreo": -70004292
+      }
+     }
+    }
+   }
+  }
+ },
+ "mudancas_da_api_no_mesmo_periodo": {
+  "2026-02-28 (2026-09-29T23:59:59-03:00 -> atual)": {
+   "snapshot_antes": "be2d23c6fef857a2ae9cfb5ad2cb56f2",
+   "coletado_antes": "2026-09-29T20:22:57-03:00",
+   "snapshot_depois": "743955ae86fe4620869650ca7bfa7a6a",
+   "coletado_depois": "2026-10-06T10:23:15-03:00",
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 4557,
+    "alterados": 2,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_por_grupo": {},
+   "alterados": []
+  },
+  "2026-04-30 (2026-09-29T23:59:59-03:00 -> atual)": {
+   "snapshot_antes": "9393c957eeb05117bcb3d8f3f0e24bcb",
+   "coletado_antes": "2026-09-29T20:23:16-03:00",
+   "snapshot_depois": "40b8d3f3814a4e51858959857cb1bb83",
+   "coletado_depois": "2026-10-06T10:25:56-03:00",
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 4557,
+    "alterados": 10,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_por_grupo": {
+    "cancelamentos": 127067925
+   },
+   "alterados": [
+    {
+     "empenho": "14515/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       14987925
+      ]
+     }
+    },
+    {
+     "empenho": "15743/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       21840802
+      ]
+     }
+    },
+    {
+     "empenho": "16817/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       30029427
+      ]
+     }
+    },
+    {
+     "empenho": "16818/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       23093485
+      ]
+     }
+    },
+    {
+     "empenho": "18883/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       8645252
+      ]
+     }
+    },
+    {
+     "empenho": "18890/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       7775780
+      ]
+     }
+    },
+    {
+     "empenho": "19215/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       5841408
+      ]
+     }
+    },
+    {
+     "empenho": "20903/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       14853846
+      ]
+     }
+    }
+   ]
+  },
+  "2026-06-30 (2026-09-29T23:59:59-03:00 -> atual)": {
+   "snapshot_antes": "c53d3741c3145ac6b55d8c27491d38bb",
+   "coletado_antes": "2026-09-29T20:15:04-03:00",
+   "snapshot_depois": "5b414f03f61d46b0889553e82ec46632",
+   "coletado_depois": "2026-10-06T10:27:34-03:00",
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 4557,
+    "alterados": 10,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_por_grupo": {
+    "pagamentos": -7416400,
+    "cancelamentos": 127067925,
+    "liquidacoes": -7416400,
+    "retencoes": -310071
+   },
+   "alterados": [
+    {
+     "empenho": "14515/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       14987925
+      ]
+     }
+    },
+    {
+     "empenho": "15743/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       21840802
+      ]
+     }
+    },
+    {
+     "empenho": "16817/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       30029427
+      ]
+     }
+    },
+    {
+     "empenho": "16818/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       23093485
+      ],
+      "pago_aproc_c": [
+       20116157,
+       13799757
+      ],
+      "liquidado_c": [
+       20116157,
+       13799757
+      ],
+      "retencao_c": [
+       1250622,
+       953751
+      ]
+     }
+    },
+    {
+     "empenho": "18883/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       8645252
+      ],
+      "pago_aproc_c": [
+       14542374,
+       13442374
+      ],
+      "liquidado_c": [
+       14542374,
+       13442374
+      ],
+      "retencao_c": [
+       174508,
+       161308
+      ]
+     }
+    },
+    {
+     "empenho": "18890/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       7775780
+      ]
+     }
+    },
+    {
+     "empenho": "19215/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       5841408
+      ]
+     }
+    },
+    {
+     "empenho": "20903/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       14853846
+      ]
+     }
+    }
+   ]
+  },
+  "2026-08-31 (2026-09-29T23:59:59-03:00 -> atual)": {
+   "snapshot_antes": "b8208f35bce540a4b53b4c56fe2e9711",
+   "coletado_antes": "2026-09-29T21:35:35-03:00",
+   "snapshot_depois": "748bfc35e2f148cea52bd58c6d02f379",
+   "coletado_depois": "2026-10-06T10:29:08-03:00",
+   "contagens": {
+    "novos": 0,
+    "removidos": 0,
+    "comuns": 4557,
+    "alterados": 12,
+    "alterados_em_espelhamento": 0,
+    "novos_ou_removidos_em_espelhamento": 0
+   },
+   "impacto_por_grupo": {
+    "pagamentos": -31408910,
+    "cancelamentos": 125186027,
+    "liquidacoes": -34041916,
+    "retencoes": -2400191
+   },
+   "alterados": [
+    {
+     "empenho": "17442/2024",
+     "campos": {
+      "pago_aproc_c": [
+       1422498,
+       2867943
+      ]
+     }
+    },
+    {
+     "empenho": "17443/2024",
+     "campos": {
+      "pago_aproc_c": [
+       264001,
+       5499951
+      ]
+     }
+    },
+    {
+     "empenho": "14515/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       14987925
+      ]
+     }
+    },
+    {
+     "empenho": "15743/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       21840802
+      ]
+     }
+    },
+    {
+     "empenho": "16817/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       30029427
+      ],
+      "pago_aproc_c": [
+       44495233,
+       27193276
+      ],
+      "liquidado_c": [
+       44495233,
+       31241665
+      ],
+      "retencao_c": [
+       1210168,
+       97743
+      ]
+     }
+    },
+    {
+     "empenho": "16818/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       23093485
+      ],
+      "pago_aproc_c": [
+       20116157,
+       13799757
+      ],
+      "liquidado_c": [
+       20116157,
+       13799757
+      ],
+      "retencao_c": [
+       1250622,
+       953751
+      ]
+     }
+    },
+    {
+     "empenho": "18883/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       8645252
+      ],
+      "pago_aproc_c": [
+       14942374,
+       13442374
+      ],
+      "liquidado_c": [
+       14942374,
+       13442374
+      ],
+      "retencao_c": [
+       179308,
+       161308
+      ]
+     }
+    },
+    {
+     "empenho": "18890/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       7775780
+      ]
+     }
+    },
+    {
+     "empenho": "19215/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       0,
+       5841408
+      ]
+     }
+    },
+    {
+     "empenho": "20903/2025",
+     "campos": {
+      "cancelado_aproc_c": [
+       1881898,
+       14853846
+      ],
+      "pago_aproc_c": [
+       12971948,
+       0
+      ],
+      "liquidado_c": [
+       12971948,
+       0
+      ],
+      "retencao_c": [
+       972895,
+       0
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

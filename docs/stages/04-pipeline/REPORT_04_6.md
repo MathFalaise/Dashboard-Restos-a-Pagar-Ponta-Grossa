@@ -220,7 +220,7 @@ Todos os testes abaixo usam **cópias** temporárias do banco montado do armazé
   - depois de visitar todas as rotas, o arquivo do banco tem o mesmo SHA-256 e o mesmo `mtime`, sem `-wal` nem `-journal`.
 - **Isolamento:** a interface nunca coleta, processa, deriva ou grava snapshot; os módulos que fazem isso nem são carregados.
 - **Dados pessoais:**
-  - no detalhe de credores pessoa física reais, o nome e o CPF (inteiro ou mascarado, `****374****`) não aparecem;
+  - no detalhe de credores pessoa física reais, o nome e o CPF (inteiro ou mascarado, `****123****` (exemplo sintético)) não aparecem;
   - não há campo bancário;
   - as listas continuam sem identificação do credor.
 - **Cabeçalhos:** CSP, `nosniff`, `no-referrer` e `DENY` mantidos. Parâmetros inválidos (incluindo os novos campos de busca) dão 400.

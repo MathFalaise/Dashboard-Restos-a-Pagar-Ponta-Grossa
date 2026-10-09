@@ -13,13 +13,19 @@ the code uses live here:
     the snapshots'.
   * minimum contract of the catalogs (entities, fiscal years, publications): valid JSON is not enough - an error
     object with HTTP 200 is JSON. The minimum is what the normalization needs to produce rows.
+  * STRICT contract of the paginated endpoints (v2, 09/10/2026): every page must bring all the Spring Page metadata
+    with its type, and every record of the RP listing and of the movement list must bring exactly the known keys with
+    their types. Measured on the 383 RP pages (266,787 records) and 148 movement pages (2,352 entries) in the store on
+    09/10/2026: all of them meet it, so it refuses no recorded collection. A new key, a missing key or another type
+    makes the collection 'incompleta' (never the current snapshot) until someone looks at it: a change of structure is
+    never absorbed silently. Valid JSON is not a semantically valid response.
 """
 import hashlib
 import json
 from collections import defaultdict
 from decimal import Decimal
 
-VERSAO = "rp-api-contrato/1"
+VERSAO = "rp-api-contrato/2"
 ORDEM_RP = ("anoempenho,asc", "empenho,asc")
 CAMPOS_DA_CHAVE = ("entidade", "anoempenho", "empenho")
 
@@ -224,3 +230,90 @@ def contrato_publicacoes(d):
     if ruim is not None:
         return f"publicações: o grupo {ruim} tem 'list' que não é lista"
     return None
+
+
+# ------------------------------------------------------------------ strict contract of the paginated endpoints
+INTEIRO, NUMERO, TEXTO, BOOLEANO, LISTA, OBJETO = "inteiro", "numero", "texto", "booleano", "lista", "objeto"
+
+# Spring Page metadata: all mandatory, with these types (checked on every recorded page).
+METADADOS_PAGINA = {"content": LISTA, "number": INTEIRO, "numberOfElements": INTEIRO, "size": INTEIRO,
+                    "totalElements": INTEIRO, "totalPages": INTEIRO, "first": BOOLEANO, "last": BOOLEANO,
+                    "empty": BOOLEANO, "sort": LISTA, "pageable": OBJETO}
+
+# Monetary fields of the RP listing (API names). None of them may be missing, null or non-numeric.
+DINHEIRO_RP = ("proc", "aproc", "canceladoProc", "pagoProc", "pagoProcEstornado", "canceladoAProc", "pagoAProc",
+               "pagoAProcEstornado", "liquidado", "retencao")
+REGISTRO_RP = {"entidade": INTEIRO, "anoempenho": INTEIRO, "empenho": INTEIRO, "empenhoExercicio": TEXTO,
+               "cnpjNome": TEXTO, "dataEmissao": TEXTO, "programatica": TEXTO, "fonteRecurso": INTEIRO,
+               "descricaoFonte": TEXTO, "fornecedor": INTEIRO, "nome": TEXTO, "cnpj": TEXTO,
+               "desdobraDesp": TEXTO, "subDesdobramento": TEXTO, **{c: NUMERO for c in DINHEIRO_RP}}
+# Classification keys that the API sends all together or not at all (6,956 records without the 7, never part of them).
+GRUPO_OPCIONAL_RP = {"orgao": TEXTO, "unidade": TEXTO, "funcao": TEXTO, "subFuncao": TEXTO, "programa": TEXTO,
+                     "projeto": TEXTO, "elemento": TEXTO}
+REGISTRO_MOV = {"data": TEXTO, "descricaoTipoLancamento": TEXTO, "exercicioLiquidacao": INTEIRO,
+                "exercicioPagamento": INTEIRO, "noLiquidacao": INTEIRO, "noPagamento": INTEIRO, "nroDocumento": TEXTO,
+                "tipoLancamento": INTEIRO, "valor": NUMERO, "valorALiquidar": NUMERO, "valorAPagar": NUMERO}
+
+
+def tem_tipo(valor, tipo):
+    """True if `valor` (decoded JSON) has the contract type. bool is never a number; null is never any type."""
+    if tipo == INTEIRO:
+        return _inteiro(valor)
+    if tipo == NUMERO:
+        return isinstance(valor, (int, float, Decimal)) and not isinstance(valor, bool)
+    if tipo == TEXTO:
+        return isinstance(valor, str)
+    if tipo == BOOLEANO:
+        return isinstance(valor, bool)
+    if tipo == LISTA:
+        return isinstance(valor, list)
+    if tipo == OBJETO:
+        return isinstance(valor, dict)
+    raise ValueError(f"tipo de contrato desconhecido: {tipo}")
+
+
+def contrato_pagina(d):
+    """Problem (text) or None: the page is an object with every metadata field of METADADOS_PAGINA, each with its type.
+    totalElements, totalPages and number are never negative; size is positive."""
+    if not isinstance(d, dict):
+        return f"a resposta não é um objeto de página (veio {_tipo(d)})"
+    ausentes = [k for k in METADADOS_PAGINA if k not in d]
+    if ausentes:
+        return f"metadados de página ausentes: {', '.join(ausentes)}"
+    errados = [f"{k} ({_tipo(d[k])}, esperado {t})" for k, t in METADADOS_PAGINA.items() if not tem_tipo(d[k], t)]
+    if errados:
+        return f"metadados de página com tipo errado: {', '.join(errados)}"
+    negativos = [k for k in ("number", "numberOfElements", "totalElements", "totalPages") if d[k] < 0]
+    if negativos or d["size"] <= 0:
+        return f"metadados de página fora do domínio: {', '.join(negativos or ['size'])}"
+    return None
+
+
+def _contrato_registro(x, obrigatorios, grupo, alvo):
+    if not isinstance(x, dict):
+        return f"{alvo}: o registro não é um objeto (veio {_tipo(x)})"
+    conhecidas = set(obrigatorios) | set(grupo)
+    extras = sorted(k for k in x if k not in conhecidas)
+    if extras:
+        return f"{alvo}: chave(s) fora do contrato: {', '.join(extras)}"
+    ausentes = [k for k in obrigatorios if k not in x]
+    if ausentes:
+        return f"{alvo}: chave(s) obrigatória(s) ausente(s): {', '.join(ausentes)}"
+    presentes = [k for k in grupo if k in x]
+    if presentes and len(presentes) != len(grupo):
+        return (f"{alvo}: grupo de classificação incompleto (veio {', '.join(presentes)}; vem inteiro ou não vem)")
+    errados = [f"{k} ({_tipo(x[k])}, esperado {t})" for k, t in {**obrigatorios, **grupo}.items()
+               if k in x and not tem_tipo(x[k], t)]
+    if errados:
+        return f"{alvo}: tipo fora do contrato: {', '.join(errados)}"
+    return None
+
+
+def contrato_registro_rp(x):
+    """Problem (text) or None for one record of the RP listing (REGISTRO_RP + GRUPO_OPCIONAL_RP, nothing else)."""
+    return _contrato_registro(x, REGISTRO_RP, GRUPO_OPCIONAL_RP, "registro de RP")
+
+
+def contrato_registro_mov(x):
+    """Problem (text) or None for one entry of the movement list (REGISTRO_MOV, nothing else)."""
+    return _contrato_registro(x, REGISTRO_MOV, {}, "lançamento de movimentação")

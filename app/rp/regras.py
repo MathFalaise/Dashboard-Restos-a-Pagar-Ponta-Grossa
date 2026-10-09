@@ -8,6 +8,7 @@ PARAMETROS, tied to the rule VERSION, and go to the immutable regra_parametro ta
 parameters instead of repeating numbers; changing a parameter requires a new rule version.
 The usage situation of each version (operational, experimental, not recommended...) lives in governanca.py.
 """
+import hashlib
 import json
 
 from . import governanca
@@ -50,6 +51,9 @@ REGRAS = [
     ("CONC-RREO", 1, "conciliacao", "estavel", "CONFIRMADO",
      "Diferença API − RREO por coluna, para cada regra de agregação. Registro, nunca correção.", f"{E2} §3.3"),
     ("ANOM-REG", 1, "anomalia", "estavel", "CONFIRMADO", "Anomalias por registro (ver anomalia_tipo).", f"{E2} §11.4"),
+    ("VALOR-OBRIG", 1, "anomalia", "estavel", "CONFIRMADO",
+     "Campo monetário da listagem de RP ausente, nulo ou inválido: o registro não vira valor (nunca zero) e o "
+     "retrato do corte nunca é o vigente.", "pedido de correção de 09/10/2026, item 2 (contrato da API v2)"),
     ("ANOM-CONT", 1, "anomalia", "estavel", "CONFIRMADO",
      "Continuidade: proc(A+1)=S3 final de A e aproc(A+1)=S2 final de A; saldo final ≠ 0 exige presença em A+1.",
      f"{E2} §1.3"),
@@ -63,6 +67,8 @@ ANOMALIAS = [
     ("ANOEMP-FUTURO", "anoempenho ≥ exercicio consultado", "CONFIRMADO", f"{E2} §8"),
     ("SEM-SALDO-ABERTURA", "registro no universo com proc = aproc = 0", "CONFIRMADO", f"{E2} §8"),
     ("CHAVE-DUP", "mesma chave (entidade, anoempenho, empenho) duas vezes no mesmo snapshot", "CONFIRMADO", f"{E2} §2.1"),
+    ("VALOR-RECUSADO", "campo monetário ausente, nulo ou inválido no registro (recusado na normalização)",
+     "CONFIRMADO", "pedido de correção de 09/10/2026, item 2"),
     ("COPIA-SEM-PAR", "cópia 24xxxxx sem par na entidade 15 no mesmo corte", "HIPÓTESE", f"{E2} ADENDO"),
     ("PAR-INSCRICAO-DIVERGENTE", "par espelhado com proc/aproc diferentes nos dois lados", "CONFIRMADO", f"{E2} ADENDO"),
     ("PAR-EXECUCAO-DOIS-LADOS", "par espelhado com fluxo nos dois lados no mesmo corte", "HIPÓTESE", f"{E2} ADENDO"),
@@ -78,6 +84,29 @@ PARAMETROS = {
                     "campos_de_conferencia": ["cnpj", "data_emissao"]},
     ("CONC-RREO", 1): {"entidade_do_rreo_por_entidade": 1},
 }
+
+
+def impressao(con, ids):
+    """SHA-256 of the rules a derivation used (ids from regras_json) as recorded in the database: code, version, type,
+    use, evidence status, definition, source and parameters - plus the anomaly type catalog. By code and version,
+    never by internal id: equal in two databases with the same catalog. The catalog is immutable (triggers), so the
+    value recorded at the derivation must still be the recomputed one."""
+    ids = sorted(set(ids))
+    marcas = ",".join("?" * len(ids))
+    regras_ = {}
+    for rid, codigo, versao, tipo, uso, status, definicao, fonte in con.execute(
+            f"SELECT id, codigo, versao, tipo, uso, status_evidencia, definicao, fonte FROM regra WHERE id IN ({marcas})",
+            ids):
+        regras_[rid] = {"codigo": codigo, "versao": versao, "tipo": tipo, "uso": uso, "status_evidencia": status,
+                        "definicao": definicao, "fonte": fonte, "parametros": {}}
+    for rid, nome, valor in con.execute(f"SELECT regra_id, nome, valor_json FROM regra_parametro WHERE regra_id IN "
+                                        f"({marcas})", ids):
+        regras_[rid]["parametros"][nome] = json.loads(valor)
+    corpo = {"regras": sorted(regras_.values(), key=lambda r: (r["codigo"], r["versao"])),
+             "anomalia_tipo": [list(r) for r in con.execute("SELECT codigo, descricao, status_evidencia, fonte FROM "
+                                                            "anomalia_tipo ORDER BY codigo")]}
+    return hashlib.sha256(json.dumps(corpo, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()
+                          ).hexdigest()
 
 
 class CatalogoDivergente(Exception):

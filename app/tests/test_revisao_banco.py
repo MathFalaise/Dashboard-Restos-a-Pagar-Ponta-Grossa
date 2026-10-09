@@ -9,7 +9,7 @@ import sqlite3
 from pathlib import Path
 
 import pytest
-from conftest import registro_sintetico
+from conftest import CABECALHO_RREO, EXCETO_RREO, TOTAL_RREO, linha_rreo, registro_sintetico, textos_da_linha
 
 from rp import banco, derivar, equivalencia, normalizar, portoes
 
@@ -122,10 +122,13 @@ class _Captura:
 
 
 def test_REV11_linha_repetida_com_mesmo_valor_vira_uma_linha_sem_OR_IGNORE():
-    total = lambda y: [((50, y), "TOTAL"), ((80, y), "(III)"), ((300, y), "1.234,56")]
+    # extractor v2: complete rows that close the identities; TOTAL printed twice with the same values = one row
+    v = linha_rreo(a=123456)
+    linhas = textos_da_linha(EXCETO_RREO, 200, v) + textos_da_linha(TOTAL_RREO, 300, v) + textos_da_linha(TOTAL_RREO, 400, v)
     cap = _Captura()
-    n = normalizar._rreo(cap, 1, 1, {"rotulo": "4º Bimestre"}, _pdf([CABECALHO + total(300) + total(400)]))
-    assert n == 1 and [(l[7], l[8], l[9]) for l in cap.linhas] == [("TOTAL (III)", "a", 123456)]
+    n = normalizar._rreo(cap, 1, 1, {"rotulo": "4º Bimestre"}, _pdf([CABECALHO_RREO + linhas]))
+    assert n == 24 and sum(1 for l in cap.linhas if l[7] == "TOTAL (III)") == 12
+    assert ("TOTAL (III)", "a", 123456) in [(l[7], l[8], l[9]) for l in cap.linhas]
     assert "OR IGNORE" not in cap.sql and "OR IGNORE" not in normalizar.SQL_RREO
 
 

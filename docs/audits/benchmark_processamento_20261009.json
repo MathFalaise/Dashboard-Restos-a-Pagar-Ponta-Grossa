@@ -1,0 +1,138 @@
+{
+ "main_82a2d75": {
+  "sem_gatilhos_camada1": false,
+  "tempos_s": {
+   "abrir_e_migrar": 0.03,
+   "normalizar": 10.63,
+   "derivar_atual": 7.39,
+   "derivar_como_estava_em": 2.08
+  },
+  "esquema": 5,
+  "hash_atual": "b6f80d879ee89d5f17c42de25c6ff3c030b5c7d238a1235035b6b18f23e1802f",
+  "tamanho_mb_apos_vacuum": 450.3,
+  "consultas_painel_mediana_s": {
+   "cortes": 0.025,
+   "indicadores Municipio": 0.017,
+   "indicadores Municipio como estava em": 0.001,
+   "evolucao Municipio": 0.099,
+   "serie entre exercicios": 0.325,
+   "composicao Municipio": 0.08,
+   "qualidade": 0.261,
+   "reconciliacao": 0.008,
+   "entidades do corte": 0.01,
+   "visao geral (pagina inicial)": 0.527
+  }
+ },
+ "fase_d": {
+  "sem_gatilhos_camada1": false,
+  "tempos_s": {
+   "abrir_e_migrar": 7.85,
+   "normalizar": 8.04,
+   "derivar_atual": 7.43,
+   "derivar_como_estava_em": 2.11
+  },
+  "esquema": 8,
+  "hash_atual": "b6f80d879ee89d5f17c42de25c6ff3c030b5c7d238a1235035b6b18f23e1802f",
+  "tamanho_mb_apos_vacuum": 454.2,
+  "consultas_painel_mediana_s": {
+   "cortes": 0.026,
+   "indicadores Municipio": 0.017,
+   "indicadores Municipio como estava em": 0.001,
+   "evolucao Municipio": 0.1,
+   "serie entre exercicios": 0.411,
+   "composicao Municipio": 0.08,
+   "qualidade": 0.256,
+   "reconciliacao": 0.007,
+   "entidades do corte": 0.009,
+   "visao geral (pagina inicial)": 0.536
+  }
+ },
+ "fase_d_sem_gatilhos_camada1": {
+  "sem_gatilhos_camada1": true,
+  "tempos_s": {
+   "abrir_e_migrar": 5.93,
+   "normalizar": 8.66,
+   "derivar_atual": 7.19,
+   "derivar_como_estava_em": 2.06
+  },
+  "esquema": 8,
+  "hash_atual": "b6f80d879ee89d5f17c42de25c6ff3c030b5c7d238a1235035b6b18f23e1802f",
+  "tamanho_mb_apos_vacuum": 454.2,
+  "consultas_painel_mediana_s": {
+   "cortes": 0.025,
+   "indicadores Municipio": 0.021,
+   "indicadores Municipio como estava em": 0.001,
+   "evolucao Municipio": 0.111,
+   "serie entre exercicios": 0.325,
+   "composicao Municipio": 0.078,
+   "qualidade": 0.241,
+   "reconciliacao": 0.008,
+   "entidades do corte": 0.01,
+   "visao geral (pagina inicial)": 0.536
+  }
+ },
+ "repeticao_15x_painel_mediana_e_minimo_s": {
+  "main_82a2d75": {
+   "serie entre exercicios": [
+    0.316,
+    0.286
+   ],
+   "visao geral": [
+    0.492,
+    0.48
+   ],
+   "evolucao": [
+    0.103,
+    0.097
+   ]
+  },
+  "fase_d_ordem_por_subconsultas": {
+   "serie entre exercicios": [
+    0.359,
+    0.315
+   ],
+   "visao geral": [
+    0.559,
+    0.532
+   ],
+   "evolucao": [
+    0.101,
+    0.098
+   ]
+  },
+  "fase_d_com_juncao_em_coletas_vigentes": {
+   "serie entre exercicios": [
+    0.307,
+    0.289
+   ],
+   "visao geral": [
+    0.499,
+    0.464
+   ],
+   "evolucao": [
+    0.105,
+    0.095
+   ]
+  }
+ },
+ "indice_visao_valor_coleta": {
+  "base": "banco reconstruido, 2 derivacoes, ~200 mil ligacoes",
+  "sem_indice": {
+   "conferir_proveniencia_s": 0.0042,
+   "apagar_derivacao_s": 0.0142,
+   "bytes": 0
+  },
+  "indice_coleta_id": {
+   "conferir_proveniencia_s": 0.013,
+   "apagar_derivacao_s": 0.0171,
+   "bytes": 274432
+  },
+  "indice_derivacao_coleta": {
+   "conferir_proveniencia_s": 0.0028,
+   "apagar_derivacao_s": 0.0231,
+   "bytes": 303104
+  },
+  "decisao": "nenhum indice: o de coleta_id piora a consulta e o de (derivacao_id, coleta_id) ganha 1,4 ms por ~300 KB"
+ },
+ "nota": "Mesma maquina e mesmos dados (copia do banco ativo de 09/10/2026), uma execucao por vez. Comando: python docs/audits/benchmark_processamento.py --codigo <app> --pasta <tmp> --saida <json> [--sem-gatilhos-camada1]. Tempos de processamento sao de uma execucao (variacao de alguns segundos entre rodadas); consultas do painel, mediana de 3 (e de 15 nas linhas repetidas)."
+}
