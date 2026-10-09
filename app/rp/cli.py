@@ -185,6 +185,15 @@ def _main(argv=None):
     g.add_argument("--gravar", help="arquivo novo (nunca sobrescreve)")
     g.add_argument("--conferir", help="arquivo gravado antes")
     p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
+    p = sub.add_parser("homologar", help="homologacao de uma carga num comando: portoes, referencia do bruto, "
+                                         "reproducao do armazem, testes e pendencias contabeis (somente leitura; "
+                                         "saida 0 sem ressalvas, 3 com ressalvas, 2 incompleta, 1 reprovada)")
+    p.add_argument("--referencia", help="JSON de gravar-referencia, gravado ANTES da carga")
+    p.add_argument("--raiz", help="manifesto-raiz guardado fora do banco (python -m rp raiz --gravar)")
+    p.add_argument("--sem-testes", action="store_true", help="nao roda as suites (resultado no maximo 'incompleta')")
+    p.add_argument("--sem-reproducao", action="store_true", help="nao reconstroi do armazem (no maximo 'incompleta')")
+    p.add_argument("--saida", help="grava o relatorio completo em JSON (nunca sobrescreve)")
+    p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
     p = sub.add_parser("diagnosticar-api", help="confere se a API ainda responde como o coletor espera, sem gravar "
                                                 "nada (saida 0 ok, 1 a API mudou, 2 nao deu para conferir)")
     p.add_argument("--entidade", type=int, help="padrao: a primeira entidade de [escopo] no config.toml")
@@ -222,6 +231,19 @@ def _main(argv=None):
         r = portoes.avaliar(a.banco or cfg.banco, Armazem(cfg.snapshots), ref)
         print(json.dumps(r, ensure_ascii=False, indent=1, default=str))
         return 0 if r["apto"] else 1
+    if a.cmd == "homologar":   # same: read-only; the reproduction lives in a temporary folder
+        from . import homologar
+        ler = lambda arq: json.loads(open(arq, encoding="utf-8").read()) if arq else None
+        r = homologar.homologar(cfg, Armazem(cfg.snapshots), a.banco or cfg.banco, ler(a.referencia), ler(a.raiz),
+                                executar_testes=not a.sem_testes, reproduzir_=not a.sem_reproducao)
+        if a.saida:
+            with open(a.saida, "x", encoding="utf-8") as f:      # "x": never overwrites
+                json.dump(r, f, ensure_ascii=False, indent=1, default=str)
+        resumo = {k: r[k] for k in ("resultado", "aprovacao_tecnica", "aprovacao_sem_ressalvas", "falhas",
+                                    "nao_executadas", "pendencias_contabeis", "segundos", "nota")}
+        resumo["verificacoes"] = {v["id"]: v["ok"] for v in r["verificacoes"]}
+        print(json.dumps(resumo, ensure_ascii=False, indent=1, default=str))
+        return r["codigo_de_saida"]
     if a.cmd in ("rastrear", "raiz"):   # same: read-only on the database (and the store, to re-hash manifests)
         from . import proveniencia
         from .portoes import _abrir

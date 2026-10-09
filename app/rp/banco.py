@@ -258,7 +258,8 @@ def _migracao_v8():
         "CREATE TABLE visao_valor_coleta (derivacao_id INTEGER NOT NULL REFERENCES derivacao_execucao(id), "
         "visao_valor_id INTEGER NOT NULL REFERENCES visao_valor(id), coleta_id INTEGER NOT NULL REFERENCES coleta(id), "
         "PRIMARY KEY (visao_valor_id, coleta_id))",
-        "CREATE INDEX ix_visao_valor_coleta ON visao_valor_coleta (coleta_id)",
+        # no extra index (measured 09/10/2026, 2 derivations / ~200k links): an index on coleta_id made the provenance
+        # check slower (4.2 -> 13.0 ms) and one on (derivacao_id, coleta_id) gained 1.4 ms for ~300 KB - not worth it
         "INSERT INTO visao_valor_coleta SELECT v.derivacao_id, v.id, k.id FROM visao_valor v, json_each(v.coletas_json) j "
         "JOIN coleta k ON k.snapshot_uid = j.value",
         _gatilho("ri_visao_valor_coleta_insert", "INSERT", "visao_valor_coleta",
@@ -320,7 +321,7 @@ IMPRESSAO_ESQUEMA = {
     # v7: computed on 09/10/2026 on the one built by the code
     7: "3e47c42cfde8d126e6d2581c04b3b2f60eccbaa658a93a702fbecf0c5774e120",
     # v8: computed on 09/10/2026 on the one built by the code
-    8: "80244cc5f08288f815cce321c4719e4ea2582b75dafb6e07b8b3e3d10c6bb92d",
+    8: "c2ef5fdf631c985e8203fe99fe7e12a5e9d2a5ad806ef673ad6899aa3ec0cdc5",
 }
 
 # Per-connection page cache (KiB, negative value = size in KiB in SQLite). The derivation scans ~100 MB of

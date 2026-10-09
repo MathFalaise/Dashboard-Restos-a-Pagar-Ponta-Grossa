@@ -163,8 +163,8 @@ def avaliar(caminho_banco, armazem, referencia=None):
                      "também que nenhum tenha ficado sem verificação (lista em 'nao_verificados').")}
 
 
-# API monetary fields: a missing one becomes 0 in the normalization (recorded in chaves_ausentes). Until the rule is
-# reviewed, a load with a missing monetary field cannot be made available without a decision (audit NORM-01).
+# API monetary fields. Normalizer v1 typed a missing one as 0 (recorded in chaves_ausentes; audit NORM-01); since v2
+# (09/10/2026) it is refused in valor_recusado. The gate 'campos_monetarios_ausentes' flags both.
 _MONETARIOS = ("proc", "aproc", "canceladoProc", "pagoProc", "pagoProcEstornado", "canceladoAProc", "pagoAProc",
                "pagoAProcEstornado", "liquidado", "retencao")
 
