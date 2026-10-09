@@ -306,6 +306,23 @@ def _portoes_da_revisao(con, portao, did_atual):
         portao("tempos_das_coletas", "toda coleta tem início e conclusão registrados (coleta_tempo)", None,
                "não verificado: banco antes da v7")
 
+    # correction request of 09/10/2026, items 1 and 7: every value walks to its snapshots, responses, objects and
+    # manifest hashes through relations (v8), and the current derivation says which code, rules and environment
+    if banco._tem_tabela(con, "derivacao_regra") and did_atual:
+        from . import proveniencia
+        prov = proveniencia.conferir(con, did_atual)
+        portao("proveniencia_completa", "todo valor calculado chega, por relações (v8), aos snapshots, às respostas "
+               "HTTP, aos objetos brutos e ao hash do manifesto; as relações batem com o JSON",
+               all(v == 0 for k, v in prov.items() if k != "valores"), {"derivacao": did_atual, **prov})
+        ident = proveniencia.identificacao(con, did_atual)
+        portao("execucao_identificada", "a derivação atual e a sua normalização registram o hash do código e o "
+               "ambiente; o hash das regras gravado é o recalculado do catálogo",
+               bool(ident["derivacao_sha256_codigo"] and ident["normalizacao_sha256_codigo"] and
+                    ident["sha256_regras_confere"] and ident["ambiente_registrado"]), ident)
+    else:
+        portao("proveniencia_completa", "todo valor calculado chega aos snapshots, respostas, objetos e manifestos",
+               None, "não verificado: banco antes da v8 ou sem derivação")
+
     # item 28: the database schema is the one of its version in the code (structure, without comments or whitespace)
     versao = banco.versao_esquema(con)
     esperado = banco.IMPRESSAO_ESQUEMA.get(versao)

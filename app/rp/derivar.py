@@ -31,7 +31,7 @@ import json
 import logging
 from collections import OrderedDict, defaultdict
 
-from . import DataInvalida, agora, banco, instante, regras
+from . import DataInvalida, agora, ambiente, banco, hash_do_codigo, instante, regras
 from . import vigencia
 from .vigencia import (VERIF_RETRATO_AMBIGUO, VERIF_RETRATO_VALOR_RECUSADO, coletas_ambiguas,  # noqa: F401
                        coletas_vigentes)  # re-exported
@@ -78,6 +78,13 @@ def derivar(con, nid, em=None):
         did = con.execute("INSERT INTO derivacao_execucao (normalizacao_id, derivador_versao, regras_json, executada_em, "
                           "vigencia_em) VALUES (?,?,?,?,?)",
                           (nid, VERSAO, json.dumps(sorted(R.values())), agora(), em)).lastrowid
+        v8 = banco._tem_tabela(con, "derivacao_regra")
+        if v8:     # schema v8: the declared rules as a relation (rows citing another rule are refused) + provenance
+            con.execute("INSERT INTO derivacao_regra SELECT e.id, j.value FROM derivacao_execucao e, "
+                        "json_each(e.regras_json) j WHERE e.id=?", (did,))
+            con.execute("UPDATE derivacao_execucao SET sha256_codigo=?, sha256_regras=?, ambiente_json=? WHERE id=?",
+                        (hash_do_codigo(), regras.impressao(con, R.values()), json.dumps(ambiente(), sort_keys=True),
+                         did))
         uid = dict(con.execute("SELECT id, snapshot_uid FROM coleta"))
         ambiguas = _registros(con, did, nid, R, par, em)
         recusadas = _valores_recusados(con, did, nid, R, em)
@@ -91,10 +98,22 @@ def derivar(con, nid, em=None):
         pares = _pareamento(con, did, nid, R, vig, uid, par, ler)
         _visoes(con, did, nid, R, vig, pares, uid, em, ler)
         _conciliacao(con, did, nid, R, uid, conc, em)
+        if v8:
+            _ligacoes(con, did)
         h = hash_resultado(con, did)
         con.execute("UPDATE derivacao_execucao SET hash_resultado=? WHERE id=?", (h, did))
     log.info("derivação %d sobre normalização %d (vigência %s): hash %s", did, nid, em or "atual", h[:16])
     return did
+
+
+def _ligacoes(con, did):
+    """Schema v8: the snapshots of each view value and of each reconciliation row as relations with FOREIGN KEYs,
+    from their JSON (which stays: it is part of the homologated hash). A trigger refuses a link the JSON lacks."""
+    con.execute("INSERT INTO visao_valor_coleta SELECT v.derivacao_id, v.id, k.id FROM visao_valor v, "
+                "json_each(v.coletas_json) j JOIN coleta k ON k.snapshot_uid = j.value WHERE v.derivacao_id=?", (did,))
+    con.execute("INSERT INTO conciliacao_rreo_coleta SELECT c.derivacao_id, c.rreo_coleta_id, c.regra_agregacao_id, "
+                "c.coluna, k.id FROM conciliacao_rreo c, json_each(c.coletas_api_json) j JOIN coleta k ON "
+                "k.snapshot_uid = j.value WHERE c.derivacao_id=?", (did,))
 
 
 def _ate(em, alias="c"):

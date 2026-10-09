@@ -84,7 +84,7 @@ def test_SINTETICO_gatilhos_da_v6(mundo):
     linha = con.execute("SELECT * FROM rp_registro WHERE normalizacao_id=?", (nid,)).fetchone()
     with pytest.raises(sqlite3.IntegrityError, match="posicao com valor recusado"):
         con.execute(f"INSERT INTO rp_registro VALUES ({','.join('?' * len(linha))})", (*linha[:2], 1, *linha[3:]))
-    with pytest.raises(sqlite3.IntegrityError, match="outra coleta"):
+    with pytest.raises(sqlite3.IntegrityError, match="outra coleta|outra resposta"):    # v6 or v8 trigger
         con.execute("INSERT INTO valor_recusado VALUES (?,?,?,?,1,2024,9,'aproc','ausente',NULL)", (nid, rid, 5, cid + 99))
     with pytest.raises(sqlite3.IntegrityError, match="registro ja normalizado"):
         con.execute("INSERT INTO valor_recusado VALUES (?,?,?,?,1,2024,1,'aproc','ausente',NULL)", (nid, rid, 0, cid))

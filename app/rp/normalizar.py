@@ -21,7 +21,7 @@ import re
 from datetime import date
 from decimal import Decimal
 
-from . import agora, banco
+from . import agora, ambiente, banco, hash_do_codigo
 
 log = logging.getLogger("rp.normalizar")
 
@@ -120,6 +120,9 @@ def normalizar(con):
         ultima = con.execute("SELECT IFNULL(MAX(id), 0) FROM coleta").fetchone()[0]
         nid = con.execute("INSERT INTO normalizacao_execucao (normalizador_versao, executada_em, ultima_coleta_id) "
                           "VALUES (?,?,?)", (VERSAO, agora(), ultima)).lastrowid
+        if banco._tem_coluna(con, "normalizacao_execucao", "sha256_codigo"):    # v8: which code, which environment
+            con.execute("UPDATE normalizacao_execucao SET sha256_codigo=?, ambiente_json=? WHERE id=?",
+                        (hash_do_codigo(), json.dumps(ambiente(), sort_keys=True), nid))
         itens = con.execute("SELECT r.id, r.coleta_id, c.tipo, r.sha256, c.parametros_json, c.entidade, c.anoempenho, "
                             "c.empenho FROM resposta_bruta r JOIN coleta c ON c.id = r.coleta_id WHERE c.id <= ? "
                             "ORDER BY c.coletada_em, c.snapshot_uid, r.ordem", (ultima,)).fetchall()

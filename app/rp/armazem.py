@@ -153,10 +153,14 @@ class Armazem:
         return rel.as_posix()
 
     def ler_manifesto(self, rel):
+        return json.loads(self.bytes_do_manifesto(rel).decode("utf-8"))
+
+    def bytes_do_manifesto(self, rel):
+        """The manifest file bytes exactly as stored (versioned with -text: the same bytes after a clone)."""
         p = (self.raiz / rel).resolve()
         if not p.is_relative_to((self.raiz / "coletas").resolve()):
             raise ManifestoInvalido(f"manifesto fora do armazem: {rel!r}")
-        return json.loads(p.read_text(encoding="utf-8"))
+        return p.read_bytes()
 
     def manifestos_e_erros(self):
         """(items, errors): items = (relative path, manifest) in collection order; errors = unreadable files."""
