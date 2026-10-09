@@ -10,7 +10,7 @@ publications list of each fiscal year (coletor.anexo_vii). For each one, the sit
   nao_coletado           listed by the portal, never collected: no independent check for that document.
 
 'Conferido' (checked against the original document by an independent method) is NOT decided here: the production
-code would be checking itself. The independent check lives in docs/audits/rreo/ (another PDF engine, Poppler).
+code would be checking itself. The independent check lives in docs/audits/rreo/ (another PDF engine: xpdf pdftotext).
 """
 import json
 import re
