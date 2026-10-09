@@ -104,13 +104,22 @@ def pendencias_contabeis(con):
             saida.append({"tipo": "divergencia_rreo", "descricao": "colunas do RREO com diferença em relação à API "
                           "(a diferença é mostrada; o valor da API não muda)",
                           "por_regra_de_agregacao": {r: {"colunas": n, "documentos": d} for r, n, d in dif}})
-        nao_lidos = con.execute("SELECT c.snapshot_uid, x.rotulo, x.erro FROM rreo_extracao x JOIN coleta c ON c.id = "
-                                "x.coleta_id WHERE x.normalizacao_id=? AND x.erro IS NOT NULL ORDER BY c.snapshot_uid",
-                                (nid,)).fetchall()
-        if nao_lidos:
-            saida.append({"tipo": "rreo_nao_transcrito", "descricao": "PDF do RREO Anexo VII sem transcrição (layout "
-                          "desconhecido): sem conferência independente nesse documento",
-                          "documentos": [{"snapshot": u[:8], "rotulo": r, "erro": e} for u, r, e in nao_lidos]})
+        from . import rreo_cobertura
+        cob = rreo_cobertura.matriz(con, nid)
+        recusados = [d for d in cob["documentos"] if d["situacao"] == "recusado_layout"]
+        if recusados:
+            saida.append({"tipo": "rreo_nao_transcrito", "descricao": "PDF do RREO Anexo VII coletado e recusado pelo "
+                          "extrator (layout desconhecido): sem conferência nesse documento",
+                          "documentos": [{"exercicio": d["exercicio"], "rotulo": d["rotulo"], "snapshot": d["snapshot"][:8],
+                                          "erro": d["motivo"]} for d in recusados]})
+        nao_coletados = [d for d in cob["documentos"] if d["situacao"] in ("nao_coletado", "coletado_sem_extracao")]
+        if nao_coletados:
+            por_ano = {}
+            for d in nao_coletados:
+                por_ano[d["exercicio"]] = por_ano.get(d["exercicio"], 0) + 1
+            saida.append({"tipo": "rreo_nao_coletado", "descricao": "documento do Anexo VII listado pelo portal e não "
+                          "coletado (ou não processado): a reconciliação não o cobre",
+                          "documentos": len(nao_coletados), "por_exercicio": por_ano, "cobertura": cob["resumo"]})
         linhas, distintos = con.execute(
             "SELECT COUNT(*), COUNT(DISTINCT entidade_a || '/' || anoempenho_a || '/' || empenho_a) FROM espelhamento_par "
             "WHERE derivacao_id=?", (did,)).fetchone()

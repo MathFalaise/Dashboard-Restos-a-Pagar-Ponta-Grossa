@@ -11,7 +11,7 @@ Ordem aprovada pelo responsável pelo projeto em 09/10/2026:
 | B | 4 (precisão temporal dos retratos) | feita (suíte: 604 passed) |
 | C | 1 (integridade relacional), 7 (proveniência e hashes) | feita (suíte: 616 passed) |
 | D | 9 (homologação única), 10 (desempenho) | feita (suíte: 627 passed) |
-| E | 5 (pares 1 ↔ 15), 6 (RREO) | pendente |
+| E | 5 (pares 1 ↔ 15), 6 (RREO) | feita (suíte: 638 passed + 1 teste ajustado, passa) |
 | F | 8 (privacidade do repositório) | pendente; reescrita de histórico só com autorização explícita |
 
 ## Fase A: contrato da API e campo monetário ausente
@@ -424,3 +424,119 @@ Decisões tomadas pela medição:
   usam só chave primária ou índice existente.
 - **Nada incremental:** nenhum processamento incremental nem outra otimização que aumente a complexidade foi
   feito, como o pedido manda.
+
+## Fase E: pares 1 ↔ 15 e reconciliação com o RREO
+
+### Item 6: extração e conferência do RREO Anexo VII
+
+**Problema encontrado e corrigido: omissão silenciosa.**
+- **O defeito:** o extrator v1 atribuía cada número ao rótulo de coluna mais próximo e aceitava dois números iguais
+  na mesma célula. Em 31 PDFs reais, a linha "RESTOS A PAGAR (INTRA-ORÇAMENTÁRIOS)", toda de zeros, perdia a coluna
+  (e) sem nenhum erro: o "0,00" de (e), alinhado à direita, fica mais perto do rótulo de (f).
+- **Medição nos 33 PDFs transcritos:** todas as 130 linhas reconhecidas têm exatamente 12 números. Cada número fica
+  estritamente entre os rótulos das colunas vizinhas, com folga mínima de 24 pt. As identidades do próprio documento
+  fecham em todas: e = a + b − c − d, k = f + g − i − j, L = e + k, TOTAL (III) = (I) + (II).
+
+**Extrator v2 (`rp-rreo-coordenadas/2`, `app/rp/normalizar.py`):**
+- uma linha reconhecida é transcrita inteira (12 números, posição a posição, cada um entre as colunas vizinhas) ou
+  o PDF é recusado;
+- as identidades do documento precisam fechar;
+- TOTAL (III) e a linha (I) são obrigatórias;
+- linha repetida com outro valor continua recusada.
+
+Sobre os dados reais:
+- as 1.529 células da v1 saem iguais;
+- as 31 células perdidas são recuperadas (todas iguais a 0);
+- os mesmos 3 PDFs continuam recusados;
+- `rreo_valor` passa de 1.529 para 1.560 linhas;
+- o hash das derivações não muda, porque a conciliação usa só a linha TOTAL (III).
+
+**Matriz de cobertura (`app/rp/rreo_cobertura.py`, usada pela homologação):** documentos esperados (todos os
+arquivos do Anexo VII na lista de publicações mais recente de cada exercício) × coletado × transcrito × recusado.
+
+| Esperados | Transcritos | Recusados pelo extrator | Não coletados |
+|---|---|---|---|
+| 114 | 32 | 3 (2016, 2018 e 2019, 6º bimestre) | 79 (bimestres 1 a 5 de 2016 a 2024) |
+
+**Conferência independente (`docs/audits/rreo/conferencia_independente.py`):**
+- **Método:** cada PDF coletado é lido de novo por **outro motor**, o `pdftotext -table` do xpdf 4.06 (a produção
+  usa as coordenadas de palavra do PyMuPDF/MuPDF). As células são comparadas e as identidades conferidas nessa
+  segunda leitura.
+- **Resultado:** os **32 transcritos estão conferidos**, com **1.512 de 1.512 células iguais** e 0 divergentes.
+- **Os 3 recusados também são lidos pela segunda leitura, e as identidades fecham:**
+  - 2016: o modelo antigo de colunas (rótulos diferentes);
+  - 2018 e 2019: o PDF não imprime o período nem a data de emissão.
+- **Limite:** isso prova que os números do banco são os impressos no PDF. Não prova a correção contábil do RREO.
+- Resultado completo em `docs/audits/rreo/COBERTURA_E_CONFERENCIA.md` e `.json`.
+
+**Divergência de 2026 reavaliada (`docs/audits/rreo/DIVERGENCIA_2026.md`):**
+- **Ela não é estável.** Os 0,14% e 0,28% em (i) dos 3º e 4º bimestres eram os valores da coleta de 29/09. Na
+  coleta de 06/10 passaram a 0,24% e 0,66%:
+  - 3º bimestre: (i) de 109.112,43 para 183.276,43; (h) de 216.913,24 para 291.077,24;
+  - 4º bimestre: (i) de 237.728,25 para 551.817,35; (h) de 345.479,56 para 685.898,72.
+- **A coluna (j) do 2º bimestre**, que conferia, passou a diferir em 1.270.679,25.
+- **Causa da mudança, com evidência:** a comparação dos retratos da API do mesmo período fechado (29/09 × 06/10)
+  mostra, empenho por empenho, cancelamentos novos de 1.270.679,25 (8 empenhos de 2025, com data até 30/04) e
+  pagamentos e liquidações menores (16818 e 18883 de 2025 até 30/06: −74.164,00 exatos em (h) e (i); até 31/08:
+  pagamentos −314.089,10 e liquidações −340.419,16). São lançamentos que a API passou a mostrar em períodos cujos RREOs
+  já estavam emitidos.
+- **Causa da diferença original: não determinada.** Não há retrato da API anterior à emissão de cada RREO.
+- Nada foi ajustado. A API continua como fonte primária, e a divergência continua visível no painel e nas
+  pendências da homologação.
+
+### Item 5: pares entidade 1 ↔ 15
+
+`docs/audits/pares/PARES_1_15.md` (gerado por `pares_1_15.py`) documenta:
+- **Pares por corte:**
+  - 2024: 1 par;
+  - 2025: 20 pares, 11 com a mesma inscrição;
+  - 2026: 731 pares, todos com a mesma inscrição, somando R$ 31.813.905,47 de cada lado. São 711 de empenhos de 2025,
+    19 de 2024 e 1 de 2023: os "711 pares" do pedido são os de 2025.
+- **Valores de cada lado e lado com execução:** em 2026 a execução está só na Prefeitura (571 pares em 30/09).
+- **As regras:**
+  - PAR-24 v1: operacional, FORTE EVIDÊNCIA; só identifica, não altera valor;
+  - CONS-PAR v1 e v2: experimentais, HIPÓTESE.
+- **O efeito de cada decisão no Município:** em 2026, as duas regras de consolidação retirariam R$ 31.813.905,47 de L
+  e de S1. O oficial continua com os dois lados, como a API e o RREO consolidado de 2026 publicam.
+- **Nenhuma conclusão sobre a natureza** (duplicidade ou transferência). Promover CONS-PAR exige evidência
+  independente (decisão D7), e ela não existe.
+
+**Rascunho do e-SIC, versão 3 (`docs/foi-requests/FOI_REQUEST_DRAFT.md`):**
+- item 1 detalhado por ano;
+- pergunta 6 com os valores das duas coletas;
+- pergunta 10, nova, com as alterações retroativas observadas, empenho por empenho.
+- **Situação: não enviado.** O envio exige CPF e cabe ao responsável. Nenhuma resposta foi inventada nem presumida.
+
+### Testes
+
+- **`app/tests/test_rreo_extrator_v2.py` (12 testes):**
+  - linha de zeros com número alinhado à direita (o caso real) sai inteira;
+  - número faltando recusa a linha inteira;
+  - número fora da faixa da coluna é recusado;
+  - cada identidade que não fecha é recusada;
+  - TOTAL diferente da soma é recusado;
+  - sem TOTAL ou sem (I), o PDF é recusado;
+  - linha repetida com outro valor é recusada;
+  - matriz de cobertura e pendências da homologação.
+- **Ajustados para o extrator v2,** que agora exige linhas completas que fecham as identidades:
+  - `test_auditoria_processamento::test_NORM02_*` (a célula repetida agora recusa a linha inteira, pela contagem);
+  - `test_revisao_banco::test_REV11_*`.
+  - Nenhum teste foi apagado.
+
+### Verificação com os dados reais
+
+Cópia nova do banco ativo, migrada para a v8 e processada com o extrator v2:
+- **Normalização:** 266.787 registros iguais aos da normalização 14; `rreo_valor` com 1.560 células.
+- **Derivações:** atual `b6f80d87…` e "como estava em 29/09" `b8a0b2ed…`, **iguais às homologadas**.
+- **`verificar`:** 0 problemas.
+- **Portões:** apto (15 de 17).
+
+### Pendências (dependem de decisão ou de informação externa)
+
+- **Transcrever os 3 PDFs recusados.** Os de 2018 e 2019 precisariam do período tirado dos metadados da publicação,
+  e o de 2016 de um mapeamento de colunas próprio. Isso mudaria a reconciliação (linhas novas na conciliação, novo
+  hash) e é decisão do responsável. A segunda leitura já mostra que os totais fecham.
+- **Coletar os 79 documentos não coletados** (bimestres 1 a 5 de 2016 a 2024). Isso acrescenta bruto e muda a
+  reconciliação, então também é decisão do responsável.
+- **Natureza dos pares e origem da diferença original de 2026:** dependem da resposta oficial (e-SIC versão 3, não
+  enviado).
