@@ -309,3 +309,33 @@ def links_permitidos(corpo):
         if not (href.startswith((portal.SITE + "/", portal.API + "/")) and 'rel="external' in tag):
             return False
     return all(h.startswith(("/", "#", portal.DOMINIO + "/")) for h in re.findall(r'href="([^"]*)"', corpo))
+
+
+# ------------------------------------------------------------------ synthetic RREO Annex VII (extractor v2)
+ROTULOS_RREO_X = [("(a)", 300), ("(b)", 350), ("(c)", 400), ("(d)", 450), ("e=(a+b)", 500), ("(f)", 550), ("(g)", 600),
+                  ("(h)", 650), ("(i)", 700), ("(j)", 750), ("k=(f+g)", 800), ("L=(e+k)", 850)]
+CABECALHO_RREO = [((50, 40), "DEMONSTRATIVO JANEIRO A AGOSTO 2.026")] + [((x, 100), r) for r, x in ROTULOS_RREO_X]
+
+
+def numero_pt(centavos):
+    """123456 -> '1.234,56' (the PDF's number format)."""
+    return f"{centavos / 100:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+
+def linha_rreo(a=0, b=0, c=0, d=0, f=0, g=0, h=0, i=0, j=0):
+    """The 12 columns of one Annex VII row in cents, closing the document's identities (e, k and L computed)."""
+    e, k = a + b - c - d, f + g - i - j
+    return dict(zip("abcdefghijkL", (a, b, c, d, e, f, g, h, i, j, k, a + b - c - d + k)))
+
+
+def textos_da_linha(palavras, y, valores, deslocar=None):
+    """Words of one row: its label (list of (x, word)) and the 12 numbers under the column labels. `deslocar`
+    {column: points} moves a number sideways (e.g. a right-aligned '0,00')."""
+    xs = dict(zip("abcdefghijkL", (x for _, x in ROTULOS_RREO_X)))
+    return [((x, y), w) for x, w in palavras] + [((xs[c] + (deslocar or {}).get(c, 0), y), numero_pt(v))
+                                                 for c, v in valores.items()]
+
+
+TOTAL_RREO = [(50, "TOTAL"), (80, "(III)")]
+EXCETO_RREO = [(20, "RESTOS"), (50, "A"), (60, "PAGAR"), (90, "(EXCETO"), (130, "INTRA-ORÇAMENTÁRIOS)")]
+INTRA_RREO = [(20, "RESTOS"), (50, "A"), (60, "PAGAR"), (90, "(INTRA-ORÇAMENTÁRIOS)")]

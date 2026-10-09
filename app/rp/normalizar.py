@@ -26,7 +26,12 @@ from . import agora, ambiente, banco, hash_do_codigo
 log = logging.getLogger("rp.normalizar")
 
 VERSAO = "rp-normalizador/2"
-EXTRATOR_RREO = "rp-rreo-coordenadas/1"
+# v2 (09/10/2026, correction request item 6): a recognized row is transcribed whole or not at all (12 numbers, each one
+# between the neighbouring column labels), and the document's own arithmetic must close (e = a + b - c - d,
+# k = f + g - i - j, L = e + k in every row; TOTAL (III) = (I) + (II)). v1 assigned each number to the NEAREST column
+# label and accepted two equal numbers in one cell: in 31 PDFs the all-zero "INTRA" row lost its column (e) in
+# silence (the right-aligned "0,00" of (e) is nearer to the label of (f)).
+EXTRATOR_RREO = "rp-rreo-coordenadas/2"
 
 BASE = ["entidade", "empenho", "anoempenho", "empenhoExercicio", "cnpjNome", "dataEmissao", "programatica",
         "fonteRecurso", "descricaoFonte", "fornecedor", "nome", "cnpj", "proc", "aproc", "canceladoProc",
@@ -284,27 +289,66 @@ def _rreo(con, nid, cid, params, corpo):
             y = next((k for k in linhas if abs(k - y0) < 2.5), None)
             if y is not None:
                 rotulo.setdefault(y, []).append(w)
-    # A cell (row, column) can only have ONE value. Two different numbers falling in the same cell (same row, nearest
-    # column; or the same row printed twice) used to be silently dropped (the second one); now the whole PDF is left
-    # untranscribed and the reason recorded (audit NORM-02). Repeating the same value is accepted.
+    # A cell (row, column) can only have ONE value: a row printed twice with another value leaves the whole PDF
+    # untranscribed with the reason (audit NORM-02); the same row printed again with the same values is one row.
     valores, celulas = [], {}
-    for y, vals in linhas.items():
+    for y in sorted(linhas):
         nome = " ".join(rotulo.get(y, []))
         linha = next((l for l in LINHAS if nome.startswith(l)), None)
         if not linha:
             continue
-        vistos = {}
-        for xc, w in vals:
-            c = min(cols, key=lambda k: abs(cols[k] - xc))
-            if vistos.setdefault(c, w) != w:
-                raise LayoutDesconhecido(f"dois números na coluna ({c}) da linha {linha!r}: {vistos[c]} e {w}")
-        for c, w in vistos.items():
+        for c, w in _celulas_da_linha(linhas[y], cols, linha).items():
             ja = celulas.get((linha, c))
             if ja is not None and ja != w:
                 raise LayoutDesconhecido(f"linha {linha!r} repetida com outro valor na coluna ({c}): {ja} e {w}")
             if ja is not None:          # the same row printed again with the same value: a single row (formerly, OR IGNORE)
                 continue
             celulas[(linha, c)] = w
-            valores.append((nid, cid, EXTRATOR_RREO, escopo, ano, data_final, emitido, linha, c,
-                            int(Decimal(w.replace(".", "").replace(",", ".")) * 100)))
+            valores.append((nid, cid, EXTRATOR_RREO, escopo, ano, data_final, emitido, linha, c, _centavos_pt(w)))
+    _conferir_aritmetica(celulas)
     return con.executemany(SQL_RREO, valores).rowcount if valores else 0
+
+
+def _centavos_pt(w):
+    """'1.234,56' -> 123456 (Brazilian number format of the PDF; NUM already checked the shape)."""
+    return int(Decimal(w.replace(".", "").replace(",", ".")) * 100)
+
+
+def _celulas_da_linha(vals, cols, linha):
+    """{column: text} of one recognized row, positionally: the row must have exactly one number per known column, and
+    each number must lie strictly between the labels of the neighbouring columns (measured on the 33 real PDFs: every
+    one of the 161 rows of 12 numbers, smallest slack 24 pt). Anything else is a partial or shifted row: refused."""
+    ordem = sorted(cols, key=cols.get)
+    numeros = sorted(vals)
+    if len(numeros) != len(ordem):
+        raise LayoutDesconhecido(f"linha {linha!r} com {len(numeros)} número(s); o layout conhecido tem {len(ordem)} "
+                                 "colunas: transcrição parcial recusada")
+    xs = [cols[c] for c in ordem]
+    for i, ((xc, w), c) in enumerate(zip(numeros, ordem)):
+        esquerda = xs[i - 1] if i else float("-inf")
+        direita = xs[i + 1] if i + 1 < len(xs) else float("inf")
+        if not esquerda < xc < direita:
+            raise LayoutDesconhecido(f"número {w} da linha {linha!r} fora da faixa da coluna ({c})")
+    return {c: w for (_, w), c in zip(numeros, ordem)}
+
+
+def _conferir_aritmetica(celulas):
+    """The document's own identities (Annex VII): e = a + b - c - d, k = f + g - i - j, L = e + k in every transcribed
+    row, and TOTAL (III) = (I) "EXCETO INTRA" + (II) "INTRA" (absent INTRA = 0). TOTAL and (I) are mandatory. A
+    reading error or another layout breaks them: the PDF is not transcribed (never a partial or inconsistent set)."""
+    por_linha = {}
+    for (linha, c), w in celulas.items():
+        por_linha.setdefault(linha, {})[c] = _centavos_pt(w)
+    for obrigatoria in ("TOTAL (III)", "RESTOS A PAGAR (EXCETO"):
+        if obrigatoria not in por_linha:
+            raise LayoutDesconhecido(f"linha {obrigatoria!r} não encontrada no RREO")
+    for linha, v in por_linha.items():
+        for nome, ok in (("e = a + b - c - d", v["e"] == v["a"] + v["b"] - v["c"] - v["d"]),
+                         ("k = f + g - i - j", v["k"] == v["f"] + v["g"] - v["i"] - v["j"]),
+                         ("L = e + k", v["L"] == v["e"] + v["k"])):
+            if not ok:
+                raise LayoutDesconhecido(f"linha {linha!r} não fecha a identidade {nome} do Anexo VII")
+    intra = por_linha.get("RESTOS A PAGAR (INTRA", {})
+    errada = [c for c, x in por_linha["TOTAL (III)"].items() if x != por_linha["RESTOS A PAGAR (EXCETO"][c] + intra.get(c, 0)]
+    if errada:
+        raise LayoutDesconhecido(f"TOTAL (III) diferente de (I) + (II) nas colunas {sorted(errada)}")
