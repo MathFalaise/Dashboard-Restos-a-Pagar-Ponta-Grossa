@@ -221,6 +221,8 @@ class Mundo:
         from rp.snapshots import gravar_snapshot
         return gravar_snapshot(self.con, self.armazem, tipo=tipo, endpoint=endpoint, parametros=params, coletada_em=quando,
                                origem_carimbo="relogio_coletor", status="completa", coletor=COLETOR_SINTETICO,
+                               # a synthetic snapshot is concluded at its own instant (schema v7: available from then)
+                               finalizada_em=quando,
                                respostas=[{"url": "sintetico", "http_status": 200, "corpo": json.dumps(corpo).encode()}])
 
     def catalogos(self, exercicios, quando="2026-09-29T10:00:00-03:00"):

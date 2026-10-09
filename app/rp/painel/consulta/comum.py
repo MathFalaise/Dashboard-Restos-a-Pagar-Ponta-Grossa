@@ -3,7 +3,7 @@ from ... import DataInvalida, instante as _instante, vigencia
 from .. import explicacoes, fontes
 
 VERSAO = "rp-painel/1"
-ESQUEMA_MINIMO = 4          # regra_situacao, regra_parametro and rreo_extracao exist from v4 on
+ESQUEMA_MINIMO = 7          # v7: coleta_tempo (a snapshot is only available from its conclusion on)
 NIVEIS = ("publico", "interno")
 MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro",
          "novembro", "dezembro"]

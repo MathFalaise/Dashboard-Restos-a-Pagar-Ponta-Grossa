@@ -1,7 +1,7 @@
 """Painel mixin: Series: evolution within the fiscal year (05.2) and series across fiscal years (05.3)."""
 import json
 
-from ... import regras
+from ... import regras, vigencia
 from .. import fontes
 from .comum import (CONTINUIDADE, _data_br, diferenca, INDICADORES_DA_SERIE, INDICADORES_ENTRE_EXERCICIOS, instante,
                     ROTULO_EXERCICIO_EM_ABERTO, ROTULO_POSTERIOR_A_COLETA, SITUACOES_DO_PONTO, SOMAS, TEM_VALOR)
@@ -64,7 +64,7 @@ class Serie:
 
     def _sem_cobertura(self, exercicio, em):
         """Contract section 2.1: no listing collection for the fiscal year (of any entity and situation) up to `em`."""
-        filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        filtro, p = vigencia.filtro_disponivel(em, "coleta")
         return not self.con.execute("SELECT 1 FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND "
                                     "exercicio=? AND data_inicial=?" + filtro + " LIMIT 1",
                                     (exercicio, f"{exercicio}-01-01", *p)).fetchone()
@@ -101,7 +101,7 @@ class Serie:
           entities exclusive to one side having no records (R7); with the derivation's continuity check (ANOM-CONT v1)."""
         ctx, em = self.contexto(), instante(em)
         vig, cat = self._vigentes(ctx, em), self._catalogo(ctx, em)
-        filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        filtro, p = vigencia.filtro_disponivel(em, "coleta")
         anos = [ex for (ex,) in self.con.execute(
             "SELECT DISTINCT exercicio FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND "
             "data_inicial = exercicio || '-01-01'" + filtro, p)]

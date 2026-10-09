@@ -29,7 +29,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from . import BRT, agora, sha256, sha256_valido
+from . import BRT, agora, instante, sha256, sha256_valido
 from .armazem import ObjetoCorrompido, descomprimir
 
 log = logging.getLogger("rp.banco")
@@ -192,6 +192,32 @@ MIGRACOES[6] = (
                  "v.resposta_id = NEW.resposta_id AND v.indice = NEW.indice)",
                  "rp_registro de posicao com valor recusado na mesma normalizacao"),
     ])
+# Canonical instant (rp.instante): Brasilia offset, seconds. Every instant compared AS TEXT has this form.
+_GLOB_INSTANTE = "'[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]-03:00'"
+# v7 (correction request of 09/10/2026, item 4): start AND conclusion of each collection, in canonical form, with where
+# the conclusion came from. A snapshot is only available to an "as it was on" query from its conclusion on (before,
+# coletada_em - the START - was compared, and a collection still running counted as available). Additions only: the
+# raw layer (coleta) stays immutable; the rows of existing collections come from their manifests (completar_tempos),
+# never invented: no evidence = conclusion NULL ('desconhecida'), and such a snapshot is never available to a query
+# with a date.
+MIGRACOES[7] = (
+    "inicio e conclusao de cada coleta em forma canonica (coleta_tempo): retrato so vale a partir da conclusao",
+    [
+        "CREATE TABLE coleta_tempo (coleta_id INTEGER PRIMARY KEY REFERENCES coleta(id), inicio_em TEXT NOT NULL, "
+        "concluida_em TEXT, fonte_conclusao TEXT NOT NULL CHECK (fonte_conclusao IN ('manifesto','ultima_resposta',"
+        "'sem_evidencia')), precisao TEXT NOT NULL CHECK (precisao IN ('exata','ultima_resposta','aproximada',"
+        "'desconhecida')), CHECK ((concluida_em IS NULL) = (fonte_conclusao = 'sem_evidencia')), "
+        "CHECK ((concluida_em IS NULL) = (precisao = 'desconhecida')))",
+        _gatilho("coleta_tempo_insert", "INSERT", "coleta_tempo",
+                 f"NEW.inicio_em NOT GLOB {_GLOB_INSTANTE} OR (NEW.concluida_em IS NOT NULL AND (NEW.concluida_em NOT "
+                 f"GLOB {_GLOB_INSTANTE} OR NEW.concluida_em < NEW.inicio_em)) OR NOT EXISTS (SELECT 1 FROM coleta c "
+                 "WHERE c.id = NEW.coleta_id AND julianday(c.coletada_em) = julianday(NEW.inicio_em))",
+                 "coleta_tempo fora da forma canonica, conclusao antes do inicio ou inicio diferente da coleta"),
+        "CREATE TRIGGER coleta_tempo_sem_update BEFORE UPDATE ON coleta_tempo "
+        "BEGIN SELECT RAISE(ABORT, 'tempo da coleta nao se edita: vem do manifesto'); END",
+        "CREATE TRIGGER coleta_tempo_sem_delete BEFORE DELETE ON coleta_tempo "
+        "BEGIN SELECT RAISE(ABORT, 'tempo da coleta nao se apaga: vem do manifesto'); END",
+    ])
 VERSAO_ESQUEMA = max(MIGRACOES)
 # Structural fingerprint of each schema version (impressao_esquema). New version = new fingerprint here.
 IMPRESSAO_ESQUEMA = {
@@ -201,6 +227,8 @@ IMPRESSAO_ESQUEMA = {
     5: "d80f1040f98fe0213388991b8f8b574b27ab0ef3a57ac61c4d8dc70bbb54e34e",
     # v6: computed on 09/10/2026 on the one built by the code (the v5 one above is unchanged)
     6: "46b3b3d6caecfb8ccd8e738520dd07296c641211d7b823f142daf33b11751163",
+    # v7: computed on 09/10/2026 on the one built by the code
+    7: "3e47c42cfde8d126e6d2581c04b3b2f60eccbaa658a93a702fbecf0c5774e120",
 }
 
 # Per-connection page cache (KiB, negative value = size in KiB in SQLite). The derivation scans ~100 MB of
@@ -405,6 +433,10 @@ def abrir(cfg, caminho=None):
     if atual < VERSAO_ESQUEMA:
         arq = backup(con, cfg, f"antes-migracao-v{atual}-v{VERSAO_ESQUEMA}")
         _migrar(con, atual, arq)
+    if VERSAO_ESQUEMA >= 7 and con.execute("SELECT 1 FROM coleta c LEFT JOIN coleta_tempo t ON t.coleta_id = c.id "
+                                           "WHERE t.coleta_id IS NULL LIMIT 1").fetchone():
+        from .armazem import Armazem
+        completar_tempos(con, Armazem(cfg.snapshots))     # v7 rows of the existing collections, from the manifests
     esperado = IMPRESSAO_ESQUEMA.get(VERSAO_ESQUEMA)
     if esperado and impressao_esquema(con) != esperado:     # warning; the 'esquema_confere' gate fails the load
         log.warning("esquema de %s difere do esquema v%d do código (impressão estrutural): ver portão "
@@ -577,7 +609,60 @@ def registrar_manifesto(con, armazem, rel, m):
                         "sha256, tamanho) VALUES (?,?,?,?,?,?,?,?)",
                         (cid, r["ordem"], r["url"], r["http_status"], json.dumps(r.get("cabecalhos") or {}, sort_keys=True),
                          r["recebida_em"], r["sha256"], r["tamanho"]))
+        if _tem_tabela(con, "coleta_tempo"):    # v7: start and conclusion, from the manifest
+            con.execute(SQL_TEMPO, (cid, *tempos_do_manifesto(m)))
     return cid, True
+
+
+def _tem_tabela(con, nome):
+    return con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (nome,)).fetchone() is not None
+
+
+SQL_TEMPO = "INSERT INTO coleta_tempo VALUES (?,?,?,?,?)"
+# Clock precision by stamp origin when the conclusion is the last response received (no recorded conclusion).
+_PRECISAO_DA_ORIGEM = {"relogio_coletor": "ultima_resposta", "manifesto": "ultima_resposta",
+                       "cabecalho_http": "ultima_resposta", "mtime_arquivo": "aproximada"}
+
+
+def tempos_do_manifesto(m):
+    """(inicio_em, concluida_em, fonte_conclusao, precisao) of a snapshot, from its manifest ONLY:
+      * 'manifesto': the recorded conclusion (coleta_finalizada_em, collector since 05/10/2026) - 'exata' when the
+        stamp is the collector's clock;
+      * 'ultima_resposta': the latest recebida_em of the responses and of the second read - the last byte received;
+        the stamp origin says how precise it is (file mtime = 'aproximada');
+      * 'sem_evidencia': no conclusion and no response time - NULL, never invented.
+    Every instant goes through rp.instante (Brasilia offset): equivalent time zones become the same text."""
+    inicio = instante(m["coletada_em"])
+    origem = m.get("origem_carimbo")
+    if m.get("coleta_finalizada_em"):
+        return inicio, instante(m["coleta_finalizada_em"]), "manifesto", \
+            "exata" if origem == "relogio_coletor" else _PRECISAO_DA_ORIGEM.get(origem, "aproximada")
+    recebidas = [instante(r["recebida_em"]) for r in list(m.get("respostas") or []) + list(m.get("segunda_leitura") or [])
+                 if r.get("recebida_em")]
+    if recebidas:
+        return inicio, max(recebidas), "ultima_resposta", _PRECISAO_DA_ORIGEM.get(origem, "aproximada")
+    return inicio, None, "sem_evidencia", "desconhecida"
+
+
+def completar_tempos(con, armazem):
+    """coleta_tempo for the collections that do not have it yet (databases from before v7), read from each one's
+    manifest in the store. Idempotent. A manifest that cannot be read leaves the collection without a row (the
+    'tempos_das_coletas' gate fails), never a guessed time. Returns (filled, problems)."""
+    faltam = con.execute("SELECT c.id, c.manifesto FROM coleta c LEFT JOIN coleta_tempo t ON t.coleta_id = c.id "
+                         "WHERE t.coleta_id IS NULL ORDER BY c.id").fetchall()
+    feitos, problemas = 0, []
+    for cid, rel in faltam:
+        try:
+            m = armazem.ler_manifesto(rel)
+        except (OSError, ValueError, KeyError, TypeError) as e:   # missing or invalid manifest: recorded, never guessed
+            problemas.append(f"coleta {cid}: manifesto {rel} ilegível ({type(e).__name__}: {e})")
+            continue
+        with con:
+            con.execute(SQL_TEMPO, (cid, *tempos_do_manifesto(m)))
+        feitos += 1
+    if problemas:
+        log.warning("%d coleta(s) sem tempo de conclusão: %s", len(problemas), "; ".join(problemas[:3]))
+    return feitos, problemas
 
 
 def corpo(con, sha):
@@ -666,6 +751,11 @@ def _diferencas_do_manifesto(con, rel, m):
                       r["tamanho"]) for r in sorted(m["respostas"], key=lambda r: r["ordem"])]
         if resp != esperadas:
             dif.append("respostas")
+        if _tem_tabela(con, "coleta_tempo"):      # v7: start and conclusion recomputed from the manifest
+            tempo = con.execute("SELECT inicio_em, concluida_em, fonte_conclusao, precisao FROM coleta_tempo WHERE "
+                                "coleta_id=?", (cid,)).fetchone()
+            if tempo is None or tuple(tempo) != tempos_do_manifesto(m):
+                dif.append("tempo_da_coleta")
         return dif
     except (KeyError, TypeError, ValueError, AttributeError) as e:
         return [f"manifesto sem campo esperado ({type(e).__name__}: {e})"]

@@ -150,6 +150,7 @@ def test_banco_v5_migra_para_v6_com_backup_e_sem_mudar_linha(tmp_path, monkeypat
     antes = {t: con.execute(f"SELECT * FROM {t} ORDER BY 1").fetchall() for t in tabelas if t != "esquema_versao"}
     con.close()
     monkeypatch.undo()
+    monkeypatch.setattr(banco, "VERSAO_ESQUEMA", 6)        # the code of v6 (v7 exists since phase B)
     novo = banco.abrir(cfg)                                # migrates to v6, with a backup first
     assert banco.versao_esquema(novo) == 6 and banco.impressao_esquema(novo) == banco.IMPRESSAO_ESQUEMA[6]
     assert {t: novo.execute(f"SELECT * FROM {t} ORDER BY 1").fetchall() for t in antes} == antes

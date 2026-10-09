@@ -96,7 +96,7 @@ class Nucleo:
         amb = self._ambiguas(ctx)
         if not amb:
             return set()
-        filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        filtro, p = vigencia.filtro_disponivel(em, "coleta")
         return {tuple(r) for r in self.con.execute(
             f"SELECT entidade, exercicio, data_inicial, data_final FROM coleta WHERE id IN ({','.join('?' * len(amb))}) "
             "AND tipo='rp_listagem' AND tipo_pesquisa IS NULL AND status='completa' AND id <= ?" + filtro,
@@ -107,11 +107,11 @@ class Nucleo:
         previous valid one, or None. Only queries the database if there is an ambiguous collection."""
         if not self._ambiguas(ctx):
             return None
-        filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        filtro, p = vigencia.filtro_disponivel(em, "coleta")
         mais_novo = self.con.execute(
             "SELECT id, snapshot_uid, coletada_em FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND "
             "status='completa' AND entidade=? AND exercicio=? AND data_inicial=? AND data_final=? AND id <= ?" + filtro +
-            " ORDER BY coletada_em DESC, snapshot_uid DESC LIMIT 1",
+            " ORDER BY " + vigencia.ordem("coleta", desc=True) + " LIMIT 1",
             (e, exercicio, di, data_final, ctx["limite_coleta"], *p)).fetchone()
         if not mais_novo or mais_novo[0] == usado or mais_novo[0] not in self._ambiguas(ctx):
             return None
@@ -130,11 +130,11 @@ class Nucleo:
         """Entity catalog and, per entity, the fiscal year catalog: the most recent snapshots up to `em` (same choice as
         derivar._entidades_do_catalogo), among the processed ones."""
         nid, lim = ctx["normalizacao"]["id"], ctx["limite_coleta"]
-        filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        filtro, p = vigencia.filtro_disponivel(em, "coleta")
         ents, snap_ent = {}, None
         c = self.con.execute("SELECT id, snapshot_uid, coletada_em FROM coleta WHERE tipo='entidades' AND "
-                             "status='completa' AND id <= ?" + filtro + " ORDER BY coletada_em DESC, snapshot_uid DESC "
-                             "LIMIT 1", (lim, *p)).fetchone()
+                             "status='completa' AND id <= ?" + filtro + " ORDER BY " + vigencia.ordem("coleta", desc=True) +
+                             " LIMIT 1", (lim, *p)).fetchone()
         if c:
             snap_ent = {"snapshot_uid": c[1], "coletada_em": c[2]}
             for e, nome, cnpj, tipo in self.con.execute("SELECT entidade, nome, cnpj, tipo FROM entidade_ref "
@@ -143,7 +143,7 @@ class Nucleo:
         exerc = {}
         for e, cid, uid, quando in self.con.execute(
                 "SELECT entidade, id, snapshot_uid, coletada_em FROM coleta WHERE tipo='exercicios' AND "
-                "status='completa' AND id <= ?" + filtro + " ORDER BY coletada_em, snapshot_uid", (lim, *p)):
+                "status='completa' AND id <= ?" + filtro + " ORDER BY " + vigencia.ordem("coleta"), (lim, *p)):
             exerc[e] = {"coleta_id": cid, "snapshot_uid": uid, "coletada_em": quando}   # the most recent one stays
         for info in exerc.values():
             info["exercicios"] = sorted(x for (x,) in self.con.execute(
@@ -188,7 +188,7 @@ class Nucleo:
         """Why an entity has no processed snapshot at the cut-off: never collected, collected and not yet processed, or
         only incomplete/failed collections. Looks at every collection of the cut-off up to `em` (including the ones
         after the normalization in use)."""
-        filtro_em, p_em = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        filtro_em, p_em = vigencia.filtro_disponivel(em, "coleta")
         linhas = self.con.execute(
             "SELECT id, status FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND entidade=? AND "
             "exercicio=? AND data_inicial=? AND data_final=?" + filtro_em, (e, exercicio, di, data_final, *p_em)).fetchall()
@@ -210,7 +210,7 @@ class Nucleo:
                     and df == data_final}
         universo = [entidade] if entidade is not None else sorted(set(cat["entidades"]) | com_snapshot | ambiguas)
         itens, somar, faltam, fora, avisos = [], [], [], [], []
-        filtro_em, p_em = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        filtro_em, p_em = vigencia.filtro_disponivel(em, "coleta")
         for e in universo:
             status = self._status_no_exercicio(cat, e, exercicio)
             cid = vig.get((e, exercicio, di, data_final))
@@ -225,10 +225,16 @@ class Nucleo:
                         "AND entidade=? AND exercicio=? AND data_inicial=? AND data_final=? AND id > ?" + filtro_em,
                         (e, exercicio, di, data_final, ctx["limite_coleta"], *p_em)).fetchone())}
             if cid is not None:
-                uid, quando = self.con.execute("SELECT snapshot_uid, coletada_em FROM coleta WHERE id=?", (cid,)).fetchone()
+                uid, quando, concluida, precisao = self.con.execute(
+                    "SELECT c.snapshot_uid, c.coletada_em, t.concluida_em, t.precisao FROM coleta c LEFT JOIN "
+                    "coleta_tempo t ON t.coleta_id = c.id WHERE c.id=?", (cid,)).fetchone()
                 n = self.con.execute("SELECT COUNT(*) FROM rp_registro WHERE normalizacao_id=? AND coleta_id=?",
                                      (ctx["normalizacao"]["id"], cid)).fetchone()[0]
-                item["snapshot"] = {"snapshot_uid": uid, "coletada_em": quando, "registros": n}
+                item["snapshot"] = {"snapshot_uid": uid, "coletada_em": quando, "concluida_em": concluida,
+                                    "precisao_temporal": precisao, "registros": n}
+                if em and precisao == "aproximada":     # item 4: the limitation is shown, never hidden
+                    avisos.append(f"entidade {e}: o horário de conclusão do retrato {uid[:8]} é aproximado (data do "
+                                  "arquivo, Etapas 01/02): a escolha 'como estava em' perto dessa data é aproximada")
             recusado = self._retrato_recusado(ctx, e, exercicio, di, data_final, em, cid)
             if recusado:
                 avisos.append(recusado)

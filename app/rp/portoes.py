@@ -289,6 +289,23 @@ def _portoes_da_revisao(con, portao, did_atual):
                     "comando em 'recoletar', confira com 'python -m rp verificar' e processe de novo "
                     "('python -m rp processar')"})
 
+    # correction request of 09/10/2026, item 4: every collection has its start and conclusion (coleta_tempo, v7).
+    # Approximate or unknown conclusions are not a failure: they are the documented limitation of old snapshots
+    tem_tempo = con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='coleta_tempo'").fetchone()
+    if tem_tempo:
+        sem = con.execute("SELECT COUNT(*) FROM coleta c LEFT JOIN coleta_tempo t ON t.coleta_id = c.id WHERE "
+                          "t.coleta_id IS NULL").fetchone()[0]
+        precisao = dict(con.execute("SELECT precisao, COUNT(*) FROM coleta_tempo GROUP BY 1 ORDER BY 1").fetchall())
+        fontes_ = dict(con.execute("SELECT fonte_conclusao, COUNT(*) FROM coleta_tempo GROUP BY 1 ORDER BY 1").fetchall())
+        portao("tempos_das_coletas", "toda coleta tem início e conclusão registrados (coleta_tempo): retrato só vale "
+               "'como estava em' a partir da conclusão", sem == 0,
+               {"coletas_sem_tempo": sem, "por_precisao": precisao, "por_fonte_da_conclusao": fontes_,
+                "limitacao": "'aproximada' = conclusão pela data do arquivo (Etapas 01/02); 'desconhecida' = sem "
+                             "evidência de conclusão: o retrato nunca vale numa consulta com data"})
+    else:
+        portao("tempos_das_coletas", "toda coleta tem início e conclusão registrados (coleta_tempo)", None,
+               "não verificado: banco antes da v7")
+
     # item 28: the database schema is the one of its version in the code (structure, without comments or whitespace)
     versao = banco.versao_esquema(con)
     esperado = banco.IMPRESSAO_ESQUEMA.get(versao)

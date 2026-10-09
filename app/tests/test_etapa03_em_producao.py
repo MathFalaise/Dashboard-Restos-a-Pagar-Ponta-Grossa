@@ -245,7 +245,12 @@ def test_mesmo_corte_em_datas_diferentes(producao):
     assert len(hist) == 2
     (c1, t1, o1), (c2, t2, o2) = hist
     assert o1 == "manifesto" and o2 == "mtime_arquivo"
-    assert consultas.snapshot_em(con, 1, 2026, "2026-01-01", "2026-08-31", em=t1) == c1
+    # since rp-vigencia/2 (09/10/2026) a snapshot is available from its CONCLUSION (coleta_tempo), not its start: at
+    # t1 (start of c1) its responses were still arriving; at its conclusion it is the one the portal showed
+    fim1, = con.execute("SELECT concluida_em FROM coleta_tempo WHERE coleta_id=?", (c1,)).fetchone()
+    assert fim1 > t1 and fim1 < t2
+    assert consultas.snapshot_em(con, 1, 2026, "2026-01-01", "2026-08-31", em=t1) is None
+    assert consultas.snapshot_em(con, 1, 2026, "2026-01-01", "2026-08-31", em=fim1) == c1
     assert consultas.snapshot_em(con, 1, 2026, "2026-01-01", "2026-08-31") == c2
     assert consultas.diferencas(con, nid, c1, c2) == {"novos": [], "sumidos": [], "alterados": []}
 
@@ -266,8 +271,9 @@ def test_SINTETICO_alteracao_retroativa_preserva_os_dois_retratos(tmp_path):
                            "last": True, "totalElements": 1, "numberOfElements": 1}).encode()
     p = {"entidade": 999, "exercicio": 2026, "dataInicial": "2026-01-01", "dataFinal": "2026-12-31", "size": 2000}
     for quando, aproc in (("2026-03-31T10:00:00-03:00", 100.00), ("2026-06-30T10:00:00-03:00", 80.00)):
+        # finalizada_em: concluded at its own instant (schema v7: a snapshot is available from its conclusion on)
         gravar_snapshot(con, armazem, tipo="rp_listagem", endpoint="/sintetico", parametros=p, coletada_em=quando,
-                        origem_carimbo="relogio_coletor", status="completa", coletor=col,
+                        origem_carimbo="relogio_coletor", status="completa", coletor=col, finalizada_em=quando,
                         respostas=[{"url": "sintetico", "corpo": corpo(aproc)}])
     nid, _ = normalizar.normalizar(con)
     derivar.derivar(con, nid)
