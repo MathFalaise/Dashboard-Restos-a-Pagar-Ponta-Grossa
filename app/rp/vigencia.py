@@ -20,6 +20,8 @@ since 09/10/2026) stays in the database and in the store, it is just not used: t
 same cut-off applies, or none. Summing it would either count a key twice or leave a record out of the total.
 """
 
+from . import instante
+
 VERSAO = "rp-vigencia/2"
 VERIF_RETRATO_AMBIGUO = "retrato com chave repetida fora da vigência"
 VERIF_RETRATO_VALOR_RECUSADO = "retrato com valor monetário recusado fora da vigência"
@@ -32,8 +34,9 @@ def filtro_disponivel(em, alias="c"):
     (the current state: every recorded collection is concluded, since its manifest is written at the end)."""
     if not em:
         return "", ()
+    # canonical here too (idempotent): a date without time or another offset is never compared as raw text
     return (f" AND EXISTS (SELECT 1 FROM coleta_tempo t WHERE t.coleta_id = {alias}.id AND t.concluida_em IS NOT NULL "
-            "AND t.concluida_em <= ?)", (em,))
+            "AND t.concluida_em <= ?)", (instante(em),))
 
 
 def ordem(alias="c", desc=False):

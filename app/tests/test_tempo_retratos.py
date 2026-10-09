@@ -198,3 +198,14 @@ def test_SINTETICO_portao_dos_tempos(mundo):
     p = next(x for x in portoes.avaliar(mundo.cfg.banco, mundo.armazem)["portoes"] if x["id"] == "tempos_das_coletas")
     assert p["ok"] is True and p["detalhe"]["coletas_sem_tempo"] == 0
     assert p["detalhe"]["por_precisao"] == {"desconhecida": 1, "exata": 2}       # the 2 catalog snapshots + the listing
+
+
+# ------------------------------------------------------------------ review of phase B
+def test_SINTETICO_instante_nao_canonico_e_normalizado_no_filtro(mundo):
+    from rp import consultas
+    mundo.catalogos({1: [2025]}, quando="2025-01-01T00:00:00-03:00")
+    s = _retrato(mundo, R100, "2026-09-25T10:00:00-03:00", "2026-09-25T10:05:00-03:00")
+    for em in ("2026-09-25", "2026-09-25T13:05:00+00:00", "2026-09-25T10:05:00"):     # end of day, UTC, naive (BRT)
+        assert consultas.snapshot_em(mundo.con, *CHAVE, em=em) == s["coleta_id"], em
+    for em in ("2026-09-24", "2026-09-25T13:04:59+00:00"):
+        assert consultas.snapshot_em(mundo.con, *CHAVE, em=em) is None, em
