@@ -87,7 +87,6 @@ MIGRACOES = {
     5: ("integridade relacional por gatilhos na camada derivada (D4) e criterios de promocao de regra (D7)",
         None),
 }
-VERSAO_ESQUEMA = max(MIGRACOES)
 # Date from which promoting a rule to operational follows the criteria of decision D7 (governanca.py).
 POLITICA_PROMOCAO_DESDE = "2026-10-06"
 
@@ -163,12 +162,45 @@ def _gatilhos_v5():
 
 
 MIGRACOES[5] = (MIGRACOES[5][0], _gatilhos_v5())
+# v6 (correction request of 09/10/2026, item 2): a missing, null or invalid money field of the RP listing is no longer
+# typed as zero. The record does not become a row of rp_registro (whose money columns are NOT NULL: a value is
+# required there); each refused field becomes a row here, with the field name and what happened. Additions only: no
+# table is recreated and no existing row changes (on the 266,787 records of normalization 14 no field is missing).
+MIGRACOES[6] = (
+    "campo monetario ausente, nulo ou invalido registrado como recusa (nunca zero): tabela valor_recusado",
+    [
+        "CREATE TABLE valor_recusado (normalizacao_id INTEGER NOT NULL REFERENCES normalizacao_execucao(id), "
+        "resposta_id INTEGER NOT NULL REFERENCES resposta_bruta(id), indice INTEGER NOT NULL, "
+        "coleta_id INTEGER NOT NULL REFERENCES coleta(id), entidade INTEGER, anoempenho INTEGER, empenho INTEGER, "
+        "campo TEXT NOT NULL CHECK (campo IN ('proc','aproc','canceladoProc','pagoProc','pagoProcEstornado',"
+        "'canceladoAProc','pagoAProc','pagoAProcEstornado','liquidado','retencao')), "
+        "natureza TEXT NOT NULL CHECK (natureza IN ('ausente','nulo','invalido')), valor_bruto TEXT, "
+        "CHECK ((natureza = 'invalido') = (valor_bruto IS NOT NULL)), "
+        "PRIMARY KEY (normalizacao_id, resposta_id, indice, campo))",
+        _gatilho("ri_valor_recusado_insert", "INSERT", "valor_recusado",
+                 "NOT EXISTS (SELECT 1 FROM resposta_bruta b WHERE b.id = NEW.resposta_id AND b.coleta_id = "
+                 "NEW.coleta_id) OR EXISTS (SELECT 1 FROM rp_registro r WHERE r.normalizacao_id = NEW.normalizacao_id "
+                 "AND r.resposta_id = NEW.resposta_id AND r.indice = NEW.indice)",
+                 "valor_recusado de outra coleta ou de registro ja normalizado com valor"),
+        "CREATE TRIGGER valor_recusado_sem_update BEFORE UPDATE ON valor_recusado "
+        "BEGIN SELECT RAISE(ABORT, 'recusa de valor nao se edita: rode nova normalizacao'); END",
+        _gatilho("ri_valor_recusado_delete", "DELETE", "valor_recusado",
+                 "EXISTS (SELECT 1 FROM derivacao_execucao WHERE normalizacao_id = OLD.normalizacao_id)",
+                 "valor_recusado de normalizacao com derivacoes: apague antes as derivacoes"),
+        _gatilho("ri_rp_registro_recusado", "INSERT", "rp_registro",
+                 "EXISTS (SELECT 1 FROM valor_recusado v WHERE v.normalizacao_id = NEW.normalizacao_id AND "
+                 "v.resposta_id = NEW.resposta_id AND v.indice = NEW.indice)",
+                 "rp_registro de posicao com valor recusado na mesma normalizacao"),
+    ])
+VERSAO_ESQUEMA = max(MIGRACOES)
 # Structural fingerprint of each schema version (impressao_esquema). New version = new fingerprint here.
 IMPRESSAO_ESQUEMA = {
     # v4: checked on 05/10/2026 on the active database (created 29/09, migrated 30/09) and on the one built by the code
     4: "ad45413e4a5431eca73afebbf4640c995513203b9def9b38d8cbb83eaa3d3e5a",
     # v5: checked on 06/10/2026 on the one built by the code and on the active database migrated from v4
     5: "d80f1040f98fe0213388991b8f8b574b27ab0ef3a57ac61c4d8dc70bbb54e34e",
+    # v6: computed on 09/10/2026 on the one built by the code (the v5 one above is unchanged)
+    6: "46b3b3d6caecfb8ccd8e738520dd07296c641211d7b823f142daf33b11751163",
 }
 
 # Per-connection page cache (KiB, negative value = size in KiB in SQLite). The derivation scans ~100 MB of

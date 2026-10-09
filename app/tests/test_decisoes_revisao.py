@@ -153,10 +153,12 @@ def _processado(mundo):
 
 def test_D4_esquema_v5_tem_os_gatilhos_e_a_impressao_confere(mundo):
     con = mundo.con
-    assert banco.versao_esquema(con) == banco.VERSAO_ESQUEMA == 5
-    assert banco.impressao_esquema(con) == banco.IMPRESSAO_ESQUEMA[5]
+    # since v6 (09/10/2026) the code's version is 6; the v5 triggers are all still there (v6 only adds)
+    assert banco.versao_esquema(con) == banco.VERSAO_ESQUEMA >= 5
+    assert banco.impressao_esquema(con) == banco.IMPRESSAO_ESQUEMA[banco.VERSAO_ESQUEMA]
     nomes = {n for (n,) in con.execute("SELECT name FROM sqlite_master WHERE type='trigger' AND name LIKE 'ri_%'")}
-    assert len(nomes) == 18 and "ri_rp_derivado_insert" in nomes and "ri_rp_registro_delete" in nomes
+    v5 = {n for sql in banco.MIGRACOES[5][1] if sql.startswith("CREATE TRIGGER ri_") for n in [sql.split()[2]]}
+    assert len(v5) == 18 and v5 <= nomes and "ri_rp_derivado_insert" in nomes and "ri_rp_registro_delete" in nomes
 
 
 @pytest.mark.parametrize("sql, mensagem", [
@@ -200,6 +202,7 @@ def test_D4_banco_v4_migra_para_v5_com_backup_e_sem_mudar_linha(tmp_path, monkey
     situacoes = con.execute("SELECT * FROM regra_situacao ORDER BY id").fetchall()
     con.close()
     monkeypatch.undo()
+    monkeypatch.setattr(banco, "VERSAO_ESQUEMA", 5)        # the code of v5 (v6 exists since 09/10/2026)
     novo = banco.abrir(cfg)                                # migrates to v5, with a backup first
     assert banco.versao_esquema(novo) == 5 and banco.impressao_esquema(novo) == banco.IMPRESSAO_ESQUEMA[5]
     depois = {t: novo.execute(f"SELECT * FROM {t} ORDER BY 1").fetchall() for t in antes}

@@ -1,9 +1,12 @@
 """Layer 1 - normalization: faithful typing of the raw data, WITHOUT interpretation.
 
 Guarantees (stage 04.2 gate):
-  * each item of content[] becomes exactly one row, at its source position (response, index);
+  * each item of content[] becomes exactly one row of rp_registro, at its source position (response, index) - or,
+    when a money field is missing, null or invalid, one row of valor_recusado PER refused field and no rp_registro
+    row (v2, 09/10/2026). A missing money field is never typed as zero: before v2 `r.get(campo, 0)` made it 0;
   * nothing is discarded, merged or invented; a missing key is recorded in `chaves_ausentes`;
-  * money becomes cents; a value with more than 2 decimal places is an ERROR (never rounded);
+  * money becomes cents; a value with more than 2 decimal places is never rounded: it is refused as 'invalido'
+    (before v2 it stopped the whole normalization), and so is a non-number (text, boolean);
   * a response that is not a valid page (failed snapshot) produces no rows and is counted;
   * a catalog (entities/fiscal years) with an unexpected structure produces no rows and goes to `problemas`;
   * each RREO PDF leaves a row in rreo_extracao (extractor, PyMuPDF/MuPDF version, SHA-256, file id, extraction
@@ -22,7 +25,7 @@ from . import agora, banco
 
 log = logging.getLogger("rp.normalizar")
 
-VERSAO = "rp-normalizador/1"
+VERSAO = "rp-normalizador/2"
 EXTRATOR_RREO = "rp-rreo-coordenadas/1"
 
 BASE = ["entidade", "empenho", "anoempenho", "empenhoExercicio", "cnpjNome", "dataEmissao", "programatica",
@@ -36,6 +39,7 @@ DINHEIRO = ["proc", "aproc", "canceladoProc", "pagoProc", "pagoProcEstornado", "
             "pagoAProc", "pagoAProcEstornado", "liquidado", "retencao"]
 
 SQL_RP = "INSERT INTO rp_registro VALUES (" + ",".join("?" * 37) + ")"
+SQL_RECUSA = "INSERT INTO valor_recusado VALUES (?,?,?,?,?,?,?,?,?,?)"
 SQL_MOV = "INSERT INTO movimentacao_lancamento VALUES (" + ",".join("?" * 18) + ")"
 # No OR IGNORE (critical review, item 11): a repeated cell with the SAME value no longer gets here (_rreo writes a
 # single row) and a different value becomes LayoutDesconhecido; any other key conflict is an error, never ignored.
@@ -67,6 +71,30 @@ def centavos(v):
     return int(q * 100)
 
 
+def valores_recusados(r):
+    """[(api field, nature, raw value as JSON text or None)] of the money fields of an RP record that cannot be typed:
+    'ausente' (key missing), 'nulo' (null), 'invalido' (not a number, or more than 2 decimal places). [] = all valid."""
+    saida = []
+    for campo in DINHEIRO:
+        if campo not in r:
+            saida.append((campo, "ausente", None))
+        elif r[campo] is None:
+            saida.append((campo, "nulo", None))
+        elif isinstance(r[campo], bool) or not isinstance(r[campo], (int, float, Decimal)):
+            saida.append((campo, "invalido", _json_bruto(r[campo])))
+        else:
+            try:
+                centavos(r[campo])
+            except ValorNaoRepresentavel:
+                saida.append((campo, "invalido", _json_bruto(r[campo])))
+    return saida
+
+
+def _json_bruto(v):
+    """The raw value as JSON text; a Decimal (number parsed from the response) keeps its digits as a JSON number."""
+    return str(v) if isinstance(v, Decimal) else json.dumps(v, ensure_ascii=False, default=str)
+
+
 def _pagina(corpo):
     try:
         d = json.loads(corpo, parse_float=Decimal)
@@ -86,8 +114,8 @@ def _lista_json(corpo):
 
 def normalizar(con):
     """New normalization run over all the raw data. Returns (id, summary)."""
-    resumo = {"respostas": 0, "ignoradas_sem_pagina": 0, "rp_registro": 0, "movimentacao_lancamento": 0,
-              "rreo_valor": 0, "problemas": []}
+    resumo = {"respostas": 0, "ignoradas_sem_pagina": 0, "rp_registro": 0, "registros_recusados": 0,
+              "valores_recusados": 0, "movimentacao_lancamento": 0, "rreo_valor": 0, "problemas": []}
     with con:
         ultima = con.execute("SELECT IFNULL(MAX(id), 0) FROM coleta").fetchone()[0]
         nid = con.execute("INSERT INTO normalizacao_execucao (normalizador_versao, executada_em, ultima_coleta_id) "
@@ -103,8 +131,24 @@ def normalizar(con):
                 if conteudo is None:
                     resumo["ignoradas_sem_pagina"] += 1
                     continue
-                con.executemany(SQL_RP, (_linha_rp(nid, rid, i, cid, r) for i, r in enumerate(conteudo)))
-                resumo["rp_registro"] += len(conteudo)
+                linhas, recusas = [], []
+                for i, r in enumerate(conteudo):
+                    ruins = valores_recusados(r)
+                    if ruins:
+                        recusas += [(nid, rid, i, cid, r.get("entidade"), r.get("anoempenho"), r.get("empenho"), *x)
+                                    for x in ruins]
+                        resumo["registros_recusados"] += 1
+                    else:
+                        linhas.append(_linha_rp(nid, rid, i, cid, r))
+                if recusas:   # refusals first: the trigger refuses an rp_registro row at a refused position
+                    con.executemany(SQL_RECUSA, recusas)
+                    resumo["valores_recusados"] += len(recusas)
+                    resumo["problemas"].append({"coleta_id": cid, "resposta_id": rid, "valores_recusados": len(recusas),
+                                                "campos": sorted({x[7] for x in recusas})})
+                    log.warning("coleta %d: %d campo(s) monetário(s) recusado(s) (ausente/nulo/inválido)", cid,
+                                len(recusas))
+                con.executemany(SQL_RP, linhas)
+                resumo["rp_registro"] += len(linhas)
             elif tipo == "movimentacao":
                 conteudo = _pagina(corpo)
                 if conteudo is None:
@@ -157,7 +201,7 @@ def _linha_rp(nid, rid, i, cid, r):
     return (nid, rid, i, cid, r.get("entidade"), r.get("anoempenho"), r.get("empenho"), r.get("empenhoExercicio"),
             r.get("dataEmissao"), r.get("programatica"), r.get("fonteRecurso"), r.get("descricaoFonte"),
             r.get("fornecedor"), r.get("nome"), r.get("cnpj"), r.get("cnpjNome"),
-            *[centavos(r.get(c, 0)) for c in DINHEIRO],
+            *[centavos(r[c]) for c in DINHEIRO],     # all present and valid (valores_recusados): never a default
             r.get("orgao"), r.get("unidade"), r.get("funcao"), r.get("subFuncao"), r.get("programa"),
             r.get("projeto"), r.get("elemento"), r.get("desdobraDesp"), r.get("subDesdobramento"),
             json.dumps(ausentes), json.dumps(extras))

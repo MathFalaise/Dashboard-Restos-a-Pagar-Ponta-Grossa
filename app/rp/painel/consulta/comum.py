@@ -21,6 +21,8 @@ SITUACOES_DO_DADO = {
     "incompleto": "dado indisponível: só há coleta incompleta ou com falha deste corte",
     "ambiguo": "dado indisponível: o retrato do corte tem a mesma chave de empenho mais de uma vez (CHAVE-DUP); "
                "nenhuma ocorrência é escolhida",
+    "valor_recusado": "dado indisponível: o retrato do corte tem campo monetário ausente, nulo ou inválido "
+                      "(VALOR-RECUSADO); o registro nunca é somado como zero",
     "divergente": "dado com diferença em relação ao RREO (a diferença é mostrada; o valor da API não muda)",
 }
 # Situation of a series POINT (docs/stages/05-analysis/ANALYTICAL_CONTRACT.md section 2): extends the taxonomy
@@ -81,6 +83,10 @@ INTERPRETACOES_DE_VERIFICACAO = {
     vigencia.VERIF_RETRATO_AMBIGUO: {
         "regra": ("ANOM-REG", 1), "natureza": "conformidade", "anomalias": ("CHAVE-DUP",),
         "verificados": "retrato mais recente de um corte com chave de empenho repetida",
+        "falhas": "retratos recusados como vigentes (vale o retrato válido anterior do corte, ou nenhum)"},
+    vigencia.VERIF_RETRATO_VALOR_RECUSADO: {
+        "regra": ("VALOR-OBRIG", 1), "natureza": "conformidade", "anomalias": ("VALOR-RECUSADO",),
+        "verificados": "retrato mais recente de um corte com campo monetário ausente, nulo ou inválido",
         "falhas": "retratos recusados como vigentes (vale o retrato válido anterior do corte, ou nenhum)"},
 }
 

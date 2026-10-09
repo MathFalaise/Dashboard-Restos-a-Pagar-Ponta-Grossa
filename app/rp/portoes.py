@@ -238,10 +238,20 @@ def _portoes_da_auditoria(con, portao, nid, did_atual):
     portao("integridade_relacional", "FOREIGN KEY do esquema (foreign_key_check) e relações sem FK (órfãos)",
            not fk and not any(orfaos.values()), {"foreign_key_check": [list(r) for r in fk[:10]], **orfaos})
 
+    # Normalizer v1 typed a missing money field as 0 (the key stays in chaves_ausentes); v2 (09/10/2026) refuses it in
+    # valor_recusado and the record composes no indicator. Both fail the gate: an absence is never approved silently.
     cond = " OR ".join(f"chaves_ausentes LIKE '%\"{c}\"%'" for c in _MONETARIOS)
     ausentes = con.execute(f"SELECT COUNT(*) FROM rp_registro WHERE normalizacao_id=? AND ({cond})", (nid,)).fetchone()[0]
-    portao("campos_monetarios_ausentes", "nenhum registro sem campo monetário (a normalização grava ausência como 0)",
-           ausentes == 0, {"registros": ausentes, "normalizacao": nid})
+    recusas = con.execute("SELECT campo, natureza, COUNT(*) FROM valor_recusado WHERE normalizacao_id=? GROUP BY 1, 2 "
+                          "ORDER BY 1, 2", (nid,)).fetchall()
+    recusados = con.execute("SELECT COUNT(*) FROM (SELECT DISTINCT resposta_id, indice FROM valor_recusado WHERE "
+                            "normalizacao_id=?)", (nid,)).fetchone()[0]
+    portao("campos_monetarios_ausentes", "nenhum registro com campo monetário ausente, nulo ou inválido (recusado na "
+           "normalização v2; na v1, gravado como 0)", ausentes == 0 and recusados == 0,
+           {"registros": ausentes + recusados, "gravados_como_zero_v1": ausentes, "recusados_v2": recusados,
+            "campos_recusados": {f"{c}:{n}": q for c, n, q in recusas}, "normalizacao": nid,
+            "nota": "um retrato com valor recusado nunca é o vigente (VALOR-RECUSADO): vale o retrato válido anterior "
+                    "do corte, ou o dado fica indisponível. Analise a resposta da API antes de recoletar"})
 
     desconhecidos = con.execute("SELECT COUNT(*) FROM movimentacao_interpretada WHERE derivacao_id=? AND "
                                 "efeito='desconhecido'", (did_atual,)).fetchone()[0]
