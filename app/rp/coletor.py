@@ -10,6 +10,10 @@ Business rules the collector guarantees (stage 02 sections 8 and 11; stage 03 se
   * `dataFinal` must be in the same year as the fiscal year (years are never mixed);
   * pagination until `last`, checking that `totalElements` does not change between pages and that the sum of the
     pages never exceeds it (a server that ignores `page` cannot trap the collector in a loop);
+  * strict contract (contrato.py v2, 09/10/2026): every page brings all the Spring Page metadata with its type, and
+    every record of the RP listing / movement list brings exactly the known keys with their types. A missing or
+    extra key, a null money field or another type makes the snapshot 'incompleta' with the reason: a change of
+    structure is never absorbed, and a missing money field never becomes zero further down;
   * page contract checked (audit COL-02/03): integer `totalElements`, `number` = requested page,
     `numberOfElements` = size of `content`, `content` not larger than the echoed `size`, consistent `totalPages`;
     consistent `first` and `empty` (review, item 2; present and consistent in the 322 real pages recorded);
@@ -127,11 +131,12 @@ class Coletor:
                  s["snapshot_uid"][:8], status, s["respostas"], s["coleta_id"])
         return s
 
-    def _paginado(self, endpoint, params, chave=None):
+    def _paginado(self, endpoint, params, chave=None, registro=None):
         """All pages of an endpoint in the Spring Page format. Returns (respostas, status, observacoes, segunda_leitura).
         `chave`: function of the record whose sequence cannot decrease and must grow at the page boundary (RP
         listing); with it, the BUSINESS key (contrato.chave_negocio) cannot repeat in the snapshot either - neither
-        across pages (shifted pagination) nor within a page (the API itself repeated it)."""
+        across pages (shifted pagination) nor within a page (the API itself repeated it).
+        `registro`: contract of each record (contrato.contrato_registro_*), checked before anything else uses it."""
         respostas, obs, total, paginas, soma, pagina = [], [], None, None, 0, 0
         vistos, ultima = set(), None
         primeira = {}        # business key -> canonical form of the first occurrence
@@ -154,6 +159,12 @@ class Coletor:
                     raise TypeError("content nao e lista")
             except (ValueError, KeyError, TypeError, RecursionError) as e:
                 return fim("falhou", f"página {pagina}: resposta não é uma página JSON ({e})")
+            problema = contrato.contrato_pagina(d)
+            if problema is None and registro is not None:
+                problema = next((f"registro {i}: {p}" for i, p in ((i, registro(x)) for i, x in enumerate(conteudo))
+                                 if p), None)
+            if problema:
+                return fim("incompleta", f"página {pagina}: contrato da API ({contrato.VERSAO}) não atendido: {problema}")
             if pagina == 0:
                 total, paginas = d.get("totalElements"), d.get("totalPages")
                 if not _inteiro(total) or total < 0:      # without a total, the ceiling by sum does not apply (audit COL-03)
@@ -244,7 +255,7 @@ class Coletor:
         params = {"entidade": int(entidade), "exercicio": int(exercicio), "dataInicial": f"{exercicio}-01-01",
                   "dataFinal": data_final, "size": TAMANHO_PAGINA, "sort": list(contrato.ORDEM_RP)}
         inicio = agora()
-        respostas, status, obs, segunda = self._paginado(EP_RP, params, chave_rp)
+        respostas, status, obs, segunda = self._paginado(EP_RP, params, chave_rp, contrato.contrato_registro_rp)
         obs = self._fora_do_catalogo(int(entidade), int(exercicio)) + obs
         return self._snapshot("rp_listagem", EP_RP, params, respostas, status, inicio, obs, segunda)
 
@@ -288,14 +299,14 @@ class Coletor:
             raise ParametroInvalido(f"snapshot {uid} usa parâmetros fora da regra de produção (tipo/dataInicial): "
                                     "não é recoletado para não criar corte proibido")
         inicio = agora()
-        respostas, status, obs, segunda = self._paginado(EP_RP, params, chave_rp)
+        respostas, status, obs, segunda = self._paginado(EP_RP, params, chave_rp, contrato.contrato_registro_rp)
         return self._snapshot("rp_listagem", EP_RP, params, respostas, status, inicio, [f"recoleta de {uid}"] + obs,
                               segunda)
 
     def movimentacao(self, entidade, anoempenho, empenho):
         params = {"entidade": int(entidade), "exercicio": int(anoempenho), "empenho": int(empenho), "size": 500}
         inicio = agora()
-        respostas, status, obs, segunda = self._paginado(EP_MOV, params)
+        respostas, status, obs, segunda = self._paginado(EP_MOV, params, registro=contrato.contrato_registro_mov)
         meta = {"entidade": int(entidade), "anoempenho": int(anoempenho), "empenho": int(empenho), "size": 500}
         return self._snapshot("movimentacao", EP_MOV, meta, respostas, status, inicio, obs, segunda)
 

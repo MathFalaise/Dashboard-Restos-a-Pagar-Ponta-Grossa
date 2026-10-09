@@ -127,7 +127,9 @@ def test_API08_last_incorreto_e_totais_inconsistentes(ambiente):
     p.chamadas.clear()
     p.rotas[(EP_RP, "0")] = [(200, json.dumps({"content": [REG(1)], "last": False}).encode())]
     s = _listar(ambiente)
-    assert s["status"] == "incompleta" and len(p.chamadas) == 1 and "totalElements ausente" in s["observacao"]
+    # since the strict contract (rp.contrato v2) the missing metadata is named by the contract check
+    assert s["status"] == "incompleta" and len(p.chamadas) == 1
+    assert "metadados de página ausentes" in s["observacao"] and "totalElements" in s["observacao"]
     # totalPages inconsistent with total and size
     p.chamadas.clear()
     p.rotas[(EP_RP, "0")] = [(200, _pag([REG(1)], 0, 1, True, 7, size=2000))]
