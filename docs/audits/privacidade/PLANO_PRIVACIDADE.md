@@ -35,6 +35,18 @@ Os mesmos conteúdos existem em caminhos antigos, anteriores à reorganização 
 - Dois relatórios citavam um fragmento real de CPF mascarado. Foi trocado por um exemplo sintético num commit
   normal (não reescreve o histórico).
 
+### Informação desnecessária fora de `data/` (revisão da fase F)
+
+- **Nome de usuário local:** o caminho local da máquina de trabalho, com o nome de usuário do Windows, aparece em 24
+  arquivos de documentação e de evidência da etapa 04, por exemplo `PLAN.md`, `REPORT_04_1.md` e o campo `backup` de
+  `batches/LOTE_*.json`.
+- **Natureza:** não é dado de credor.
+- **Por que não foi editado:** são registros de evidência de etapas homologadas. Pode ser trocado num commit normal
+  (só para o futuro) ou também no histórico, com `git filter-repo --replace-text` junto da Etapa 3. A decisão é do
+  responsável.
+- **Arquivos criados por esta correção:** não contêm caminho local (as saídas de `docs/audits/rreo/` gravam só o nome
+  do arquivo do banco).
+
 ### Natureza
 
 São dados que o próprio Portal da Transparência publica. Mesmo assim, o repositório não precisa deles para os
