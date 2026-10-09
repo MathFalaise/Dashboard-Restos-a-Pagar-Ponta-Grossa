@@ -201,6 +201,13 @@ Nenhuma nos dados reais: os dois hashes homologados se mantêm. A regra nova só
 "como estava em" num instante entre o início e a conclusão de uma coleta. Nos dados atuais isso cobre janelas de no
 máximo 94 segundos, e nenhuma delas contém um instante já usado por derivação homologada.
 
+### Revisão da fase B
+
+- `consultas.snapshot_em` e `vigencia.coletas_vigentes` aceitavam um `em` fora da forma canônica. Uma data sem
+  hora, outro fuso ou um horário sem fuso seria comparado como texto, e o resultado sairia errado. O filtro de
+  disponibilidade agora passa sempre o instante por `rp.instante`, o que vale para todo uso. Teste:
+  `test_tempo_retratos::test_SINTETICO_instante_nao_canonico_e_normalizado_no_filtro`.
+
 ### Limitações registradas
 
 - 145 retratos importados das Etapas 01/02 têm conclusão pela data do arquivo (`aproximada`). Uma consulta "como
