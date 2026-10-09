@@ -250,17 +250,18 @@ def test_servidor_que_ignora_page_nao_prende_o_coletor(ambiente):
     # Two DISTINCT records on the page (critical review, item 2): with two copies of the same key, page 0 would already be
     # refused for the repeated key and the test would not reach the lock it proves.
     dois = [_registro(empenho=7, aproc=1), _registro(empenho=8, aproc=1)]
-    p.rotas[(EP_RP, None)] = [(200, pagina(dois, 0, 5, False, None))]
+    p.rotas[(EP_RP, None)] = [(200, pagina(dois, 0, 5, False, 3))]
     s = ambiente["coletor"].listagem(998, 2026, "2026-12-31")
     # audit COL-02: page 1 comes back with number=0 and is refused on the second call (before: 3 calls, by the sum)
     assert s["status"] == "incompleta" and len(p.chamadas) == 2
     assert "devolveu a página number=0" in s["observacao"]
-    # without `number` in the response, the old lock still holds: 2 + 2 + 2 = 6 > 5 on the third page
+    # without `number` (and totalPages) in the response: since the strict contract (rp.contrato v2) the first page
+    # is already refused for the missing metadata, so the collector cannot loop (before: the sum lock, <= 3 calls)
     p.chamadas.clear()
     dois = [dict(r, entidade=997) for r in dois]    # records of the queried entity (critical review, item 15)
     p.rotas[(EP_RP, None)] = [(200, json.dumps({"content": dois, "totalElements": 5, "last": False}).encode())]
     s = ambiente["coletor"].listagem(997, 2026, "2026-12-31")
-    assert s["status"] == "incompleta" and len(p.chamadas) <= 3
+    assert s["status"] == "incompleta" and len(p.chamadas) == 1 and "metadados de página ausentes" in s["observacao"]
 
 
 def test_id_de_arquivo_que_nao_e_inteiro_nao_entra_na_url(ambiente):

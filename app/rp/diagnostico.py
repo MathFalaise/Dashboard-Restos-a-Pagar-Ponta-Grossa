@@ -6,7 +6,8 @@ serves as a reference) and the store is not even opened.
 
 It checks, with the same code as the collector (contrato.py and coletor.conferir_pagina):
   * the entity catalog and the entity's fiscal year catalog: minimum contract;
-  * the first, small page of a cut-off's RP listing: HTTP 200, Spring page, integer totalElements, page contract,
+  * the first, small page of a cut-off's RP listing: HTTP 200, Spring page, the STRICT contract (contrato.py v2:
+    every page metadata field with its type, every record with exactly the known keys and types), page contract,
     echo of the requested order (here the echo is REQUIRED: without it the order cannot be checked), records of
     the requested entity, an order (anoempenho, empenho) that does not decrease and a business key without
     repetition;
@@ -111,6 +112,14 @@ def _conferir_listagem(entidade, tamanho):
             return ["a resposta não é uma página JSON com 'content' em lista"], []
         conteudo, total, paginas = d["content"], d.get("totalElements"), d.get("totalPages")
         problemas = []
+        estrito = contrato.contrato_pagina(d)
+        if estrito:
+            problemas.append(f"contrato da API ({contrato.VERSAO}): {estrito}")
+        fora = [f"registro {i}: {p}" for i, p in ((i, contrato.contrato_registro_rp(x)) for i, x in enumerate(conteudo))
+                if p]
+        if fora:
+            problemas.append(f"contrato da API ({contrato.VERSAO}): {len(fora)} registro(s) fora do contrato; "
+                             f"ex.: {'; '.join(fora[:3])}")
         if not _inteiro(total) or total < 0:
             problemas.append(f"totalElements ausente ou não inteiro: {total!r}")
         if paginas is not None and (not _inteiro(paginas) or paginas < 0):
