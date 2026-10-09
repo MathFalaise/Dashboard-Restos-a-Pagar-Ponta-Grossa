@@ -12,7 +12,7 @@ Ordem aprovada pelo responsável pelo projeto em 09/10/2026:
 | C | 1 (integridade relacional), 7 (proveniência e hashes) | feita (suíte: 616 passed) |
 | D | 9 (homologação única), 10 (desempenho) | feita (suíte: 627 passed) |
 | E | 5 (pares 1 ↔ 15), 6 (RREO) | feita (suíte: 638 passed + 1 teste ajustado, passa) |
-| F | 8 (privacidade do repositório) | pendente; reescrita de histórico só com autorização explícita |
+| F | 8 (privacidade do repositório) | inventário, plano e prova feitos; remoção do histórico **não executada** (aguarda autorização) |
 
 ## Fase A: contrato da API e campo monetário ausente
 
@@ -540,3 +540,38 @@ Cópia nova do banco ativo, migrada para a v8 e processada com o extrator v2:
   reconciliação, então também é decisão do responsável.
 - **Natureza dos pares e origem da diferença original de 2026:** dependem da resposta oficial (e-SIC versão 3, não
   enviado).
+
+## Fase F: privacidade do repositório público
+
+Documento completo: `docs/audits/privacidade/PLANO_PRIVACIDADE.md`.
+
+**Inventário (fatos de 09/10/2026).** O repositório é público, com 0 forks, 77 commits e as tags `etapa-04-final`
+e `etapa-05-final`. Ficam versionados, com dado de credor (nome e CPF de pessoa física mascarado pela própria API):
+- `data/snapshots`: 841 arquivos;
+- `data/stage02-raw`: 239 arquivos;
+- `data/stage01-samples`: 23 arquivos, entre eles um CSV com 1.025 CPFs mascarados;
+- `data/backups`: 4 bancos SQLite.
+
+Os mesmos conteúdos estão no histórico em caminhos antigos (`snapshots/`, `etapa01/amostras_brutas`,
+`etapa02/dados_brutos`, `backups/`). Fora de `data/`, nenhum dos 5.715 nomes de pessoa física aparece em código,
+testes ou documentos. Os testes usam nomes inventados.
+
+**Feito sem reescrever nada:**
+- **Fragmento de CPF:** o fragmento real de CPF mascarado citado em dois relatórios foi trocado por um exemplo
+  sintético (commit `02dec6d`).
+- **Prova dos testes sem o bruto:** o código exportado sem `data/` roda
+  `pytest -m "not dados_reais"` → `469 passed, 1 skipped` (o pulado depende de `.git`, não de dados). O CI já pula os
+  passos com dados reais quando o bruto não está no repositório.
+
+**Plano proposto, não executado:**
+1. Copiar o bruto e os backups para um local privado, com conferência por `verificar`, `raiz` e as listas SHA-256.
+2. Parar de publicar com `git rm --cached` (precisa de push: autorização).
+3. Retirar do histórico com `git filter-repo` num clone espelho, seguido de force push. Isso é irreversível para
+   quem já clonou: muda os 77 SHAs, exige recriar as duas tags (conflita com a regra de não mover tags) e exige
+   pedido ao GitHub Support para remover as referências dos PRs #1 a #19.
+4. Conferência final pela API.
+
+A alternativa é tornar o repositório privado (mudança de visibilidade, só com autorização).
+
+**Situação:** a privacidade **não** está resolvida. O histórico público continua com os dados até a decisão do
+responsável.

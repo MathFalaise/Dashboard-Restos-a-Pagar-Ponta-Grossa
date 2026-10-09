@@ -107,4 +107,10 @@ homologados.
 
 ## 5. Prova: testes sem o bruto
 
-Registrada na validação desta fase (`docs/audits/CORRECOES_20261009.md`, fase F).
+O código do commit `b547bb6` foi exportado com `git archive HEAD`, sem a pasta `data/`, e testado sem nenhum dado
+real:
+```bash
+python -m pytest tests -q -p no:cacheprovider -m "not dados_reais"
+```
+Resultado: `469 passed, 1 skipped, 169 deselected in 132.76s`. O teste pulado (`test_decisoes_revisao.py:96`, "sem
+git/repositorio") precisa da pasta `.git`, que a exportação não tem; não depende de dados.
