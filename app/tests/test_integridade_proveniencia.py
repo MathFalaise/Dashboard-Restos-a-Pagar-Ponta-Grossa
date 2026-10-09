@@ -218,3 +218,19 @@ def test_banco_v7_migra_para_v8_preenchendo_relacoes_e_hashes(tmp_path, monkeypa
     from rp import proveniencia as prov
     assert all(v == 0 for k, v in prov.conferir(con, did).items() if k != "valores")
     con.close()
+
+
+# ------------------------------------------------------------------ review of phase C
+def test_SINTETICO_comparar_bancos_ve_tempo_e_hash_de_manifesto(mundo, tmp_path):
+    from rp import equivalencia
+    _processado(mundo)
+    mundo.con.commit()
+    copia = sqlite3.connect(tmp_path / "copia.sqlite")
+    mundo.con.backup(copia)
+    r = equivalencia.comparar(mundo.con, copia)
+    assert r["equivalentes"] and r["complementos_camada0_iguais"] == {"coleta_tempo": True, "coleta_manifesto": True}
+    copia.execute("DROP TRIGGER coleta_manifesto_sem_update")           # an edit made outside the code
+    copia.execute("UPDATE coleta_manifesto SET tamanho = tamanho + 1")
+    r = equivalencia.comparar(mundo.con, copia)
+    assert not r["equivalentes"] and r["complementos_camada0_iguais"]["coleta_manifesto"] is False
+    copia.close()

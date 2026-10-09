@@ -309,6 +309,17 @@ Cópia do banco ativo, com o script `scratchpad/verificar_fase.py` e as conferê
 
 Nenhuma: os dois hashes homologados se mantêm.
 
+### Revisão da fase C
+
+- O `comparar-bancos` não comparava as tabelas que vêm do armazém junto da camada bruta (`coleta_tempo`, v7, e
+  `coleta_manifesto`, v8). Dois bancos com tempos ou hashes de manifesto diferentes sairiam como equivalentes. Agora
+  elas entram em `complementos_camada0_iguais`. Um banco sem a tabela fica "não comparável", nunca "igual". Teste:
+  `test_integridade_proveniencia::test_SINTETICO_comparar_bancos_ve_tempo_e_hash_de_manifesto`.
+- Prova com os dados reais: a cópia do banco ativo migrada v5 → v8 (tempos e hashes lidos dos manifestos) contra um
+  banco montado do zero pelo armazém com o código atual (`banco.reconstruir`) dá `equivalentes: true`. Batem a
+  camada bruta, os dois complementos, as 7 tabelas da normalização (as duas na v2) e as duas vigências (`b6f80d87…`
+  e `b8a0b2ed…`).
+
 ### Pendências
 
 - O manifesto-raiz precisa ser guardado **fora** do banco e do armazém pelo responsável. A escolha do lugar (disco,

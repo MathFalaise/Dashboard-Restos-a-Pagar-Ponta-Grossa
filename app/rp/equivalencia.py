@@ -63,6 +63,24 @@ def camada0(con):
     return {**n, "hash": h.hexdigest()}
 
 
+def complementos_camada0(con):
+    """Fingerprint of the rows that come from the store next to layer 0: start/conclusion of each collection (v7) and
+    each manifest's hash (v8), by snapshot_uid. None for a table this schema does not have (not comparable)."""
+    saida = {}
+    for tabela, cols in (("coleta_tempo", "t.inicio_em, t.concluida_em, t.fonte_conclusao, t.precisao"),
+                         ("coleta_manifesto", "t.sha256, t.tamanho")):
+        if not con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (tabela,)).fetchone():
+            saida[tabela] = None
+            continue
+        h, n = _h(), 0
+        for row in con.execute(f"SELECT c.snapshot_uid, {cols} FROM {tabela} t JOIN coleta c ON c.id = t.coleta_id "
+                               "ORDER BY c.snapshot_uid"):
+            _atualizar(h, list(row))
+            n += 1
+        saida[tabela] = {"linhas": n, "hash": h.hexdigest()}
+    return saida
+
+
 def normalizacao(con, nid=None):
     """Fingerprint of each layer 1 table of a normalization (default: the most recent)."""
     if nid is None:
@@ -107,13 +125,17 @@ def derivacoes(con):
 
 
 def resumo(con):
-    return {"camada0": camada0(con), "normalizacao": normalizacao(con), "derivacoes": derivacoes(con)}
+    return {"camada0": camada0(con), "complementos_camada0": complementos_camada0(con),
+            "normalizacao": normalizacao(con), "derivacoes": derivacoes(con)}
 
 
 def comparar(con_a, con_b):
     """Compares two databases layer by layer. `equivalentes` is only True if everything is equal."""
     a, b = resumo(con_a), resumo(con_b)
     c0 = a["camada0"] == b["camada0"]
+    # v7/v8 rows from the store: compared when both databases have them; one without the table is "not comparable"
+    comp = {t: (None if a["complementos_camada0"][t] is None or b["complementos_camada0"][t] is None
+                else a["complementos_camada0"][t] == b["complementos_camada0"][t]) for t in a["complementos_camada0"]}
     na, nb = a["normalizacao"] or {}, b["normalizacao"] or {}
     tabelas = {t: (na.get("tabelas", {}).get(t) == nb.get("tabelas", {}).get(t)) for t in _TABELAS_1}
     norm = na.get("normalizador_versao") == nb.get("normalizador_versao") and all(tabelas.values())
@@ -124,7 +146,7 @@ def comparar(con_a, con_b):
     # same financial result even when only the diagnostics differ (check text, anomaly detail)
     semantica = {v: (a["derivacoes"].get(v, {}).get("hash_semantico") == b["derivacoes"].get(v, {}).get("hash_semantico")
                      and a["derivacoes"].get(v, {}).get("hash_semantico") is not None) for v in vigs}
-    return {"equivalentes": c0 and norm and all(der.values()) and integras,
-            "camada0_igual": c0, "normalizacao_igual": norm, "normalizacao_por_tabela": tabelas,
+    return {"equivalentes": c0 and norm and all(der.values()) and integras and all(v is not False for v in comp.values()),
+            "camada0_igual": c0, "complementos_camada0_iguais": comp, "normalizacao_igual": norm, "normalizacao_por_tabela": tabelas,
             "derivacao_igual_por_vigencia": der, "resultado_semantico_igual_por_vigencia": semantica,
             "hash_gravado_confere_nos_dois": integras, "a": a, "b": b}
