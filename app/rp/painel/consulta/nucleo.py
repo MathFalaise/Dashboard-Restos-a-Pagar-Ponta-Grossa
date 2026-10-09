@@ -75,17 +75,19 @@ class Nucleo:
                 "painel": VERSAO}
 
     def _ambiguas(self, ctx):
-        """Collections with a repeated key (CHAVE-DUP) in the context's derivation: never the current snapshot. The current
-        derivation covers all complete collections, including the ones before any `em`."""
+        """{collection: anomaly type} of the collections that are never the current snapshot in the context's
+        derivation: repeated key (CHAVE-DUP) or refused money field (VALOR-RECUSADO). The current derivation covers
+        all complete collections, including the ones before any `em`."""
         did = ctx["derivacao"]["id"]
         if getattr(self, "_ambiguas_de", None) != did:
-            self._ambiguas_de, self._ambiguas_cache = did, vigencia.coletas_ambiguas(self.con, did)
+            self._ambiguas_de, self._ambiguas_cache = did, vigencia.coletas_recusadas(self.con, did)
         return self._ambiguas_cache
 
     def _vigentes(self, ctx, em):
         """Current snapshot of each listing cut-off: the single rule of `vigencia.coletas_vigentes` (the same as the
         derivation's), restricted to the snapshots the context's normalization processed."""
-        return vigencia.coletas_vigentes(self.con, em, excluir=self._ambiguas(ctx), limite_coleta=ctx["limite_coleta"])
+        return vigencia.coletas_vigentes(self.con, em, excluir=frozenset(self._ambiguas(ctx)),
+                                         limite_coleta=ctx["limite_coleta"])
 
     def _cortes_ambiguos(self, ctx, em):
         """Cut-offs (entidade, exercicio, data_inicial, data_final) with a snapshot processed up to `em` that has a repeated
@@ -94,7 +96,7 @@ class Nucleo:
         amb = self._ambiguas(ctx)
         if not amb:
             return set()
-        filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        filtro, p = vigencia.filtro_disponivel(em, "coleta")
         return {tuple(r) for r in self.con.execute(
             f"SELECT entidade, exercicio, data_inicial, data_final FROM coleta WHERE id IN ({','.join('?' * len(amb))}) "
             "AND tipo='rp_listagem' AND tipo_pesquisa IS NULL AND status='completa' AND id <= ?" + filtro,
@@ -105,16 +107,18 @@ class Nucleo:
         previous valid one, or None. Only queries the database if there is an ambiguous collection."""
         if not self._ambiguas(ctx):
             return None
-        filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        filtro, p = vigencia.filtro_disponivel(em, "coleta")
         mais_novo = self.con.execute(
             "SELECT id, snapshot_uid, coletada_em FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND "
             "status='completa' AND entidade=? AND exercicio=? AND data_inicial=? AND data_final=? AND id <= ?" + filtro +
-            " ORDER BY coletada_em DESC, snapshot_uid DESC LIMIT 1",
+            " ORDER BY " + vigencia.ordem("coleta", desc=True) + " LIMIT 1",
             (e, exercicio, di, data_final, ctx["limite_coleta"], *p)).fetchone()
         if not mais_novo or mais_novo[0] == usado or mais_novo[0] not in self._ambiguas(ctx):
             return None
+        motivo = ("tem chave de empenho repetida (CHAVE-DUP)" if self._ambiguas(ctx)[mais_novo[0]] == "CHAVE-DUP"
+                  else "tem campo monetário ausente, nulo ou inválido (VALOR-RECUSADO)")
         return (f"entidade {e}: o retrato mais novo do corte (snapshot {mais_novo[1][:8]}, coletado em "
-                f"{_data_br(mais_novo[2])}) tem chave de empenho repetida (CHAVE-DUP) e não é usado"
+                f"{_data_br(mais_novo[2])}) {motivo} e não é usado"
                 + ("; vale o retrato válido anterior" if usado else "; não há retrato válido anterior"))
 
     def _pendentes(self, ctx):
@@ -126,11 +130,11 @@ class Nucleo:
         """Entity catalog and, per entity, the fiscal year catalog: the most recent snapshots up to `em` (same choice as
         derivar._entidades_do_catalogo), among the processed ones."""
         nid, lim = ctx["normalizacao"]["id"], ctx["limite_coleta"]
-        filtro, p = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        filtro, p = vigencia.filtro_disponivel(em, "coleta")
         ents, snap_ent = {}, None
         c = self.con.execute("SELECT id, snapshot_uid, coletada_em FROM coleta WHERE tipo='entidades' AND "
-                             "status='completa' AND id <= ?" + filtro + " ORDER BY coletada_em DESC, snapshot_uid DESC "
-                             "LIMIT 1", (lim, *p)).fetchone()
+                             "status='completa' AND id <= ?" + filtro + " ORDER BY " + vigencia.ordem("coleta", desc=True) +
+                             " LIMIT 1", (lim, *p)).fetchone()
         if c:
             snap_ent = {"snapshot_uid": c[1], "coletada_em": c[2]}
             for e, nome, cnpj, tipo in self.con.execute("SELECT entidade, nome, cnpj, tipo FROM entidade_ref "
@@ -139,7 +143,7 @@ class Nucleo:
         exerc = {}
         for e, cid, uid, quando in self.con.execute(
                 "SELECT entidade, id, snapshot_uid, coletada_em FROM coleta WHERE tipo='exercicios' AND "
-                "status='completa' AND id <= ?" + filtro + " ORDER BY coletada_em, snapshot_uid", (lim, *p)):
+                "status='completa' AND id <= ?" + filtro + " ORDER BY " + vigencia.ordem("coleta"), (lim, *p)):
             exerc[e] = {"coleta_id": cid, "snapshot_uid": uid, "coletada_em": quando}   # the most recent one stays
         for info in exerc.values():
             info["exercicios"] = sorted(x for (x,) in self.con.execute(
@@ -184,14 +188,15 @@ class Nucleo:
         """Why an entity has no processed snapshot at the cut-off: never collected, collected and not yet processed, or
         only incomplete/failed collections. Looks at every collection of the cut-off up to `em` (including the ones
         after the normalization in use)."""
-        filtro_em, p_em = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        filtro_em, p_em = vigencia.filtro_disponivel(em, "coleta")
         linhas = self.con.execute(
             "SELECT id, status FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND entidade=? AND "
             "exercicio=? AND data_inicial=? AND data_final=?" + filtro_em, (e, exercicio, di, data_final, *p_em)).fetchall()
         if any(st == "completa" and cid > ctx["limite_coleta"] for cid, st in linhas):
             return "nao_processado"
-        if any(st == "completa" and cid in self._ambiguas(ctx) for cid, st in linhas):
-            return "ambiguo"
+        recusadas = [self._ambiguas(ctx)[cid] for cid, st in linhas if st == "completa" and cid in self._ambiguas(ctx)]
+        if recusadas:
+            return "ambiguo" if "CHAVE-DUP" in recusadas else "valor_recusado"
         if any(st != "completa" for _, st in linhas):
             return "incompleto"
         return "sem_coleta"
@@ -205,7 +210,7 @@ class Nucleo:
                     and df == data_final}
         universo = [entidade] if entidade is not None else sorted(set(cat["entidades"]) | com_snapshot | ambiguas)
         itens, somar, faltam, fora, avisos = [], [], [], [], []
-        filtro_em, p_em = (" AND coletada_em <= ?", (em,)) if em else ("", ())
+        filtro_em, p_em = vigencia.filtro_disponivel(em, "coleta")
         for e in universo:
             status = self._status_no_exercicio(cat, e, exercicio)
             cid = vig.get((e, exercicio, di, data_final))
@@ -220,10 +225,16 @@ class Nucleo:
                         "AND entidade=? AND exercicio=? AND data_inicial=? AND data_final=? AND id > ?" + filtro_em,
                         (e, exercicio, di, data_final, ctx["limite_coleta"], *p_em)).fetchone())}
             if cid is not None:
-                uid, quando = self.con.execute("SELECT snapshot_uid, coletada_em FROM coleta WHERE id=?", (cid,)).fetchone()
+                uid, quando, concluida, precisao = self.con.execute(
+                    "SELECT c.snapshot_uid, c.coletada_em, t.concluida_em, t.precisao FROM coleta c LEFT JOIN "
+                    "coleta_tempo t ON t.coleta_id = c.id WHERE c.id=?", (cid,)).fetchone()
                 n = self.con.execute("SELECT COUNT(*) FROM rp_registro WHERE normalizacao_id=? AND coleta_id=?",
                                      (ctx["normalizacao"]["id"], cid)).fetchone()[0]
-                item["snapshot"] = {"snapshot_uid": uid, "coletada_em": quando, "registros": n}
+                item["snapshot"] = {"snapshot_uid": uid, "coletada_em": quando, "concluida_em": concluida,
+                                    "precisao_temporal": precisao, "registros": n}
+                if em and precisao == "aproximada":     # item 4: the limitation is shown, never hidden
+                    avisos.append(f"entidade {e}: o horário de conclusão do retrato {uid[:8]} é aproximado (data do "
+                                  "arquivo, Etapas 01/02): a escolha 'como estava em' perto dessa data é aproximada")
             recusado = self._retrato_recusado(ctx, e, exercicio, di, data_final, em, cid)
             if recusado:
                 avisos.append(recusado)

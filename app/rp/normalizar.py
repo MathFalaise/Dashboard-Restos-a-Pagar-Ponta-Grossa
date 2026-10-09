@@ -1,9 +1,12 @@
 """Layer 1 - normalization: faithful typing of the raw data, WITHOUT interpretation.
 
 Guarantees (stage 04.2 gate):
-  * each item of content[] becomes exactly one row, at its source position (response, index);
+  * each item of content[] becomes exactly one row of rp_registro, at its source position (response, index) - or,
+    when a money field is missing, null or invalid, one row of valor_recusado PER refused field and no rp_registro
+    row (v2, 09/10/2026). A missing money field is never typed as zero: before v2 `r.get(campo, 0)` made it 0;
   * nothing is discarded, merged or invented; a missing key is recorded in `chaves_ausentes`;
-  * money becomes cents; a value with more than 2 decimal places is an ERROR (never rounded);
+  * money becomes cents; a value with more than 2 decimal places is never rounded: it is refused as 'invalido'
+    (before v2 it stopped the whole normalization), and so is a non-number (text, boolean);
   * a response that is not a valid page (failed snapshot) produces no rows and is counted;
   * a catalog (entities/fiscal years) with an unexpected structure produces no rows and goes to `problemas`;
   * each RREO PDF leaves a row in rreo_extracao (extractor, PyMuPDF/MuPDF version, SHA-256, file id, extraction
@@ -18,12 +21,17 @@ import re
 from datetime import date
 from decimal import Decimal
 
-from . import agora, banco
+from . import agora, ambiente, banco, hash_do_codigo
 
 log = logging.getLogger("rp.normalizar")
 
-VERSAO = "rp-normalizador/1"
-EXTRATOR_RREO = "rp-rreo-coordenadas/1"
+VERSAO = "rp-normalizador/2"
+# v2 (09/10/2026, correction request item 6): a recognized row is transcribed whole or not at all (12 numbers, each one
+# between the neighbouring column labels), and the document's own arithmetic must close (e = a + b - c - d,
+# k = f + g - i - j, L = e + k in every row; TOTAL (III) = (I) + (II)). v1 assigned each number to the NEAREST column
+# label and accepted two equal numbers in one cell: in 31 PDFs the all-zero "INTRA" row lost its column (e) in
+# silence (the right-aligned "0,00" of (e) is nearer to the label of (f)).
+EXTRATOR_RREO = "rp-rreo-coordenadas/2"
 
 BASE = ["entidade", "empenho", "anoempenho", "empenhoExercicio", "cnpjNome", "dataEmissao", "programatica",
         "fonteRecurso", "descricaoFonte", "fornecedor", "nome", "cnpj", "proc", "aproc", "canceladoProc",
@@ -36,6 +44,7 @@ DINHEIRO = ["proc", "aproc", "canceladoProc", "pagoProc", "pagoProcEstornado", "
             "pagoAProc", "pagoAProcEstornado", "liquidado", "retencao"]
 
 SQL_RP = "INSERT INTO rp_registro VALUES (" + ",".join("?" * 37) + ")"
+SQL_RECUSA = "INSERT INTO valor_recusado VALUES (?,?,?,?,?,?,?,?,?,?)"
 SQL_MOV = "INSERT INTO movimentacao_lancamento VALUES (" + ",".join("?" * 18) + ")"
 # No OR IGNORE (critical review, item 11): a repeated cell with the SAME value no longer gets here (_rreo writes a
 # single row) and a different value becomes LayoutDesconhecido; any other key conflict is an error, never ignored.
@@ -67,6 +76,30 @@ def centavos(v):
     return int(q * 100)
 
 
+def valores_recusados(r):
+    """[(api field, nature, raw value as JSON text or None)] of the money fields of an RP record that cannot be typed:
+    'ausente' (key missing), 'nulo' (null), 'invalido' (not a number, or more than 2 decimal places). [] = all valid."""
+    saida = []
+    for campo in DINHEIRO:
+        if campo not in r:
+            saida.append((campo, "ausente", None))
+        elif r[campo] is None:
+            saida.append((campo, "nulo", None))
+        elif isinstance(r[campo], bool) or not isinstance(r[campo], (int, float, Decimal)):
+            saida.append((campo, "invalido", _json_bruto(r[campo])))
+        else:
+            try:
+                centavos(r[campo])
+            except ValorNaoRepresentavel:
+                saida.append((campo, "invalido", _json_bruto(r[campo])))
+    return saida
+
+
+def _json_bruto(v):
+    """The raw value as JSON text; a Decimal (number parsed from the response) keeps its digits as a JSON number."""
+    return str(v) if isinstance(v, Decimal) else json.dumps(v, ensure_ascii=False, default=str)
+
+
 def _pagina(corpo):
     try:
         d = json.loads(corpo, parse_float=Decimal)
@@ -86,12 +119,15 @@ def _lista_json(corpo):
 
 def normalizar(con):
     """New normalization run over all the raw data. Returns (id, summary)."""
-    resumo = {"respostas": 0, "ignoradas_sem_pagina": 0, "rp_registro": 0, "movimentacao_lancamento": 0,
-              "rreo_valor": 0, "problemas": []}
+    resumo = {"respostas": 0, "ignoradas_sem_pagina": 0, "rp_registro": 0, "registros_recusados": 0,
+              "valores_recusados": 0, "movimentacao_lancamento": 0, "rreo_valor": 0, "problemas": []}
     with con:
         ultima = con.execute("SELECT IFNULL(MAX(id), 0) FROM coleta").fetchone()[0]
         nid = con.execute("INSERT INTO normalizacao_execucao (normalizador_versao, executada_em, ultima_coleta_id) "
                           "VALUES (?,?,?)", (VERSAO, agora(), ultima)).lastrowid
+        if banco._tem_coluna(con, "normalizacao_execucao", "sha256_codigo"):    # v8: which code, which environment
+            con.execute("UPDATE normalizacao_execucao SET sha256_codigo=?, ambiente_json=? WHERE id=?",
+                        (hash_do_codigo(), json.dumps(ambiente(), sort_keys=True), nid))
         itens = con.execute("SELECT r.id, r.coleta_id, c.tipo, r.sha256, c.parametros_json, c.entidade, c.anoempenho, "
                             "c.empenho FROM resposta_bruta r JOIN coleta c ON c.id = r.coleta_id WHERE c.id <= ? "
                             "ORDER BY c.coletada_em, c.snapshot_uid, r.ordem", (ultima,)).fetchall()
@@ -103,8 +139,24 @@ def normalizar(con):
                 if conteudo is None:
                     resumo["ignoradas_sem_pagina"] += 1
                     continue
-                con.executemany(SQL_RP, (_linha_rp(nid, rid, i, cid, r) for i, r in enumerate(conteudo)))
-                resumo["rp_registro"] += len(conteudo)
+                linhas, recusas = [], []
+                for i, r in enumerate(conteudo):
+                    ruins = valores_recusados(r)
+                    if ruins:
+                        recusas += [(nid, rid, i, cid, r.get("entidade"), r.get("anoempenho"), r.get("empenho"), *x)
+                                    for x in ruins]
+                        resumo["registros_recusados"] += 1
+                    else:
+                        linhas.append(_linha_rp(nid, rid, i, cid, r))
+                if recusas:   # refusals first: the trigger refuses an rp_registro row at a refused position
+                    con.executemany(SQL_RECUSA, recusas)
+                    resumo["valores_recusados"] += len(recusas)
+                    resumo["problemas"].append({"coleta_id": cid, "resposta_id": rid, "valores_recusados": len(recusas),
+                                                "campos": sorted({x[7] for x in recusas})})
+                    log.warning("coleta %d: %d campo(s) monetário(s) recusado(s) (ausente/nulo/inválido)", cid,
+                                len(recusas))
+                con.executemany(SQL_RP, linhas)
+                resumo["rp_registro"] += len(linhas)
             elif tipo == "movimentacao":
                 conteudo = _pagina(corpo)
                 if conteudo is None:
@@ -157,7 +209,7 @@ def _linha_rp(nid, rid, i, cid, r):
     return (nid, rid, i, cid, r.get("entidade"), r.get("anoempenho"), r.get("empenho"), r.get("empenhoExercicio"),
             r.get("dataEmissao"), r.get("programatica"), r.get("fonteRecurso"), r.get("descricaoFonte"),
             r.get("fornecedor"), r.get("nome"), r.get("cnpj"), r.get("cnpjNome"),
-            *[centavos(r.get(c, 0)) for c in DINHEIRO],
+            *[centavos(r[c]) for c in DINHEIRO],     # all present and valid (valores_recusados): never a default
             r.get("orgao"), r.get("unidade"), r.get("funcao"), r.get("subFuncao"), r.get("programa"),
             r.get("projeto"), r.get("elemento"), r.get("desdobraDesp"), r.get("subDesdobramento"),
             json.dumps(ausentes), json.dumps(extras))
@@ -237,27 +289,66 @@ def _rreo(con, nid, cid, params, corpo):
             y = next((k for k in linhas if abs(k - y0) < 2.5), None)
             if y is not None:
                 rotulo.setdefault(y, []).append(w)
-    # A cell (row, column) can only have ONE value. Two different numbers falling in the same cell (same row, nearest
-    # column; or the same row printed twice) used to be silently dropped (the second one); now the whole PDF is left
-    # untranscribed and the reason recorded (audit NORM-02). Repeating the same value is accepted.
+    # A cell (row, column) can only have ONE value: a row printed twice with another value leaves the whole PDF
+    # untranscribed with the reason (audit NORM-02); the same row printed again with the same values is one row.
     valores, celulas = [], {}
-    for y, vals in linhas.items():
+    for y in sorted(linhas):
         nome = " ".join(rotulo.get(y, []))
         linha = next((l for l in LINHAS if nome.startswith(l)), None)
         if not linha:
             continue
-        vistos = {}
-        for xc, w in vals:
-            c = min(cols, key=lambda k: abs(cols[k] - xc))
-            if vistos.setdefault(c, w) != w:
-                raise LayoutDesconhecido(f"dois números na coluna ({c}) da linha {linha!r}: {vistos[c]} e {w}")
-        for c, w in vistos.items():
+        for c, w in _celulas_da_linha(linhas[y], cols, linha).items():
             ja = celulas.get((linha, c))
             if ja is not None and ja != w:
                 raise LayoutDesconhecido(f"linha {linha!r} repetida com outro valor na coluna ({c}): {ja} e {w}")
             if ja is not None:          # the same row printed again with the same value: a single row (formerly, OR IGNORE)
                 continue
             celulas[(linha, c)] = w
-            valores.append((nid, cid, EXTRATOR_RREO, escopo, ano, data_final, emitido, linha, c,
-                            int(Decimal(w.replace(".", "").replace(",", ".")) * 100)))
+            valores.append((nid, cid, EXTRATOR_RREO, escopo, ano, data_final, emitido, linha, c, _centavos_pt(w)))
+    _conferir_aritmetica(celulas)
     return con.executemany(SQL_RREO, valores).rowcount if valores else 0
+
+
+def _centavos_pt(w):
+    """'1.234,56' -> 123456 (Brazilian number format of the PDF; NUM already checked the shape)."""
+    return int(Decimal(w.replace(".", "").replace(",", ".")) * 100)
+
+
+def _celulas_da_linha(vals, cols, linha):
+    """{column: text} of one recognized row, positionally: the row must have exactly one number per known column, and
+    each number must lie strictly between the labels of the neighbouring columns (measured on the 33 real PDFs: every
+    one of the 161 rows of 12 numbers, smallest slack 24 pt). Anything else is a partial or shifted row: refused."""
+    ordem = sorted(cols, key=cols.get)
+    numeros = sorted(vals)
+    if len(numeros) != len(ordem):
+        raise LayoutDesconhecido(f"linha {linha!r} com {len(numeros)} número(s); o layout conhecido tem {len(ordem)} "
+                                 "colunas: transcrição parcial recusada")
+    xs = [cols[c] for c in ordem]
+    for i, ((xc, w), c) in enumerate(zip(numeros, ordem)):
+        esquerda = xs[i - 1] if i else float("-inf")
+        direita = xs[i + 1] if i + 1 < len(xs) else float("inf")
+        if not esquerda < xc < direita:
+            raise LayoutDesconhecido(f"número {w} da linha {linha!r} fora da faixa da coluna ({c})")
+    return {c: w for (_, w), c in zip(numeros, ordem)}
+
+
+def _conferir_aritmetica(celulas):
+    """The document's own identities (Annex VII): e = a + b - c - d, k = f + g - i - j, L = e + k in every transcribed
+    row, and TOTAL (III) = (I) "EXCETO INTRA" + (II) "INTRA" (absent INTRA = 0). TOTAL and (I) are mandatory. A
+    reading error or another layout breaks them: the PDF is not transcribed (never a partial or inconsistent set)."""
+    por_linha = {}
+    for (linha, c), w in celulas.items():
+        por_linha.setdefault(linha, {})[c] = _centavos_pt(w)
+    for obrigatoria in ("TOTAL (III)", "RESTOS A PAGAR (EXCETO"):
+        if obrigatoria not in por_linha:
+            raise LayoutDesconhecido(f"linha {obrigatoria!r} não encontrada no RREO")
+    for linha, v in por_linha.items():
+        for nome, ok in (("e = a + b - c - d", v["e"] == v["a"] + v["b"] - v["c"] - v["d"]),
+                         ("k = f + g - i - j", v["k"] == v["f"] + v["g"] - v["i"] - v["j"]),
+                         ("L = e + k", v["L"] == v["e"] + v["k"])):
+            if not ok:
+                raise LayoutDesconhecido(f"linha {linha!r} não fecha a identidade {nome} do Anexo VII")
+    intra = por_linha.get("RESTOS A PAGAR (INTRA", {})
+    errada = [c for c, x in por_linha["TOTAL (III)"].items() if x != por_linha["RESTOS A PAGAR (EXCETO"][c] + intra.get(c, 0)]
+    if errada:
+        raise LayoutDesconhecido(f"TOTAL (III) diferente de (I) + (II) nas colunas {sorted(errada)}")

@@ -63,9 +63,12 @@ def test_NORM01_campo_monetario_ausente_reprova_o_portao(mundo):
     sem = _reg(1)
     del sem["pagoProc"]
     nid, _ = _mundo_processado(mundo, [sem])
-    valor, ausentes = mundo.con.execute("SELECT pago_proc_c, chaves_ausentes FROM rp_registro WHERE normalizacao_id=?",
-                                        (nid,)).fetchone()
-    assert valor == 0 and "pagoProc" in json.loads(ausentes)               # the homologated behavior is kept
+    # Until 09/10/2026 the missing field was typed as 0 here and only this gate flagged it. Correction request item 2
+    # (normalizer v2, schema v6): the absence is refused, never zero - the record is not an rp_registro row
+    # (tests/test_valor_ausente.py covers each field). The gate still fails, now naming the refused field.
+    assert mundo.con.execute("SELECT COUNT(*) FROM rp_registro WHERE normalizacao_id=?", (nid,)).fetchone()[0] == 0
+    assert mundo.con.execute("SELECT campo, natureza FROM valor_recusado WHERE normalizacao_id=?",
+                             (nid,)).fetchall() == [("pagoProc", "ausente")]
     p = _portao(portoes.avaliar(mundo.cfg.banco, mundo.armazem), "campos_monetarios_ausentes")
     assert p["ok"] is False and p["detalhe"]["registros"] == 1
 

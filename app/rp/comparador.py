@@ -10,9 +10,13 @@ No change is called "cancellation", "correction" or "error": that requires addit
 
 A key repeated within the same snapshot is not discarded: from the second occurrence on, the key gets a fourth
 element with the occurrence number.
+A record whose money field was refused by the normalization (valor_recusado, schema v6) has no value: it is listed
+in `recusados` and never counted as new, removed or changed, and `impacto_completo` becomes False - the financial
+impact then covers only the records with known values.
 Derived values are linked to each record by its source position (response, index), never by the business key -
 so two occurrences of the same key are never mixed up.
 """
+import sqlite3
 from collections import defaultdict
 
 from . import regras
@@ -56,6 +60,22 @@ def _registros(con, nid, cid):
         chave = k if dup[k] == 1 else (*k, f"ocorrência {dup[k]}")  # a repeated key is not discarded
         por_chave[chave] = {"posicao": tuple(row[0:2]), **dict(zip(DINHEIRO + OUTROS, row[5:]))}
     return por_chave, sorted(k for k, n in dup.items() if n > 1)
+
+
+def _recusados(con, nid, cid):
+    """{key: {"posicao", "campos": {field: nature}}} of the collection's records refused by the normalization."""
+    try:
+        linhas = con.execute(f"SELECT resposta_id, indice, entidade, anoempenho, empenho, campo, natureza FROM "
+                             f"valor_recusado WHERE normalizacao_id=? AND {_DA_COLETA} ORDER BY resposta_id, indice, "
+                             "campo", (nid, cid, cid)).fetchall()
+    except sqlite3.OperationalError as e:          # schema before v6: there is no refusal
+        if "no such table" not in str(e):
+            raise
+        return {}
+    saida = {}
+    for rid, i, e, ano, emp, campo, natureza in linhas:
+        saida.setdefault((e, ano, emp), {"posicao": (rid, i), "campos": {}})["campos"][campo] = natureza
+    return saida
 
 
 def _derivados(con, did, cid):
@@ -102,12 +122,13 @@ def comparar(con, ref_a, ref_b, nid=None, did=None):
     shas = lambda c: [s for (s,) in con.execute("SELECT sha256 FROM resposta_bruta WHERE coleta_id=? ORDER BY ordem", (c,))]
     ra, dup_a = _registros(con, nid, a["id"])
     rb, dup_b = _registros(con, nid, b["id"])
+    xa, xb = _recusados(con, nid, a["id"]), _recusados(con, nid, b["id"])
     da, db = _derivados(con, did, a["id"]), _derivados(con, did, b["id"])
     pares = _em_par(con, did, [a["id"], b["id"]])
     par = regras.parametros(con, "PAR-24", 1)
 
-    novos = sorted(rb.keys() - ra.keys(), key=str)
-    removidos = sorted(ra.keys() - rb.keys(), key=str)
+    novos = sorted(rb.keys() - ra.keys() - xa.keys(), key=str)       # refused on the other side: not new
+    removidos = sorted(ra.keys() - rb.keys() - xb.keys(), key=str)   # refused on the other side: not removed
     comuns = sorted(ra.keys() & rb.keys(), key=str)
     alterados = []
     for k in comuns:
@@ -141,6 +162,9 @@ def comparar(con, ref_a, ref_b, nid=None, did=None):
         "normalizacao": nid, "derivacao": did,
         "bytes_identicos": shas(a["id"]) == shas(b["id"]),
         "chaves_duplicadas": {"anterior": dup_a, "posterior": dup_b},
+        "recusados": {"anterior": [{"chave": k, **v} for k, v in sorted(xa.items(), key=lambda x: str(x[0]))],
+                      "posterior": [{"chave": k, **v} for k, v in sorted(xb.items(), key=lambda x: str(x[0]))]},
+        "impacto_completo": not (xa or xb),
         "contagens": {"novos": len(novos), "removidos": len(removidos), "comuns": len(comuns), "alterados": len(alterados),
                       "alterados_em_espelhamento": sum(1 for x in alterados if x["espelhamento"]),
                       "novos_ou_removidos_em_espelhamento": sum(1 for k in novos + removidos if _espelhamento(k, pares, par))},

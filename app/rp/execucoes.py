@@ -12,10 +12,12 @@ import hashlib
 
 from . import banco
 
-TABELAS_NORMALIZACAO = ["rp_registro", "movimentacao_lancamento", "rreo_valor", "rreo_extracao", "entidade_ref",
-                        "exercicio_ref"]
-TABELAS_DERIVACAO = ["rp_derivado", "movimentacao_interpretada", "anomalia", "espelhamento_par", "visao_valor",
-                     "conciliacao_rreo", "verificacao"]
+TABELAS_NORMALIZACAO = ["valor_recusado", "rp_registro", "movimentacao_lancamento", "rreo_valor", "rreo_extracao",
+                        "entidade_ref", "exercicio_ref"]
+# v8 link tables first: they point to rows of the tables after them (FOREIGN KEY)
+TABELAS_DERIVACAO = ["visao_valor_coleta", "conciliacao_rreo_coleta", "derivacao_regra", "rp_derivado",
+                     "movimentacao_interpretada", "anomalia", "espelhamento_par", "visao_valor", "conciliacao_rreo",
+                     "verificacao"]
 CAMADA0 = ["coletor_versao", "coleta", "resposta_bruta", "objeto_bruto", "esquema_versao", "evidencia_externa"]
 
 

@@ -29,7 +29,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from . import BRT, agora, sha256, sha256_valido
+from . import BRT, agora, instante, sha256, sha256_valido
 from .armazem import ObjetoCorrompido, descomprimir
 
 log = logging.getLogger("rp.banco")
@@ -87,7 +87,6 @@ MIGRACOES = {
     5: ("integridade relacional por gatilhos na camada derivada (D4) e criterios de promocao de regra (D7)",
         None),
 }
-VERSAO_ESQUEMA = max(MIGRACOES)
 # Date from which promoting a rule to operational follows the criteria of decision D7 (governanca.py).
 POLITICA_PROMOCAO_DESDE = "2026-10-06"
 
@@ -163,12 +162,166 @@ def _gatilhos_v5():
 
 
 MIGRACOES[5] = (MIGRACOES[5][0], _gatilhos_v5())
+# v6 (correction request of 09/10/2026, item 2): a missing, null or invalid money field of the RP listing is no longer
+# typed as zero. The record does not become a row of rp_registro (whose money columns are NOT NULL: a value is
+# required there); each refused field becomes a row here, with the field name and what happened. Additions only: no
+# table is recreated and no existing row changes (on the 266,787 records of normalization 14 no field is missing).
+MIGRACOES[6] = (
+    "campo monetario ausente, nulo ou invalido registrado como recusa (nunca zero): tabela valor_recusado",
+    [
+        "CREATE TABLE valor_recusado (normalizacao_id INTEGER NOT NULL REFERENCES normalizacao_execucao(id), "
+        "resposta_id INTEGER NOT NULL REFERENCES resposta_bruta(id), indice INTEGER NOT NULL, "
+        "coleta_id INTEGER NOT NULL REFERENCES coleta(id), entidade INTEGER, anoempenho INTEGER, empenho INTEGER, "
+        "campo TEXT NOT NULL CHECK (campo IN ('proc','aproc','canceladoProc','pagoProc','pagoProcEstornado',"
+        "'canceladoAProc','pagoAProc','pagoAProcEstornado','liquidado','retencao')), "
+        "natureza TEXT NOT NULL CHECK (natureza IN ('ausente','nulo','invalido')), valor_bruto TEXT, "
+        "CHECK ((natureza = 'invalido') = (valor_bruto IS NOT NULL)), "
+        "PRIMARY KEY (normalizacao_id, resposta_id, indice, campo))",
+        _gatilho("ri_valor_recusado_insert", "INSERT", "valor_recusado",
+                 "NOT EXISTS (SELECT 1 FROM resposta_bruta b WHERE b.id = NEW.resposta_id AND b.coleta_id = "
+                 "NEW.coleta_id) OR EXISTS (SELECT 1 FROM rp_registro r WHERE r.normalizacao_id = NEW.normalizacao_id "
+                 "AND r.resposta_id = NEW.resposta_id AND r.indice = NEW.indice)",
+                 "valor_recusado de outra coleta ou de registro ja normalizado com valor"),
+        "CREATE TRIGGER valor_recusado_sem_update BEFORE UPDATE ON valor_recusado "
+        "BEGIN SELECT RAISE(ABORT, 'recusa de valor nao se edita: rode nova normalizacao'); END",
+        _gatilho("ri_valor_recusado_delete", "DELETE", "valor_recusado",
+                 "EXISTS (SELECT 1 FROM derivacao_execucao WHERE normalizacao_id = OLD.normalizacao_id)",
+                 "valor_recusado de normalizacao com derivacoes: apague antes as derivacoes"),
+        _gatilho("ri_rp_registro_recusado", "INSERT", "rp_registro",
+                 "EXISTS (SELECT 1 FROM valor_recusado v WHERE v.normalizacao_id = NEW.normalizacao_id AND "
+                 "v.resposta_id = NEW.resposta_id AND v.indice = NEW.indice)",
+                 "rp_registro de posicao com valor recusado na mesma normalizacao"),
+    ])
+# Canonical instant (rp.instante): Brasilia offset, seconds. Every instant compared AS TEXT has this form.
+_GLOB_INSTANTE = "'[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]-03:00'"
+# v7 (correction request of 09/10/2026, item 4): start AND conclusion of each collection, in canonical form, with where
+# the conclusion came from. A snapshot is only available to an "as it was on" query from its conclusion on (before,
+# coletada_em - the START - was compared, and a collection still running counted as available). Additions only: the
+# raw layer (coleta) stays immutable; the rows of existing collections come from their manifests (completar_tempos),
+# never invented: no evidence = conclusion NULL ('desconhecida'), and such a snapshot is never available to a query
+# with a date.
+MIGRACOES[7] = (
+    "inicio e conclusao de cada coleta em forma canonica (coleta_tempo): retrato so vale a partir da conclusao",
+    [
+        "CREATE TABLE coleta_tempo (coleta_id INTEGER PRIMARY KEY REFERENCES coleta(id), inicio_em TEXT NOT NULL, "
+        "concluida_em TEXT, fonte_conclusao TEXT NOT NULL CHECK (fonte_conclusao IN ('manifesto','ultima_resposta',"
+        "'sem_evidencia')), precisao TEXT NOT NULL CHECK (precisao IN ('exata','ultima_resposta','aproximada',"
+        "'desconhecida')), CHECK ((concluida_em IS NULL) = (fonte_conclusao = 'sem_evidencia')), "
+        "CHECK ((concluida_em IS NULL) = (precisao = 'desconhecida')))",
+        _gatilho("coleta_tempo_insert", "INSERT", "coleta_tempo",
+                 f"NEW.inicio_em NOT GLOB {_GLOB_INSTANTE} OR (NEW.concluida_em IS NOT NULL AND (NEW.concluida_em NOT "
+                 f"GLOB {_GLOB_INSTANTE} OR NEW.concluida_em < NEW.inicio_em)) OR NOT EXISTS (SELECT 1 FROM coleta c "
+                 "WHERE c.id = NEW.coleta_id AND julianday(c.coletada_em) = julianday(NEW.inicio_em))",
+                 "coleta_tempo fora da forma canonica, conclusao antes do inicio ou inicio diferente da coleta"),
+        "CREATE TRIGGER coleta_tempo_sem_update BEFORE UPDATE ON coleta_tempo "
+        "BEGIN SELECT RAISE(ABORT, 'tempo da coleta nao se edita: vem do manifesto'); END",
+        "CREATE TRIGGER coleta_tempo_sem_delete BEFORE DELETE ON coleta_tempo "
+        "BEGIN SELECT RAISE(ABORT, 'tempo da coleta nao se apaga: vem do manifesto'); END",
+    ])
+
+
+def _migracao_v8():
+    """Correction request of 09/10/2026, items 1 and 7. Additions only (no table recreated, no existing row changed):
+      * layer 1 refuses, on write, a row whose collection is not the one of its HTTP response, is of another type, or
+        is beyond what its normalization read (before, the gate only flagged it by reading);
+      * derivation layer: every rule a row cites must be one its derivation declared;
+      * relations that lived only in JSON get a normalized table with FOREIGN KEYs, filled here from the JSON of the
+        existing derivations (deterministic: the JSON stays, as the source of the homologated hash and of the
+        interface): derivacao_regra (regras_json), visao_valor_coleta (coletas_json) and conciliacao_rreo_coleta
+        (coletas_api_json); a trigger refuses a link the JSON does not have;
+      * provenance (item 7): SHA-256 of each manifest (coleta_manifesto, filled from the store by
+        completar_do_armazem), and the code and rule hashes and the environment of each normalization/derivation run
+        (NULL in the old runs: never back-filled with today's code)."""
+    cmds = []
+    camada1 = {"rp_registro": ("rp_listagem", True), "movimentacao_lancamento": ("movimentacao", True),
+               "rreo_extracao": ("rreo_pdf", True), "valor_recusado": ("rp_listagem", True),
+               "rreo_valor": ("rreo_pdf", False), "entidade_ref": ("entidades", False),
+               "exercicio_ref": ("exercicios", False)}
+    for tabela, (tipo, com_resposta) in camada1.items():
+        quando = (f"NOT EXISTS (SELECT 1 FROM coleta k WHERE k.id = NEW.coleta_id AND k.tipo = '{tipo}') OR EXISTS "
+                  "(SELECT 1 FROM normalizacao_execucao n WHERE n.id = NEW.normalizacao_id AND n.ultima_coleta_id IS "
+                  "NOT NULL AND NEW.coleta_id > n.ultima_coleta_id)")
+        if com_resposta:
+            quando += (" OR NOT EXISTS (SELECT 1 FROM resposta_bruta b WHERE b.id = NEW.resposta_id AND "
+                       "b.coleta_id = NEW.coleta_id)")
+        colunas = "normalizacao_id, coleta_id" + (", resposta_id" if com_resposta else "")
+        msg = f"{tabela}: coleta de outro tipo, de outra resposta ou alem da ultima lida pela normalizacao"
+        cmds.append(_gatilho(f"ri_{tabela}_coleta_insert", "INSERT", tabela, quando, msg))
+        cmds.append(_gatilho(f"ri_{tabela}_coleta_update", f"UPDATE OF {colunas}", tabela, quando, msg))
+    cmds += [
+        "CREATE TABLE derivacao_regra (derivacao_id INTEGER NOT NULL REFERENCES derivacao_execucao(id), "
+        "regra_id INTEGER NOT NULL REFERENCES regra(id), PRIMARY KEY (derivacao_id, regra_id))",
+        "INSERT INTO derivacao_regra SELECT e.id, j.value FROM derivacao_execucao e, json_each(e.regras_json) j",
+        _gatilho("ri_derivacao_regra_insert", "INSERT", "derivacao_regra",
+                 "NOT EXISTS (SELECT 1 FROM derivacao_execucao e, json_each(e.regras_json) j WHERE e.id = "
+                 "NEW.derivacao_id AND j.value = NEW.regra_id)", "derivacao_regra fora do regras_json da derivacao"),
+        "CREATE TABLE visao_valor_coleta (derivacao_id INTEGER NOT NULL REFERENCES derivacao_execucao(id), "
+        "visao_valor_id INTEGER NOT NULL REFERENCES visao_valor(id), coleta_id INTEGER NOT NULL REFERENCES coleta(id), "
+        "PRIMARY KEY (visao_valor_id, coleta_id))",
+        # no extra index (measured 09/10/2026, 2 derivations / ~200k links): an index on coleta_id made the provenance
+        # check slower (4.2 -> 13.0 ms) and one on (derivacao_id, coleta_id) gained 1.4 ms for ~300 KB - not worth it
+        "INSERT INTO visao_valor_coleta SELECT v.derivacao_id, v.id, k.id FROM visao_valor v, json_each(v.coletas_json) j "
+        "JOIN coleta k ON k.snapshot_uid = j.value",
+        _gatilho("ri_visao_valor_coleta_insert", "INSERT", "visao_valor_coleta",
+                 "NOT EXISTS (SELECT 1 FROM visao_valor v, json_each(v.coletas_json) j JOIN coleta k ON k.snapshot_uid = "
+                 "j.value WHERE v.id = NEW.visao_valor_id AND v.derivacao_id = NEW.derivacao_id AND k.id = NEW.coleta_id)",
+                 "visao_valor_coleta fora do coletas_json do valor"),
+        "CREATE UNIQUE INDEX ux_conciliacao_rreo ON conciliacao_rreo (derivacao_id, rreo_coleta_id, regra_agregacao_id, "
+        "coluna)",
+        "CREATE TABLE conciliacao_rreo_coleta (derivacao_id INTEGER NOT NULL, rreo_coleta_id INTEGER NOT NULL, "
+        "regra_agregacao_id INTEGER NOT NULL, coluna TEXT NOT NULL, coleta_id INTEGER NOT NULL REFERENCES coleta(id), "
+        "PRIMARY KEY (derivacao_id, rreo_coleta_id, regra_agregacao_id, coluna, coleta_id), FOREIGN KEY (derivacao_id, "
+        "rreo_coleta_id, regra_agregacao_id, coluna) REFERENCES conciliacao_rreo (derivacao_id, rreo_coleta_id, "
+        "regra_agregacao_id, coluna))",
+        "INSERT INTO conciliacao_rreo_coleta SELECT c.derivacao_id, c.rreo_coleta_id, c.regra_agregacao_id, c.coluna, "
+        "k.id FROM conciliacao_rreo c, json_each(c.coletas_api_json) j JOIN coleta k ON k.snapshot_uid = j.value",
+        _gatilho("ri_conciliacao_rreo_coleta_insert", "INSERT", "conciliacao_rreo_coleta",
+                 "NOT EXISTS (SELECT 1 FROM conciliacao_rreo c, json_each(c.coletas_api_json) j JOIN coleta k ON "
+                 "k.snapshot_uid = j.value WHERE c.derivacao_id = NEW.derivacao_id AND c.rreo_coleta_id = "
+                 "NEW.rreo_coleta_id AND c.regra_agregacao_id = NEW.regra_agregacao_id AND c.coluna = NEW.coluna AND "
+                 "k.id = NEW.coleta_id)", "conciliacao_rreo_coleta fora do coletas_api_json"),
+    ]
+    regras_citadas = {"anomalia": ["regra_id"], "verificacao": ["regra_id"], "espelhamento_par": ["regra_pareamento_id"],
+                      "visao_valor": ["regra_agregacao_id", "regra_consolidacao_id"],
+                      "conciliacao_rreo": ["regra_agregacao_id"]}
+    for tabela, colunas in regras_citadas.items():
+        quando = " OR ".join(f"(NEW.{c} IS NOT NULL AND NOT EXISTS (SELECT 1 FROM derivacao_regra d WHERE "
+                             f"d.derivacao_id = NEW.derivacao_id AND d.regra_id = NEW.{c}))" for c in colunas)
+        msg = f"{tabela} cita regra que a sua derivacao nao declarou"
+        cmds.append(_gatilho(f"ri_{tabela}_regra_insert", "INSERT", tabela, quando, msg))
+        cmds.append(_gatilho(f"ri_{tabela}_regra_update", f"UPDATE OF derivacao_id, {', '.join(colunas)}", tabela,
+                             quando, msg))
+    cmds += [
+        "CREATE TABLE coleta_manifesto (coleta_id INTEGER PRIMARY KEY REFERENCES coleta(id), sha256 TEXT NOT NULL "
+        "CHECK (length(sha256) = 64), tamanho INTEGER NOT NULL CHECK (tamanho > 0))",
+        "CREATE TRIGGER coleta_manifesto_sem_update BEFORE UPDATE ON coleta_manifesto "
+        "BEGIN SELECT RAISE(ABORT, 'hash do manifesto nao se edita'); END",
+        "CREATE TRIGGER coleta_manifesto_sem_delete BEFORE DELETE ON coleta_manifesto "
+        "BEGIN SELECT RAISE(ABORT, 'hash do manifesto nao se apaga'); END",
+        "ALTER TABLE normalizacao_execucao ADD COLUMN sha256_codigo TEXT",
+        "ALTER TABLE normalizacao_execucao ADD COLUMN ambiente_json TEXT",
+        "ALTER TABLE derivacao_execucao ADD COLUMN sha256_codigo TEXT",
+        "ALTER TABLE derivacao_execucao ADD COLUMN sha256_regras TEXT",
+        "ALTER TABLE derivacao_execucao ADD COLUMN ambiente_json TEXT",
+    ]
+    return cmds
+
+
+MIGRACOES[8] = ("relacoes por gatilho e tabela (camada 1 x coleta, regra declarada, JSON normalizado) e proveniencia "
+                "(hash do manifesto, do codigo e das regras de cada execucao)", _migracao_v8())
+VERSAO_ESQUEMA = max(MIGRACOES)
 # Structural fingerprint of each schema version (impressao_esquema). New version = new fingerprint here.
 IMPRESSAO_ESQUEMA = {
     # v4: checked on 05/10/2026 on the active database (created 29/09, migrated 30/09) and on the one built by the code
     4: "ad45413e4a5431eca73afebbf4640c995513203b9def9b38d8cbb83eaa3d3e5a",
     # v5: checked on 06/10/2026 on the one built by the code and on the active database migrated from v4
     5: "d80f1040f98fe0213388991b8f8b574b27ab0ef3a57ac61c4d8dc70bbb54e34e",
+    # v6: computed on 09/10/2026 on the one built by the code (the v5 one above is unchanged)
+    6: "46b3b3d6caecfb8ccd8e738520dd07296c641211d7b823f142daf33b11751163",
+    # v7: computed on 09/10/2026 on the one built by the code
+    7: "3e47c42cfde8d126e6d2581c04b3b2f60eccbaa658a93a702fbecf0c5774e120",
+    # v8: computed on 09/10/2026 on the one built by the code
+    8: "c2ef5fdf631c985e8203fe99fe7e12a5e9d2a5ad806ef673ad6899aa3ec0cdc5",
 }
 
 # Per-connection page cache (KiB, negative value = size in KiB in SQLite). The derivation scans ~100 MB of
@@ -373,6 +526,9 @@ def abrir(cfg, caminho=None):
     if atual < VERSAO_ESQUEMA:
         arq = backup(con, cfg, f"antes-migracao-v{atual}-v{VERSAO_ESQUEMA}")
         _migrar(con, atual, arq)
+    if _falta_do_armazem(con):
+        from .armazem import Armazem
+        completar_do_armazem(con, Armazem(cfg.snapshots))   # v7/v8 rows of the existing collections, from the store
     esperado = IMPRESSAO_ESQUEMA.get(VERSAO_ESQUEMA)
     if esperado and impressao_esquema(con) != esperado:     # warning; the 'esquema_confere' gate fails the load
         log.warning("esquema de %s difere do esquema v%d do código (impressão estrutural): ver portão "
@@ -545,7 +701,115 @@ def registrar_manifesto(con, armazem, rel, m):
                         "sha256, tamanho) VALUES (?,?,?,?,?,?,?,?)",
                         (cid, r["ordem"], r["url"], r["http_status"], json.dumps(r.get("cabecalhos") or {}, sort_keys=True),
                          r["recebida_em"], r["sha256"], r["tamanho"]))
+        if _tem_tabela(con, "coleta_tempo"):    # v7: start and conclusion, from the manifest
+            con.execute(SQL_TEMPO, (cid, *tempos_do_manifesto(m)))
+        if _tem_tabela(con, "coleta_manifesto"):    # v8: hash of the manifest bytes just written
+            con.execute("INSERT INTO coleta_manifesto VALUES (?,?,?)", (cid, *hash_do_manifesto(armazem, rel)))
     return cid, True
+
+
+def _falta_do_armazem(con):
+    """True if some collection lacks a row that comes from the store (coleta_tempo v7, coleta_manifesto v8)."""
+    for tabela in ("coleta_tempo", "coleta_manifesto"):
+        if _tem_tabela(con, tabela) and con.execute(
+                f"SELECT 1 FROM coleta c LEFT JOIN {tabela} t ON t.coleta_id = c.id WHERE t.coleta_id IS NULL "
+                "LIMIT 1").fetchone():
+            return True
+    return False
+
+
+def _tem_coluna(con, tabela, coluna):
+    return any(r[1] == coluna for r in con.execute(f"PRAGMA table_info({tabela})"))
+
+
+def _tem_tabela(con, nome):
+    return con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (nome,)).fetchone() is not None
+
+
+SQL_TEMPO = "INSERT INTO coleta_tempo VALUES (?,?,?,?,?)"
+# Clock precision by stamp origin when the conclusion is the last response received (no recorded conclusion).
+_PRECISAO_DA_ORIGEM = {"relogio_coletor": "ultima_resposta", "manifesto": "ultima_resposta",
+                       "cabecalho_http": "ultima_resposta", "mtime_arquivo": "aproximada"}
+
+
+def tempos_do_manifesto(m):
+    """(inicio_em, concluida_em, fonte_conclusao, precisao) of a snapshot, from its manifest ONLY:
+      * 'manifesto': the recorded conclusion (coleta_finalizada_em, collector since 05/10/2026) - 'exata' when the
+        stamp is the collector's clock;
+      * 'ultima_resposta': the latest recebida_em of the responses and of the second read - the last byte received;
+        the stamp origin says how precise it is (file mtime = 'aproximada');
+      * 'sem_evidencia': no conclusion and no response time - NULL, never invented.
+    Every instant goes through rp.instante (Brasilia offset): equivalent time zones become the same text."""
+    inicio = instante(m["coletada_em"])
+    origem = m.get("origem_carimbo")
+    if m.get("coleta_finalizada_em"):
+        return inicio, instante(m["coleta_finalizada_em"]), "manifesto", \
+            "exata" if origem == "relogio_coletor" else _PRECISAO_DA_ORIGEM.get(origem, "aproximada")
+    recebidas = [instante(r["recebida_em"]) for r in list(m.get("respostas") or []) + list(m.get("segunda_leitura") or [])
+                 if r.get("recebida_em")]
+    if recebidas:
+        return inicio, max(recebidas), "ultima_resposta", _PRECISAO_DA_ORIGEM.get(origem, "aproximada")
+    return inicio, None, "sem_evidencia", "desconhecida"
+
+
+def completar_do_armazem(con, armazem):
+    """Rows that come from the store and that a database from before v7/v8 does not have yet: start and conclusion
+    (coleta_tempo) and the manifest hash (coleta_manifesto). Returns {"tempos": (filled, problems), "manifestos": ...}."""
+    saida = {}
+    if _tem_tabela(con, "coleta_tempo"):
+        saida["tempos"] = completar_tempos(con, armazem)
+    if _tem_tabela(con, "coleta_manifesto"):
+        saida["manifestos"] = completar_manifestos(con, armazem)
+    return saida
+
+
+def hash_do_manifesto(armazem, rel):
+    """(sha256, size) of the manifest file bytes as they are in the store."""
+    b = armazem.bytes_do_manifesto(rel)
+    return sha256(b), len(b)
+
+
+def completar_manifestos(con, armazem):
+    """coleta_manifesto for the collections without it (databases from before v8): the hash of the manifest file AS IT
+    IS TODAY. It does not prove the file was never changed before this moment - `verificar` compares its content with
+    the database field by field, and the root manifest (rp.raiz) kept OUTSIDE the database is the external
+    reference. Returns (filled, problems)."""
+    faltam = con.execute("SELECT c.id, c.manifesto FROM coleta c LEFT JOIN coleta_manifesto m ON m.coleta_id = c.id "
+                         "WHERE m.coleta_id IS NULL ORDER BY c.id").fetchall()
+    feitos, problemas = 0, []
+    for cid, rel in faltam:
+        try:
+            h, n = hash_do_manifesto(armazem, rel)
+        except (OSError, ValueError) as e:
+            problemas.append(f"coleta {cid}: manifesto {rel} ilegível ({type(e).__name__}: {e})")
+            continue
+        with con:
+            con.execute("INSERT INTO coleta_manifesto VALUES (?,?,?)", (cid, h, n))
+        feitos += 1
+    if problemas:
+        log.warning("%d coleta(s) sem hash de manifesto: %s", len(problemas), "; ".join(problemas[:3]))
+    return feitos, problemas
+
+
+def completar_tempos(con, armazem):
+    """coleta_tempo for the collections that do not have it yet (databases from before v7), read from each one's
+    manifest in the store. Idempotent. A manifest that cannot be read leaves the collection without a row (the
+    'tempos_das_coletas' gate fails), never a guessed time. Returns (filled, problems)."""
+    faltam = con.execute("SELECT c.id, c.manifesto FROM coleta c LEFT JOIN coleta_tempo t ON t.coleta_id = c.id "
+                         "WHERE t.coleta_id IS NULL ORDER BY c.id").fetchall()
+    feitos, problemas = 0, []
+    for cid, rel in faltam:
+        try:
+            m = armazem.ler_manifesto(rel)
+        except (OSError, ValueError, KeyError, TypeError) as e:   # missing or invalid manifest: recorded, never guessed
+            problemas.append(f"coleta {cid}: manifesto {rel} ilegível ({type(e).__name__}: {e})")
+            continue
+        with con:
+            con.execute(SQL_TEMPO, (cid, *tempos_do_manifesto(m)))
+        feitos += 1
+    if problemas:
+        log.warning("%d coleta(s) sem tempo de conclusão: %s", len(problemas), "; ".join(problemas[:3]))
+    return feitos, problemas
 
 
 def corpo(con, sha):
@@ -603,7 +867,7 @@ def reconstruir(cfg, armazem, destino):
     return con, n
 
 
-def _diferencas_do_manifesto(con, rel, m):
+def _diferencas_do_manifesto(con, rel, m, armazem=None):
     """Fields in which the database's layer 0 differs from the manifest (audit REC-01): the snapshot_uid being present
     is not enough; the database must have the same parameters, status, dates and the same responses (order, URL,
     hash, size)."""
@@ -634,6 +898,15 @@ def _diferencas_do_manifesto(con, rel, m):
                       r["tamanho"]) for r in sorted(m["respostas"], key=lambda r: r["ordem"])]
         if resp != esperadas:
             dif.append("respostas")
+        if _tem_tabela(con, "coleta_tempo"):      # v7: start and conclusion recomputed from the manifest
+            tempo = con.execute("SELECT inicio_em, concluida_em, fonte_conclusao, precisao FROM coleta_tempo WHERE "
+                                "coleta_id=?", (cid,)).fetchone()
+            if tempo is None or tuple(tempo) != tempos_do_manifesto(m):
+                dif.append("tempo_da_coleta")
+        if armazem is not None and _tem_tabela(con, "coleta_manifesto"):   # v8: the manifest is the recorded one
+            gravado = con.execute("SELECT sha256, tamanho FROM coleta_manifesto WHERE coleta_id=?", (cid,)).fetchone()
+            if gravado is None or tuple(gravado) != hash_do_manifesto(armazem, rel):
+                dif.append("hash_do_manifesto")
         return dif
     except (KeyError, TypeError, ValueError, AttributeError) as e:
         return [f"manifesto sem campo esperado ({type(e).__name__}: {e})"]
@@ -656,7 +929,7 @@ def verificar(con, armazem):
             problemas.append(f"coleta sem manifesto no armazém: {uid} ({rel})")
     for rel, m in itens:
         if m["snapshot_uid"] in registrados:
-            dif = _diferencas_do_manifesto(con, rel, m)
+            dif = _diferencas_do_manifesto(con, rel, m, armazem)
             if dif:
                 problemas.append(f"coleta difere do manifesto {rel}: {', '.join(dif)}")
     evid, _ = armazem.evidencias_e_erros()        # the unreadable ones already came from armazem.verificar()

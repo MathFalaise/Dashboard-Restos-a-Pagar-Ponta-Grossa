@@ -6,24 +6,29 @@ recorded by the production collector from the same simulated portal.
 import json
 
 import pytest
-from conftest import pagina
+from conftest import completar_registro, pagina
 
 from rp import cli, contrato, diagnostico
 from rp.coletor import EP_ENT, EP_EXE, EP_RP, ParametroInvalido
 
 APP_CONFIG = diagnostico.__file__.replace("\\", "/").rsplit("/rp/", 1)[0] + "/config.toml"
-REG = lambda n, **kw: {"entidade": 1, "anoempenho": 2025, "empenho": n, "proc": 1.5, "aproc": 0, "credor": None, **kw}
+REG = lambda n, **kw: {"entidade": 1, "anoempenho": 2025, "empenho": n, "proc": 1.5, "aproc": 0, **kw}
+# The classification group (contrato.GRUPO_OPCIONAL_RP): the API sends it whole in some records and not at all in others
+GRUPO = {"orgao": "24", "unidade": "1", "funcao": "10", "subFuncao": "301", "programa": "1", "projeto": "1",
+         "elemento": "3"}
 SORT_ECO = [{"property": "anoempenho", "ascending": True, "descending": False, "direction": "ASC"},
             {"property": "empenho", "ascending": True, "descending": False, "direction": "ASC"}]
 ENTIDADES = [{"id": 1, "nome": "Prefeitura"}, {"id": 15, "nome": "Fundo"}]
 EXERCICIOS = [{"id": {"exercicio": 2025, "entidade": {"id": 1}}}, {"id": {"exercicio": 2026, "entidade": {"id": 1}}}]
 
 
-def _pag(regs, size=2000, sort=SORT_ECO, total=None, ultima=True, paginas=None):
+def _pag(regs, size=2000, sort=SORT_ECO, total=None, ultima=True, paginas=None, completar=True):
     total = len(regs) if total is None else total
-    d = json.loads(pagina(regs, 0, total, ultima, -(-total // size) if paginas is None else paginas))
+    d = json.loads(pagina(regs, 0, total, ultima, -(-total // size) if paginas is None else paginas, completar))
     d["size"] = size
-    if sort is not None:
+    if sort is None:
+        del d["sort"]
+    else:
         d["sort"] = sort
     return json.dumps(d).encode()
 
@@ -35,8 +40,8 @@ def _api(portal, entidades=ENTIDADES, exercicios=EXERCICIOS, listagem=None):
 
 
 def _referencia(ambiente):
-    """Complete snapshots recorded by the collector. The creditor is an object in ONE record only: a rare field."""
-    _api(ambiente["portal"], listagem=_pag([REG(1), REG(2, credor={"nome": "X"}), REG(3)]))
+    """Complete snapshots recorded by the collector. The classification group is in ONE record only: a rare field."""
+    _api(ambiente["portal"], listagem=_pag([REG(1), REG(2, **GRUPO), REG(3)]))
     c = ambiente["coletor"]
     assert [s["status"] for s in c.catalogos([1])] == ["completa", "completa"]
     assert c.listagem(1, 2025, "2025-12-31")["status"] == "completa"
@@ -66,8 +71,8 @@ def test_REV49_api_igual_da_ok_e_nao_grava_nada(ambiente):
     assert r["resultado"] == "ok" and diagnostico.CODIGO_DE_SAIDA[r["resultado"]] == 0
     assert all(v["situacao"] == "ok" and not v["problemas"] for v in r["verificacoes"])
     assert all(v["estrutura"]["igual"] for v in r["verificacoes"])
-    # the creditor object of ONE recorded record is not required: the sample without it is not a "removed field"
-    assert "$.content[].credor.nome" not in _por_alvo(r)["rp_listagem"]["estrutura"]["removidos"]
+    # the classification group of ONE recorded record is not required: the sample without it is not a "removed field"
+    assert "$.content[].orgao" not in _por_alvo(r)["rp_listagem"]["estrutura"]["removidos"]
     assert (con.total_changes, con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0], _arquivos(ambiente)) == antes
     assert r["requisicoes"] == 3 + 4          # 3 from the reference collection + 4 from the diagnostic
     assert r["portal"]["http_status"] == 404 and r["portal"]["versao"] is None   # informative: does not change the result
@@ -87,8 +92,9 @@ def test_REV49_versao_do_portal_e_informativa(ambiente):
 # ------------------------------------------------------------------ structure
 def test_REV49_campo_novo_tipo_novo_e_campo_obrigatorio_sumido(ambiente):
     _referencia(ambiente)
-    regs = [REG(4, novoCampo=1, proc="1,50"), {k: v for k, v in REG(5).items() if k != "aproc"}]
-    _api(ambiente["portal"], listagem=_pag(regs, size=20))
+    regs = [completar_registro(REG(4, novoCampo=1, proc="1,50")),
+            {k: v for k, v in completar_registro(REG(5)).items() if k != "aproc"}]
+    _api(ambiente["portal"], listagem=_pag(regs, size=20, completar=False))
     r = _diagnosticar(ambiente)
     lst = _por_alvo(r)["rp_listagem"]
     assert r["resultado"] == "mudou" and diagnostico.CODIGO_DE_SAIDA["mudou"] == 1 and lst["situacao"] == "mudou"
@@ -97,6 +103,9 @@ def test_REV49_campo_novo_tipo_novo_e_campo_obrigatorio_sumido(ambiente):
     assert e["tipo_diferente"] == ["$.content[].proc: number -> number|string"]
     assert e["removidos"] == ["$.content[].aproc"]
     assert _por_alvo(r)["entidades"]["situacao"] == "ok"
+    # the strict contract names the same three changes in the sample's own records (rp.contrato v2)
+    contrato_ = next(p for p in lst["problemas"] if "fora do contrato" in p)
+    assert "2 registro(s)" in contrato_ and "novoCampo" in contrato_ and "aproc" in contrato_
 
 
 def test_REV49_amostra_vazia_so_confere_o_topo_da_pagina(ambiente):
@@ -114,8 +123,8 @@ def test_REV49_amostra_vazia_so_confere_o_topo_da_pagina(ambiente):
 
 
 def test_REV49_comparar_amostra_nao_acusa_campo_raro():
-    ref = [json.dumps({"content": [REG(1), REG(2, credor={"nome": "X"})], "totalElements": 2}).encode()]
-    amostra = [json.dumps({"content": [REG(3)], "totalElements": 1}).encode()]
+    ref = [json.dumps({"content": [REG(1, credor=None), REG(2, credor={"nome": "X"})], "totalElements": 2}).encode()]
+    amostra = [json.dumps({"content": [REG(3, credor=None)], "totalElements": 1}).encode()]
     c = contrato.comparar_amostra(ref, amostra)
     assert c["igual"] and c["registros_na_amostra"] == 1
     assert contrato.comparar_formas(contrato.forma(ref), contrato.forma(amostra))["removidos"] == \

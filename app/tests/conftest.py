@@ -69,9 +69,47 @@ class Portal:
         return r[0], {"Content-Type": "application/json"}, r[1]
 
 
-def pagina(conteudo, pagina, total, ultima, total_paginas):
-    return json.dumps({"content": conteudo, "totalElements": total, "totalPages": total_paginas, "number": pagina,
-                       "numberOfElements": len(conteudo), "last": ultima}).encode()
+# Defaults that complete a synthetic record to the strict API contract (rp.contrato v2): a test states only the
+# fields it is about, and the page still has the real API's shape. A key the test sets is never replaced.
+PADRAO_RP = {"entidade": 1, "anoempenho": 2025, "empenho": 1, "empenhoExercicio": "1/2025", "cnpjNome": "x",
+             "dataEmissao": "2025-03-01", "programatica": "", "fonteRecurso": 1000, "descricaoFonte": "",
+             "fornecedor": 7, "nome": "x", "cnpj": "11.222.333/0001-44", "desdobraDesp": "", "subDesdobramento": "",
+             "proc": 0, "aproc": 0, "canceladoProc": 0, "pagoProc": 0, "pagoProcEstornado": 0, "canceladoAProc": 0,
+             "pagoAProc": 0, "pagoAProcEstornado": 0, "liquidado": 0, "retencao": 0}
+PADRAO_MOV = {"data": "2025-03-01", "descricaoTipoLancamento": "", "exercicioLiquidacao": 0, "exercicioPagamento": 0,
+              "noLiquidacao": 0, "noPagamento": 0, "nroDocumento": "", "tipoLancamento": 20, "valor": 0,
+              "valorALiquidar": 0, "valorAPagar": 0}
+
+
+# The echo of the order the collector requests in the RP listing (the real API's form; ignored for other endpoints)
+ECO_ORDEM_RP = [{"property": "anoempenho", "ascending": True, "descending": False, "direction": "ASC"},
+                {"property": "empenho", "ascending": True, "descending": False, "direction": "ASC"}]
+
+
+def completar_registro(x):
+    """A record of the RP listing (has 'anoempenho') or of the movement list (has 'tipoLancamento') completed with the
+    contract's defaults; anything else is returned unchanged."""
+    if isinstance(x, dict) and "anoempenho" in x:
+        return {**PADRAO_RP, **x}
+    if isinstance(x, dict) and "tipoLancamento" in x:
+        return {**PADRAO_MOV, **x}
+    return x
+
+
+def pagina(conteudo, pagina, total, ultima, total_paginas, completar=True, **metadados):
+    """A Spring page with every metadata field of the strict contract. `size` defaults to a value consistent with
+    total and totalPages; any metadata field can be overridden (or removed with None via `sem`)."""
+    if completar:
+        conteudo = [completar_registro(x) for x in conteudo]
+    size = max(len(conteudo), -(-total // total_paginas) if isinstance(total, int) and total_paginas else 1, 1)         if isinstance(total_paginas, int) else max(len(conteudo), 1)
+    d = {"content": conteudo, "totalElements": total, "totalPages": total_paginas, "number": pagina,
+         "numberOfElements": len(conteudo), "last": ultima, "first": pagina == 0, "empty": not conteudo,
+         "size": size, "sort": ECO_ORDEM_RP, "pageable": {"pageNumber": pagina, "pageSize": size}}
+    sem = metadados.pop("sem", ())
+    d.update(metadados)
+    for k in sem:
+        d.pop(k, None)
+    return json.dumps(d).encode()
 
 
 RAIZ_PROJETO = Path(__file__).resolve().parents[2]
@@ -183,6 +221,8 @@ class Mundo:
         from rp.snapshots import gravar_snapshot
         return gravar_snapshot(self.con, self.armazem, tipo=tipo, endpoint=endpoint, parametros=params, coletada_em=quando,
                                origem_carimbo="relogio_coletor", status="completa", coletor=COLETOR_SINTETICO,
+                               # a synthetic snapshot is concluded at its own instant (schema v7: available from then)
+                               finalizada_em=quando,
                                respostas=[{"url": "sintetico", "http_status": 200, "corpo": json.dumps(corpo).encode()}])
 
     def catalogos(self, exercicios, quando="2026-09-29T10:00:00-03:00"):
@@ -269,3 +309,33 @@ def links_permitidos(corpo):
         if not (href.startswith((portal.SITE + "/", portal.API + "/")) and 'rel="external' in tag):
             return False
     return all(h.startswith(("/", "#", portal.DOMINIO + "/")) for h in re.findall(r'href="([^"]*)"', corpo))
+
+
+# ------------------------------------------------------------------ synthetic RREO Annex VII (extractor v2)
+ROTULOS_RREO_X = [("(a)", 300), ("(b)", 350), ("(c)", 400), ("(d)", 450), ("e=(a+b)", 500), ("(f)", 550), ("(g)", 600),
+                  ("(h)", 650), ("(i)", 700), ("(j)", 750), ("k=(f+g)", 800), ("L=(e+k)", 850)]
+CABECALHO_RREO = [((50, 40), "DEMONSTRATIVO JANEIRO A AGOSTO 2.026")] + [((x, 100), r) for r, x in ROTULOS_RREO_X]
+
+
+def numero_pt(centavos):
+    """123456 -> '1.234,56' (the PDF's number format)."""
+    return f"{centavos / 100:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+
+def linha_rreo(a=0, b=0, c=0, d=0, f=0, g=0, h=0, i=0, j=0):
+    """The 12 columns of one Annex VII row in cents, closing the document's identities (e, k and L computed)."""
+    e, k = a + b - c - d, f + g - i - j
+    return dict(zip("abcdefghijkL", (a, b, c, d, e, f, g, h, i, j, k, a + b - c - d + k)))
+
+
+def textos_da_linha(palavras, y, valores, deslocar=None):
+    """Words of one row: its label (list of (x, word)) and the 12 numbers under the column labels. `deslocar`
+    {column: points} moves a number sideways (e.g. a right-aligned '0,00')."""
+    xs = dict(zip("abcdefghijkL", (x for _, x in ROTULOS_RREO_X)))
+    return [((x, y), w) for x, w in palavras] + [((xs[c] + (deslocar or {}).get(c, 0), y), numero_pt(v))
+                                                 for c, v in valores.items()]
+
+
+TOTAL_RREO = [(50, "TOTAL"), (80, "(III)")]
+EXCETO_RREO = [(20, "RESTOS"), (50, "A"), (60, "PAGAR"), (90, "(EXCETO"), (130, "INTRA-ORÇAMENTÁRIOS)")]
+INTRA_RREO = [(20, "RESTOS"), (50, "A"), (60, "PAGAR"), (90, "(INTRA-ORÇAMENTÁRIOS)")]

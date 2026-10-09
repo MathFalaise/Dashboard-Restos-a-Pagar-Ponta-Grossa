@@ -1,4 +1,5 @@
 """Painel mixin: Snapshots of a cut-off, entities of a cut-off and snapshot comparison."""
+from ... import vigencia
 from ...comparador import comparar as _comparar
 from .. import fontes, publico
 from .comum import ErroDoPainel, instante, REGRAS_DO_INDICADOR
@@ -20,7 +21,7 @@ class Retratos:
         for cid, uid, quando, origem, status, obs in self.con.execute(
                 "SELECT id, snapshot_uid, coletada_em, origem_carimbo, status, observacao FROM coleta WHERE "
                 "tipo='rp_listagem' AND tipo_pesquisa IS NULL AND entidade=? AND exercicio=? AND data_inicial=? AND "
-                "data_final=? ORDER BY coletada_em, snapshot_uid", (entidade, exercicio, di, data_final)):
+                "data_final=? ORDER BY " + vigencia.ordem("coleta"), (entidade, exercicio, di, data_final)):
             processado = cid <= ctx["limite_coleta"]
             objetos = [h for (h,) in self.con.execute("SELECT sha256 FROM resposta_bruta WHERE coleta_id=? ORDER BY ordem",
                                                       (cid,))]
