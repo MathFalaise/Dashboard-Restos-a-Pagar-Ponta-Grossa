@@ -5,25 +5,38 @@ because the interface uses the panel and must not load the deriver (test_homolog
 process); `derivar` re-exports the names.
 
 Rule: the current snapshot of (entidade, exercicio, data_inicial, data_final) is the most recent COMPLETE snapshot
-up to `em` (stable tie-break by snapshot_uid) that has NO repeated business key. A snapshot with a repetition
-(CHAVE-DUP anomaly) stays in the database and in the store, it is just not used: the previous valid snapshot of the
-same cut-off applies, or none.
+up to `em` (stable tie-break by snapshot_uid) that has NO repeated business key and NO refused money field. A
+snapshot with a repetition (CHAVE-DUP anomaly) or with a money field missing, null or invalid (VALOR-RECUSADO anomaly,
+since 09/10/2026) stays in the database and in the store, it is just not used: the previous valid snapshot of the
+same cut-off applies, or none. Summing it would either count a key twice or leave a record out of the total.
 """
 
 VERIF_RETRATO_AMBIGUO = "retrato com chave repetida fora da vigência"
+VERIF_RETRATO_VALOR_RECUSADO = "retrato com valor monetário recusado fora da vigência"
+# Anomaly types that keep a snapshot from being the current one, in order of precedence for the reason shown.
+TIPOS_QUE_RECUSAM_O_RETRATO = ("CHAVE-DUP", "VALOR-RECUSADO")
 
 
-def coletas_ambiguas(con, did=None):
-    """Collections with a repeated business key (CHAVE-DUP anomaly) in derivation `did`; default: the most recent
-    current derivation. The derivation in progress passes the set it just computed; the panel and later readers use
-    what was recorded - so everyone picks the same current snapshot."""
+def coletas_recusadas(con, did=None):
+    """{collection: anomaly type} of the collections that can never be current in derivation `did` (default: the
+    most recent current derivation). A collection with both types gets CHAVE-DUP (TIPOS_QUE_RECUSAM_O_RETRATO order)."""
     if did is None:
         did = con.execute("SELECT MAX(id) FROM derivacao_execucao WHERE vigencia_em IS NULL").fetchone()[0]
     if did is None:
-        return frozenset()
-    return frozenset(c for (c,) in con.execute(
-        "SELECT DISTINCT coleta_id FROM anomalia WHERE derivacao_id=? AND tipo='CHAVE-DUP' AND coleta_id IS NOT NULL",
-        (did,)))
+        return {}
+    saida = {}
+    for tipo in TIPOS_QUE_RECUSAM_O_RETRATO:
+        for (c,) in con.execute("SELECT DISTINCT coleta_id FROM anomalia WHERE derivacao_id=? AND tipo=? AND "
+                                "coleta_id IS NOT NULL", (did, tipo)):
+            saida.setdefault(c, tipo)
+    return saida
+
+
+def coletas_ambiguas(con, did=None):
+    """Collections that are never current (repeated business key or refused money field: coletas_recusadas) in
+    derivation `did`; default: the most recent current derivation. The derivation in progress passes the set it just
+    computed; the panel and later readers use what was recorded - so everyone picks the same current snapshot."""
+    return frozenset(coletas_recusadas(con, did))
 
 
 def coletas_vigentes(con, em=None, excluir=None, limite_coleta=None):

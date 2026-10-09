@@ -75,17 +75,19 @@ class Nucleo:
                 "painel": VERSAO}
 
     def _ambiguas(self, ctx):
-        """Collections with a repeated key (CHAVE-DUP) in the context's derivation: never the current snapshot. The current
-        derivation covers all complete collections, including the ones before any `em`."""
+        """{collection: anomaly type} of the collections that are never the current snapshot in the context's
+        derivation: repeated key (CHAVE-DUP) or refused money field (VALOR-RECUSADO). The current derivation covers
+        all complete collections, including the ones before any `em`."""
         did = ctx["derivacao"]["id"]
         if getattr(self, "_ambiguas_de", None) != did:
-            self._ambiguas_de, self._ambiguas_cache = did, vigencia.coletas_ambiguas(self.con, did)
+            self._ambiguas_de, self._ambiguas_cache = did, vigencia.coletas_recusadas(self.con, did)
         return self._ambiguas_cache
 
     def _vigentes(self, ctx, em):
         """Current snapshot of each listing cut-off: the single rule of `vigencia.coletas_vigentes` (the same as the
         derivation's), restricted to the snapshots the context's normalization processed."""
-        return vigencia.coletas_vigentes(self.con, em, excluir=self._ambiguas(ctx), limite_coleta=ctx["limite_coleta"])
+        return vigencia.coletas_vigentes(self.con, em, excluir=frozenset(self._ambiguas(ctx)),
+                                         limite_coleta=ctx["limite_coleta"])
 
     def _cortes_ambiguos(self, ctx, em):
         """Cut-offs (entidade, exercicio, data_inicial, data_final) with a snapshot processed up to `em` that has a repeated
@@ -113,8 +115,10 @@ class Nucleo:
             (e, exercicio, di, data_final, ctx["limite_coleta"], *p)).fetchone()
         if not mais_novo or mais_novo[0] == usado or mais_novo[0] not in self._ambiguas(ctx):
             return None
+        motivo = ("tem chave de empenho repetida (CHAVE-DUP)" if self._ambiguas(ctx)[mais_novo[0]] == "CHAVE-DUP"
+                  else "tem campo monetário ausente, nulo ou inválido (VALOR-RECUSADO)")
         return (f"entidade {e}: o retrato mais novo do corte (snapshot {mais_novo[1][:8]}, coletado em "
-                f"{_data_br(mais_novo[2])}) tem chave de empenho repetida (CHAVE-DUP) e não é usado"
+                f"{_data_br(mais_novo[2])}) {motivo} e não é usado"
                 + ("; vale o retrato válido anterior" if usado else "; não há retrato válido anterior"))
 
     def _pendentes(self, ctx):
@@ -190,8 +194,9 @@ class Nucleo:
             "exercicio=? AND data_inicial=? AND data_final=?" + filtro_em, (e, exercicio, di, data_final, *p_em)).fetchall()
         if any(st == "completa" and cid > ctx["limite_coleta"] for cid, st in linhas):
             return "nao_processado"
-        if any(st == "completa" and cid in self._ambiguas(ctx) for cid, st in linhas):
-            return "ambiguo"
+        recusadas = [self._ambiguas(ctx)[cid] for cid, st in linhas if st == "completa" and cid in self._ambiguas(ctx)]
+        if recusadas:
+            return "ambiguo" if "CHAVE-DUP" in recusadas else "valor_recusado"
         if any(st != "completa" for _, st in linhas):
             return "incompleto"
         return "sem_coleta"

@@ -32,7 +32,8 @@ import logging
 from collections import OrderedDict, defaultdict
 
 from . import DataInvalida, agora, banco, instante, regras
-from .vigencia import VERIF_RETRATO_AMBIGUO, coletas_ambiguas, coletas_vigentes  # noqa: F401 (re-exported)
+from .vigencia import (VERIF_RETRATO_AMBIGUO, VERIF_RETRATO_VALOR_RECUSADO, coletas_ambiguas,  # noqa: F401
+                       coletas_vigentes)  # re-exported
 
 log = logging.getLogger("rp.derivar")
 
@@ -77,9 +78,12 @@ def derivar(con, nid, em=None):
                           (nid, VERSAO, json.dumps(sorted(R.values())), agora(), em)).lastrowid
         uid = dict(con.execute("SELECT id, snapshot_uid FROM coleta"))
         ambiguas = _registros(con, did, nid, R, par, em)
+        recusadas = _valores_recusados(con, did, nid, R, em)
         _movimentacao(con, did, nid, em)
-        vig = coletas_vigentes(con, em, excluir=ambiguas)
+        vig = coletas_vigentes(con, em, excluir=ambiguas | recusadas)
         _vigencia_recusada(con, did, R, em, ambiguas, vig, uid)
+        _vigencia_recusada(con, did, R, em, recusadas - ambiguas, vig, uid, VERIF_RETRATO_VALOR_RECUSADO,
+                           ("VALOR-OBRIG", 1), excluidas=ambiguas | recusadas)
         ler = _Leitor(con, did, nid)
         _continuidade(con, did, nid, R, vig, uid, ler)
         pares = _pareamento(con, did, nid, R, vig, uid, par, ler)
@@ -97,17 +101,20 @@ def _ate(em, alias="c"):
 
 
 # --------------------------------------------------------------------------- snapshot selection
-def _vigencia_recusada(con, did, R, em, ambiguas, vig, uid):
-    """A check for each cut-off whose most recent snapshot is ambiguous: it is not the current one, and the current one
-    is the previous valid one (or none). It only exists when there is a repeated key; without it, nothing is recorded
-    (the hash does not change)."""
+def _vigencia_recusada(con, did, R, em, ambiguas, vig, uid, descricao=VERIF_RETRATO_AMBIGUO, regra=("ANOM-REG", 1),
+                       excluidas=None):
+    """A check for each cut-off whose most recent snapshot is refused (`ambiguas`: repeated key; or, with another
+    `descricao`, a refused money field): it is not the current one, and the current one is the previous valid one (or
+    none). It only exists when there is such a snapshot; without it, nothing is recorded (the hash does not change).
+    `excluidas`: every refused collection; the most recent snapshot is looked up among the others plus `ambiguas`."""
     if not ambiguas:
         return
-    for corte, cid in sorted(coletas_vigentes(con, em, excluir=frozenset()).items()):
+    excluidas = ambiguas if excluidas is None else excluidas
+    for corte, cid in sorted(coletas_vigentes(con, em, excluir=excluidas - ambiguas).items()):
         if cid in ambiguas:
             e, ex, di, df = corte
             usado = vig.get(corte)
-            _verif(con, did, R[("ANOM-REG", 1)], VERIF_RETRATO_AMBIGUO,
+            _verif(con, did, R[regra], descricao,
                    {"entidade": e, "exercicio": ex, "data_inicial": di, "data_final": df, "snapshot_recusado": uid[cid],
                     "snapshot_vigente": uid[usado] if usado else None}, 1, 1)
 
@@ -216,6 +223,24 @@ def _registros(con, did, nid, R, par, em=None):
             ambiguas.add(cid)
     con.executemany("INSERT INTO anomalia VALUES (?,?,?,?,?,?,?,?)", anomalias)
     return frozenset(ambiguas)
+
+
+def _valores_recusados(con, did, nid, R, em=None):
+    """VALOR-RECUSADO anomaly (rule VALOR-OBRIG v1) for each record of a complete snapshot (up to `em`) with a money
+    field refused by the normalization (valor_recusado). Returns the collections: they are never current, since summing
+    them would leave the record out of the total as if it did not exist. Without refusals nothing is recorded."""
+    filtro, p = _ate(em)
+    por_registro = defaultdict(dict)
+    for rid, i, cid, e, ano, emp, ordem, campo, natureza in con.execute(
+            "SELECT v.resposta_id, v.indice, v.coleta_id, v.entidade, v.anoempenho, v.empenho, b.ordem, v.campo, "
+            "v.natureza FROM valor_recusado v JOIN coleta c ON c.id = v.coleta_id JOIN resposta_bruta b ON "
+            "b.id = v.resposta_id WHERE v.normalizacao_id = ? AND c.status = 'completa'" + filtro +
+            " ORDER BY v.resposta_id, v.indice, v.campo", (nid, *p)):
+        por_registro[(cid, rid, i, e, ano, emp, ordem)][campo] = natureza
+    for (cid, rid, i, e, ano, emp, ordem), campos in por_registro.items():
+        _anomalia(con, did, R[("VALOR-OBRIG", 1)], "VALOR-RECUSADO", cid, e, ano, emp, campos=campos,
+                  posicao=[ordem, i])
+    return frozenset(k[0] for k in por_registro)
 
 
 def _natureza_da_repeticao(con, posicoes):

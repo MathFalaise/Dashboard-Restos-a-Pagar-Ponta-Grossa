@@ -50,6 +50,9 @@ REGRAS = [
     ("CONC-RREO", 1, "conciliacao", "estavel", "CONFIRMADO",
      "Diferença API − RREO por coluna, para cada regra de agregação. Registro, nunca correção.", f"{E2} §3.3"),
     ("ANOM-REG", 1, "anomalia", "estavel", "CONFIRMADO", "Anomalias por registro (ver anomalia_tipo).", f"{E2} §11.4"),
+    ("VALOR-OBRIG", 1, "anomalia", "estavel", "CONFIRMADO",
+     "Campo monetário da listagem de RP ausente, nulo ou inválido: o registro não vira valor (nunca zero) e o "
+     "retrato do corte nunca é o vigente.", "pedido de correção de 09/10/2026, item 2 (contrato da API v2)"),
     ("ANOM-CONT", 1, "anomalia", "estavel", "CONFIRMADO",
      "Continuidade: proc(A+1)=S3 final de A e aproc(A+1)=S2 final de A; saldo final ≠ 0 exige presença em A+1.",
      f"{E2} §1.3"),
@@ -63,6 +66,8 @@ ANOMALIAS = [
     ("ANOEMP-FUTURO", "anoempenho ≥ exercicio consultado", "CONFIRMADO", f"{E2} §8"),
     ("SEM-SALDO-ABERTURA", "registro no universo com proc = aproc = 0", "CONFIRMADO", f"{E2} §8"),
     ("CHAVE-DUP", "mesma chave (entidade, anoempenho, empenho) duas vezes no mesmo snapshot", "CONFIRMADO", f"{E2} §2.1"),
+    ("VALOR-RECUSADO", "campo monetário ausente, nulo ou inválido no registro (recusado na normalização)",
+     "CONFIRMADO", "pedido de correção de 09/10/2026, item 2"),
     ("COPIA-SEM-PAR", "cópia 24xxxxx sem par na entidade 15 no mesmo corte", "HIPÓTESE", f"{E2} ADENDO"),
     ("PAR-INSCRICAO-DIVERGENTE", "par espelhado com proc/aproc diferentes nos dois lados", "CONFIRMADO", f"{E2} ADENDO"),
     ("PAR-EXECUCAO-DOIS-LADOS", "par espelhado com fluxo nos dois lados no mesmo corte", "HIPÓTESE", f"{E2} ADENDO"),
