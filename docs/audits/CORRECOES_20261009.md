@@ -9,7 +9,7 @@ Ordem aprovada pelo responsável pelo projeto em 09/10/2026:
 |---|---|---|
 | A | 3 (contrato da API), 2 (campo monetário ausente) | feita |
 | B | 4 (precisão temporal dos retratos) | feita (suíte: 604 passed) |
-| C | 1 (integridade relacional), 7 (proveniência e hashes) | pendente |
+| C | 1 (integridade relacional), 7 (proveniência e hashes) | feita (suíte: 616 passed) |
 | D | 9 (homologação única), 10 (desempenho) | pendente |
 | E | 5 (pares 1 ↔ 15), 6 (RREO) | pendente |
 | F | 8 (privacidade do repositório) | pendente; reescrita de histórico só com autorização explícita |
@@ -215,3 +215,105 @@ máximo 94 segundos, e nenhuma delas contém um instante já usado por derivaç�
 - 321 retratos anteriores a 05/10/2026 têm conclusão pela última resposta recebida, não pelo fim da gravação. A
   diferença é a escrita do manifesto, que leva menos de um segundo.
 - O banco ativo continua na v5 até o código novo abri-lo. A migração faz backup e preenche os tempos pelos manifestos.
+
+## Fase C: integridade relacional, proveniência e hashes
+
+### O que mudou
+
+**Item 1: relações protegidas na gravação (esquema v8, `app/rp/banco.py`).** A v8 só acrescenta: nenhuma tabela
+recriada, nenhuma linha existente alterada.
+- **Camada 1:** `rp_registro`, `movimentacao_lancamento`, `rreo_extracao`, `valor_recusado`, `rreo_valor`,
+  `entidade_ref` e `exercicio_ref` recusam, por gatilho, na inserção e na troca das colunas de ligação:
+  - coleta de outro tipo (ex.: registro de RP numa coleta de catálogo);
+  - coleta diferente da coleta da resposta HTTP;
+  - coleta além da última lida pela normalização.
+
+  Antes, isso só era acusado depois, por leitura (portão `integridade_relacional`, que continua como segunda
+  defesa).
+- **Camada derivada:** `anomalia`, `verificacao`, `espelhamento_par`, `visao_valor` e `conciliacao_rreo` só podem
+  citar regra que a sua derivação declarou.
+- **Relações que viviam só em JSON** viraram tabelas com FOREIGN KEY:
+  - `derivacao_regra` (de `regras_json`);
+  - `visao_valor_coleta` (de `coletas_json`);
+  - `conciliacao_rreo_coleta` (de `coletas_api_json`, com chave única nova na conciliação).
+
+  O JSON continua: ele faz parte do hash homologado e a interface o usa. Um gatilho recusa a ligação que o JSON não
+  tem. As derivações existentes recebem as ligações na migração, a partir do próprio JSON; as novas, na derivação.
+  `apagar-execucao` apaga as ligações antes.
+- **JSON que continua só descritivo:** `anomalia.detalhe_json`, `verificacao.escopo_json`, e `parametros_json` e
+  `cabecalhos_json` da camada bruta.
+
+**Item 7: proveniência e hashes (`app/rp/proveniencia.py`, `app/rp/regras.py`, `app/rp/__init__.py`).**
+- **Hash de cada manifesto:** SHA-256 e tamanho em `coleta_manifesto`, gravado no registro do snapshot. Nos bancos
+  anteriores, é lido do armazém na primeira abertura. Os manifestos são versionados byte a byte (`-text`), então o
+  hash é o mesmo em qualquer clone. O `verificar` acusa um manifesto com outros bytes.
+- **Identificação de cada normalização e derivação:**
+  - `sha256_codigo`: o hash de todos os módulos de `rp/` e do `esquema.sql`;
+  - `ambiente_json`: Python, SQLite, PyMuPDF e MuPDF;
+  - `sha256_regras`, na derivação: o hash das regras usadas, com definição, situação de evidência e parâmetros,
+    mais o catálogo de anomalias. É calculado por código e versão, nunca por id interno.
+  - As execuções antigas ficam com esses campos nulos. Preenchê-los com o código de hoje seria inventar.
+- **`python -m rp rastrear --valor ID`:** percorre a cadeia valor → derivação (hashes) → regras declaradas →
+  snapshots → registros normalizados → respostas HTTP → objeto bruto (hash recalculado) → manifesto (hash gravado ×
+  arquivo), e diz o que não confere.
+- **`python -m rp raiz --gravar ARQ` / `--conferir ARQ`:** manifesto-raiz com o hash de cada manifesto e de cada
+  objeto, as duas raízes e o `hash_resultado` das derivações atuais. A conferência aceita bruto novo, porque a
+  camada só cresce, e acusa bruto que sumiu ou mudou, além de arquivo de raiz adulterado.
+- **Limite do manifesto-raiz:** guardado no mesmo disco, ele **não** prova imutabilidade contra quem administra o
+  banco e o armazém. Ele só vale guardado fora deles: outro disco, e-mail, commit assinado, carimbo de tempo. Para
+  os manifestos, o histórico Git de `data/snapshots` já é uma referência externa; para o banco, não.
+- **Portões novos:**
+  - `proveniencia_completa`: todo valor chega a snapshot, resposta, objeto e hash de manifesto, e as relações
+    batem com o JSON;
+  - `execucao_identificada`: código, ambiente e regras registrados, e o hash das regras igual ao recalculado.
+
+### Testes
+
+- **`app/tests/test_integridade_proveniencia.py` (11 testes):**
+  - camada 1 recusando coleta de outro tipo, de outra resposta ou além da lida, e troca de coleta;
+  - regra não declarada;
+  - relações iguais ao JSON e ligação fora do JSON recusada;
+  - apagar derivação com as ligações;
+  - código, regras e ambiente registrados;
+  - hash das regras pelo conteúdo;
+  - hash do manifesto e `verificar`;
+  - cadeia de um valor, com acusação de manifesto alterado;
+  - manifesto-raiz: grava, aceita bruto novo, acusa arquivo e banco alterados;
+  - CLI `rastrear` e `raiz`, sem sobrescrever o arquivo;
+  - migração v7 → v8 preenchendo relações e hashes, sem alterar nenhuma linha e com as execuções antigas nulas.
+- **Ajustados:**
+  - `test_valor_ausente::test_SINTETICO_gatilhos_da_v6`: a mensagem agora pode vir do gatilho da v8, que dispara
+    primeiro; a recusa continua;
+  - `test_tempo_retratos::test_banco_v6_migra_para_v7_preenchendo_pelos_manifestos`: passou a fixar o código na
+    v7.
+  - Nenhum teste foi apagado.
+
+### Verificação com os dados reais
+
+Cópia do banco ativo, com o script `scratchpad/verificar_fase.py` e as conferências de proveniência:
+
+| Verificação | Resultado |
+|---|---|
+| Dados existentes contra as travas novas (antes de criar) | 0 linhas de camada 1 com coleta de outro tipo, de outra resposta ou além da lida; 0 linhas citando regra fora do `regras_json`; conciliação com chave natural única (3.888 de 3.888) |
+| Migração v5 → v8 | um backup (`antes-migracao-v5-v8`); impressão da v8 confere |
+| Relações preenchidas do JSON | `derivacao_regra` 107, `visao_valor_coleta` 101.880, `conciliacao_rreo_coleta` 19.008; `coleta_manifesto` 529 de 529 |
+| Normalização e derivações | 266.787 registros idênticos aos da normalização 14; atual `b6f80d87…` e "como estava em 29/09" `b8a0b2ed…` iguais às homologadas |
+| Proveniência | derivação nova e derivação homologada 25 (migrada): 7.890 valores, nenhum elo quebrado |
+| Identificação | derivação nova com o código atual; hash das regras confere; ambiente registrado |
+| `rastrear` de um valor real (S1, 2026, 28/02) | cadeia completa: 10 snapshots, 12 respostas, objetos e manifestos conferidos |
+| Manifesto-raiz | 529 coletas, 411 objetos; raiz dos manifestos `4065bea9…`, dos objetos `cfb99745…`; confere |
+| `verificar` | 0 problemas (inclui o hash de cada manifesto) |
+| Portões | apto; 15 de 17 aprovados (`camada_bruta_preservada` e `testes`: fase D) |
+
+### Mudanças de indicador
+
+Nenhuma: os dois hashes homologados se mantêm.
+
+### Pendências
+
+- O manifesto-raiz precisa ser guardado **fora** do banco e do armazém pelo responsável. A escolha do lugar (disco,
+  e-mail, commit assinado, carimbo de tempo) é dele.
+- As execuções anteriores à v8 não têm hash de código nem de ambiente registrado. Isso não é recuperável sem
+  inventar.
+- A normalização ficou mais lenta com os gatilhos da camada 1 (23 s → 35 s na cópia real). Medição e decisão ficam
+  para a fase D.

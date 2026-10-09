@@ -175,6 +175,16 @@ def _main(argv=None):
     p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
     p.add_argument("--referencia", help="JSON gravado antes da carga (--gravar-referencia): confere o bruto anterior")
     p.add_argument("--gravar-referencia", help="grava o retrato do bruto atual neste arquivo (nunca sobrescreve) e sai")
+    p = sub.add_parser("rastrear", help="cadeia de um valor calculado ate o manifesto e o objeto bruto (somente "
+                                        "leitura)")
+    p.add_argument("--valor", type=int, required=True, help="id de visao_valor")
+    p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
+    p = sub.add_parser("raiz", help="manifesto-raiz do bruto e dos resultados: grava (para guardar FORA do banco e do "
+                                    "armazem) ou confere (somente leitura)")
+    g = p.add_mutually_exclusive_group(required=True)
+    g.add_argument("--gravar", help="arquivo novo (nunca sobrescreve)")
+    g.add_argument("--conferir", help="arquivo gravado antes")
+    p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
     p = sub.add_parser("diagnosticar-api", help="confere se a API ainda responde como o coletor espera, sem gravar "
                                                 "nada (saida 0 ok, 1 a API mudou, 2 nao deu para conferir)")
     p.add_argument("--entidade", type=int, help="padrao: a primeira entidade de [escopo] no config.toml")
@@ -212,6 +222,27 @@ def _main(argv=None):
         r = portoes.avaliar(a.banco or cfg.banco, Armazem(cfg.snapshots), ref)
         print(json.dumps(r, ensure_ascii=False, indent=1, default=str))
         return 0 if r["apto"] else 1
+    if a.cmd in ("rastrear", "raiz"):   # same: read-only on the database (and the store, to re-hash manifests)
+        from . import proveniencia
+        from .portoes import _abrir
+        con = _abrir(a.banco or cfg.banco)
+        try:
+            if a.cmd == "rastrear":
+                r = proveniencia.cadeia(con, Armazem(cfg.snapshots), a.valor)
+                print(json.dumps(r, ensure_ascii=False, indent=1))
+                return 0 if r["ok"] else 1
+            if a.gravar:
+                r = proveniencia.gerar_raiz(con)
+                with open(a.gravar, "x", encoding="utf-8") as f:      # "x": never overwrites
+                    json.dump(r, f, ensure_ascii=False, indent=1)
+                print(json.dumps({k: v for k, v in r.items() if k not in ("snapshots", "lista_objetos")},
+                                 ensure_ascii=False, indent=1))
+                return 0
+            problemas = proveniencia.conferir_raiz(con, json.loads(open(a.conferir, encoding="utf-8").read()))
+            print(json.dumps({"raiz": a.conferir, "problemas": problemas}, ensure_ascii=False, indent=1))
+            return 1 if problemas else 0
+        finally:
+            con.close()
     if a.cmd == "diagnosticar-api":   # same: queries the portal, but records no snapshot and does not open the database for writing
         return _diagnosticar_api(a, cfg)
     if a.cmd == "comprimir-backups":   # backup files only: does not open the database

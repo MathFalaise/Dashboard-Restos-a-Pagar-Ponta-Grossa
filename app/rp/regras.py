@@ -8,6 +8,7 @@ PARAMETROS, tied to the rule VERSION, and go to the immutable regra_parametro ta
 parameters instead of repeating numbers; changing a parameter requires a new rule version.
 The usage situation of each version (operational, experimental, not recommended...) lives in governanca.py.
 """
+import hashlib
 import json
 
 from . import governanca
@@ -83,6 +84,29 @@ PARAMETROS = {
                     "campos_de_conferencia": ["cnpj", "data_emissao"]},
     ("CONC-RREO", 1): {"entidade_do_rreo_por_entidade": 1},
 }
+
+
+def impressao(con, ids):
+    """SHA-256 of the rules a derivation used (ids from regras_json) as recorded in the database: code, version, type,
+    use, evidence status, definition, source and parameters - plus the anomaly type catalog. By code and version,
+    never by internal id: equal in two databases with the same catalog. The catalog is immutable (triggers), so the
+    value recorded at the derivation must still be the recomputed one."""
+    ids = sorted(set(ids))
+    marcas = ",".join("?" * len(ids))
+    regras_ = {}
+    for rid, codigo, versao, tipo, uso, status, definicao, fonte in con.execute(
+            f"SELECT id, codigo, versao, tipo, uso, status_evidencia, definicao, fonte FROM regra WHERE id IN ({marcas})",
+            ids):
+        regras_[rid] = {"codigo": codigo, "versao": versao, "tipo": tipo, "uso": uso, "status_evidencia": status,
+                        "definicao": definicao, "fonte": fonte, "parametros": {}}
+    for rid, nome, valor in con.execute(f"SELECT regra_id, nome, valor_json FROM regra_parametro WHERE regra_id IN "
+                                        f"({marcas})", ids):
+        regras_[rid]["parametros"][nome] = json.loads(valor)
+    corpo = {"regras": sorted(regras_.values(), key=lambda r: (r["codigo"], r["versao"])),
+             "anomalia_tipo": [list(r) for r in con.execute("SELECT codigo, descricao, status_evidencia, fonte FROM "
+                                                            "anomalia_tipo ORDER BY codigo")]}
+    return hashlib.sha256(json.dumps(corpo, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()
+                          ).hexdigest()
 
 
 class CatalogoDivergente(Exception):

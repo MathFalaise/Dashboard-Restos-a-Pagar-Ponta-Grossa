@@ -45,8 +45,26 @@ def sha256_valido(h):
     return isinstance(h, str) and _HEX64.fullmatch(h) is not None
 
 
+def ambiente():
+    """Versions that can change a result besides the code: Python, SQLite and the PDF library (RREO extraction)."""
+    import platform
+    import sqlite3
+    try:
+        import pymupdf
+    except ImportError:                       # old versions only expose `fitz`; the extraction then fails anyway
+        try:
+            import fitz as pymupdf
+        except ImportError:
+            pymupdf = None
+    return {"python": platform.python_version(), "sqlite": sqlite3.sqlite_version,
+            "pymupdf": getattr(pymupdf, "VersionBind", None) if pymupdf else None,
+            "mupdf": getattr(pymupdf, "VersionFitz", None) if pymupdf else None}
+
+
 def hash_do_codigo():
-    """Hash of the package sources: pins down what the collector version means."""
+    """Hash of the package sources (every module of rp/ and esquema.sql: collector, normalizer, deriver, rules,
+    validity, schema): pins down which code produced a snapshot, a normalization or a derivation. The panel and the
+    interface (subpackages) only read and stay out."""
     h = hashlib.sha256()
     for p in sorted(Path(__file__).parent.glob("*.py")) + [Path(__file__).parent / "esquema.sql"]:
         h.update(p.name.encode())

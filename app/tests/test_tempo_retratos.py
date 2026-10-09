@@ -169,6 +169,7 @@ def test_banco_v6_migra_para_v7_preenchendo_pelos_manifestos(tmp_path, monkeypat
     antes = {t: mundo.con.execute(f"SELECT * FROM {t} ORDER BY 1").fetchall() for t in tabelas if t != "esquema_versao"}
     mundo.con.close()
     monkeypatch.undo()
+    monkeypatch.setattr(banco, "VERSAO_ESQUEMA", 7)             # the code of v7 (v8 exists since phase C)
     con = banco.abrir(mundo.cfg)                                # v7: backup, migration, rows from the manifests
     assert banco.versao_esquema(con) == 7 and banco.impressao_esquema(con) == banco.IMPRESSAO_ESQUEMA[7]
     assert {t: con.execute(f"SELECT * FROM {t} ORDER BY 1").fetchall() for t in antes} == antes
