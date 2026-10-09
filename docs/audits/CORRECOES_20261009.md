@@ -10,7 +10,7 @@ Ordem aprovada pelo responsável pelo projeto em 09/10/2026:
 | A | 3 (contrato da API), 2 (campo monetário ausente) | feita |
 | B | 4 (precisão temporal dos retratos) | feita (suíte: 604 passed) |
 | C | 1 (integridade relacional), 7 (proveniência e hashes) | feita (suíte: 616 passed) |
-| D | 9 (homologação única), 10 (desempenho) | pendente |
+| D | 9 (homologação única), 10 (desempenho) | feita (suíte: 627 passed) |
 | E | 5 (pares 1 ↔ 15), 6 (RREO) | pendente |
 | F | 8 (privacidade do repositório) | pendente; reescrita de histórico só com autorização explícita |
 
@@ -328,3 +328,90 @@ Nenhuma: os dois hashes homologados se mantêm.
   inventar.
 - A normalização ficou mais lenta com os gatilhos da camada 1 (23 s → 35 s na cópia real). Medição e decisão ficam
   para a fase D.
+
+## Fase D: homologação única e desempenho
+
+### Item 9: `python -m rp homologar`
+
+Arquivo: `app/rp/homologar.py`. O comando lê o banco só para leitura e roda, nesta ordem:
+1. **Portões:**
+   - integridade do SQLite e relações;
+   - armazém × banco (`verificar`, com hash de manifesto e tempo da coleta);
+   - coleta e normalização completas;
+   - derivação da normalização vigente e hashes recalculados;
+   - sem chave repetida, sem valor monetário recusado;
+   - tempos das coletas, proveniência, execução identificada e esquema.
+2. **Referência da camada bruta anterior à carga** (`--referencia` do `portoes --gravar-referencia` e/ou `--raiz` do
+   manifesto-raiz guardado fora). Pelo menos uma é obrigatória.
+3. **Reprodução determinística:** um banco novo montado só do armazém, numa pasta temporária, normalizado e derivado
+   em cada vigência do ativo, e comparado camada a camada: bruto, tempos, manifestos, as 7 tabelas da normalização e
+   cada vigência.
+4. **Testes:** a suíte de produção (`app/tests`) e a de investigação (`docs/stages/03-data-model/validation`, 26
+   testes), em processo separado. O resumo e o código de saída são a evidência.
+5. **Pendências contábeis:** divergências com o RREO por regra de agregação, PDFs do RREO sem transcrição, pares
+   1 ↔ 15 de natureza indeterminada e regras em uso sem decisão de governança.
+
+O resultado nunca é mais forte do que o que rodou:
+
+| Resultado | Quando | Saída |
+|---|---|---|
+| `reprovada` | alguma verificação técnica executada falhou | 1 |
+| `incompleta` | sem falha técnica, mas alguma verificação obrigatória não foi executada (`--sem-testes`, `--sem-reproducao`, sem referência). **Não é homologação.** | 2 |
+| `aprovada_com_ressalvas` | aprovação técnica (tudo obrigatório executado e aprovado), com pendências contábeis listadas | 3 |
+| `aprovada_sem_ressalvas` | aprovação técnica e nenhuma pendência | 0 |
+
+O banco ativo e o armazém não são escritos. `--saida` grava o relatório completo e nunca sobrescreve.
+
+**Execução real** (cópia v8 do banco ativo, com `--raiz` gerado na fase C):
+```
+python -m rp homologar --banco <copia v8> --raiz <raiz_real_fase_c.json> --saida <homologacao_real.json>
+```
+| Verificação | Resultado |
+|---|---|
+| 15 portões técnicos | todos aprovados |
+| Raiz externa e referência da camada bruta | confere |
+| Reprodução determinística | igual nas duas vigências (`b6f80d87…`, `b8a0b2ed…`), normalizador v2 nos dois (43 s) |
+| Testes de produção | `627 passed in 340.22s` |
+| Testes de investigação | `26 passed in 11.73s` |
+| **Resultado** | **`aprovada_com_ressalvas`** (saída 3), em 411 s |
+| Pendências contábeis | divergência com o RREO em 32 documentos (RREO-COL v1: 257 colunas; v2: 231); 3 PDFs sem transcrição (snapshots `36f1ef8e`, `722468ea`, `d369f5b9`); pares 1 ↔ 15 (3.776 linhas de par somando todos os cortes); regra `VALOR-OBRIG v1` sem decisão de governança |
+
+Esta execução foi feita **antes** da retirada do índice `ix_visao_valor_coleta` (ver item 10), ou seja, com a
+impressão anterior da v8. Ela é refeita sobre uma cópia nova na validação final.
+
+Testes: `app/tests/test_homologar.py` (10 testes).
+- Sem testes, sem reprodução e sem referência dá `incompleta`, com a lista do que faltou.
+- Tudo executado dá `aprovada_com_ressalvas`, com a pendência de governança do mundo sintético.
+- Uma suíte que falha reprova, e um portão que falha reprova.
+- A reprodução acusa um valor alterado depois da derivação.
+- A CLI devolve o código de saída e não sobrescreve o relatório.
+
+### Item 10: desempenho medido
+
+Script reproduzível: `docs/audits/benchmark_processamento.py`. Resultados em
+`docs/audits/benchmark_processamento_20261009.json`. Mesma máquina e mesmos dados, uma execução por vez, comparando o
+código de `main` (82a2d75, antes das fases) com o código atual.
+
+| Medida | `main` (v5) | atual (v8) | Observação |
+|---|---|---|---|
+| Abrir (migração v5 → v8 + tempos e hashes dos manifestos) | 0,03 s | 7,85 s | uma vez só por banco |
+| Normalizar | 10,6 s | 8,0 s | variação entre rodadas; sem os gatilhos da camada 1: 8,7 s, ou seja, o custo dos gatilhos não aparece acima do ruído |
+| Derivar (atual) | 7,4 s | 7,4 s | |
+| Derivar ("como estava em") | 2,1 s | 2,1 s | |
+| Tamanho após VACUUM | 450,3 MB | 454,2 MB | +0,9% (relações e tempos novos) |
+| Painel: série entre exercícios (mediana de 15) | 0,316 s | 0,307 s | com ordenação por subconsultas era 0,359 s; trocada por junção |
+| Painel: visão geral (mediana de 15) | 0,492 s | 0,499 s | com subconsultas era 0,559 s |
+| Demais consultas do painel | — | iguais dentro do ruído | ver o JSON |
+
+Decisões tomadas pela medição:
+- **Junção em vez de subconsultas:** em `vigencia.coletas_vigentes`, o caminho mais chamado do painel, a ordenação
+  nova (início, conclusão, `snapshot_uid`) usa uma junção com `coleta_tempo` em vez de três subconsultas
+  correlacionadas. Mesma ordem e mesmo resultado (os testes da fase B passam); tempo de volta ao de `main`.
+- **Índice removido:** o índice `ix_visao_valor_coleta (coleta_id)`, criado na v8 sem medição, foi **retirado**,
+  pois a v8 ainda não foi publicada. Medido com cerca de 200 mil ligações: ele piorava a conferência de proveniência
+  (4,2 → 13,0 ms). A alternativa `(derivacao_id, coleta_id)` ganharia 1,4 ms por cerca de 300 KB. Nenhum índice
+  novo foi criado. A impressão da v8 foi recalculada.
+- **Planos (`EXPLAIN QUERY PLAN`):** a seleção do retrato vigente, os gatilhos da camada 1 e o da regra declarada
+  usam só chave primária ou índice existente.
+- **Nada incremental:** nenhum processamento incremental nem outra otimização que aumente a complexidade foi
+  feito, como o pedido manda.

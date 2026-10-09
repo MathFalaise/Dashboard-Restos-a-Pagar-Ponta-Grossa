@@ -79,11 +79,15 @@ def coletas_vigentes(con, em=None, excluir=None, limite_coleta=None):
     if limite_coleta is not None:
         filtros.append(" AND c.id <= ?")
         params.append(limite_coleta)
-    f_em, p_em = filtro_disponivel(em)
-    filtros.append(f_em)
-    params.extend(p_em)
-    sql = ("SELECT c.id, c.entidade, c.exercicio, c.data_inicial, c.data_final FROM coleta c WHERE c.tipo='rp_listagem' "
-           "AND c.status='completa' AND c.tipo_pesquisa IS NULL" + "".join(filtros) + " ORDER BY " + ordem())
+    if em:                                      # the same rule as filtro_disponivel, through the join below
+        filtros.append(" AND t.concluida_em IS NOT NULL AND t.concluida_em <= ?")
+        params.append(instante(em))
+    # hot path of the panel (called once per cut-off and series point): a join instead of ordem()'s correlated
+    # subqueries - same order (canonical start, conclusion, snapshot_uid); measured 09/10/2026 in item 10 of the
+    # correction request (docs/audits/CORRECOES_20261009.md, phase D)
+    sql = ("SELECT c.id, c.entidade, c.exercicio, c.data_inicial, c.data_final FROM coleta c LEFT JOIN coleta_tempo t "
+           "ON t.coleta_id = c.id WHERE c.tipo='rp_listagem' AND c.status='completa' AND c.tipo_pesquisa IS NULL" +
+           "".join(filtros) + " ORDER BY COALESCE(t.inicio_em, c.coletada_em), t.concluida_em, c.snapshot_uid")
     vig = {}
     for cid, e, ex, di, df in con.execute(sql, params):
         if cid not in excluir:
