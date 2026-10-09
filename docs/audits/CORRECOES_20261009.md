@@ -386,6 +386,15 @@ Testes: `app/tests/test_homologar.py` (10 testes).
 - A reprodução acusa um valor alterado depois da derivação.
 - A CLI devolve o código de saída e não sobrescreve o relatório.
 
+### Revisão da fase D
+
+- **Pares nas pendências:** o "3.776" vinha rotulado como pares, mas soma as linhas de par de todos os cortes. A
+  pendência agora separa `empenhos_distintos_em_par` (731 nos dados reais) de
+  `linhas_de_par_somando_todos_os_cortes` (3.776).
+- **Execução anterior à v8:** num banco recém-migrado, a derivação homologada não tem hash de código, e o portão
+  `execucao_identificada` reprova. Isso está certo: a identificação não existe e não é inventada. Agora o detalhe diz
+  o que fazer: `python -m rp processar` produz uma normalização e uma derivação identificadas.
+
 ### Item 10: desempenho medido
 
 Script reproduzível: `docs/audits/benchmark_processamento.py`. Resultados em

@@ -130,7 +130,10 @@ def identificacao(con, did):
             "derivacao_feita_com_o_codigo_atual": d[1] == atual if d[1] else None,
             "sha256_regras_gravado": d[2],
             "sha256_regras_confere": (d[2] == regras.impressao(con, json.loads(d[4]))) if d[2] else None,
-            "ambiente_registrado": bool(d[3]) and bool(n[1])}
+            "ambiente_registrado": bool(d[3]) and bool(n[1]),
+            "nota": None if d[1] and n[0] else ("execução anterior ao esquema v8 (sem hash de código): rode 'python -m "
+                                               "rp processar' para uma normalização e uma derivação identificadas; os "
+                                               "hashes antigos não são preenchidos depois")}
 
 
 # ------------------------------------------------------------------ root manifest
