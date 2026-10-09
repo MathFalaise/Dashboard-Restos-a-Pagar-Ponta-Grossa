@@ -143,8 +143,11 @@ def _markdown(s):
         c = d["conferencia"] or {}
         obs = ""
         if d["situacao"] == "recusado_layout":
-            obs = f"{d['motivo']}; segunda leitura: identidades {'ok' if not c.get('identidades_que_falham') else 'falham'}" \
-                  f", período impresso: {c.get('periodo_impresso') or 'não impresso'}"
+            if c.get("resultado") == "nao_legivel_pela_conferencia":   # nothing read: no identity was checked
+                leitura = "a segunda leitura também não leu as linhas (" + "; ".join(c.get("problemas_da_leitura") or []) + ")"
+            else:
+                leitura = f"segunda leitura: identidades {'ok' if not c.get('identidades_que_falham') else 'falham'}"
+            obs = f"{d['motivo']}; {leitura}, período impresso: {c.get('periodo_impresso') or 'não impresso'}"
         elif c.get("resultado") == "divergente":
             obs = "; ".join((c.get("diferencas") or []) + (c.get("so_na_producao") or []) + (c.get("problemas_da_leitura") or []))[:300]
         out.append(f"| {d['exercicio']} | {d['rotulo']} | {d['escopo']} | {d['situacao']} | {c.get('resultado', '—')} | {obs} |")

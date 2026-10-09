@@ -620,3 +620,128 @@ próprio comando:
 - **Regra `VALOR-OBRIG v1`** sem decisão de governança.
 
 Não se declara a apuração 100% correta. A privacidade do histórico público também não está resolvida (fase F).
+
+## Carga de 09/10/2026: RREOs que faltavam, cortes bimestrais da API e Siconfi
+
+Pedido do responsável: coletar os RREOs que faltavam (item 2) e o RREO próprio da Fundação (item 3), para aumentar a
+cobertura da conferência; ele também indicou o Siconfi como fonte de conferência. Tudo foi feito sobre o **banco
+ativo**, com proteção antes da carga.
+
+### Proteção antes da carga
+- **Backup:** `python -m rp backup --motivo antes-coleta-rreo-20261009`.
+- **Referência e raiz:** `python -m rp portoes --gravar-referencia …` (529 coletas, 613 respostas) e
+  `python -m rp raiz --gravar …` (raízes `4065bea9…` e `cfb99745…`). Os dois arquivos estão em
+  `~/RestosAPagar_local/referencias/`, fora do banco e do armazém. O responsável deve guardar uma cópia em outro
+  disco.
+
+### Item 3: RREO próprio da Fundação (entidade 15)
+**Não existe publicação.**
+- **API do portal:** 11 consultas só de leitura. A lista de publicações da LRF da entidade 15 vem vazia em todos os
+  exercícios de 2016 a 2026.
+- **Site:** `/portaltransparencia/15/publicacoes` só tem chamadas públicas, credenciamentos e publicações de compras.
+- **Siconfi:** recebe as declarações por **ente**, e a Fundação faz parte do ente Município.
+- **Consequência:** a referência independente da Fundação é o RREO consolidado do Município.
+- **Código:** a regra CONC-RREO, que compara todo RREO "por entidade" com a entidade 1, não foi alterada, porque não
+  há RREO da entidade 15. Se um dia houver, a regra precisa de nova versão antes da coleta.
+
+### Item 2: coleta
+- **RREO Anexo VII:** `python -m rp coletar-rreo --exercicio <ano>`, de 2016 a 2024. Entraram **79 PDFs** (2016: 5,
+  2017: 10, 2018: 5, 2019: 5, 2020: 11, 2021: 13, 2022: 10, 2023: 10, 2024: 10) e 9 listas de publicações, **todos
+  `completa`**.
+- **Listagens da API dos mesmos cortes:** sem elas, os RREOs novos não teriam com o que ser conciliados. Foram **450
+  listagens**: as 10 entidades dos cortes de 31/12 × os 45 cortes de fevereiro a outubro de 2016 a 2024. Mesmo
+  caminho do `coletar-listagem` (contrato estrito, segunda leitura). Resultado: **450 `completa`**, 675 requisições,
+  1.909 s.
+- **Bruto:** 529 → 1.067 coletas, todas com tempo e hash de manifesto.
+
+### Processamento e prova de que nada mudou
+- `python -m rp processar`: normalização 15 (v2) e derivação atual **26** (`ed386665…`).
+- `python -m rp processar --em 2026-09-29T23:59:59-03:00 --normalizacao 15`: derivação 27, **`b8a0b2ed…`, igual à
+  homologada**. Os retratos novos foram concluídos depois do instante e não entram.
+- Derivação homologada 25 × nova 26, por identificadores estáveis:
+
+| Tabela | 25 | 26 | Linhas que sumiram ou mudaram | Linhas novas (todas de retratos novos) |
+|---|---|---|---|---|
+| rp_derivado | 266.787 | 561.357 | 0 | 294.570 |
+| movimentacao_interpretada | 2.352 | 2.352 | 0 | 0 |
+| anomalia | 24.828 | 28.069 | 0 | 3.241 |
+| espelhamento_par | 3.776 | 3.781 | 0 | 5 |
+| visao_valor | 7.890 | 25.440 | 0 | 17.550 |
+| conciliacao_rreo | 792 | 2.328 | 0 | 1.536 |
+| verificacao | 189 | 377 | 0 | 188 |
+
+Nenhum valor existente mudou: os cortes e os documentos novos só acrescentam.
+
+### Cobertura e conferência independente do RREO (`docs/audits/rreo/COBERTURA_E_CONFERENCIA.md`)
+
+| Esperados | Transcritos | Conferidos pela segunda leitura (xpdf) | Recusados pelo extrator | Não coletados |
+|---|---|---|---|---|
+| 114 | 96 | **96 de 96, 0 divergentes** | 18 | 0 |
+
+**Os 18 recusados:**
+- 2016, 6 documentos: modelo antigo de colunas;
+- 2018, 6, 2019, 5, e 3º bimestre consolidado de 2020, 1: o PDF não imprime o período;
+- leitura independente: lê 17 desses documentos, com as contas internas fechando; o 2019, 1º bimestre, nem ela lê
+  (11 números por linha);
+- decisão do responsável: transcrevê-los exige uma regra nova (período tirado dos metadados e mapeamento de 2016) e
+  muda a reconciliação.
+
+### Concordância API × RREO, antes e depois (agregação RREO-COL v1)
+
+| Medida | Antes (derivação 25) | Depois (derivação 26) |
+|---|---|---|
+| Documentos conciliados (entidade / consolidado) | 16 / 16 | 45 / 46 |
+| Colunas exatamente iguais (entidade) | 41,2% | 48,0% |
+| Colunas exatamente iguais (consolidado) | 28,6% | 37,5% |
+| Colunas com diferença de até 0,1% (entidade) | 60,3% | 70,4% |
+| Desvio médio do saldo final L (entidade / consolidado) | 2,99% / 3,24% | 1,43% / 1,32% |
+| Documentos idênticos em todas as colunas (entidade) | 1 | 4 |
+
+### Siconfi: declaração do RREO ao Tesouro Nacional (`docs/audits/rreo/siconfi/`)
+
+**Coleta.** `baixar_siconfi.py` baixou da API de dados abertos do Tesouro (`apidatalake.tesouro.gov.br`, ente
+4119905) o Anexo 07 de cada bimestre de 2016 a 2026. São **64 declarações**, guardadas byte a byte com URL, data e
+SHA-256 no `manifest.json`. O 5º e o 6º bimestres de 2026 ainda não estavam declarados.
+
+**Consistência das declarações.** As identidades do Anexo VII fecham em **todas as 64**. Em 13 delas a coluna (d)
+não vem; ela só é tratada como zero porque as identidades fecham assim.
+
+**PDF do portal × Siconfi.** São 47 períodos com PDF transcrito. **Nenhum PDF coincide célula a célula com a
+declaração.** O saldo L às vezes coincide (ex.: 2021, 6º bimestre consolidado, R$ 45.226.754,81) e a distribuição
+entre colunas difere. A versão declarada ao Tesouro não é a mesma do PDF publicado no portal. Fica registrado como
+fato, sem causa.
+
+**API (Município) × Siconfi, saldo final L:**
+
+| Medida | Resultado |
+|---|---|
+| Mediana do desvio (64 períodos) | 0,31% |
+| Até 0,1% / até 1% | 36% / 67% |
+| Mediana do desvio de 2019 a 2025 | 0,10% (81% até 1%) |
+
+Os maiores desvios estão em bimestres iniciais de anos antigos (ex.: 2018, 1º bimestre, −32%).
+
+**2026 e os pares 1 ↔ 15.** O Siconfi declara L **igual ao PDF consolidado do portal menos exatamente
+R$ 31.813.905,47**, o valor dos 731 pares, no 3º e no 4º bimestres. Em outras palavras:
+- a declaração ao Tesouro **não conta os empenhos espelhados duas vezes**;
+- no 1º bimestre de 2026, a API sem um dos lados (CONS-PAR v1 e v2) dá **exatamente** o L declarado (diferença 0,00);
+- do 2º ao 4º bimestre, a diferença restante corresponde às alterações retroativas da API já documentadas
+  (`DIVERGENCIA_2026.md`).
+
+Isso é **evidência independente** para a decisão sobre a consolidação dos pares (decisão D7). Não diz qual lado sai
+(em L as duas versões dão o mesmo), e **nenhuma regra foi promovida**: a decisão é do responsável.
+
+### Homologação depois da carga
+```
+python -m rp homologar --referencia … --raiz … --saida …
+```
+- **Resultado:** **`aprovada_com_ressalvas`** (saída 3) em 757,5 s.
+- **Verificações obrigatórias:** 21 de 21 executadas e aprovadas:
+  - camada bruta anterior preservada e raiz externa confere;
+  - reprodução a partir do armazém igual nas duas vigências (`ed386665…`, `b8a0b2ed…`);
+  - `639 passed` e `26 passed`.
+- **Pendências:**
+  - divergência com o RREO (RREO-COL v1: 666 colunas em 90 documentos);
+  - 18 RREOs recusados pelo extrator;
+  - pares 1 ↔ 15;
+  - `VALOR-OBRIG v1` sem decisão.

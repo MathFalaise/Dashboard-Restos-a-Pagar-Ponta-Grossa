@@ -4,67 +4,67 @@
  "normalizacao": 15,
  "resumo": {
   "esperados": 114,
-  "transcrito": 32,
-  "recusado_layout": 3,
+  "transcrito": 96,
+  "recusado_layout": 18,
   "coletado_sem_extracao": 0,
-  "nao_coletado": 79,
-  "conferidos": 32,
+  "nao_coletado": 0,
+  "conferidos": 96,
   "divergentes": 0
  },
  "por_exercicio": {
   "2016": {
    "transcrito": 0,
-   "recusado_layout": 1,
+   "recusado_layout": 6,
    "coletado_sem_extracao": 0,
-   "nao_coletado": 5
+   "nao_coletado": 0
   },
   "2017": {
-   "transcrito": 2,
+   "transcrito": 12,
    "recusado_layout": 0,
    "coletado_sem_extracao": 0,
-   "nao_coletado": 10
+   "nao_coletado": 0
   },
   "2018": {
    "transcrito": 0,
-   "recusado_layout": 1,
+   "recusado_layout": 6,
    "coletado_sem_extracao": 0,
-   "nao_coletado": 5
+   "nao_coletado": 0
   },
   "2019": {
-   "transcrito": 0,
-   "recusado_layout": 1,
+   "transcrito": 1,
+   "recusado_layout": 5,
    "coletado_sem_extracao": 0,
-   "nao_coletado": 5
+   "nao_coletado": 0
   },
   "2020": {
-   "transcrito": 2,
-   "recusado_layout": 0,
+   "transcrito": 12,
+   "recusado_layout": 1,
    "coletado_sem_extracao": 0,
-   "nao_coletado": 11
+   "nao_coletado": 0
   },
   "2021": {
-   "transcrito": 2,
+   "transcrito": 15,
    "recusado_layout": 0,
    "coletado_sem_extracao": 0,
-   "nao_coletado": 13
+   "nao_coletado": 0
   },
   "2022": {
-   "transcrito": 2,
+   "transcrito": 12,
    "recusado_layout": 0,
    "coletado_sem_extracao": 0,
-   "nao_coletado": 10
+   "nao_coletado": 0
   },
   "2023": {
-   "transcrito": 2,
+   "transcrito": 12,
    "recusado_layout": 0,
    "coletado_sem_extracao": 0,
-   "nao_coletado": 10
+   "nao_coletado": 0
   },
   "2024": {
-   "transcrito": 2,
+   "transcrito": 12,
    "recusado_layout": 0,
    "coletado_sem_extracao": 0,
-   "nao_coletado": 10
+   "nao_coletado": 0
   },
   "2025": {
    "transcrito": 12,
@@ -88,10 +88,50 @@
    "escopo": "entidade",
    "id_arquivo": 2047,
    "data_arquivo": "2016-09-20",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "31f6bf86f89b42ff8736e5e823810e94",
+   "motivo": "LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "bc37796bf8a140c21f82d3fa14ed5b1577cb90ed92d4613f1b6478aeb46330de",
+    "periodo_impresso": "FEVEREIRO 2016",
+    "linhas_lidas": [
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {
+     "RESTOS A PAGAR (EXCETO": {
+      "a": 655530639,
+      "b": 1273805066,
+      "c": 1122460584,
+      "d": 100564340,
+      "e": 706310781,
+      "f": 1922323471,
+      "g": 4103013319,
+      "h": 1597440236,
+      "i": 1350577266,
+      "j": 6240998,
+      "k": 4668518526,
+      "L": 5374829307
+     },
+     "TOTAL (III)": {
+      "a": 655530639,
+      "b": 1273805066,
+      "c": 1122460584,
+      "d": 100564340,
+      "e": 706310781,
+      "f": 1922323471,
+      "g": 4103013319,
+      "h": 1597440236,
+      "i": 1350577266,
+      "j": 6240998,
+      "k": 4668518526,
+      "L": 5374829307
+     }
+    }
+   }
   },
   {
    "exercicio": 2016,
@@ -101,10 +141,50 @@
    "escopo": "entidade",
    "id_arquivo": 2048,
    "data_arquivo": "2016-09-20",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "9d38c530dc1d47139f3cca2e392ae0d6",
+   "motivo": "LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "73897fd4c5ef2693db07a4bc38e192168a03b6314af84be6c580d450b04d8990",
+    "periodo_impresso": "ABRIL 2016",
+    "linhas_lidas": [
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {
+     "RESTOS A PAGAR (EXCETO": {
+      "a": 655530639,
+      "b": 1273805066,
+      "c": 1237348058,
+      "d": 103091055,
+      "e": 588896592,
+      "f": 1922323471,
+      "g": 4103013319,
+      "h": 2206222563,
+      "i": 2074692318,
+      "j": 163950883,
+      "k": 3786693589,
+      "L": 4375590181
+     },
+     "TOTAL (III)": {
+      "a": 655530639,
+      "b": 1273805066,
+      "c": 1237348058,
+      "d": 103091055,
+      "e": 588896592,
+      "f": 1922323471,
+      "g": 4103013319,
+      "h": 2206222563,
+      "i": 2074692318,
+      "j": 163950883,
+      "k": 3786693589,
+      "L": 4375590181
+     }
+    }
+   }
   },
   {
    "exercicio": 2016,
@@ -114,10 +194,50 @@
    "escopo": "entidade",
    "id_arquivo": 2049,
    "data_arquivo": "2016-09-20",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "ea623d3075384e67bec88d10c60ab3da",
+   "motivo": "LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "aeebd25e9db6269279c3ecb129be7e09747d7643c4ee565325859d8a34ff53ef",
+    "periodo_impresso": "JUNHO 2016",
+    "linhas_lidas": [
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {
+     "RESTOS A PAGAR (EXCETO": {
+      "a": 655530639,
+      "b": 1273805066,
+      "c": 1261908156,
+      "d": 103091055,
+      "e": 564336494,
+      "f": 1922323471,
+      "g": 4103013319,
+      "h": 2477820513,
+      "i": 2346275486,
+      "j": 322176182,
+      "k": 3356885122,
+      "L": 3921221616
+     },
+     "TOTAL (III)": {
+      "a": 655530639,
+      "b": 1273805066,
+      "c": 1261908156,
+      "d": 103091055,
+      "e": 564336494,
+      "f": 1922323471,
+      "g": 4103013319,
+      "h": 2477820513,
+      "i": 2346275486,
+      "j": 322176182,
+      "k": 3356885122,
+      "L": 3921221616
+     }
+    }
+   }
   },
   {
    "exercicio": 2016,
@@ -127,10 +247,50 @@
    "escopo": "entidade",
    "id_arquivo": 2050,
    "data_arquivo": "2016-09-20",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "b26842860df243dda90162e2a229e627",
+   "motivo": "LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "934a769d0cddf6da98331f34521c1f1178262020ea6b879c29df2900e5152101",
+    "periodo_impresso": "AGOSTO 2016",
+    "linhas_lidas": [
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {
+     "RESTOS A PAGAR (EXCETO": {
+      "a": 655530639,
+      "b": 1273805066,
+      "c": 1278177067,
+      "d": 103758637,
+      "e": 547400001,
+      "f": 1922323471,
+      "g": 4103013319,
+      "h": 2721399434,
+      "i": 2555780211,
+      "j": 336665926,
+      "k": 3132890653,
+      "L": 3680290654
+     },
+     "TOTAL (III)": {
+      "a": 655530639,
+      "b": 1273805066,
+      "c": 1278177067,
+      "d": 103758637,
+      "e": 547400001,
+      "f": 1922323471,
+      "g": 4103013319,
+      "h": 2721399434,
+      "i": 2555780211,
+      "j": 336665926,
+      "k": 3132890653,
+      "L": 3680290654
+     }
+    }
+   }
   },
   {
    "exercicio": 2016,
@@ -140,10 +300,50 @@
    "escopo": "entidade",
    "id_arquivo": 2051,
    "data_arquivo": "2016-09-20",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "a93119d19298410cbcce0568e271cfc2",
+   "motivo": "LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "6b1c1d2024eff4d3b29a9311825919b86518065f41cd7e944e107b96d0fbfb9f",
+    "periodo_impresso": "OUTUBRO 2016",
+    "linhas_lidas": [
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {
+     "RESTOS A PAGAR (EXCETO": {
+      "a": 655530639,
+      "b": 1273805066,
+      "c": 1278197832,
+      "d": 103758637,
+      "e": 547379236,
+      "f": 1922323471,
+      "g": 4103013319,
+      "h": 2759823696,
+      "i": 2584537992,
+      "j": 360826703,
+      "k": 3079972095,
+      "L": 3627351331
+     },
+     "TOTAL (III)": {
+      "a": 655530639,
+      "b": 1273805066,
+      "c": 1278197832,
+      "d": 103758637,
+      "e": 547379236,
+      "f": 1922323471,
+      "g": 4103013319,
+      "h": 2759823696,
+      "i": 2584537992,
+      "j": 360826703,
+      "k": 3079972095,
+      "L": 3627351331
+     }
+    }
+   }
   },
   {
    "exercicio": 2016,
@@ -206,10 +406,26 @@
    "escopo": "consolidado",
    "id_arquivo": 22616,
    "data_arquivo": "2018-08-24",
-   "snapshot": null,
+   "snapshot": "90fe640883b0433fa2211f86aea31c2d",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 36,
+   "conferencia": {
+    "pdf_sha256": "05392f0085ade2904f42e83c72334270e43e6cd4b057af858e2189a32752589a",
+    "periodo_impresso": "FEVEREIRO 2017",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2017,
@@ -219,10 +435,26 @@
    "escopo": "consolidado",
    "id_arquivo": 22617,
    "data_arquivo": "2018-08-24",
-   "snapshot": null,
+   "snapshot": "27dbe14466be4859a98450f53ee52e55",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 36,
+   "conferencia": {
+    "pdf_sha256": "0d473556e7a2fb9cac60112e3071b282aaee5c62d703aa2bff4c03b3c59c6862",
+    "periodo_impresso": "ABRIL 2017",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2017,
@@ -232,10 +464,26 @@
    "escopo": "consolidado",
    "id_arquivo": 22618,
    "data_arquivo": "2018-08-24",
-   "snapshot": null,
+   "snapshot": "36cbf2bfa76c4128804b0f525312457f",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 36,
+   "conferencia": {
+    "pdf_sha256": "6360e2e2927d5705e1d5224709d87ce3b785961c1437310a5a27fdb1e0179cdd",
+    "periodo_impresso": "JUNHO 2017",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2017,
@@ -245,10 +493,26 @@
    "escopo": "consolidado",
    "id_arquivo": 22619,
    "data_arquivo": "2018-08-24",
-   "snapshot": null,
+   "snapshot": "d12789a0c5214fd2b643e7cd9f2ddcfe",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 36,
+   "conferencia": {
+    "pdf_sha256": "e851f5ed0d9214800a38391a2d9a587c8e56db550bd3004003c4e4c8955a2ab7",
+    "periodo_impresso": "AGOSTO 2017",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2017,
@@ -258,10 +522,26 @@
    "escopo": "consolidado",
    "id_arquivo": 22620,
    "data_arquivo": "2018-08-24",
-   "snapshot": null,
+   "snapshot": "6d6b404a634b499e80d7a94472177a42",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 36,
+   "conferencia": {
+    "pdf_sha256": "2568b904df29f63624e37bdceefc30559e2c13ef5f33cdcd8c4029c222e71d5b",
+    "periodo_impresso": "OUTUBRO 2017",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2017,
@@ -300,10 +580,26 @@
    "escopo": "entidade",
    "id_arquivo": 3616,
    "data_arquivo": "2017-04-12",
-   "snapshot": null,
+   "snapshot": "f6ecba22d0c148cf9cd56f6c2cacc3ba",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 36,
+   "conferencia": {
+    "pdf_sha256": "d6499efd21268052e0878e33fca1168e3b4dc7127c8c8b4f68ed0895b431320a",
+    "periodo_impresso": "FEVEREIRO 2017",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2017,
@@ -313,10 +609,26 @@
    "escopo": "entidade",
    "id_arquivo": 16487,
    "data_arquivo": "2018-08-22",
-   "snapshot": null,
+   "snapshot": "a41845747f624896a0f171a070822085",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 36,
+   "conferencia": {
+    "pdf_sha256": "37268a17fd06687651e5d67b360a47bdaf963a06ee9ae1374c38a9f80701a949",
+    "periodo_impresso": "ABRIL 2017",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2017,
@@ -326,10 +638,26 @@
    "escopo": "entidade",
    "id_arquivo": 16488,
    "data_arquivo": "2018-08-22",
-   "snapshot": null,
+   "snapshot": "d7dbbd94e6d14652b16bbf1b31cef207",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 36,
+   "conferencia": {
+    "pdf_sha256": "6850d05f30d80b07a907d05f33c069281ba02f6ab562163253d999df655b8340",
+    "periodo_impresso": "JUNHO 2017",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2017,
@@ -339,10 +667,26 @@
    "escopo": "entidade",
    "id_arquivo": 16489,
    "data_arquivo": "2018-08-22",
-   "snapshot": null,
+   "snapshot": "fc6b6449406c496e84e2fda0e67d7a82",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 36,
+   "conferencia": {
+    "pdf_sha256": "2ea487670b017433d8c2bba03453cdccfffc4187270e4e6f1aeae2f3dc55a95e",
+    "periodo_impresso": "AGOSTO 2017",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2017,
@@ -352,10 +696,26 @@
    "escopo": "entidade",
    "id_arquivo": 16490,
    "data_arquivo": "2018-08-22",
-   "snapshot": null,
+   "snapshot": "780f49edc8c44b5e905eb2c01d110f08",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 36,
+   "conferencia": {
+    "pdf_sha256": "6a032f926578b5fc0a66cb96fcff4255ebc3a3d4ad68eb9fee652533b461f25c",
+    "periodo_impresso": "OUTUBRO 2017",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2017,
@@ -394,10 +754,51 @@
    "escopo": "entidade",
    "id_arquivo": 11942,
    "data_arquivo": "2018-03-29",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "77fd0254dbc24190a22ab033d23e41f7",
+   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 548)",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "c0e2875d594f6ec936af2459de7be5afa6cc03fa2fe78a70ba01b6074fd40e0a",
+    "periodo_impresso": null,
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {
+     "RESTOS A PAGAR (EXCETO": {
+      "a": 514597332,
+      "b": 1394430292,
+      "c": 1035883186,
+      "d": 11637197,
+      "e": 861507241,
+      "f": 2208931290,
+      "g": 5340259403,
+      "h": 2264579109,
+      "i": 2061527921,
+      "j": 31442573,
+      "k": 5456220199,
+      "L": 6317727440
+     },
+     "TOTAL (III)": {
+      "a": 514597332,
+      "b": 1394430292,
+      "c": 1035883186,
+      "d": 11637197,
+      "e": 861507241,
+      "f": 2208931290,
+      "g": 5340259403,
+      "h": 2264579109,
+      "i": 2061527921,
+      "j": 31442573,
+      "k": 5456220199,
+      "L": 6317727440
+     }
+    }
+   }
   },
   {
    "exercicio": 2018,
@@ -407,10 +808,51 @@
    "escopo": "entidade",
    "id_arquivo": 13172,
    "data_arquivo": "2018-05-25",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "e37c512e09ea4299a993a238ffdb528b",
+   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 549)",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "61864edbe5f415ac33f773e65d60f79100a4053e678f5d56765e43e2f19a3934",
+    "periodo_impresso": null,
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {
+     "RESTOS A PAGAR (EXCETO": {
+      "a": 456752771,
+      "b": 1275241670,
+      "c": 1218714251,
+      "d": 7148532,
+      "e": 506131658,
+      "f": 1283420454,
+      "g": 4907516057,
+      "h": 3145144837,
+      "i": 3008593657,
+      "j": 458138846,
+      "k": 2724204008,
+      "L": 3230335666
+     },
+     "TOTAL (III)": {
+      "a": 456752771,
+      "b": 1275241670,
+      "c": 1218714251,
+      "d": 7148532,
+      "e": 506131658,
+      "f": 1283420454,
+      "g": 4907516057,
+      "h": 3145144837,
+      "i": 3008593657,
+      "j": 458138846,
+      "k": 2724204008,
+      "L": 3230335666
+     }
+    }
+   }
   },
   {
    "exercicio": 2018,
@@ -420,10 +862,51 @@
    "escopo": "entidade",
    "id_arquivo": 14726,
    "data_arquivo": "2018-07-27",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "086712247dc940c5871d09863f503851",
+   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 550)",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "7c60d48c31351ece296382e1a516d5a3362dd9077ed8a3d1e49005940984d87d",
+    "periodo_impresso": null,
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {
+     "RESTOS A PAGAR (EXCETO": {
+      "a": 456752771,
+      "b": 1275241670,
+      "c": 1243824965,
+      "d": 3785668,
+      "e": 484383808,
+      "f": 1283420454,
+      "g": 4907516057,
+      "h": 3578597392,
+      "i": 3493766421,
+      "j": 510345131,
+      "k": 2186824959,
+      "L": 2671208767
+     },
+     "TOTAL (III)": {
+      "a": 456752771,
+      "b": 1275241670,
+      "c": 1243824965,
+      "d": 3785668,
+      "e": 484383808,
+      "f": 1283420454,
+      "g": 4907516057,
+      "h": 3578597392,
+      "i": 3493766421,
+      "j": 510345131,
+      "k": 2186824959,
+      "L": 2671208767
+     }
+    }
+   }
   },
   {
    "exercicio": 2018,
@@ -433,10 +916,51 @@
    "escopo": "entidade",
    "id_arquivo": 25075,
    "data_arquivo": "2018-09-27",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "a353e1dd28964816886ffd21b1f37578",
+   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 551)",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "c57e6a852019b3966d0d8b7f4e89fc018570cb0fa9e77fa5d0c8cd06ec95bd56",
+    "periodo_impresso": null,
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {
+     "RESTOS A PAGAR (EXCETO": {
+      "a": 456752771,
+      "b": 1275241670,
+      "c": 1252497169,
+      "d": 3785668,
+      "e": 475711604,
+      "f": 1283420454,
+      "g": 4907516057,
+      "h": 3835317766,
+      "i": 3756465116,
+      "j": 521904976,
+      "k": 1912566419,
+      "L": 2388278023
+     },
+     "TOTAL (III)": {
+      "a": 456752771,
+      "b": 1275241670,
+      "c": 1252497169,
+      "d": 3785668,
+      "e": 475711604,
+      "f": 1283420454,
+      "g": 4907516057,
+      "h": 3835317766,
+      "i": 3756465116,
+      "j": 521904976,
+      "k": 1912566419,
+      "L": 2388278023
+     }
+    }
+   }
   },
   {
    "exercicio": 2018,
@@ -446,10 +970,51 @@
    "escopo": "entidade",
    "id_arquivo": 27911,
    "data_arquivo": "2018-11-29",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "104ce0dc3d6a4147b59b68c95bf4b1da",
+   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 552)",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "8b08028629f743c0ed5f713cec1bcfd274b34f9244d98107b074094b65e4faa1",
+    "periodo_impresso": null,
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {
+     "RESTOS A PAGAR (EXCETO": {
+      "a": 456752771,
+      "b": 1275241670,
+      "c": 1252709503,
+      "d": 8411268,
+      "e": 470873670,
+      "f": 1283420454,
+      "g": 4907516057,
+      "h": 4003876945,
+      "i": 3921574053,
+      "j": 579647804,
+      "k": 1689714654,
+      "L": 2160588324
+     },
+     "TOTAL (III)": {
+      "a": 456752771,
+      "b": 1275241670,
+      "c": 1252709503,
+      "d": 8411268,
+      "e": 470873670,
+      "f": 1283420454,
+      "g": 4907516057,
+      "h": 4003876945,
+      "i": 3921574053,
+      "j": 579647804,
+      "k": 1689714654,
+      "L": 2160588324
+     }
+    }
+   }
   },
   {
    "exercicio": 2018,
@@ -513,10 +1078,22 @@
    "escopo": "entidade",
    "id_arquivo": 45068,
    "data_arquivo": "2019-08-21",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "b218b702228a4398b1a21dc22d5f14f9",
+   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 554)",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "8077a733246d3260f3d9ceeb3a853dce5c50f4316f7ca0fb5aff4623fba24629",
+    "periodo_impresso": null,
+    "linhas_lidas": [],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [
+     "RESTOS A PAGAR (EXCETO: 11 número(s) na segunda leitura",
+     "PODER EXECUTIVO: 11 número(s) na segunda leitura",
+     "TOTAL (III): 11 número(s) na segunda leitura"
+    ],
+    "resultado": "nao_legivel_pela_conferencia",
+    "linhas": {}
+   }
   },
   {
    "exercicio": 2019,
@@ -526,10 +1103,51 @@
    "escopo": "entidade",
    "id_arquivo": 45082,
    "data_arquivo": "2019-08-21",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "49cc40f61f59426fad94e9d5f0a2b2d1",
+   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 555)",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "754083c12f5d44755289c3d506bea1f34ba9e49bb0fbc2ff46eb9d98b8a32e56",
+    "periodo_impresso": null,
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {
+     "RESTOS A PAGAR (EXCETO": {
+      "a": 525068790,
+      "b": 2024831391,
+      "c": 1202371743,
+      "d": 548488598,
+      "e": 799039840,
+      "f": 1372690097,
+      "g": 8066255579,
+      "h": 5172854312,
+      "i": 4805766495,
+      "j": 760311233,
+      "k": 3872867948,
+      "L": 4671907788
+     },
+     "TOTAL (III)": {
+      "a": 525068790,
+      "b": 2024831391,
+      "c": 1202371743,
+      "d": 548488598,
+      "e": 799039840,
+      "f": 1372690097,
+      "g": 8066255579,
+      "h": 5172854312,
+      "i": 4805766495,
+      "j": 760311233,
+      "k": 3872867948,
+      "L": 4671907788
+     }
+    }
+   }
   },
   {
    "exercicio": 2019,
@@ -539,10 +1157,26 @@
    "escopo": "entidade",
    "id_arquivo": 43764,
    "data_arquivo": "2019-07-30",
-   "snapshot": null,
+   "snapshot": "9ef41913df6046b0a63436ed21184617",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 36,
+   "conferencia": {
+    "pdf_sha256": "93091096491b330d0e8da39e902110f27ac21d7c76c2cd0d73b62563e320cf49",
+    "periodo_impresso": "JUNHO 2019",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2019,
@@ -552,10 +1186,51 @@
    "escopo": "entidade",
    "id_arquivo": 49471,
    "data_arquivo": "2019-09-27",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "ea117bf6a3084687a094d0a8d8b533ba",
+   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 557)",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "54ca769594e754475e0a56bd814d6c937f3c9c84d01b7e5aa27d00d570b65a57",
+    "periodo_impresso": null,
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {
+     "RESTOS A PAGAR (EXCETO": {
+      "a": 525068790,
+      "b": 2024831391,
+      "c": 1247663086,
+      "d": 553605171,
+      "e": 748631924,
+      "f": 1372690097,
+      "g": 8066255579,
+      "h": 6111999454,
+      "i": 5846210418,
+      "j": 972020112,
+      "k": 2620715146,
+      "L": 3369347070
+     },
+     "TOTAL (III)": {
+      "a": 525068790,
+      "b": 2024831391,
+      "c": 1247663086,
+      "d": 553605171,
+      "e": 748631924,
+      "f": 1372690097,
+      "g": 8066255579,
+      "h": 6111999454,
+      "i": 5846210418,
+      "j": 972020112,
+      "k": 2620715146,
+      "L": 3369347070
+     }
+    }
+   }
   },
   {
    "exercicio": 2019,
@@ -565,10 +1240,51 @@
    "escopo": "entidade",
    "id_arquivo": 57123,
    "data_arquivo": "2019-11-26",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "35dae6074cd045d9bf72ee5cd6fd70df",
+   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 558)",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "63d37776f7a8b6adfef9f4df97121289e84b070c5ce5e145b8c2bd2930e41ad2",
+    "periodo_impresso": null,
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {
+     "RESTOS A PAGAR (EXCETO": {
+      "a": 525068790,
+      "b": 2024831391,
+      "c": 1249268755,
+      "d": 556056680,
+      "e": 744574746,
+      "f": 1372690097,
+      "g": 8062004461,
+      "h": 6168009760,
+      "i": 5997374822,
+      "j": 1205047114,
+      "k": 2232272622,
+      "L": 2976847368
+     },
+     "TOTAL (III)": {
+      "a": 525068790,
+      "b": 2024831391,
+      "c": 1249268755,
+      "d": 556056680,
+      "e": 744574746,
+      "f": 1372690097,
+      "g": 8062004461,
+      "h": 6168009760,
+      "i": 5997374822,
+      "j": 1205047114,
+      "k": 2232272622,
+      "L": 2976847368
+     }
+    }
+   }
   },
   {
    "exercicio": 2019,
@@ -632,10 +1348,27 @@
    "escopo": "entidade",
    "id_arquivo": 81157,
    "data_arquivo": "2020-07-29",
-   "snapshot": null,
+   "snapshot": "da300534266c4eb6a0989af106cf1f17",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "14b771c357784fe1ba53f3de352a21f0ae60416a954a352dd983b6b9a13e598b",
+    "periodo_impresso": "ABRIL 2020",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2020,
@@ -645,10 +1378,27 @@
    "escopo": "consolidado",
    "id_arquivo": 81158,
    "data_arquivo": "2020-07-29",
-   "snapshot": null,
+   "snapshot": "a1dedcbf5ad348c59a0160ae1170b2f7",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "c33ace4813d365f403c3b9dee6f2654775fe845361e5084067c2db415b185471",
+    "periodo_impresso": "ABRIL 2020",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2020,
@@ -658,10 +1408,27 @@
    "escopo": "entidade",
    "id_arquivo": 81189,
    "data_arquivo": "2020-07-29",
-   "snapshot": null,
+   "snapshot": "d2dcf32f013543c69d1a8fceda3d10ce",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "f8513fb82f879f9b55a030010afdfe610e52ddb25a40390c1ea0383c92afe699",
+    "periodo_impresso": "JUNHO 2020",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2020,
@@ -671,10 +1438,27 @@
    "escopo": "consolidado",
    "id_arquivo": 81190,
    "data_arquivo": "2020-07-29",
-   "snapshot": null,
+   "snapshot": "a07e51bce8d34db297d02cff9e026ca8",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "4c57f635573f8c1c46f906af10631a5452b2bc8c28ac8c822335af1f13ab7ffe",
+    "periodo_impresso": "JUNHO 2020",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2020,
@@ -684,10 +1468,27 @@
    "escopo": "entidade",
    "id_arquivo": 89077,
    "data_arquivo": "2020-09-30",
-   "snapshot": null,
+   "snapshot": "ca77bb94aef144398729e99e22e9d889",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "280dd678a74dd4b9214d8e59645e8084dd7f77a80cc3dcea498fdc6cc393507a",
+    "periodo_impresso": "AGOSTO 2020",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2020,
@@ -697,10 +1498,27 @@
    "escopo": "consolidado",
    "id_arquivo": 89078,
    "data_arquivo": "2020-09-30",
-   "snapshot": null,
+   "snapshot": "c62881a56fcc4811994cc460d1ffaf39",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "0c16afaf6f4ced391ad8259a5052ae0fa2f3d3ca50ebacb3e16b44d3600ecb7a",
+    "periodo_impresso": "AGOSTO 2020",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2020,
@@ -710,10 +1528,27 @@
    "escopo": "entidade",
    "id_arquivo": 98222,
    "data_arquivo": "2020-11-27",
-   "snapshot": null,
+   "snapshot": "fef7683aa4684e5ab7f58e9d79da980f",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "6e5239bd5992eb3b3e19d7698fc37d964b840dc8605b14d043946147506ec0d1",
+    "periodo_impresso": "OUTUBRO 2020",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2020,
@@ -723,10 +1558,27 @@
    "escopo": "consolidado",
    "id_arquivo": 98224,
    "data_arquivo": "2020-11-27",
-   "snapshot": null,
+   "snapshot": "838ebf3d043949ae96dc8d29c90307ee",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "b85bae82f7e5393c2180e8602f45c29878d8668441fce0b38e8a936a3e960f4c",
+    "periodo_impresso": "OUTUBRO 2020",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2020,
@@ -796,10 +1648,27 @@
    "escopo": "entidade",
    "id_arquivo": 136229,
    "data_arquivo": "2021-05-21",
-   "snapshot": null,
+   "snapshot": "b9e033e117754cdcbae269a69c07374c",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "db54ad3a52ceffb9bc6bf940adb31306b9c74b3ea19cb922c4cd06e0102ffaaa",
+    "periodo_impresso": "FEVEREIRO 2020",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2020,
@@ -809,10 +1678,23 @@
    "escopo": "consolidado",
    "id_arquivo": 81074,
    "data_arquivo": "2020-07-29",
-   "snapshot": null,
-   "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "snapshot": "c39d70b96e1145a9b4e416b7830202e4",
+   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 569)",
+   "situacao": "recusado_layout",
+   "conferencia": {
+    "pdf_sha256": "231fa1ba7e2b0623abfb39879261fe821e3f1bd3bb49b89096969ec1a29dd4f9",
+    "periodo_impresso": null,
+    "linhas_lidas": [
+     "PODER EXECUTIVO"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [
+     "RESTOS A PAGAR (EXCETO: 11 número(s) na segunda leitura",
+     "TOTAL (III): 11 número(s) na segunda leitura"
+    ],
+    "resultado": "lido_so_pela_conferencia",
+    "linhas": {}
+   }
   },
   {
    "exercicio": 2020,
@@ -822,10 +1704,27 @@
    "escopo": "consolidado",
    "id_arquivo": 81095,
    "data_arquivo": "2020-07-29",
-   "snapshot": null,
+   "snapshot": "2574133fa7ac4b52bb1803e512801f27",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "9412d4167af0155844a0ef1ac0ccaa1de425d5bf413baa6160a02169060ea12b",
+    "periodo_impresso": "FEVEREIRO 2020",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -835,10 +1734,27 @@
    "escopo": "consolidado",
    "id_arquivo": 137875,
    "data_arquivo": "2021-05-26",
-   "snapshot": null,
+   "snapshot": "3d622df981a84160aab4bf603f150f05",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "119ea1c14ba085d95c4b0d12eb36a2e9d3484dda458d9ad3c339942385e70b8b",
+    "periodo_impresso": "FEVEREIRO 2021",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -848,10 +1764,27 @@
    "escopo": "consolidado",
    "id_arquivo": 137876,
    "data_arquivo": "2021-05-26",
-   "snapshot": null,
+   "snapshot": "e83ce02904974481b526a5eba2da4ece",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "c73334860162860e84ab4c05f4738489b88895f416392d6e50300e9ab69d06a7",
+    "periodo_impresso": "ABRIL 2021",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -861,10 +1794,27 @@
    "escopo": "entidade",
    "id_arquivo": 174017,
    "data_arquivo": "2021-07-28",
-   "snapshot": null,
+   "snapshot": "5e36e6cbea95412ea9bdecece7d00d72",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "2e9a811f8b4b41b755a3410c20ca3597cc944c4f9aea7d5a891432206b8464a9",
+    "periodo_impresso": "JUNHO 2021",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -874,10 +1824,27 @@
    "escopo": "entidade",
    "id_arquivo": 174018,
    "data_arquivo": "2021-07-28",
-   "snapshot": null,
+   "snapshot": "961a867a15a6496fbc18b81387b0dd36",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "2e9a811f8b4b41b755a3410c20ca3597cc944c4f9aea7d5a891432206b8464a9",
+    "periodo_impresso": "JUNHO 2021",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -887,10 +1854,27 @@
    "escopo": "consolidado",
    "id_arquivo": 174019,
    "data_arquivo": "2021-07-28",
-   "snapshot": null,
+   "snapshot": "8b6cb11604774072b8788a63f06a51c2",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "e61d31b8295f6e262a8e82b0eb41d1742598c7984b4f1b3df45e71446ddb958e",
+    "periodo_impresso": "JUNHO 2021",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -900,10 +1884,27 @@
    "escopo": "consolidado",
    "id_arquivo": 174020,
    "data_arquivo": "2021-07-28",
-   "snapshot": null,
+   "snapshot": "5a056a704dc0414d9f33618921c2d450",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "e61d31b8295f6e262a8e82b0eb41d1742598c7984b4f1b3df45e71446ddb958e",
+    "periodo_impresso": "JUNHO 2021",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -913,10 +1914,27 @@
    "escopo": "entidade",
    "id_arquivo": 228349,
    "data_arquivo": "2021-09-29",
-   "snapshot": null,
+   "snapshot": "c2dd92aa83c544d5a4e4482452088cbc",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "ffc691f1b5c2b11fa882dfb23b810696d847db8cfe57a13a85a924273c600862",
+    "periodo_impresso": "AGOSTO 2021",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -926,10 +1944,27 @@
    "escopo": "entidade",
    "id_arquivo": 228350,
    "data_arquivo": "2021-09-29",
-   "snapshot": null,
+   "snapshot": "6384620cfa314cddb90a79056645ab3c",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "ffc691f1b5c2b11fa882dfb23b810696d847db8cfe57a13a85a924273c600862",
+    "periodo_impresso": "AGOSTO 2021",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -939,10 +1974,27 @@
    "escopo": "consolidado",
    "id_arquivo": 228353,
    "data_arquivo": "2021-09-29",
-   "snapshot": null,
+   "snapshot": "f8b166099eb04b82ade00b5625aa9fcb",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "354d0d4cec0bcb6d822913d7a4c9494828e624f28c087a8a330bb84d3c0e1b83",
+    "periodo_impresso": "AGOSTO 2021",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -952,10 +2004,27 @@
    "escopo": "consolidado",
    "id_arquivo": 228355,
    "data_arquivo": "2021-09-29",
-   "snapshot": null,
+   "snapshot": "4a8971975e9e4d4fb4946be31322c7e7",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "354d0d4cec0bcb6d822913d7a4c9494828e624f28c087a8a330bb84d3c0e1b83",
+    "periodo_impresso": "AGOSTO 2021",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -965,10 +2034,27 @@
    "escopo": "entidade",
    "id_arquivo": 288522,
    "data_arquivo": "2021-12-06",
-   "snapshot": null,
+   "snapshot": "ac828a0627d6490b90a6308f34dfde18",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "1c9fb00c667c756ebbefcd82dd8a4068b09408f64b88593a78ebddfbefd2e48e",
+    "periodo_impresso": "OUTUBRO 2021",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -978,10 +2064,27 @@
    "escopo": "entidade",
    "id_arquivo": 288523,
    "data_arquivo": "2021-11-30",
-   "snapshot": null,
+   "snapshot": "e3f5e7fdd2fc459fa14fd9e6bc328382",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "3893488b5070b704b67c8c534c66185fc63b883e495f3e7e8fd010f604566142",
+    "periodo_impresso": "OUTUBRO 2021",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -991,10 +2094,27 @@
    "escopo": "consolidado",
    "id_arquivo": 294550,
    "data_arquivo": "2021-12-06",
-   "snapshot": null,
+   "snapshot": "04e5d65d54994808a0b6c449588d6320",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "78d3d30e733408618cb574411f5a4629a52451eeab9858f8bdb955c6969febff",
+    "periodo_impresso": "OUTUBRO 2021",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2021,
@@ -1064,10 +2184,27 @@
    "escopo": "entidade",
    "id_arquivo": 394635,
    "data_arquivo": "2022-04-14",
-   "snapshot": null,
+   "snapshot": "f08d5806d8e545049495b1ddae8c5560",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "17455ad961abde798090ece1849fb20d6cc09b6f3a7cf1f1298a6b77c75fb484",
+    "periodo_impresso": "FEVEREIRO 2022",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2022,
@@ -1077,10 +2214,27 @@
    "escopo": "consolidado",
    "id_arquivo": 395932,
    "data_arquivo": "2022-04-14",
-   "snapshot": null,
+   "snapshot": "5719b8543e7643f9bb7a3bfaa0d42d3a",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "406a3b51d7ceddb6c96502c2864b665c8999eb8f100f9ab1c45f33f19af96afd",
+    "periodo_impresso": "FEVEREIRO 2022",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2022,
@@ -1090,10 +2244,27 @@
    "escopo": "entidade",
    "id_arquivo": 449235,
    "data_arquivo": "2022-05-25",
-   "snapshot": null,
+   "snapshot": "12393cb636d845c08fb3b7bc17f5412f",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "13f09bfc72fd5cdc69092ba76c2ace54e8b1b451c84125ad401c8b29439b0b7d",
+    "periodo_impresso": "ABRIL 2022",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2022,
@@ -1103,10 +2274,27 @@
    "escopo": "consolidado",
    "id_arquivo": 449236,
    "data_arquivo": "2022-05-25",
-   "snapshot": null,
+   "snapshot": "7592a2f5064f46eea49b02fbfe9ef763",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "24df6b304a8318d6b4c98131546c45e2c817fd99373d55dc6fae4c4b8e0f61bd",
+    "periodo_impresso": "ABRIL 2022",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2022,
@@ -1116,10 +2304,27 @@
    "escopo": "entidade",
    "id_arquivo": 510330,
    "data_arquivo": "2022-07-27",
-   "snapshot": null,
+   "snapshot": "23fe9318bb374540b541940fd5fd7c20",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "33347d9ab1bc7871934a0d71cbf71d508e0a486d569187318e7c61507246410f",
+    "periodo_impresso": "JUNHO 2022",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2022,
@@ -1129,10 +2334,27 @@
    "escopo": "consolidado",
    "id_arquivo": 510332,
    "data_arquivo": "2022-07-27",
-   "snapshot": null,
+   "snapshot": "5c01eaceec1847eab5ae27e5c27abfe6",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "f79637b87dcfcf96468cfe206882bd595b27e18031eed1769bcf9ae7a9b9ce3f",
+    "periodo_impresso": "JUNHO 2022",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2022,
@@ -1142,10 +2364,27 @@
    "escopo": "entidade",
    "id_arquivo": 569828,
    "data_arquivo": "2022-09-28",
-   "snapshot": null,
+   "snapshot": "600bf39e25ad4599981f41433a4f412b",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "4025ff5f0988febfc9e2cbaa046d23318720c802c8b362fdaff22fbed616f599",
+    "periodo_impresso": "AGOSTO 2022",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2022,
@@ -1155,10 +2394,27 @@
    "escopo": "consolidado",
    "id_arquivo": 569834,
    "data_arquivo": "2022-09-28",
-   "snapshot": null,
+   "snapshot": "fda26048d58d422abbf1c4c317fd6d3b",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "fffc2723375fb2ba195c9117c7bb645e7fc023aa7af7feb65511a620ec6ff75f",
+    "periodo_impresso": "AGOSTO 2022",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2022,
@@ -1168,10 +2424,27 @@
    "escopo": "entidade",
    "id_arquivo": 628080,
    "data_arquivo": "2022-11-29",
-   "snapshot": null,
+   "snapshot": "d1c963e794b042c589122c75f7811050",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "6a78163b4036873a339a2a71c8b6bae55078f927c2316157ba4f9f69773212ac",
+    "periodo_impresso": "OUTUBRO 2022",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2022,
@@ -1181,10 +2454,27 @@
    "escopo": "consolidado",
    "id_arquivo": 628081,
    "data_arquivo": "2022-11-29",
-   "snapshot": null,
+   "snapshot": "3778d097b062489fb74882d2bac1e579",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "3a9c1d0cec518a61a2c271e86706786c8ad8ed9dd279ddd9f6324c8b6199323b",
+    "periodo_impresso": "OUTUBRO 2022",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2022,
@@ -1254,10 +2544,27 @@
    "escopo": "entidade",
    "id_arquivo": 767621,
    "data_arquivo": "2023-03-29",
-   "snapshot": null,
+   "snapshot": "352356d0f7d34223b5db367130678a53",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "65afe65f752009f0cca5388c0e71ac6ee693add5e9cd22f42191c0ced4e2b7aa",
+    "periodo_impresso": "FEVEREIRO 2023",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2023,
@@ -1267,10 +2574,27 @@
    "escopo": "consolidado",
    "id_arquivo": 767622,
    "data_arquivo": "2023-03-29",
-   "snapshot": null,
+   "snapshot": "01ab23f6a0484ceab32a6090aa71fadb",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "6f115c76a65974803325a9feba891e06157b01caea3b074df2a5cc8a4b93815c",
+    "periodo_impresso": "FEVEREIRO 2023",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2023,
@@ -1280,10 +2604,27 @@
    "escopo": "entidade",
    "id_arquivo": 841392,
    "data_arquivo": "2023-05-29",
-   "snapshot": null,
+   "snapshot": "6cf1648323db4e66b5c1dfc72aa46399",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "b2f91b387d388e6483eb77edf8730db2450d33c037dd12e0aa8eb3394e4307a5",
+    "periodo_impresso": "ABRIL 2023",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2023,
@@ -1293,10 +2634,27 @@
    "escopo": "consolidado",
    "id_arquivo": 841393,
    "data_arquivo": "2023-05-29",
-   "snapshot": null,
+   "snapshot": "cd91f99de015433b8e6e11530d7a892a",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "3dc478ec37abdce395eaaf3699f8cc18ffd33e46cc572e5d8d7e137152af74d3",
+    "periodo_impresso": "ABRIL 2023",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2023,
@@ -1306,10 +2664,27 @@
    "escopo": "entidade",
    "id_arquivo": 926641,
    "data_arquivo": "2023-07-28",
-   "snapshot": null,
+   "snapshot": "55e98ad5338d4c47825f28871f762db2",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "5fac34359ff18ba8b7558b89c2430890548fc61ad62a26786de8713e2d59e18f",
+    "periodo_impresso": "JUNHO 2023",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2023,
@@ -1319,10 +2694,27 @@
    "escopo": "consolidado",
    "id_arquivo": 926642,
    "data_arquivo": "2023-07-28",
-   "snapshot": null,
+   "snapshot": "b70c626a67f64fa3b201dcc4e41425b1",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "d25450fc2da83d7a7e043b77e5db1e170c1a45a762c8fc5afc81a5fdc1e07005",
+    "periodo_impresso": "JUNHO 2023",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2023,
@@ -1332,10 +2724,27 @@
    "escopo": "entidade",
    "id_arquivo": 1002817,
    "data_arquivo": "2023-09-28",
-   "snapshot": null,
+   "snapshot": "f17cd626b3d54d5887daa390d7cecc2a",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "0ec0b7ef3a86f05612a65400b6728fe58d2e5639dfd87a987246b0a6313f9d32",
+    "periodo_impresso": "AGOSTO 2023",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2023,
@@ -1345,10 +2754,27 @@
    "escopo": "consolidado",
    "id_arquivo": 1002818,
    "data_arquivo": "2023-09-28",
-   "snapshot": null,
+   "snapshot": "658b742dd36c4094b02f2f4eab557fef",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "cde4ecebebb7089d8b25192583b3ab6b442b8b635471f27b3cc5f32ebde91b29",
+    "periodo_impresso": "AGOSTO 2023",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2023,
@@ -1358,10 +2784,27 @@
    "escopo": "entidade",
    "id_arquivo": 1071372,
    "data_arquivo": "2023-11-27",
-   "snapshot": null,
+   "snapshot": "fb0a148453824788a9c984f6c169106a",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "0e1079042a0d1c1d2fc522c648843f9ea08d30151f454df0d5358b19a285c850",
+    "periodo_impresso": "OUTUBRO 2023",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2023,
@@ -1371,10 +2814,27 @@
    "escopo": "consolidado",
    "id_arquivo": 1071374,
    "data_arquivo": "2023-11-27",
-   "snapshot": null,
+   "snapshot": "871e83baaaa6410a94704ae90337f99a",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "24b2406bb2c6213cce1378b7688d03018033aece04c67f877ed8225269e02fe0",
+    "periodo_impresso": "OUTUBRO 2023",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2023,
@@ -1444,10 +2904,27 @@
    "escopo": "entidade",
    "id_arquivo": 1222621,
    "data_arquivo": "2024-03-28",
-   "snapshot": null,
+   "snapshot": "b88f5443e0b04d31b6df472908e8fa52",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "56aced56af94fc7860b4c4319316f0937c5cd8640110481910f42759340333ad",
+    "periodo_impresso": "FEVEREIRO 2024",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2024,
@@ -1457,10 +2934,27 @@
    "escopo": "consolidado",
    "id_arquivo": 1222622,
    "data_arquivo": "2024-03-28",
-   "snapshot": null,
+   "snapshot": "55a3af5b4838488f837763414c9a622a",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "4b759808c3ac9076763a47e989cddf861511224cf42e31e92cca25e22a3775a2",
+    "periodo_impresso": "FEVEREIRO 2024",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2024,
@@ -1470,10 +2964,27 @@
    "escopo": "entidade",
    "id_arquivo": 1296591,
    "data_arquivo": "2024-05-29",
-   "snapshot": null,
+   "snapshot": "edc6ef0e60d248d2bb01ff42d045d55c",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "67f1af5f7d414c427165fbdf82f73b0389f6865598e5d67c9c7823d63516fb33",
+    "periodo_impresso": "ABRIL 2024",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2024,
@@ -1483,10 +2994,27 @@
    "escopo": "consolidado",
    "id_arquivo": 1296592,
    "data_arquivo": "2024-05-29",
-   "snapshot": null,
+   "snapshot": "bf98fde548a4484c896be9b6f83b570c",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "14c2dc1b556e5d8031d7559d8d8bd87288463ced1ea849a5ab0d68da0162e71a",
+    "periodo_impresso": "ABRIL 2024",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2024,
@@ -1496,10 +3024,27 @@
    "escopo": "entidade",
    "id_arquivo": 1376404,
    "data_arquivo": "2024-07-30",
-   "snapshot": null,
+   "snapshot": "f6d92f25f231454b9b58c895d153345a",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "78304c36ac799623a9b14141d653fe270856478f7dd8d7a6b418aae4ef8a66fd",
+    "periodo_impresso": "JUNHO 2024",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2024,
@@ -1509,10 +3054,27 @@
    "escopo": "consolidado",
    "id_arquivo": 1376405,
    "data_arquivo": "2024-07-30",
-   "snapshot": null,
+   "snapshot": "51317c8d70be4e9797ccfc203051b36f",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "1cf5c0b121fe84bd663d303ec973012a31ed9c985538f4cc4ec648464808ff36",
+    "periodo_impresso": "JUNHO 2024",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2024,
@@ -1522,10 +3084,27 @@
    "escopo": "entidade",
    "id_arquivo": 1450653,
    "data_arquivo": "2024-09-26",
-   "snapshot": null,
+   "snapshot": "15aa5c5b7c2c4c9f82bd8a9b18b36c7d",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "9e5a7a39f2fc466f0cb962315c3a1ebe337ec095ef31ad4b87560cad6fd9cbd3",
+    "periodo_impresso": "AGOSTO 2024",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2024,
@@ -1535,10 +3114,27 @@
    "escopo": "consolidado",
    "id_arquivo": 1450654,
    "data_arquivo": "2024-09-26",
-   "snapshot": null,
+   "snapshot": "b721f5df15304a2aa778f0c2f46cedef",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "1a60a4f9d5fb0d80233312fa70bf7a1f57b62e1aea4e6fdb5faca2464f9f3f44",
+    "periodo_impresso": "AGOSTO 2024",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2024,
@@ -1548,10 +3144,27 @@
    "escopo": "entidade",
    "id_arquivo": 1543312,
    "data_arquivo": "2024-11-29",
-   "snapshot": null,
+   "snapshot": "282e50190124421da69a0350bf0c0e3e",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "761dc54fceea0e6036ecb514588a5678aba0bd14293d15f83822b581bf2be380",
+    "periodo_impresso": "OUTUBRO 2024",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2024,
@@ -1561,10 +3174,27 @@
    "escopo": "consolidado",
    "id_arquivo": 1543313,
    "data_arquivo": "2024-11-29",
-   "snapshot": null,
+   "snapshot": "b694b42a462e4706a354dce55fbb03a2",
    "motivo": null,
-   "situacao": "nao_coletado",
-   "conferencia": null
+   "situacao": "transcrito",
+   "valores": 48,
+   "conferencia": {
+    "pdf_sha256": "a7a3ced878ad2e93374244eb53b6ee11031ad73f7745ffd372c6e9737d2327b8",
+    "periodo_impresso": "OUTUBRO 2024",
+    "linhas_lidas": [
+     "PODER EXECUTIVO",
+     "RESTOS A PAGAR (EXCETO",
+     "RESTOS A PAGAR (INTRA",
+     "TOTAL (III)"
+    ],
+    "identidades_que_falham": [],
+    "problemas_da_leitura": [],
+    "celulas_da_producao": 48,
+    "celulas_comparadas": 48,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
+   }
   },
   {
    "exercicio": 2024,
