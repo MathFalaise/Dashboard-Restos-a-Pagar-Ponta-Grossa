@@ -41,6 +41,8 @@ REV = "etapa04/REVISAO_CODIGO_20260930.md"
 COR = "etapa04/CORRECOES_ETAPAS_01_A_04_4.md"
 CATALOGO = "catalogo das Etapas 03/04.2: uso e status de evidencia originais"
 CORRETIVA = "especificacao da revisao corretiva 01-04.4 (usuario, 30/09/2026)"
+CONC = "docs/audits/rreo/CONCILIACAO_20261009.md secao 3"
+NOVA = "catalogo: versao nova criada pela conciliacao celula a celula (09/10/2026)"
 
 # (codigo, versao, situacao, status_evidencia, compoe_indicador_publicado, supersedida_por, motivo, fonte, decidido_em, origem)
 EVENTOS = [
@@ -87,6 +89,19 @@ EVENTOS = [
     ("CONC-RREO", 1, "operacional", "CONFIRMADO", 0, None,
      "Parametro estruturado: o RREO 'por entidade' e comparado com a entidade 1 (Prefeitura). Uma divergencia "
      "nunca altera o valor da API.", COR, "2026-09-30", CORRETIVA),
+    # ---- 09/10/2026: new versions from the cell-by-cell reconciliation; they enter the catalog as experimental.
+    # A promotion is a separate decision (registrar_decisao / decidir-regra), never an event here.
+    ("CANC", 2, "experimental", "FORTE EVIDÊNCIA", 0, None,
+     "nova versao: o nao processado a liquidar e cancelado primeiro; o excedente e processado", CONC, "2026-10-09", NOVA),
+    ("RREO-COL", 3, "experimental", "FORTE EVIDÊNCIA", 0, None,
+     "nova versao: pagamento pela categoria (v2) + cancelamentos pela CANC v2", CONC, "2026-10-09", NOVA),
+    ("ESCOPO-MUN", 1, "experimental", "FORTE EVIDÊNCIA", 0, None,
+     "nova regra: entidade 7 (fora do catalogo do portal) no Municipio ate 2020", CONC, "2026-10-09", NOVA),
+    ("MOV-REF", 2, "experimental", "FORTE EVIDÊNCIA", 0, None,
+     "nova versao: lancamento 33 'Em Liquidacao' reconhecido como etapa sem efeito (achado da coleta de movimentacao)",
+     CONC, "2026-10-09", NOVA),
+    ("COPIA-ORIGEM", 1, "experimental", "FORTE EVIDÊNCIA", 0, None,
+     "nova regra: copias 24xxxxx fora dos indicadores dos exercicios anteriores a 2026", CONC, "2026-10-09", NOVA),
 ]
 
 

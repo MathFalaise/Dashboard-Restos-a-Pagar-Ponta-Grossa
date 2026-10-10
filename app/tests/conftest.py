@@ -128,7 +128,7 @@ def montar_producao(base, armazem_de=None, so_homologados=False):
     else:
         if so_homologados:
             novos = sum(banco.registrar_manifesto(con, armazem, rel, m)[1] for rel, m in manifestos_homologados(armazem))
-            novos += sum(banco.registrar_evidencia(con, armazem, rel, m)[1] for rel, m in armazem.evidencias())
+            novos += sum(banco.registrar_evidencia(con, armazem, rel, m)[1] for rel, m in evidencias_homologadas(armazem))
             resumo_import = {"sincronizados": novos}
         else:
             resumo_import = {"sincronizados": banco.sincronizar(con, armazem)}
@@ -169,6 +169,13 @@ def manifestos_homologados(armazem):
     """(path, manifest) of the snapshots of the homologated base: collected up to BASE_HOMOLOGADA_ATE."""
     limite = datetime.fromisoformat(BASE_HOMOLOGADA_ATE)
     return [(rel, m) for rel, m in armazem.manifestos() if datetime.fromisoformat(m["coletada_em"]) <= limite]
+
+
+def evidencias_homologadas(armazem):
+    """(path, manifest) of the external evidence recorded up to BASE_HOMOLOGADA_ATE (none: the first one, the Siconfi
+    declarations, was recorded on 09/10/2026). Same cut as the snapshots: the homologated base stays what it was."""
+    limite = datetime.fromisoformat(BASE_HOMOLOGADA_ATE)
+    return [(rel, m) for rel, m in armazem.evidencias() if datetime.fromisoformat(m["registrada_em"]) <= limite]
 
 
 def retrato_do_armazem():

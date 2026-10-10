@@ -339,6 +339,6 @@ def test_catalogo_de_verificacoes_cobre_as_descricoes_reais(real):
     texto = CONTRATO.read_text(encoding="utf-8")
     descricoes = {d for (d,) in real["con"].execute("SELECT DISTINCT descricao FROM verificacao WHERE derivacao_id=?",
                                                     (real["did"],))}
-    assert len(descricoes) == 4
+    assert len(descricoes) == 5      # + COPIA-ORIGEM v1 (promotion of 09/10/2026; the homologated base has 2024/2025 copies)
     for d in descricoes:
         assert f"`{d}`" in texto, d

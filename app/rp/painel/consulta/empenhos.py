@@ -124,7 +124,12 @@ class Empenhos:
         if not corte["disponivel"]:
             return {"encontrado": False, "motivo_indisponivel": corte["motivo"]}
         ocorrencias = list(self._registros(ctx, corte["somar"], " AND r.anoempenho=? AND r.empenho=?",
-                                           (anoempenho, empenho), ordem="empenho"))
+                                           (anoempenho, empenho), ordem="empenho", escopo=False))
+        cop = self._escopo_aplicado()["copias"]
+        fora_do_indicador = (f"cópia 24xxxxx anterior a {cop['primeiro_exercicio']}: fica fora dos indicadores "
+                             "(regra COPIA-ORIGEM v1); o registro continua no bruto e no pareamento"
+                             if cop and entidade == cop["entidade_copia"] and empenho >= cop["base_empenho_copia"]
+                             and exercicio < cop["primeiro_exercicio"] else None)
         chave = {"entidade": entidade, "anoempenho": anoempenho, "empenho": empenho}
         if not ocorrencias:
             return {"encontrado": False, "chave": chave, "motivo_indisponivel": "empenho ausente deste corte",
@@ -152,6 +157,7 @@ class Empenhos:
         return {"encontrado": True, "retrato": corte["retrato"], "fonte": fontes.ELOTECH["rotulo"], "nivel": self.nivel,
                 "chave": chave, "exercicio": exercicio, "data_final": data_final,
                 "ocorrencias": saida, "movimentacao": self._movimentacao(ctx, entidade, anoempenho, empenho, em),
+                "fora_do_indicador": fora_do_indicador,
                 "nota": ("Mais de uma ocorrência = a mesma chave apareceu mais de uma vez no snapshot; nenhuma é "
                          "descartada.") if len(saida) > 1 else None}
 
@@ -185,7 +191,8 @@ class Empenhos:
         lanc = [{"data": d, "tipo_lancamento": t, "descricao": desc, "valor_c": v, "natureza": "da_fonte",
                  "efeito": ef, "valor_com_sinal_c": vs,
                  "liquidacao_referida": f"{ln}/{le}" if ln is not None and le is not None else None,
-                 "interpretacao": "derivado (MOV-REF v1: nos lançamentos 40/41 a liquidação está nos rótulos de pagamento)"}
+                 "interpretacao": ("derivado (MOV-REF v2: nos lançamentos 40/41 a liquidação está nos rótulos de "
+                                   "pagamento; 33 'Em Liquidação' é registro de etapa, sem efeito)")}
                 for d, t, desc, v, ef, vs, le, ln in self.con.execute(
                     "SELECT m.data, m.tipo_lancamento, m.descricao_tipo, m.valor_c, i.efeito, i.valor_com_sinal_c, "
                     "i.liquidacao_exercicio, i.liquidacao_numero FROM movimentacao_lancamento m LEFT JOIN "

@@ -110,6 +110,9 @@ ter o empenho identificado:
 
 ## 7. Decisões e próximos passos (do responsável)
 
+> Executado na mesma noite, a pedido do responsável: coleta da entidade 7 e da movimentação, e promoção das regras
+> (seção 8).
+
 - **Coletar a entidade 7 no banco ativo,** com backup e homologação. Exige ajustar a visão do Município, que hoje
   só soma o catálogo do portal.
 - **Promover ou não as regras experimentais da seção 3** para a visão publicada.
@@ -120,3 +123,152 @@ ter o empenho identificado:
 Evidência de trabalho, fora do repositório porque contém nomes de pessoas físicas da API: listagens da entidade 7
 (64 cortes) e movimentação de cerca de 880 empenhos, com URL, data e SHA-256 em manifestos na pasta de rascunho da
 sessão. Para entrar no armazém, devem ser recoletadas pelo coletor do projeto.
+
+## 8. Promoção das quatro regras (09/10/2026, a pedido do responsável)
+
+Pedido: "promova as quatro regras além da coleta das movimentações". Executado no banco ativo, com a mesma disciplina
+das correções anteriores.
+
+### 8.1 Proteção e coleta
+- **Backup:** `data/backups/20261009-191501_antes-promocao-regras-20261009.sqlite`. Restauração comprovada: cópia
+  aberta com `PRAGMA integrity_check` = ok e as mesmas contagens do banco ativo em 8 tabelas.
+- **Referências fora do banco:** `referencia_antes_promocao_20261009.json` e `raiz_antes_promocao_20261009.json`
+  em `~/RestosAPagar_local/referencias/`.
+- **Entidade 7:** 68 cortes (todos os que o banco tem para as demais entidades), pelo coletor do projeto (contrato
+  estrito, segunda leitura): 68 `completa`.
+- **Movimentação:** 3.812 empenhos com coleta `completa` (antes 148): os 3.695 de classificação mista e os 11
+  citados como evidência. Nenhum retrato duplicado. Durante a coleta, dois processos chegaram a rodar ao mesmo tempo
+  por alguns minutos; o segundo foi encerrado e `python -m rp verificar` não acusou problema.
+
+### 8.2 Regras (versões novas; nada homologado foi editado)
+
+| Regra | O que faz | Situação |
+|---|---|---|
+| CANC v2 | Cancelamento de registro com aproc > 0: primeiro o não processado ainda a liquidar (j), o excedente é processado (d) | operacional, compõe o indicador |
+| RREO-COL v3 | Pagamento pela categoria (como a v2) + cancelamentos pela CANC v2; calculada no escopo das duas regras abaixo | operacional, compõe o indicador |
+| ESCOPO-MUN v1 | Entidade 7 no Município até 2020, a partir do momento em que a base a conhece (faltar um corte dela = Município indisponível, nunca zero) | operacional, compõe o indicador |
+| COPIA-ORIGEM v1 | Cópias 24xxxxx fora dos indicadores antes de 2026 (continuam no bruto, na normalização, no pareamento e nas anomalias) | operacional, compõe o indicador |
+| MOV-REF v2 | Como a v1, mais o lançamento 33 "Em Liquidação": registro de etapa, efeito zero (achado da coleta: 2 lançamentos; os saldos não mudam neles) | operacional com ressalva (sem conferência externa) |
+| RREO-COL v2 | — | supersedida pela v3 |
+| MOV-REF v1 | — | supersedida pela v2 |
+| RREO-COL v1, CANC v1 | — | continuam não recomendadas e calculadas lado a lado, como histórico |
+
+- **Decisões:** registradas em `regra_situacao` com `decidir-regra`, cada uma com:
+  - teste de regressão: `tests/test_promocao_20261009.py`;
+  - evidência independente: declarações do Siconfi, evidência externa nº 1 (zip com manifesto, SHA-256
+    `4c500a8e…`), exceto na MOV-REF v2;
+  - ressalva de cada regra, que aparece na metodologia.
+- **A homologação pegou um tipo novo:** a primeira homologação depois da coleta foi **reprovada** pela trava
+  `lancamento_desconhecido`, porque a movimentação nova trouxe o tipo 33 ("Em Liquidação"), que a MOV-REF v1 não
+  conhecia. O tipo foi analisado (os saldos não mudam no lançamento) e virou a MOV-REF v2. Nenhum valor foi
+  ajustado.
+- **Derivação (`rp-derivador/3`):**
+  - **v1 e v2:** ficam exatamente como eram. A única correção de comportamento é que uma entidade fora do catálogo
+    não esconde mais a visão do Município (só não é somada).
+  - **v3:** usa o escopo promovido. Duas verificações novas: `cópias 24xxxxx fora do indicador (COPIA-ORIGEM v1)` e
+    `entidade fora do catálogo no Município (ESCOPO-MUN v1)`.
+- **Painel:**
+  - **Somas dos indicadores:** com as regras operacionais, todas excluem as cópias anteriores a 2026 e somam a
+    entidade 7 até 2020.
+  - **Entidade fora do catálogo nos outros exercícios:** aparece como `fora_do_escopo`, sem ser somada.
+  - **Ficha de um empenho:** continua mostrando a cópia, com o aviso de que ela está fora do indicador.
+  - **Explicações:** o catálogo de explicações de diferenças recebeu os itens comprovados da seção 4.
+
+### 8.3 Prova de que nada homologado mudou
+- **Base homologada de 30/09:** sem as linhas das regras novas, a derivação reproduz exatamente os hashes homologados
+  `2f6b4e29…` e `b8a0b2ed…`. O hash completo novo é `adc55b19…` / `96777ec6…`, registrado no teste.
+- **Banco ativo:** a derivação atual nova (30, `a839c708…`) contra a anterior (26, `ed386665…`), por identificadores
+  estáveis:
+
+| Tabela | Derivação 26 (anterior) | Derivação 30 (nova) | Linhas que sumiram ou mudaram | Linhas novas |
+|---|---|---|---|---|
+| rp_derivado | 561.357 | 561.671 | 0 | 314 |
+| movimentacao_interpretada | 2.352 | 65.847 | 0 | 63.495 |
+| anomalia | 28.069 | 28.069 | 0 | 0 |
+| espelhamento_par | 3.781 | 3.781 | 0 | 0 |
+| visao_valor | 25.440 | 41.220 | 0 | 15.780 |
+| conciliacao_rreo | 2.328 | 3.492 | 0 | 1.164 |
+| verificacao | 377 | 526 | 0 | 149 |
+
+- **Vigência "como estava em 29/09":** sem as regras novas, `b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68` (= homologado `b8a0b2ed…`). Completo:
+  `96777ec6a17da54b09812422695b14a9bb0dc89b4d3563a3712f9964ccc699a4`.
+
+### 8.4 Impacto na conciliação com o RREO (documentos transcritos pelo extrator de produção)
+
+| Regra | Entidade 1: colunas iguais | Documentos idênticos | Consolidado: colunas iguais | Documentos idênticos |
+|---|---|---|---|---|
+| RREO-COL v1 (não recomendada) | 282 de 588 (48,0%) | 7 de 49 | 216 de 576 (37,5%) | 0 de 48 |
+| RREO-COL v2 (agora supersedida) | 314 de 588 (53,4%) | 11 de 49 | 264 de 576 (45,8%) | 8 de 48 |
+| **RREO-COL v3 (promovida)** | 356 de 588 (60,5%) | 12 de 49 | 343 de 576 (59,5%) | 10 de 48 |
+
+São 97 documentos lidos pelo extrator (49 entidade, 48 consolidado). Com os 18 recusados lidos à parte (seção 1), a v3
+reproduz 69,1% das células depois dos itens comprovados da seção 4.
+
+### 8.5 Impacto no indicador publicado (saldo de RP do painel × coluna L do RREO, 31/12)
+
+| Exercício | Escopo | Saldo do painel (S1) | Coluna L do RREO | Diferença | Situação |
+|---|---|---|---|---|---|
+| 2016 | Município | 33.716.772,93 | — | — | sem RREO transcrito pelo extrator |
+| 2016 | entidade 1 | 31.982.018,98 | — | — | sem RREO transcrito pelo extrator |
+| 2017 | Município | 17.582.067,07 | 17.486.545,07 | 95.522,00 | explicada |
+| 2017 | entidade 1 | 16.536.506,91 | 16.440.984,91 | 95.522,00 | explicada |
+| 2018 | Município | 19.157.923,69 | — | — | sem RREO transcrito pelo extrator |
+| 2018 | entidade 1 | 18.324.474,11 | — | — | sem RREO transcrito pelo extrator |
+| 2019 | Município | 21.675.760,37 | — | — | sem RREO transcrito pelo extrator |
+| 2019 | entidade 1 | 20.401.311,24 | — | — | sem RREO transcrito pelo extrator |
+| 2020 | Município | 18.662.407,15 | 18.662.407,15 | 0,00 | sem diferença |
+| 2020 | entidade 1 | 13.617.360,50 | 13.617.360,50 | 0,00 | sem diferença |
+| 2021 | Município | 45.226.754,81 | 45.226.754,81 | 0,00 | sem diferença |
+| 2021 | entidade 1 | 17.912.305,36 | 17.912.305,36 | 0,00 | sem diferença |
+| 2022 | Município | 23.909.989,24 | 23.750.403,75 | 159.585,49 | parcialmente explicada |
+| 2022 | entidade 1 | 20.162.657,54 | 20.003.072,05 | 159.585,49 | parcialmente explicada |
+| 2023 | Município | 21.239.560,49 | 21.197.857,45 | 41.703,04 | explicada |
+| 2023 | entidade 1 | 20.462.225,53 | 20.417.319,97 | 44.905,56 | explicada |
+| 2024 | Município | 18.966.578,99 | 18.296.817,34 | 669.761,65 | parcialmente explicada |
+| 2024 | entidade 1 | 18.523.356,29 | 17.848.930,28 | 674.426,01 | explicada |
+| 2025 | Município | 20.341.471,66 | 20.341.471,66 | 0,00 | sem diferença |
+| 2025 | entidade 1 | 19.374.826,42 | 19.374.826,42 | 0,00 | sem diferença |
+
+- **2016, 2018 e 2019 ("sem RREO transcrito pelo extrator"):** os PDFs desses anos são recusados pelo extrator. Os de
+  2018 e 2019 são impressões das declarações do Siconfi.
+- **Nuance da entidade 7 em 2018 e 2019:** essas declarações **não** incluem a entidade 7, que o relatório do
+  sistema inclui em 2017, no 3º bim/2019 e em 2020. A regra ESCOPO-MUN v1 segue o relatório do sistema, então nesses
+  dois anos o Município do painel fica R$ 180.334,82 acima do Siconfi. Uma versão que siga o Siconfi seria uma v2,
+  decisão do responsável.
+- **Diferenças que restam:** estão explicadas no próprio painel pelo catálogo de explicações (seção 4).
+  - **2022:** R$ 7.833,27 sem causa identificada.
+  - **2024, Município:** R$ 4.664,36 de outras entidades não atribuídos a empenhos.
+
+### 8.6 Testes e homologação
+- **Testes novos:** `tests/test_promocao_20261009.py`, 11 testes. Eles servem de teste de regressão de cada decisão:
+  CANC v2, RREO-COL v3, COPIA-ORIGEM v1, ESCOPO-MUN v1 (incluindo a base que não conhece a entidade), MOV-REF v2 e a
+  entrada das versões novas no catálogo como experimentais.
+- **Testes existentes ajustados:** só onde a promoção muda o que é conferido, com o valor anterior anotado ao lado:
+  - **v3 nas contagens:** 24 → 36 comparações por documento (12 colunas × v1/v2/v3), linhas e contagens da qualidade
+    e da conciliação, e 2 × 2 → 2 × 3 "RREO sem snapshot";
+  - **contrato analítico E-02:** com as duas descrições novas de verificação;
+  - **governança:** a CANC v2 existe desde 09/10/2026;
+  - **explicações:** os casos de 2024 (674.426,01) passaram de "parcialmente explicada" a "explicada";
+  - **hash da base homologada:** o teste continua exigindo `2f6b4e29…` e `b8a0b2ed…` (sem as regras novas) e
+    registra os hashes completos novos;
+  - **fixture `real`:** passa a sincronizar só as evidências registradas até a data da base homologada, como já
+    fazia com os retratos (a evidência do Siconfi é posterior).
+- **Suítes:** produção, 650 passed; investigação (Etapa 03), 26 passed.
+- **`python -m rp homologar`:** **`aprovada_com_ressalvas`**, 21 de 21 verificações, relatório em
+  `~/RestosAPagar_local/referencias/homologacao_pos_promocao_20261009_b.json`.
+  - **Pendências contábeis:** divergência com o RREO (v3: 465 colunas em 75 documentos, contra 666 em 90 da v1 e 586
+    em 78 da v2), 18 RREOs recusados pelo extrator, pares 1↔15 e VALOR-OBRIG v1 sem decisão.
+  - **Primeira tentativa:** foi `reprovada` por dois motivos, ambos tratados: o tipo 33 (MOV-REF v2) e o teste do
+    armazém, que contava a primeira evidência externa como se fosse da base homologada.
+
+### 8.7 Para o responsável
+- **Reiniciar a interface** (`python -m rp interface`): ela abre a derivação nova (30) com as regras promovidas.
+- **Guardar fora deste computador:**
+  - a pasta `~/RestosAPagar_local/referencias/`;
+  - o backup `data/backups/20261009-191501_antes-promocao-regras-20261009.sqlite`, que já está no OneDrive.
+- **Em aberto:**
+  - **Decisão da ESCOPO-MUN em 2018 e 2019:** seguir o relatório do sistema (como está) ou o Siconfi.
+  - **Perguntas ao e-SIC:**
+    - extinção e saldos da entidade 7;
+    - natureza das cópias;
+    - data de registro dos lançamentos posteriores.

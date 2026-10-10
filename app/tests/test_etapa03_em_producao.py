@@ -235,7 +235,7 @@ def test_rreo_col_v2_torna_L_igual_a_S1_em_todas_as_visoes(producao):
 
 def test_rreo_sem_snapshot_correspondente_e_registrado_nao_inventado(producao):
     n = um(producao["con"], "SELECT COUNT(*) FROM verificacao WHERE derivacao_id=? AND descricao LIKE 'RREO sem snapshot%'", producao["did"])[0]
-    assert n == 2 * 2
+    assert n == 2 * 3      # 2 PDFs x RREO-COL v1/v2/v3 (v3 since 09/10/2026)
 
 
 # ---------------------------------------------------------------- snapshots over time

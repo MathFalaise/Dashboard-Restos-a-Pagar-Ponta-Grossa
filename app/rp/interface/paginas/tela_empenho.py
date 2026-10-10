@@ -86,6 +86,8 @@ def empenho(p, q):
         return titulo, (f"<h1>{esc(titulo)}</h1>" + nos_cortes + _retrato(d.get("retrato")) +
                         f'<section class="indisponivel" id="indisponivel"><p>{esc(d["motivo_indisponivel"])}.</p></section>')
     corpo = [f"<h1>{esc(titulo)}</h1>", nos_cortes, _retrato(d["retrato"])]
+    if d.get("fora_do_indicador"):
+        corpo.append(f'<p class="aviso" id="fora-do-indicador">{esc(d["fora_do_indicador"])}</p>')
     for i, o in enumerate(d["ocorrencias"], 1):
         if len(d["ocorrencias"]) > 1:
             corpo.append(f"<h2>Ocorrência {i} de {len(d['ocorrencias'])} no snapshot</h2>")
@@ -201,6 +203,6 @@ def _movimentacao(m, chave):
             + fm.selo("elotech", "da_fonte") + no_portal
             + f'<p class="nota">Snapshot <code>{esc(s["snapshot_uid"])}</code>, coletado em '
             + f'{esc(fm.data_br(s["coletada_em"], True))}, endpoint <code>{esc(s["endpoint"])}</code>. Efeito e '
-            + "liquidação referida são interpretação (MOV-REF v1, operacional).</p>"
+            + "liquidação referida são interpretação (MOV-REF v2, operacional).</p>"
             + fm.tabela([("Data", None), ("Tipo", None), ("Descrição", None), ("Valor", None), ("Efeito", None),
                          ("Liquidação referida", None)], linhas) + "</section>")

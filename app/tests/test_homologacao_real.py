@@ -18,6 +18,7 @@ from decimal import Decimal
 import pytest
 from conftest import chamar, dados, ok
 
+from rp import derivar
 from rp.interface import Aplicacao, paginas
 from rp.painel import Painel
 
@@ -149,7 +150,12 @@ def test_valores_de_2024_2025_2026_fixados_na_linha_de_base(real):
 def test_hash_da_derivacao_igual_ao_do_banco_ativo(real):
     h = real["con"].execute("SELECT hash_resultado FROM derivacao_execucao WHERE id=?", (real["did"],)).fetchone()[0]
     h2909 = real["con"].execute("SELECT hash_resultado FROM derivacao_execucao WHERE id=?", (real["did_2909"],)).fetchone()[0]
-    assert h.startswith("2f6b4e295ce79593") and h2909.startswith("b8a0b2ed2328bf09")
+    # promotion of 09/10/2026: without the rows of the new rules the result is the homologated one (2f6b4e29 / b8a0b2ed);
+    # the complete result gains those rows (test_casos_reais.HASH_ATUAL_20261009 / HASH_EM_2909_20261009)
+    sem = derivar.REGRAS_DE_20261009
+    assert derivar.hash_resultado(real["con"], real["did"], sem).startswith("2f6b4e295ce79593")
+    assert derivar.hash_resultado(real["con"], real["did_2909"], sem).startswith("b8a0b2ed2328bf09")
+    assert h.startswith("adc55b1913d0b553") and h2909.startswith("96777ec6a17da54b")
 
 
 # ================================================================== section 5: regression cases against the raw data
@@ -404,7 +410,7 @@ def test_reconciliacao_mostra_periodo_escopo_coluna_pdf_extracao_e_explicacao(ap
     principal = re.sub(r"<[^>]+>", " ", corpo[corpo.index("<main"):corpo.index("</main>")])
     assert not re.search(r"(?i)\berros?\b|\bincorret", principal)
     linhas = re.findall(r"<tr><td><strong>([a-lL])</strong>.*?</tr>", corpo, re.S)
-    assert len(linhas) == 24
+    assert len(linhas) == 36      # 12 columns x RREO-COL v1/v2/v3 (v3 since 09/10/2026)
 
 
 # ================================================================== section 20: experimental rules

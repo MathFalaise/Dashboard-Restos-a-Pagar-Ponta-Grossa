@@ -412,6 +412,8 @@ São agregadas. Colunas: `derivacao_id`, `regra_id`, `descricao`, `escopo_json`,
 | PAR-24 v1 | `pareamento de cópias 24xxxxx` | por corte: "verificados" = registros da entidade-cópia com número ≥ base 2.400.000; "falhas" = cópias sem registro correspondente na entidade original, ou com campos de conferência diferentes (anomalia COPIA-SEM-PAR) | 0 = "sem falha"; > 0 = "com falhas" e ligação às anomalias COPIA-SEM-PAR do escopo |
 | CONC-RREO v1 | `conciliação RREO × API (colunas com diferença)` | **colunas com diferença** entre a API projetada e o RREO (informativo, não erro) | "colunas com diferença: n de m", remetendo à reconciliação e às situações de E-03 |
 | CONC-RREO v1 | `RREO sem valores extraídos (ver problemas da normalização)` | PDFs do RREO que o extrator não leu | "PDFs não lidos: n" |
+| COPIA-ORIGEM v1 | `cópias 24xxxxx fora do indicador (COPIA-ORIGEM v1)` | por retrato da entidade 1 anterior a 2026: "verificados" = cópias 24xxxxx deixadas fora da visão da RREO-COL v3; "falhas" = sempre 0 (registro informativo; as cópias continuam no bruto, na normalização e no pareamento). Desde 09/10/2026 | "informativo: n" |
+| ESCOPO-MUN v1 | `entidade fora do catálogo no Município (ESCOPO-MUN v1)` | por corte até 2020, numa base que já conhece a entidade 7: "verificados" = 1; "falhas" = 1 se a entidade 7 não tem retrato no corte (Município da RREO-COL v3 indisponível, nunca zero). Desde 09/10/2026 | 0 = "sem falha"; > 0 = "com falhas" |
 | (qualquer outra) | — | — | "significado não catalogado", com os números brutos, sem interpretação |
 
 - **Validação:** soma de verificados e falhas por descrição igual à tabela; snapshots de `escopo_json` existem.

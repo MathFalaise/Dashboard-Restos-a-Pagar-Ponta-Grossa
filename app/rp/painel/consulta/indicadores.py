@@ -39,13 +39,26 @@ class Indicadores:
         if self._pendentes(ctx):
             avisos.append("Há snapshots de listagem ainda não processados; rode 'python -m rp processar'.")
         return {"consulta": {"exercicio": exercicio, "data_final": data_final, "entidade": entidade, "como_estava_em": em},
-                "escopo": f"entidade {entidade}" if entidade is not None else "Município (entidades do catálogo oficial do exercício)",
+                "escopo": f"entidade {entidade}" if entidade is not None else self._texto_escopo_municipio(),
+                "regras_de_escopo": self.regras_de_escopo(),
                 "disponivel": corte["disponivel"], "motivo_indisponivel": corte["motivo"], "retrato": corte["retrato"],
                 "fonte": fontes.ELOTECH["rotulo"], "entidades": corte["entidades"], "valores": valores,
                 "categorias": categorias, "reconciliacao": rec.get("resumo"),
                 "conferencia_rreo": self._conferencia_saldo(somas, rec, exercicio, data_final) if corte["disponivel"] else None,
                 "avisos": avisos,
                 "proveniencia": self._proveniencia(ctx, corte["somar"], "somas sobre rp_registro + rp_derivado")}
+
+    def _texto_escopo_municipio(self):
+        esc = self._escopo_aplicado()
+        if not esc["municipio"] and not esc["copias"]:
+            return "Município (entidades do catálogo oficial do exercício)"
+        partes = ["entidades do catálogo oficial do exercício"]
+        if esc["municipio"]:
+            m = esc["municipio"]
+            partes.append(f"entidade {m['entidade']} até {m['ate_exercicio']} (ESCOPO-MUN v1)")
+        if esc["copias"]:
+            partes.append(f"sem as cópias 24xxxxx antes de {esc['copias']['primeiro_exercicio']} (COPIA-ORIGEM v1)")
+        return "Município (" + "; ".join(partes) + ")"
 
     @staticmethod
     def _conferencia_saldo(somas, rec, exercicio, data_final):

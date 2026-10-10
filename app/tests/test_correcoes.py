@@ -367,7 +367,10 @@ def test_governanca_da_revisao_corretiva(producao):
     assert atual[("RREO-COL", 1)]["uso_original"] == "estavel"    # the regra table was not edited
     # no automatic promotion
     assert not any(h["situacao"] == "operacional" for h in atual[("RREO-COL", 2)]["historico"])
-    assert {c for c, _ in atual} >= {"RREO-COL", "CANC", "CONS-PAR"} and ("CANC", 2) not in atual
+    assert {c for c, _ in atual} >= {"RREO-COL", "CANC", "CONS-PAR"}
+    # CANC v2 did not come from the corrective review: it was created on 09/10/2026 (cell-by-cell reconciliation) and
+    # entered the catalog as experimental; a promotion, if any, is a later decision
+    assert [(h["situacao"], h["decidido_em"]) for h in atual[("CANC", 2)]["historico"]][0] == ("experimental", "2026-10-09")
     assert ("CONS-PAR", 3) not in atual
 
 
@@ -446,9 +449,12 @@ def test_resumo_so_chama_de_explicada_quando_tudo_esta_explicado():
     assert explicacoes.resumo([e("explicada"), e("não determinada")]) == "parcialmente explicada"
     assert explicacoes.resumo([e("parcialmente explicada"), e("explicada")]) == "parcialmente explicada"
     assert explicacoes.resumo([e("hipótese"), e("não determinada")]) == "hipótese"
-    # 2024, entity, L: the 2401751 copy (8,410.00) is explained, the rest is not
+    # 2024, entity, L: the 2401751 copy (8,410.00), the year-end entries after the RREO and the double count of
+    # 2011/21040 - all attributed to records since 09/10/2026 (before: the copy explained, the rest not)
     achadas, situacao = explicacoes.explicar(2024, "2024-12-31", "entidade", "L", "RREO-COL v2")
-    assert {x["classe"] for x in achadas} == {"T", "C"} and situacao == "parcialmente explicada"
+    assert {x["classe"] for x in achadas} == {"T", "C", "R"} and situacao == "explicada"
+    # 2024-02-29, L: the three payments are explained, the rest of (i)/(h) is still a hypothesis
+    assert explicacoes.explicar(2024, "2024-02-29", "entidade", "L", "RREO-COL v3")[1] == "parcialmente explicada"
 
 
 def test_explicacoes_apontam_documentos_que_existem():

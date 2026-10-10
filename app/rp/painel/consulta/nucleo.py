@@ -8,7 +8,8 @@ from ... import banco, governanca, regras, vigencia
 from .. import fontes, publico
 from .comum import (CADEIA, CAMPOS_REGISTRO, _data_br, DERIVADOS, DINHEIRO, ErroDoPainel, ESQUEMA_MINIMO,
                     EsquemaAntigo, EXPR_CANCELAMENTOS, _in, instante, _instante_br, NIVEIS, NivelInvalido,
-                    RegraNaoOperacional, SemProcessamento, SITUACOES_DO_DADO, SOMAS, VERSAO)
+                    REGRA_COPIAS, REGRA_ESCOPO_MUN, RegraNaoOperacional, SemProcessamento, SITUACOES_DO_DADO, SOMAS,
+                    VERSAO)
 
 
 class Nucleo:
@@ -167,7 +168,11 @@ class Nucleo:
         saida = []
         for e in sorted(set(cat["entidades"]) | set(cat["exercicios"]) | set(observados)):
             info, ofic, obs = cat["entidades"].get(e, {}), cat["exercicios"].get(e), sorted(observados.get(e, ()))
-            item = {"entidade": e, "nome": info.get("nome"), "cnpj": info.get("cnpj"), "tipo": info.get("tipo"),
+            esc = self._escopo_aplicado()["municipio"]
+            nome = info.get("nome")
+            if nome is None and esc and e == esc["entidade"]:
+                nome = f"{esc['nome_inferido']} (nome inferido; fora do catálogo do portal)"
+            item = {"entidade": e, "nome": nome, "cnpj": info.get("cnpj"), "tipo": info.get("tipo"),
                     "no_catalogo_de_entidades": e in cat["entidades"],
                     "primeiro_exercicio_oficial": ofic["exercicios"][0] if ofic and ofic["exercicios"] else None,
                     "ultimo_exercicio_oficial": ofic["exercicios"][-1] if ofic and ofic["exercicios"] else None,
@@ -208,13 +213,26 @@ class Nucleo:
         com_snapshot = {e for (e, ex, d0, df) in vig if ex == exercicio and d0 == di and df == data_final}
         ambiguas = {e for (e, ex, d0, df) in self._cortes_ambiguos(ctx, em) if ex == exercicio and d0 == di
                     and df == data_final}
-        universo = [entidade] if entidade is not None else sorted(set(cat["entidades"]) | com_snapshot | ambiguas)
+        esc = self._escopo_aplicado()["municipio"]
+        extra, fora_do_escopo = set(), set()
+        if esc and entidade is None and cat["entidades"]:
+            # ESCOPO-MUN v1: the entity outside the portal catalog makes up the Municipality up to its last fiscal year,
+            # once the base knows it (some processed snapshot of it up to `em`); any other entity outside the catalog
+            # is listed but never summed
+            if exercicio <= esc["ate_exercicio"] and any(k[0] == esc["entidade"] for k in vig):
+                extra = {esc["entidade"]}
+            fora_do_escopo = (com_snapshot | ambiguas) - set(cat["entidades"]) - extra
+        universo = ([entidade] if entidade is not None else
+                    sorted(set(cat["entidades"]) | com_snapshot | ambiguas | extra))
         itens, somar, faltam, fora, avisos = [], [], [], [], []
         filtro_em, p_em = vigencia.filtro_disponivel(em, "coleta")
         for e in universo:
             status = self._status_no_exercicio(cat, e, exercicio)
             cid = vig.get((e, exercicio, di, data_final))
-            item = {"entidade": e, "nome": cat["entidades"].get(e, {}).get("nome"), "situacao_no_exercicio": status,
+            nome = cat["entidades"].get(e, {}).get("nome")
+            if nome is None and esc and e == esc["entidade"]:
+                nome = f"{esc['nome_inferido']} (nome inferido; fora do catálogo do portal)"
+            item = {"entidade": e, "nome": nome, "situacao_no_exercicio": status,
                     "snapshot": None, "entra_no_total": False,
                     "retratos_do_corte": self.con.execute(
                         "SELECT COUNT(*) FROM coleta WHERE tipo='rp_listagem' AND tipo_pesquisa IS NULL AND entidade=? AND "
@@ -238,7 +256,12 @@ class Nucleo:
             recusado = self._retrato_recusado(ctx, e, exercicio, di, data_final, em, cid)
             if recusado:
                 avisos.append(recusado)
-            if status == "fora do catálogo oficial":
+            if e in fora_do_escopo:
+                estado = "fora_do_escopo"
+                if item["snapshot"] and item["snapshot"]["registros"]:
+                    avisos.append(f"entidade {e} fora do catálogo do portal com registros no snapshot: não compõe o "
+                                  f"Município de {exercicio} (regra ESCOPO-MUN v1)")
+            elif status == "fora do catálogo oficial":
                 fora.append(e)
                 estado = "inexistente"
                 if item["snapshot"] and item["snapshot"]["registros"]:
@@ -307,6 +330,30 @@ class Nucleo:
         return {"como_estava_em": em, "cortes": saida, "snapshots_nao_processados": self._pendentes(ctx)}
 
     # ------------------------------------------------------------------ governance and provenance
+    def _escopo_aplicado(self):
+        """Scope rules that make up the published indicator (operational with compoe_indicador_publicado = 1):
+        {'copias': COPIA-ORIGEM v1 parameters or None, 'municipio': ESCOPO-MUN v1 parameters or None}. A rule that is
+        not operational changes nothing (the panel keeps the catalog scope)."""
+        if getattr(self, "_escopo_cache", None) is None:
+            atual = governanca.situacao_atual(self.con)
+
+            def aplicada(chave):
+                g = atual.get(chave)
+                if not (g and g["situacao"] == "operacional" and g["compoe_indicador_publicado"]):
+                    return None
+                try:
+                    return regras.parametros(self.con, *chave)
+                except regras.ParametroAusente:
+                    return None
+            self._escopo_cache = {"copias": aplicada(REGRA_COPIAS), "municipio": aplicada(REGRA_ESCOPO_MUN)}
+        return self._escopo_cache
+
+    def regras_de_escopo(self):
+        """The scope rules in force in the published indicator, for the provenance and the methodology."""
+        esc = self._escopo_aplicado()
+        return [{"codigo": c, "versao": v, "parametros": esc[k]} for k, (c, v) in
+                (("municipio", REGRA_ESCOPO_MUN), ("copias", REGRA_COPIAS)) if esc[k]]
+
     def _regras_publicaveis(self, usadas):
         atual = governanca.situacao_atual(self.con)
         saida = []
@@ -345,11 +392,19 @@ class Nucleo:
         return [self.con.execute("SELECT snapshot_uid FROM coleta WHERE id=?", (c,)).fetchone()[0] for c in coletas]
 
     # ------------------------------------------------------------------ indicators
-    def _de_coletas(self, coletas):
-        """Filter of the records of a set of collections by the primary key (resposta_id IN ...)."""
+    def _de_coletas(self, coletas, escopo=True):
+        """Filter of the records of a set of collections by the primary key (resposta_id IN ...). `escopo`: apply the
+        promoted scope rules (sums and lists); False only for the detail of ONE commitment, which shows the record even
+        when it stays out of the indicator."""
         ph = _in(len(coletas))
-        return (f"r.resposta_id IN (SELECT id FROM resposta_bruta WHERE coleta_id IN ({ph})) AND r.coleta_id IN ({ph})",
-                (*coletas, *coletas))
+        filtro = f"r.resposta_id IN (SELECT id FROM resposta_bruta WHERE coleta_id IN ({ph})) AND r.coleta_id IN ({ph})"
+        params = (*coletas, *coletas)
+        cop = self._escopo_aplicado()["copias"] if escopo else None
+        if cop:     # COPIA-ORIGEM v1: the 24xxxxx copies do not make up any indicator before their first fiscal year
+            filtro += (" AND NOT (r.entidade = ? AND r.empenho >= ? AND r.coleta_id IN (SELECT id FROM coleta WHERE "
+                       "exercicio < ?))")
+            params += (cop["entidade_copia"], cop["base_empenho_copia"], cop["primeiro_exercicio"])
+        return filtro, params
 
     def _somas(self, ctx, coletas, filtro_extra="", params_extra=()):
         """SOMAS sums over the collections' records (with an optional filter). Without a filter, checks that the
@@ -403,13 +458,13 @@ class Nucleo:
         return sorted({df for (e, ex, d0, df) in set(vig) | self._cortes_ambiguos(ctx, em) if ex == exercicio and d0 == di})
 
     # ------------------------------------------------------------------ records
-    def _registros(self, ctx, coletas, filtro_extra="", params=(), limite=None, deslocamento=0, ordem="saldo"):
+    def _registros(self, ctx, coletas, filtro_extra="", params=(), limite=None, deslocamento=0, ordem="saldo", escopo=True):
         ordens = {"saldo": "d.s1_saldo_total_c DESC, r.entidade, r.anoempenho, r.empenho, r.resposta_id, r.indice",
                   "empenho": "r.entidade, r.anoempenho, r.empenho, r.resposta_id, r.indice"}
         if ordem not in ordens:
             raise ErroDoPainel(f"ordem precisa ser uma de {sorted(ordens)}")
         restritos = list(publico.CAMPOS_RESTRITOS) if self.nivel == "interno" else []
-        filtro, p = self._de_coletas(coletas)
+        filtro, p = self._de_coletas(coletas, escopo)
         colunas = ([f"r.{c}" for c in CAMPOS_REGISTRO + DINHEIRO] + [f"d.{c}" for c in DERIVADOS] +
                    [f"({EXPR_CANCELAMENTOS})"] +
                    ["r.cnpj", "r.nome", "r.resposta_id", "r.indice", "c.snapshot_uid", "rb.ordem", "rb.sha256", "rb.url"] +

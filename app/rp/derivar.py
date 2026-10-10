@@ -1,7 +1,8 @@
 """Layer 2 - derivation: every interpretation, always with the rule version.
 
-* All rule versions in the catalog are computed SIDE BY SIDE (RREO-COL v1/v2 x CONS-PAR v1/v2). No experimental
-  rule becomes the default.
+* All rule versions in the catalog are computed SIDE BY SIDE (RREO-COL v1/v2/v3 x CONS-PAR v1/v2). No experimental
+  rule becomes the default. RREO-COL v3 is computed in the scope of ESCOPO-MUN v1 and COPIA-ORIGEM v1 (see
+  AGREGACOES_NO_ESCOPO); which rules make up the published indicator is decided by governance, not here.
 * Determinism: the result depends only on the set of snapshots and on the rule catalog - not on the time, the
   insertion order or internal ids. `hash_resultado` is computed over stable identifiers (snapshot_uid, response
   order, index), so it is the same in a database rebuilt from the store.
@@ -38,11 +39,16 @@ from .vigencia import (VERIF_RETRATO_AMBIGUO, VERIF_RETRATO_VALOR_RECUSADO, cole
 
 log = logging.getLogger("rp.derivar")
 
-VERSAO = "rp-derivador/2"     # /2 (09/10/2026): vigencia by conclusion (vigencia.VERSAO rp-vigencia/2)
+VERSAO = "rp-derivador/3"     # /3 (09/10/2026): RREO-COL v3 in the scope of ESCOPO-MUN v1 + COPIA-ORIGEM v1; an entity
+                              # outside the catalog no longer hides the Municipality view of v1/v2 (it is just not summed)
 # The pair's entities, the copies' base and the entity of the per-entity RREO do NOT live here: they are parameters
 # of rules PAR-24 v1 and CONC-RREO v1 (regras.PARAMETROS -> regra_parametro table), read on every derivation.
 COMPONENTES = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "L", "S1", "S2", "S3"]
-AGREGACOES = (("RREO-COL", 1), ("RREO-COL", 2))
+AGREGACOES = (("RREO-COL", 1), ("RREO-COL", 2), ("RREO-COL", 3))
+# Aggregations computed in the PROMOTED scope (rules ESCOPO-MUN v1 and COPIA-ORIGEM v1): their entity-1 view leaves
+# the 24xxxxx copies out before 2026 and their Municipality view adds entity 7 up to 2020 once the base knows it.
+# v1 and v2 keep the catalog scope they always had (history and comparison).
+AGREGACOES_NO_ESCOPO = (("RREO-COL", 3),)
 CONSOLIDACOES = (("CONS-PAR", 1), ("CONS-PAR", 2))
 
 # Columns the rules read from each row (continuity, pairing, view components).
@@ -281,7 +287,9 @@ def _natureza_da_repeticao(con, posicoes):
 
 EFEITO = {20: ("empenho", 1), 21: ("cancelamento", -1), 22: ("estorno_cancelamento", 1), 30: ("liquidacao", 1),
           31: ("estorno_liquidacao", -1), 40: ("pagamento", 1), 41: ("estorno_pagamento", -1), 50: ("retencao", 1),
-          51: ("estorno_retencao", -1)}
+          51: ("estorno_retencao", -1),
+          # MOV-REF v2 (09/10/2026): 33 "Em Liquidacao" is a stage record; valorALiquidar and valorAPagar do not change
+          33: ("em_liquidacao", 0)}
 
 
 def _movimentacao(con, did, nid, em=None):
@@ -296,7 +304,7 @@ def _movimentacao(con, did, nid, em=None):
 
     def interpretados():
         for rid, i, t, v, exl, nol, exp, nop in fonte:
-            ref = (exp, nop) if t in (40, 41) else (exl, nol) if t in (30, 31, 50, 51) else (None, None)  # MOV-REF v1
+            ref = (exp, nop) if t in (40, 41) else (exl, nol) if t in (30, 31, 33, 50, 51) else (None, None)  # MOV-REF v2
             efeito, sinal = EFEITO.get(t, ("desconhecido", 0))
             yield (did, rid, i, ref[0], ref[1], efeito, sinal * v)
 
@@ -385,19 +393,35 @@ def _pareamento(con, did, nid, R, vig, uid, par, ler=None):
 
 
 # --------------------------------------------------------------------------- views
+def cancelamento_v2(proc, aproc, liquidado, cancelado):
+    """Rule CANC v2: (processed, not processed) part of canceladoAProc. With aproc > 0 the RPNP still to be liquidated
+    (aproc - max(liquidado, 0)) is cancelled first and the excess is processed; a negative value (reversal of a
+    cancellation) stays in the not processed part, as in v1. Processed-only record: all processed."""
+    if aproc > 0:
+        nao = min(cancelado, max(aproc - max(liquidado, 0), 0)) if cancelado > 0 else cancelado
+        return cancelado - nao, nao
+    return (cancelado, 0) if proc > 0 else (0, 0)
+
+
 def _componentes(linhas, versao_agregacao):
     v = dict.fromkeys(COMPONENTES, 0)
     for r in linhas:
         if r["proc_c"] > 0:
             v[r["faixa_processado"]] += r["proc_c"]
             v["c"] += r["pago_proc_c"]
-        v["d"] += r["cancel_processado_c"]
+        if versao_agregacao == 3:  # cancellations split by CANC v2
+            d, j = cancelamento_v2(r["proc_c"], r["aproc_c"], r["liquidado_c"], r["cancelado_aproc_c"])
+            v["d"] += d
+            v["j"] += j
+        else:
+            v["d"] += r["cancel_processado_c"]
         if r["aproc_c"] > 0:
             v[r["faixa_nao_processado"]] += r["aproc_c"]
             v["h"] += r["liquidado_c"]
             v["i"] += r["pago_aproc_c"]
-            v["j"] += r["cancelado_aproc_c"]
-        if versao_agregacao == 2:  # payment follows the record's category
+            if versao_agregacao != 3:
+                v["j"] += r["cancelado_aproc_c"]
+        if versao_agregacao in (2, 3):  # payment follows the record's category
             if r["proc_c"] > 0 and r["aproc_c"] == 0:
                 v["c"] += r["pago_aproc_c"]
             if r["aproc_c"] > 0 and r["proc_c"] == 0:
@@ -441,35 +465,77 @@ def _entidades_do_catalogo(con, nid, em=None):
     return {e for (e,) in con.execute("SELECT entidade FROM entidade_ref WHERE normalizacao_id=? AND coleta_id=?", (nid, ult[0]))}
 
 
+def escopo(con):
+    """Parameters of the scope rules ESCOPO-MUN v1 and COPIA-ORIGEM v1 (read from regra_parametro)."""
+    return regras.parametros(con, "ESCOPO-MUN", 1), regras.parametros(con, "COPIA-ORIGEM", 1)
+
+
+def copias_fora(cop, entidade, exercicio):
+    """COPIA-ORIGEM v1: do the 24xxxxx copies of this entity stay out of the indicators in this fiscal year?"""
+    return entidade == cop["entidade_copia"] and exercicio < cop["primeiro_exercicio"]
+
+
+def entidades_do_municipio(catalogo, esc, conhecida, exercicio):
+    """Entities that make up the Municipality in the promoted scope: the portal catalog + the ESCOPO-MUN v1 entity up to
+    its last fiscal year, once the base knows it (some collection of it up to the vigencia)."""
+    extra = {esc["entidade"]} if conhecida and exercicio <= esc["ate_exercicio"] else set()
+    return set(catalogo) | extra
+
+
 def _visoes(con, did, nid, R, vig, pares, uid, em=None, ler=None):
     ler = ler or _Leitor(con, did, nid)
     entidades = _entidades_do_catalogo(con, nid, em)
+    esc, cop = escopo(con)
+    conhecida = any(e == esc["entidade"] for (e, ex, di, df) in vig)
     alvos = [(k, c) for k, c in sorted(vig.items()) if k[2] == f"{k[1]}-01-01"]  # RREO columns only with dataInicial = 01/01
-    componentes = {}
-    for _, c in alvos:   # each collection is read once; only the components stay in memory
+    componentes, copias_excluidas = {}, {}
+    for (e, ex, di, df), c in alvos:   # each collection is read once; only the components stay in memory
         if (AGREGACOES[0][1], c) not in componentes:
             linhas = ler(c)
-            for _, versao in AGREGACOES:
-                componentes[(versao, c)] = _componentes(linhas, versao)
+            no_escopo = linhas
+            if copias_fora(cop, e, ex):
+                no_escopo = [r for r in linhas if r["empenho"] < cop["base_empenho_copia"]]
+                if len(no_escopo) < len(linhas):
+                    copias_excluidas[c] = len(linhas) - len(no_escopo)
+            for codigo, versao in AGREGACOES:
+                componentes[(versao, c)] = _componentes(no_escopo if (codigo, versao) in AGREGACOES_NO_ESCOPO
+                                                        else linhas, versao)
+    regra_cop = R[("COPIA-ORIGEM", 1)]
+    for (e, ex, di, df), c in alvos:
+        if c in copias_excluidas:
+            _verif(con, did, regra_cop, "cópias 24xxxxx fora do indicador (COPIA-ORIGEM v1)",
+                   {"entidade": e, "exercicio": ex, "data_final": df, "snapshots": [uid[c]]}, copias_excluidas[c], 0)
     for (codigo, versao) in AGREGACOES:
         ragg = R[(codigo, versao)]
+        no_escopo = (codigo, versao) in AGREGACOES_NO_ESCOPO
         por_corte = defaultdict(dict)
         for (e, ex, di, df), c in alvos:
             v = componentes[(versao, c)]
             _gravar_visao(con, did, "entidade", ragg, None, e, ex, df, [uid[c]], v)
             por_corte[(ex, df)][e] = (c, v)
         for (ex, df), ents in sorted(por_corte.items()):
-            if not entidades or set(ents) != entidades:
-                continue  # Municipality view only with ALL entities at the same cut-off
+            if not entidades:
+                continue
+            # Municipality view only with ALL its entities at the same cut-off. An entity outside them (e.g. the
+            # ESCOPO-MUN entity outside its years, or in v1/v2) is not summed and no longer hides the view
+            municipio = entidades_do_municipio(entidades, esc, conhecida, ex) if no_escopo else entidades
+            if no_escopo and versao == AGREGACOES_NO_ESCOPO[0][1] and conhecida and ex <= esc["ate_exercicio"]:
+                _verif(con, did, R[("ESCOPO-MUN", 1)], "entidade fora do catálogo no Município (ESCOPO-MUN v1)",
+                       {"entidade": esc["entidade"], "exercicio": ex, "data_final": df},
+                       1, int(esc["entidade"] not in ents))
+            if not municipio <= set(ents):
+                continue
             pub = dict.fromkeys(COMPONENTES, 0)
-            for _, v in ents.values():
+            for e in sorted(municipio):
                 for comp in COMPONENTES:
-                    pub[comp] += v[comp]
-            snaps = [uid[c] for c, _ in ents.values()]
+                    pub[comp] += ents[e][1][comp]
+            snaps = [uid[ents[e][0]] for e in sorted(municipio)]
             _gravar_visao(con, did, "publicado", ragg, None, None, ex, df, snaps, pub)
             for cons in CONSOLIDACOES:
                 ana = dict(pub)
                 for p in pares.get((ex, f"{ex}-01-01", df), []):
+                    if no_escopo and copias_fora(cop, p["a"]["entidade"], ex):
+                        continue  # side A is already out of this view: nothing to consolidate
                     lado = _lado_excluido(cons[1], p)
                     if lado is None:
                         continue
@@ -526,8 +592,27 @@ def _conciliacao(con, did, nid, R, uid, conc, em=None):
 
 
 # --------------------------------------------------------------------------- stable hash
-def resultado_estavel(con, did):
-    """The whole derivation result with internal ids replaced by stable identifiers."""
+# Rules created on 09/10/2026 (promotion request). `resultado_estavel(..., sem=REGRAS_DE_20261009)` drops their rows: on a
+# base where nothing else changed, what is left must be byte for byte the result homologated before them.
+REGRAS_DE_20261009 = frozenset({"RREO-COL v3", "CANC v2", "ESCOPO-MUN v1", "COPIA-ORIGEM v1", "MOV-REF v2"})
+
+
+def resultado_estavel(con, did, sem=None):
+    """The whole derivation result with internal ids replaced by stable identifiers. `sem` = rule labels ("RREO-COL
+    v3") whose rows are left out (views, reconciliation and checks of that rule, including the reconciliation checks of
+    that aggregation version) - used to prove that a new rule only ADDS rows."""
+    r = _resultado_estavel(con, did)
+    if not sem:
+        return r
+    versoes = {int(x.split(" v")[1]) for x in sem if x.startswith("RREO-COL v")}
+    r["visao_valor"] = [x for x in r["visao_valor"] if x[1] not in sem and x[2] not in sem]
+    r["conciliacao_rreo"] = [x for x in r["conciliacao_rreo"] if x[1] not in sem]
+    r["anomalia"] = [x for x in r["anomalia"] if x[0] not in sem]
+    r["verificacao"] = [x for x in r["verificacao"] if x[0] not in sem and json.loads(x[2]).get("rreo_col") not in versoes]
+    return r
+
+
+def _resultado_estavel(con, did):
     uid = dict(con.execute("SELECT id, snapshot_uid FROM coleta"))
     resp = {i: (uid[c], o) for i, c, o in con.execute("SELECT id, coleta_id, ordem FROM resposta_bruta")}
     rg = {i: f"{c} v{v}" for i, c, v in con.execute("SELECT id, codigo, versao FROM regra")}
@@ -559,10 +644,11 @@ def resultado_estavel(con, did):
     }
 
 
-def hash_resultado(con, did):
-    """Hash of the complete RUN: values, relations and diagnostics (anomaly, check). It is the homologated hash."""
+def hash_resultado(con, did, sem=None):
+    """Hash of the complete RUN: values, relations and diagnostics (anomaly, check). It is the homologated hash.
+    `sem`: see resultado_estavel (never recorded; only for the proof that new rules just add rows)."""
     h = hashlib.sha256()
-    for tabela, linhas in resultado_estavel(con, did).items():
+    for tabela, linhas in resultado_estavel(con, did, sem).items():
         h.update(tabela.encode())
         for linha in linhas:
             h.update(json.dumps(linha, ensure_ascii=False, default=str).encode())

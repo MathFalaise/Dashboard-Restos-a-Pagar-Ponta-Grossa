@@ -49,7 +49,7 @@ class Variacao:
         regs = self._regras_publicaveis(m["regras"])
         saida = {"consulta": {"exercicio": exercicio, "anterior": anterior, "posterior": posterior, "entidade": entidade,
                               "metrica": metrica, "como_estava_em": em},
-                 "escopo": f"entidade {entidade}" if entidade is not None else "Município (entidades do catálogo oficial do exercício)",
+                 "escopo": f"entidade {entidade}" if entidade is not None else self._texto_escopo_municipio(),
                  "metrica": {"id": metrica, "rotulo": m["rotulo"], "formula": m["formula"],
                              "natureza_do_operando": m["natureza_do_operando"], "regras": regs},
                  "fonte": fontes.ELOTECH["rotulo"], "natureza": "diferenca", "sinal": "posterior − anterior",
