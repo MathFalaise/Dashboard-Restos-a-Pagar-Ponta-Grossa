@@ -195,8 +195,10 @@ def test_visoes_publicado_e_analiticas(producao):
 
 
 def test_regras_de_consolidacao_sao_experimentais(producao):
-    for uso, status in producao["con"].execute("SELECT uso, status_evidencia FROM regra WHERE codigo='CONS-PAR'"):
-        assert (uso, status) == ("experimental", "HIPÓTESE")
+    # Stage 03's versions (v1, v2). CONS-PAR v4 (10/10/2026) entered the catalog as experimental with strong evidence
+    # (731 of 731 pairs matched and equal to the Siconfi declarations); before it, every CONS-PAR row was this pair
+    for v, uso, status in producao["con"].execute("SELECT versao, uso, status_evidencia FROM regra WHERE codigo='CONS-PAR'"):
+        assert (uso, status) == (("experimental", "FORTE EVIDÊNCIA") if v == 4 else ("experimental", "HIPÓTESE"))
 
 
 # ---------------------------------------------------------------- RREO

@@ -86,11 +86,18 @@ class Retratos:
                              proveniencia=self._prov_curta(ctx, [item["snapshot"]["snapshot_uid"]],
                                                            "somas dos campos da API da entidade", regs_s1))
             linhas.append(linha)
+        nota = ("Entidade fora do catálogo oficial do exercício não existia naquele ano: aparece sem valor, "
+                "nunca como zero. Entidade existente sem RP aparece com zero.")
+        n, insc = self._consolidados(ctx, corte["somar"]) if corte["disponivel"] else (0, 0)
+        if n:
+            nota += (f" Cada linha mostra os valores da própria entidade; no total do Município, {n} registro(s) "
+                     "originais de pares cópia ↔ original não são somados, porque o RP é contado uma vez, na cópia "
+                     "(regra CONS-PAR v4). Por isso a soma das linhas pode passar do total do Município.")
         return {"exercicio": exercicio, "data_final": data_final, "como_estava_em": em, "retrato": corte["retrato"],
                 "municipio_disponivel": corte["disponivel"], "motivo_indisponivel": corte["motivo"],
                 "fonte": fontes.ELOTECH["rotulo"], "linhas": linhas,
-                "nota": ("Entidade fora do catálogo oficial do exercício não existia naquele ano: aparece sem valor, "
-                         "nunca como zero. Entidade existente sem RP aparece com zero.")}
+                "consolidacao": {"regra": "CONS-PAR v4", "registros": n, "inscricao_c": insc} if n else None,
+                "nota": nota}
 
     def comparar_retratos(self, snapshot_a, snapshot_b):
         """Comparison of two snapshots of the same cut-off (read-only comparator)."""

@@ -27,8 +27,8 @@ def evolucao(p, q):
     if r["pares_espelhados_no_exercicio"]:
         corpo.append(f'<p class="aviso" id="aviso-pares">Este escopo envolve as entidades 1 e 15, que têm '
                      f'{fm.inteiro(r["pares_espelhados_no_exercicio"])} registros espelhados (cópias 24xxxxx) neste '
-                     "exercício. Os dois lados continuam nos valores, como a API os devolve; a natureza das cópias não "
-                     f"está determinada. {fm.link('/pares', 'Ver os pares', exercicio=sel['exercicio'])}</p>")
+                     f"exercício. {esc(p.tratamento_dos_pares())} "
+                     f"{fm.link('/pares', 'Ver os pares', exercicio=sel['exercicio'])}</p>")
     serie = r["serie"]
     if any(x["tem_valor"] for x in serie):
         pontos = [{"rotulo": fm.data_br(x["data_final"])[:5],

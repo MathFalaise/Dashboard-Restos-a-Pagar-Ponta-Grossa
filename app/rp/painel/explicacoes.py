@@ -5,8 +5,9 @@ API value; it only qualifies the difference shown in the reconciliation area. A 
 up with the situation "nao determinada".
 
 EXPLICACOES: API x RREO differences (conciliacao_rreo table). Fields: exercicios, datas_finais (None = all of the
-year), escopo (None = entity and consolidated), colunas (None = all), regra ("RREO-COL v1"/"RREO-COL v2" or
-None = any), classe, situacao, status_evidencia, texto, fonte.
+year), escopo (None = entity and consolidated), colunas (None = all), regra ("RREO-COL v1"/"RREO-COL v2"; "S1 v1" =
+only the comparison of the indicator's S1 balance with the RREO's L; None = any), classe, situacao, status_evidencia,
+texto, fonte; optional `requer` = rule label that must be in the published indicator for the entry to apply.
 COERENCIA: differences between two publications (L of December's RREO of A x (a)+(f) of the RREOs of A+1).
 
 Classes (docs/stages/04-pipeline/REPORT_04_4.md section 9): T = backdated entry made after the RREO was issued;
@@ -125,6 +126,13 @@ EXPLICACOES = [
          texto=("(i) e (h) do 1º bimestre de 2024: pagamentos e liquidações que a API data no bimestre e o RREO de março "
                 "não tem; o RREO de maio já os inclui (registrados depois da emissão). Registros não identificados."),
          fonte=f"{CONC} seção 5"),
+    dict(exercicios=[2026], datas_finais=None, escopo="consolidado", colunas=["L"], regra="S1 v1", classe="C",
+         requer="CONS-PAR v4", situacao="explicada", status_evidencia="CONFIRMADO",
+         texto=("Com a regra CONS-PAR v4 no indicador (desde 10/10/2026), o saldo conta uma vez cada par cópia ↔ "
+                "original: em 2026, os 731 RP da entidade 15 (R$ 31.813.905,47 de inscrição) também estão como cópias "
+                "na entidade 1, com o mesmo credor, data e valor, e só as cópias são executadas. O RREO do portal soma "
+                "os dois lados; a declaração ao Siconfi conta uma vez, como o indicador."),
+         fonte="docs/audits/rreo/RP_2024_2026.md seção 8 (D1)"),
     dict(exercicios=[2026], datas_finais=["2026-04-30", "2026-06-30", "2026-08-31"], escopo=None, colunas=["j"],
          regra=None, classe="T", situacao="explicada", status_evidencia="CONFIRMADO",
          texto=("(j) +1.270.679,25 / +1.251.860,27: cancelamentos com data retroativa lançados entre os retratos de "
@@ -234,10 +242,12 @@ def resumo(achadas):
     return "hipótese" if "hipótese" in s else "não determinada"
 
 
-def explicar(exercicio, data_final, escopo, coluna, regra):
-    """Entries applicable to an API x RREO difference and the summarized situation (see `resumo`)."""
+def explicar(exercicio, data_final, escopo, coluna, regra, aplicadas=frozenset()):
+    """Entries applicable to an API x RREO difference and the summarized situation (see `resumo`). An entry with
+    `requer` (a rule label) only applies while that rule is in the published indicator (`aplicadas`)."""
     achadas = [e for e in EXPLICACOES
                if exercicio in e["exercicios"]
+               and (e.get("requer") is None or e["requer"] in aplicadas)
                and (e["datas_finais"] is None or data_final in e["datas_finais"])
                and (e["escopo"] is None or e["escopo"] == escopo)
                and (e["colunas"] is None or coluna in e["colunas"])

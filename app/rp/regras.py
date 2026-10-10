@@ -16,6 +16,7 @@ from . import governanca
 E2 = "etapa02/RELATORIO_ETAPA02.md"
 E3 = "etapa03/RELATORIO_ETAPA03.md"
 CONC = "docs/audits/rreo/CONCILIACAO_20261009.md"
+RP26 = "docs/audits/rreo/RP_2024_2026.md"
 
 # codigo, versao, tipo, uso, status_evidencia, definicao, fonte
 REGRAS = [
@@ -81,6 +82,16 @@ REGRAS = [
      "Cópias 24xxxxx da entidade 1 (lado A do PAR-24) não compõem indicador nos exercícios anteriores a 2026: foram "
      "criadas em 2026 com efeito retroativo. Ficam no bruto, na normalização, no pareamento e nas anomalias.",
      f"{CONC} §3"),
+    # ---- 10/10/2026: pairs counted once in the Municipality (docs/audits/rreo/RP_2024_2026.md section 8, D1)
+    # v3 is the number the corrective review of 30/09/2026 reserved for a candidate that was never created ('saldo
+    # final de B' at the year's closing; CORRECTIONS_STAGES_01_TO_04_4.md section 4): this rule is v4, not that one.
+    ("CONS-PAR", 4, "consolidacao", "experimental", "FORTE EVIDÊNCIA",
+     "Município, com a cópia A dentro do indicador (a partir de 2026, pela COPIA-ORIGEM v1): par do PAR-24 v1 no mesmo "
+     "corte com a mesma inscrição (proc e aproc iguais) e sem nenhuma execução no original B (pago, cancelado e "
+     "liquidado zero) → o registro B não é somado no Município; o RP é contado uma vez, na cópia A, onde é executado. "
+     "Como B não tem execução, sair o registro é o mesmo que sair a inscrição (CONS-PAR v1). Par com execução em B não "
+     "é consolidado (os dois lados ficam e a verificação registra). A visão de cada entidade não muda.",
+     f"{RP26} §8 (D1)"),
 ]
 
 ANOMALIAS = [

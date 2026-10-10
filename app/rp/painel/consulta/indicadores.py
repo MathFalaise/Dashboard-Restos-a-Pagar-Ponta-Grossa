@@ -3,6 +3,11 @@ from .. import explicacoes, fontes
 from .comum import instante, REGRAS_DO_INDICADOR, SITUACOES_DO_DADO, SOMAS
 
 
+def _reais(centavos):
+    """R$ 1.234,56 (Brazilian format) for a notice text."""
+    return "R$ " + f"{centavos / 100:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+
 class Indicadores:
     """Indicators of a cut-off (the main screen)."""
 
@@ -36,6 +41,13 @@ class Indicadores:
                                    "proveniencia": self._prov_curta(ctx, uids, "agrupamento por categoria (CAT v1)",
                                                                     regs_cat)})
         avisos = [fontes.METODOLOGIA["importante"]] + corte["avisos"]
+        consolidados = self._consolidados(ctx, corte["somar"]) if corte["disponivel"] else (0, 0)
+        if consolidados[0]:
+            par = self._escopo_aplicado()["pares"]
+            avisos.append(f"{consolidados[0]} registro(s) da entidade {par['entidade_original']} "
+                          f"({_reais(consolidados[1])} de inscrição) não são somados no Município: são originais de pares "
+                          f"cujas cópias estão na entidade {par['entidade_copia']}, com a mesma inscrição e onde o RP é "
+                          "executado; cada par conta uma vez (regra CONS-PAR v4). Na visão da entidade eles continuam.")
         if self._pendentes(ctx):
             avisos.append("Há snapshots de listagem ainda não processados; rode 'python -m rp processar'.")
         return {"consulta": {"exercicio": exercicio, "data_final": data_final, "entidade": entidade, "como_estava_em": em},
@@ -44,13 +56,15 @@ class Indicadores:
                 "disponivel": corte["disponivel"], "motivo_indisponivel": corte["motivo"], "retrato": corte["retrato"],
                 "fonte": fontes.ELOTECH["rotulo"], "entidades": corte["entidades"], "valores": valores,
                 "categorias": categorias, "reconciliacao": rec.get("resumo"),
-                "conferencia_rreo": self._conferencia_saldo(somas, rec, exercicio, data_final) if corte["disponivel"] else None,
+                "conferencia_rreo": (self._conferencia_saldo(somas, rec, exercicio, data_final,
+                                                             {f"{r['codigo']} v{r['versao']}" for r in self.regras_de_escopo()})
+                                     if corte["disponivel"] else None),
                 "avisos": avisos,
                 "proveniencia": self._proveniencia(ctx, corte["somar"], "somas sobre rp_registro + rp_derivado")}
 
     def _texto_escopo_municipio(self):
         esc = self._escopo_aplicado()
-        if not esc["municipio"] and not esc["copias"]:
+        if not esc["municipio"] and not esc["copias"] and not esc["pares"]:
             return "Município (entidades do catálogo oficial do exercício)"
         partes = ["entidades do catálogo oficial do exercício"]
         if esc["municipio"]:
@@ -58,19 +72,24 @@ class Indicadores:
             partes.append(f"entidade {m['entidade']} até {m['ate_exercicio']} (ESCOPO-MUN v1)")
         if esc["copias"]:
             partes.append(f"sem as cópias 24xxxxx antes de {esc['copias']['primeiro_exercicio']} (COPIA-ORIGEM v1)")
+        if esc["pares"]:
+            partes.append(f"pares {esc['pares']['entidade_copia']}↔{esc['pares']['entidade_original']} contados uma vez "
+                          "(CONS-PAR v4)")
         return "Município (" + "; ".join(partes) + ")"
 
     @staticmethod
-    def _conferencia_saldo(somas, rec, exercicio, data_final):
+    def _conferencia_saldo(somas, rec, exercicio, data_final, aplicadas=frozenset()):
         """API S1 balance (indicator, operational rule) next to the RREO's L column of the same cut-off: a comparison,
         never a replacement. It does not use RREO-COL: the balance is the S1 formula's and L is the one printed in
-        the PDF."""
+        the PDF. `aplicadas`: scope rules in the published indicator (an explanation that depends on one of them
+        only applies while it is applied)."""
         linhas = [x for x in rec.get("linhas", []) if x["coluna"] == "L"]
         if not linhas:
             return None
         x = linhas[0]              # the RREO's L is the same in the RREO-COL v1 and v2 rows (same PDF)
         dif = somas["saldo_total"] - x["rreo_c"]
-        achadas, situacao = explicacoes.explicar(exercicio, data_final, x["escopo"], "L", None) if dif else ([], "sem diferença")
+        achadas, situacao = explicacoes.explicar(exercicio, data_final, x["escopo"], "L", "S1 v1",
+                                                                   aplicadas) if dif else ([], "sem diferença")
         return {"escopo": x["escopo"], "periodo": x["periodo"],
                 "api": {"rotulo": "Saldo de RP no corte (S1)", "valor_c": somas["saldo_total"], "natureza": "derivado",
                         "fonte": fontes.ELOTECH["rotulo"], "regra": "S1 v1"},

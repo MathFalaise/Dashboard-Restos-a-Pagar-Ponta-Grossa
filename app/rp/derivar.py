@@ -1,6 +1,6 @@
 """Layer 2 - derivation: every interpretation, always with the rule version.
 
-* All rule versions in the catalog are computed SIDE BY SIDE (RREO-COL v1/v2/v3 x CONS-PAR v1/v2). No experimental
+* All rule versions in the catalog are computed SIDE BY SIDE (RREO-COL v1/v2/v3 x CONS-PAR v1/v2/v4). No experimental
   rule becomes the default. RREO-COL v3 is computed in the scope of ESCOPO-MUN v1 and COPIA-ORIGEM v1 (see
   AGREGACOES_NO_ESCOPO); which rules make up the published indicator is decided by governance, not here.
 * Determinism: the result depends only on the set of snapshots and on the rule catalog - not on the time, the
@@ -39,8 +39,9 @@ from .vigencia import (VERIF_RETRATO_AMBIGUO, VERIF_RETRATO_VALOR_RECUSADO, cole
 
 log = logging.getLogger("rp.derivar")
 
-VERSAO = "rp-derivador/3"     # /3 (09/10/2026): RREO-COL v3 in the scope of ESCOPO-MUN v1 + COPIA-ORIGEM v1; an entity
+VERSAO = "rp-derivador/4"     # /3 (09/10/2026): RREO-COL v3 in the scope of ESCOPO-MUN v1 + COPIA-ORIGEM v1; an entity
                               # outside the catalog no longer hides the Municipality view of v1/v2 (it is just not summed)
+                              # /4 (10/10/2026): CONS-PAR v4 side by side (analytical view + its check); nothing else changes
 # The pair's entities, the copies' base and the entity of the per-entity RREO do NOT live here: they are parameters
 # of rules PAR-24 v1 and CONC-RREO v1 (regras.PARAMETROS -> regra_parametro table), read on every derivation.
 COMPONENTES = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "L", "S1", "S2", "S3"]
@@ -49,7 +50,8 @@ AGREGACOES = (("RREO-COL", 1), ("RREO-COL", 2), ("RREO-COL", 3))
 # the 24xxxxx copies out before 2026 and their Municipality view adds entity 7 up to 2020 once the base knows it.
 # v1 and v2 keep the catalog scope they always had (history and comparison).
 AGREGACOES_NO_ESCOPO = (("RREO-COL", 3),)
-CONSOLIDACOES = (("CONS-PAR", 1), ("CONS-PAR", 2))
+CONSOLIDACOES = (("CONS-PAR", 1), ("CONS-PAR", 2), ("CONS-PAR", 4))
+VERIF_CONS_PAR_V4 = "pares 1↔15 contados uma vez no Município (CONS-PAR v4)"
 
 # Columns the rules read from each row (continuity, pairing, view components).
 CAMPOS_REGISTRO = ["resposta_id", "indice", "coleta_id", "entidade", "anoempenho", "empenho", "data_emissao", "cnpj",
@@ -452,6 +454,8 @@ def _lado_excluido(versao, p):
         return None
     if versao == 1:
         return "b" if p["mesma"] else None
+    if versao == 4:   # v1 restricted to an original with no execution: removing B's inscription = removing B's record
+        return "b" if p["mesma"] and p["lado"] in ("A", "nenhum") else None
     return "a" if p["relacao"] in ("igual", "a_e_saldo_final_de_b") else None
 
 
@@ -533,11 +537,14 @@ def _visoes(con, did, nid, R, vig, pares, uid, em=None, ler=None):
             _gravar_visao(con, did, "publicado", ragg, None, None, ex, df, snaps, pub)
             for cons in CONSOLIDACOES:
                 ana = dict(pub)
+                no_par, nao_consolidados = 0, 0
                 for p in pares.get((ex, f"{ex}-01-01", df), []):
                     if no_escopo and copias_fora(cop, p["a"]["entidade"], ex):
                         continue  # side A is already out of this view: nothing to consolidate
+                    no_par += 1
                     lado = _lado_excluido(cons[1], p)
                     if lado is None:
+                        nao_consolidados += 1
                         continue
                     x = p[lado]  # only the INSCRIPTION of this side leaves; the flows of both sides stay
                     if x["proc_c"] > 0:
@@ -548,6 +555,10 @@ def _visoes(con, did, nid, R, vig, pares, uid, em=None, ler=None):
                     ana["S2"] -= x["aproc_c"]
                     ana["S3"] -= x["proc_c"]
                 _gravar_visao(con, did, "analitico", ragg, R[cons], None, ex, df, snaps, _fechar(ana))
+                if cons == ("CONS-PAR", 4) and no_escopo and no_par:
+                    # pairs inside the published scope; a failure = a pair still counted twice (execution in B)
+                    _verif(con, did, R[cons], VERIF_CONS_PAR_V4,
+                           {"exercicio": ex, "data_final": df, "snapshots": snaps}, no_par, nao_consolidados)
 
 
 # --------------------------------------------------------------------------- reconciliation
@@ -595,6 +606,8 @@ def _conciliacao(con, did, nid, R, uid, conc, em=None):
 # Rules created on 09/10/2026 (promotion request). `resultado_estavel(..., sem=REGRAS_DE_20261009)` drops their rows: on a
 # base where nothing else changed, what is left must be byte for byte the result homologated before them.
 REGRAS_DE_20261009 = frozenset({"RREO-COL v3", "CANC v2", "ESCOPO-MUN v1", "COPIA-ORIGEM v1", "MOV-REF v2"})
+# Rule created on 10/10/2026 (pairs counted once in the Municipality): same proof, one step later.
+REGRAS_DE_20261010 = frozenset({"CONS-PAR v4"})
 
 
 def resultado_estavel(con, did, sem=None):

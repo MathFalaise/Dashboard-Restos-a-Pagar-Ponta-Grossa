@@ -55,8 +55,8 @@ def variacao(p, q):
     if any(r["pares_espelhados"].values()):
         corpo.append(f'<p class="aviso" id="aviso-pares">Este escopo envolve as entidades 1 e 15, com registros '
                      f'espelhados (cópias 24xxxxx): {fm.inteiro(r["pares_espelhados"]["anterior"])} no corte anterior e '
-                     f'{fm.inteiro(r["pares_espelhados"]["posterior"])} no posterior. Os dois lados continuam nos valores, '
-                     "como a API os devolve; cópia incluída depois aparece como “presente só no corte posterior”.</p>")
+                     f'{fm.inteiro(r["pares_espelhados"]["posterior"])} no posterior. {esc(p.tratamento_dos_pares())} '
+                     "Cópia incluída depois aparece como “presente só no corte posterior”.</p>")
     base = dict(exercicio=sel["exercicio"], anterior=anterior, data_final=posterior, entidade=sel["entidade"],
                 em=sel["em"], metrica=metrica)
     corpo += [f'<p class="nota">{esc(r["nota"])}</p>', _total_da_variacao(r), _resumo_da_variacao(r, sel),

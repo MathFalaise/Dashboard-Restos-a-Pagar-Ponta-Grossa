@@ -32,8 +32,8 @@ def composicao(p, q):
     if r["pares_espelhados_no_corte"]:
         corpo.append(f'<p class="aviso" id="aviso-pares">Este escopo envolve as entidades 1 e 15, com '
                      f'{fm.inteiro(r["pares_espelhados_no_corte"])} registros espelhados (cópias 24xxxxx) neste corte. '
-                     "Os dois lados continuam em todos os grupos, como a API os devolve; a natureza das cópias não está "
-                     f"determinada. {fm.link('/pares', 'Ver os pares', exercicio=sel['exercicio'], data_final=sel['data_final'])}</p>")
+                     f"{esc(p.tratamento_dos_pares())} "
+                     f"{fm.link('/pares', 'Ver os pares', exercicio=sel['exercicio'], data_final=sel['data_final'])}</p>")
     navegacao = " · ".join(
         f"<strong>{esc(ROTULO_COMPOSICAO[d])}</strong>" if d == dim else
         fm.link("/composicao", ROTULO_COMPOSICAO[d], exercicio=sel["exercicio"], data_final=sel["data_final"],

@@ -38,7 +38,10 @@ class Documentacao:
         """Methodology texts and the 'as it was on' dates with their own derivation (historical reconciliation)."""
         datas = [v for (v,) in self.con.execute("SELECT DISTINCT vigencia_em FROM derivacao_execucao WHERE vigencia_em "
                                                 "IS NOT NULL ORDER BY vigencia_em")]
-        return {**fontes.METODOLOGIA, "datas_como_estava_em_com_derivacao": datas,
+        pares = ("Os empenhos 24xxxxx da Prefeitura espelham registros da Fundação Municipal de Saúde. "
+                 + self.tratamento_dos_pares())
+        limitacoes = [pares if x == fontes.LIMITACAO_PARES else x for x in fontes.METODOLOGIA["limitacoes"]]
+        return {**fontes.METODOLOGIA, "limitacoes": limitacoes, "datas_como_estava_em_com_derivacao": datas,
                 "situacoes_do_dado": {**SITUACOES_DO_DADO, **SITUACOES_DO_PONTO}}
 
     @staticmethod

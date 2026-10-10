@@ -414,6 +414,7 @@ São agregadas. Colunas: `derivacao_id`, `regra_id`, `descricao`, `escopo_json`,
 | CONC-RREO v1 | `RREO sem valores extraídos (ver problemas da normalização)` | PDFs do RREO que o extrator não leu | "PDFs não lidos: n" |
 | COPIA-ORIGEM v1 | `cópias 24xxxxx fora do indicador (COPIA-ORIGEM v1)` | por retrato da entidade 1 anterior a 2026: "verificados" = cópias 24xxxxx deixadas fora da visão da RREO-COL v3; "falhas" = sempre 0 (registro informativo; as cópias continuam no bruto, na normalização e no pareamento). Desde 09/10/2026 | "informativo: n" |
 | ESCOPO-MUN v1 | `entidade fora do catálogo no Município (ESCOPO-MUN v1)` | por corte até 2020, numa base que já conhece a entidade 7: "verificados" = 1; "falhas" = 1 se a entidade 7 não tem retrato no corte (Município da RREO-COL v3 indisponível, nunca zero). Desde 09/10/2026 | 0 = "sem falha"; > 0 = "com falhas" |
+| CONS-PAR v4 | `pares 1↔15 contados uma vez no Município (CONS-PAR v4)` | por corte com pares cópia ↔ original e a cópia dentro do indicador (a partir de 2026), na visão da RREO-COL v3: "verificados" = pares; "falhas" = pares que continuam contados duas vezes no Município (o original tem execução ou a inscrição difere). Desde 10/10/2026 | 0 = "sem falha"; > 0 = "com falhas" |
 | (qualquer outra) | — | — | "significado não catalogado", com os números brutos, sem interpretação |
 
 - **Validação:** soma de verificados e falhas por descrição igual à tabela; snapshots de `escopo_json` existem.

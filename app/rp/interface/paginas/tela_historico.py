@@ -36,8 +36,7 @@ def historico(p, q):
     if pares:
         texto = ", ".join(f"{fm.inteiro(n)} em {ex}" for ex, n in sorted(pares.items()))
         corpo.append(f'<p class="aviso" id="aviso-pares">Este escopo envolve as entidades 1 e 15, com registros '
-                     f"espelhados (cópias 24xxxxx): {esc(texto)}. Os dois lados continuam nos valores, como a API os "
-                     "devolve; a natureza das cópias não está determinada.</p>")
+                     f"espelhados (cópias 24xxxxx): {esc(texto)}. {esc(p.tratamento_dos_pares())}</p>")
     if any(x["tem_valor"] for x in pontos):
         barras = [{"rotulo": str(x["exercicio"]),
                    "valor_c": x["valores"]["saldo_total"]["valor_c"] if x["tem_valor"] else None,

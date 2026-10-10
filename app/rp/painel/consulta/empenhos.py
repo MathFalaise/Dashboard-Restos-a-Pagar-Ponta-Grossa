@@ -130,6 +130,20 @@ class Empenhos:
                              "(regra COPIA-ORIGEM v1); o registro continua no bruto e no pareamento"
                              if cop and entidade == cop["entidade_copia"] and empenho >= cop["base_empenho_copia"]
                              and exercicio < cop["primeiro_exercicio"] else None)
+        par = self._escopo_aplicado()["pares"]
+        if fora_do_indicador is None and par and entidade == par["entidade_original"]:
+            copia = self._vigentes(ctx, em).get((par["entidade_copia"], exercicio, f"{exercicio}-01-01", data_final))
+            if copia is not None:
+                cond, p = self._original_consolidado([copia])
+                ph = ",".join("?" * len(corte["somar"]))
+                if self.con.execute(f"SELECT 1 FROM rp_registro r WHERE r.normalizacao_id=? AND r.coleta_id IN ({ph}) "
+                                    f"AND r.anoempenho=? AND r.empenho=? AND {cond}",
+                                    (ctx["normalizacao"]["id"], *corte["somar"], anoempenho, empenho, *p)).fetchone():
+                    fora_do_indicador = (
+                        f"original de um par: no Município o RP é contado uma vez, na cópia {anoempenho}/"
+                        f"{empenho + par['base_empenho_copia']} da entidade {par['entidade_copia']}, que tem a mesma "
+                        "inscrição e é onde ele é executado (regra CONS-PAR v4); na visão da entidade "
+                        f"{par['entidade_original']} este registro continua")
         chave = {"entidade": entidade, "anoempenho": anoempenho, "empenho": empenho}
         if not ocorrencias:
             return {"encontrado": False, "chave": chave, "motivo_indisponivel": "empenho ausente deste corte",
@@ -233,9 +247,8 @@ class Empenhos:
                 "resumo": resumo, "pares": pares,
                 "proveniencia": {**self._proveniencia(ctx, coletas, "tabela espelhamento_par da derivacao"),
                                  "derivacao_usada": did},
-                "nota": ("Os dois lados de cada par continuam separados no bruto, na normalização e nos indicadores "
-                         "(a API devolve os dois). A natureza das cópias (duplicidade ou transferência) não está "
-                         "determinada; a consolidação só existe como visão analítica experimental (CONS-PAR).")}
+                "nota": ("Os dois lados de cada par continuam separados no bruto e na normalização (a API devolve os "
+                         "dois). Nos indicadores: " + self.tratamento_dos_pares())}
 
     def fornecedores(self, exercicio, data_final, entidade=None, em=None, limite=100):
         """Totals per creditor. At the public level, only per creditor type (without identification)."""

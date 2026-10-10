@@ -21,6 +21,10 @@ HASH_EM_2909 = "b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68
 # the reference: WITHOUT those rows the result must be exactly the homologated one (the promotion only adds rows).
 HASH_ATUAL_20261009 = "adc55b1913d0b553a2644f0c783e388074cbd1da1eb2e90902b6e07fc29952f2"
 HASH_EM_2909_20261009 = "96777ec6a17da54b09812422695b14a9bb0dc89b4d3563a3712f9964ccc699a4"
+# Promotion of 10/10/2026 (CONS-PAR v4; docs/audits/rreo/RP_2024_2026.md): one step later, same proof. Without the
+# CONS-PAR v4 rows the result is exactly the one of 09/10 (the hashes above); the complete result is recorded here.
+HASH_ATUAL_20261010 = "15e9199534d862c030d13ce7b3036df1d6926dc8de31c3506f9bf7583c27f530"
+HASH_EM_2909_20261010 = "4002ccc2634021abf2e3ace910b8d18dc3311f572405912ffe389728277ea791"
 
 
 def test_armazem_real_intacto_e_integro(real):
@@ -39,11 +43,14 @@ def test_armazem_real_intacto_e_integro(real):
 
 def test_hashes_de_resultado_iguais_aos_da_04_4(real):
     con = real["con"]
-    sem = derivar.REGRAS_DE_20261009
+    sem = derivar.REGRAS_DE_20261009 | derivar.REGRAS_DE_20261010
     assert derivar.hash_resultado(con, real["did"], sem) == HASH_ATUAL               # homologated part: unchanged
     assert derivar.hash_resultado(con, real["did_2909"], sem) == HASH_EM_2909
+    sem = derivar.REGRAS_DE_20261010                                                 # 09/10 result: unchanged
+    assert derivar.hash_resultado(con, real["did"], sem) == HASH_ATUAL_20261009
+    assert derivar.hash_resultado(con, real["did_2909"], sem) == HASH_EM_2909_20261009
     h = dict(con.execute("SELECT id, hash_resultado FROM derivacao_execucao").fetchall())
-    assert h[real["did"]] == HASH_ATUAL_20261009 and h[real["did_2909"]] == HASH_EM_2909_20261009
+    assert (h[real["did"]], h[real["did_2909"]]) == (HASH_ATUAL_20261010, HASH_EM_2909_20261010)
 
 
 def test_caso_5659_2025(real):

@@ -43,6 +43,8 @@ CATALOGO = "catalogo das Etapas 03/04.2: uso e status de evidencia originais"
 CORRETIVA = "especificacao da revisao corretiva 01-04.4 (usuario, 30/09/2026)"
 CONC = "docs/audits/rreo/CONCILIACAO_20261009.md secao 3"
 NOVA = "catalogo: versao nova criada pela conciliacao celula a celula (09/10/2026)"
+RP26 = "docs/audits/rreo/RP_2024_2026.md secao 8 (D1)"
+NOVA_RP26 = "catalogo: versao nova criada pela conferencia dos RP de 2024-2026 (10/10/2026)"
 
 # (codigo, versao, situacao, status_evidencia, compoe_indicador_publicado, supersedida_por, motivo, fonte, decidido_em, origem)
 EVENTOS = [
@@ -102,6 +104,11 @@ EVENTOS = [
      CONC, "2026-10-09", NOVA),
     ("COPIA-ORIGEM", 1, "experimental", "FORTE EVIDÊNCIA", 0, None,
      "nova regra: copias 24xxxxx fora dos indicadores dos exercicios anteriores a 2026", CONC, "2026-10-09", NOVA),
+    # ---- 10/10/2026: the 2026 pairs counted once in the Municipality (same entry rule: experimental first);
+    # v4 because v3 names the 30/09/2026 candidate that was never created (see regras.py)
+    ("CONS-PAR", 4, "experimental", "FORTE EVIDÊNCIA", 0, None,
+     "nova versao: no Municipio, o original sem execucao de um par com a mesma inscricao nao e somado (o RP fica na "
+     "copia, onde e executado)", RP26, "2026-10-10", NOVA_RP26),
 ]
 
 

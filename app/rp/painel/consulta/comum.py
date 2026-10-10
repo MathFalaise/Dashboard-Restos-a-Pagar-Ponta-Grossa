@@ -90,6 +90,11 @@ INTERPRETACOES_DE_VERIFICACAO = {
         "regra": ("ESCOPO-MUN", 1), "natureza": "conformidade", "anomalias": (),
         "verificados": "cortes até 2020 em que a entidade 7 compõe o Município (base que já a conhece)",
         "falhas": "cortes sem retrato da entidade 7: o Município da RREO-COL v3 fica indisponível (nunca zero)"},
+    "pares 1↔15 contados uma vez no Município (CONS-PAR v4)": {
+        "regra": ("CONS-PAR", 4), "natureza": "conformidade",
+        "anomalias": ("PAR-INSCRICAO-DIVERGENTE", "PAR-EXECUCAO-DOIS-LADOS"),
+        "verificados": "pares cópia ↔ original do corte com a cópia dentro do indicador (a partir de 2026)",
+        "falhas": "pares que continuam contados duas vezes no Município: o original tem execução ou inscrição diferente"},
     vigencia.VERIF_RETRATO_AMBIGUO: {
         "regra": ("ANOM-REG", 1), "natureza": "conformidade", "anomalias": ("CHAVE-DUP",),
         "verificados": "retrato mais recente de um corte com chave de empenho repetida",
@@ -166,6 +171,7 @@ REGRAS_DO_INDICADOR = {("S1", 1), ("S2", 1), ("S3", 1), ("CAT", 1)}
 # scope rules: applied to the published indicator only while operational with compoe_indicador_publicado = 1
 REGRA_ESCOPO_MUN = ("ESCOPO-MUN", 1)
 REGRA_COPIAS = ("COPIA-ORIGEM", 1)
+REGRA_PARES = ("CONS-PAR", 4)   # Municipality: the original of a pair with the same inscription and no execution leaves
 
 DIMENSOES = {
     "entidade": ["r.entidade"], "anoempenho": ["r.anoempenho"], "categoria": ["d.categoria"],

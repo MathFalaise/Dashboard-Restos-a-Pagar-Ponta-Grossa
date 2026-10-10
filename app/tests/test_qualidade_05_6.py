@@ -165,7 +165,9 @@ def test_verificacoes_iguais_a_derivacao_e_interpretadas(real, q_real):
         # 2024/2025 left out of the v3 view); before: 466 de 792
         "conciliação RREO × API (colunas com diferença)": "colunas com diferença: 640 de 1188",
         "cópias 24xxxxx fora do indicador (COPIA-ORIGEM v1)": "informativo: 121",
-        "RREO sem valores extraídos (ver problemas da normalização)": "PDFs não lidos: 3"}
+        "RREO sem valores extraídos (ver problemas da normalização)": "PDFs não lidos: 3",
+        # 10/10/2026: + CONS-PAR v4 (the homologated base's 2026 pairs, all counted once)
+        "pares 1↔15 contados uma vez no Município (CONS-PAR v4)": "sem falha"}
     assert all(v["catalogada"] for v in vs.values())
     cont = vs[("continuidade fechamento→abertura", "ANOM-CONT v1")]
     assert [a["tipo"] for a in cont["anomalias_ligadas"]] == ["SALDO-SEM-CONTINUIDADE", "DESCONTINUIDADE"]

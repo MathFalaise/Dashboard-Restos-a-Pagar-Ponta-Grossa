@@ -124,9 +124,15 @@ def pendencias_contabeis(con):
             "SELECT COUNT(*), COUNT(DISTINCT entidade_a || '/' || anoempenho_a || '/' || empenho_a) FROM espelhamento_par "
             "WHERE derivacao_id=?", (did,)).fetchone()
         if linhas:
+            g = governanca.situacao_atual(con).get(("CONS-PAR", 4)) or {}
+            if g.get("situacao") == "operacional" and g.get("compoe_indicador_publicado"):
+                tratamento = ("no Município cada par com a mesma inscrição e sem execução no original é contado uma vez "
+                              "(CONS-PAR v4, operacional com ressalva); a resposta do e-SIC sobre a natureza das "
+                              "cópias continua pendente")
+            else:
+                tratamento = "os dois lados entram nos indicadores; consolidação só como visão experimental"
             saida.append({"tipo": "pares_espelhados", "descricao": "pares entidade 1 x 15 (PAR-24) cuja natureza "
-                          "contábil (duplicidade ou transferência) não está determinada; os dois lados entram nos "
-                          "indicadores; consolidação só como visão experimental",
+                          f"contábil (duplicidade ou transferência) não está determinada; {tratamento}",
                           "empenhos_distintos_em_par": distintos, "linhas_de_par_somando_todos_os_cortes": linhas})
     em_uso = {tuple(json.loads(x)) for (x,) in con.execute("SELECT DISTINCT json_array(g.codigo, g.versao) FROM "
                                                              "derivacao_regra d JOIN regra g ON g.id = d.regra_id WHERE "
