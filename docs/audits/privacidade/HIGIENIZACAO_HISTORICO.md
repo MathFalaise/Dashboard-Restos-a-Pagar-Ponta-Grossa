@@ -68,6 +68,7 @@ trabalho, com `git-filter-repo` 2.47.0:
 | Árvore de `main`, `cons-par-carga-2026`, `contrato-e-ausencias` e do ramo da auditoria | idêntica, blob a blob, à original sem as pastas brutas |
 | Testes sintéticos no checkout higienizado (sem nenhum dado) | 522 passed |
 | Reescrita determinística | os SHAs novos repetem os do primeiro ensaio (13/10) |
+| Execução final (14/10, ponta do ramo da auditoria) | 99 commits, 1.029 blobs, nenhum com dado pessoal; árvore idêntica; suítes completas no checkout higienizado: 691 + 26 passed |
 
 ### Mapa das refs (antes → depois)
 
@@ -89,6 +90,8 @@ Os commits mudam de SHA. O conteúdo é o mesmo, sem as pastas brutas.
 O mapa completo de commits fica em `mapa_de_commits.txt`, na pasta privada da reescrita.
 
 ## 5. Publicar (depende de autorização explícita)
+
+Na hora do envio, rodar de novo o script sobre a ponta final (pasta nova) e conferir que a árvore e os SHAs das refs do GitHub são os da seção 4.
 
 A partir do espelho higienizado, só ramos e tags, nunca `--mirror`:
 ```bash

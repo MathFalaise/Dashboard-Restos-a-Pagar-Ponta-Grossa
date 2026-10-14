@@ -8,7 +8,7 @@ comprovado** do que foi **preparado** e do que **depende de ação externa**.
 
 | Item | Inicial (13/10, 22:08) | Final (14/10) |
 |---|---|---|
-| Git | `main` `8166c5b`; PR #21 aberto (`9e11d1c`); ramos locais sem push `promocao-regras-rreo` e `rreo-cobertura-siconfi`; 1.107 arquivos brutos versionados | ramo `auditoria-corretiva-20261013` com 10 commits locais; nenhum bruto versionado; nada enviado ao GitHub |
+| Git | `main` `8166c5b`; PR #21 aberto (`9e11d1c`); ramos locais sem push `promocao-regras-rreo` e `rreo-cobertura-siconfi`; 1.107 arquivos brutos versionados | ramo `auditoria-corretiva-20261013` com 12 commits locais; nenhum bruto versionado; nada enviado ao GitHub |
 | Histórico público | 89 commits; 1.094 blobs brutos; 146 + 51 + 10 + 2 blobs com dado pessoal | inalterado até a autorização; espelho higienizado validado (seção 3) |
 | Banco ativo | `~/RestosAPagar_local/banco`, 1.435.840.512 bytes, esquema v8; normalização 17, derivações 35/36 (`7e7983f9`/`4002ccc2`) | 346.234.880 bytes; normalização 18 (`rp-normalizador/3`), derivações 37/38 (`bcd01a41`/`4002ccc2`) |
 | Armazém do bruto | `data/snapshots` dentro do OneDrive | `~/RestosAPagar_local/armazem`, fora do OneDrive; cópia cifrada fora do computador |
@@ -134,6 +134,7 @@ Nenhuma regra ficou sem decisão.
 | Suíte de produção no commit dos layouts (`a359202`) | 688 passed |
 | Suíte de investigação no commit dos layouts | 26 passed |
 | Testes sintéticos no checkout higienizado (sem nenhum dado) | 522 passed |
+| Suítes completas no checkout higienizado final (dados reais do armazém privado) | produção 691 passed; investigação 26 passed |
 | Homologação final (`homologacao_final_auditoria_20261014.json`, banco ativo depois da manutenção) | `aprovada_com_ressalvas`: 20 de 20 verificações ok; produção 691 passed; investigação 26 passed; dimensões: técnica aprovada, cobertura 112/114, 3 pendências contábeis (divergência com o RREO, 2 RREOs ilegíveis, natureza dos pares) |
 
 **Testes novos:** privacidade do repositório (7), escopo da entidade 7, os 8 cenários dos pares, metodologia na data,
