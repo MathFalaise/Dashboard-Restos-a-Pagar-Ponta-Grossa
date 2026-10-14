@@ -8,8 +8,8 @@ comprovado** do que foi **preparado** e do que **depende de ação externa**.
 
 | Item | Inicial (13/10, 22:08) | Final (14/10) |
 |---|---|---|
-| Git | `main` `8166c5b`; PR #21 aberto (`9e11d1c`); ramos locais sem push `promocao-regras-rreo` e `rreo-cobertura-siconfi`; 1.107 arquivos brutos versionados | ramo `auditoria-corretiva-20261013` com 12 commits locais; nenhum bruto versionado; nada enviado ao GitHub |
-| Histórico público | 89 commits; 1.094 blobs brutos; 146 + 51 + 10 + 2 blobs com dado pessoal | inalterado até a autorização; espelho higienizado validado (seção 3) |
+| Git | `main` `8166c5b`; PR #21 aberto (`9e11d1c`); ramos locais sem push `promocao-regras-rreo` e `rreo-cobertura-siconfi`; 1.107 arquivos brutos versionados | ramo `auditoria-corretiva-20261013` enviado; PR #22 aberto sobre o PR #21; nenhum bruto versionado; `.git` local limpo (3 MB) |
+| Histórico público | 89 commits; 1.094 blobs brutos; 146 + 51 + 10 + 2 blobs com dado pessoal | reescrito e enviado em 14/10/2026 com autorização; clone novo sem nenhum caminho bruto; `refs/pull/1..20` à espera do suporte do GitHub |
 | Banco ativo | `~/RestosAPagar_local/banco`, 1.435.840.512 bytes, esquema v8; normalização 17, derivações 35/36 (`7e7983f9`/`4002ccc2`) | 346.234.880 bytes; normalização 18 (`rp-normalizador/3`), derivações 37/38 (`bcd01a41`/`4002ccc2`) |
 | Armazém do bruto | `data/snapshots` dentro do OneDrive | `~/RestosAPagar_local/armazem`, fora do OneDrive; cópia cifrada fora do computador |
 | Backups | 2,9 GB em `data/backups`, no OneDrive | `~/RestosAPagar_local/backups`, 4,1 GB comprimidos e conferidos; cópias do OneDrive em quarentena local |
@@ -50,15 +50,13 @@ retratos antes e depois dos 68 cortes.
 ## 3. Privacidade: higienização e referências públicas
 
 - **Feito:** armazenamento privado conferido; publicação de novo bruto interrompida (guarda + `.gitignore`).
-- **Preparado e validado, não publicado:** reescrita do histórico (`docs/audits/privacidade/HIGIENIZACAO_HISTORICO.md`).
-  - **Varredura:** 0 de 1.021 blobs com dado pessoal.
-  - **Árvores:** idênticas às originais, sem as pastas brutas.
-  - **Testes no checkout higienizado:** 522 sintéticos passaram.
-  - **Reprodutibilidade:** reescrita determinística, com mapa de refs.
-- **Pendente:**
-  - envio forçado, que **exige autorização explícita**;
-  - pedido ao suporte do GitHub para as `refs/pull/1..20` e caches (texto pronto);
-  - novo clone da pasta de trabalho, cujo `.git` no OneDrive ainda tem os blobs antigos.
+- **Publicado em 14/10/2026, com autorização:**
+  - reescrita do histórico (`docs/audits/privacidade/HIGIENIZACAO_HISTORICO.md`, seção 8);
+  - 0 de 1.031 blobs com dado pessoal no que foi enviado;
+  - clone novo do GitHub sem nenhum caminho bruto;
+  - pasta de trabalho local limpa.
+- **Pendente:** pedido ao suporte do GitHub. As `refs/pull/1..20` e a API ainda servem os commits antigos pelo SHA.
+  O texto do pedido está pronto.
 
 **A higienização não está concluída e não é declarada concluída.**
 
@@ -156,7 +154,7 @@ na homologação local.
 | Banco ativo | 1.737.969.664 B (1.435.840.512 no início da auditoria) | 346.234.880 B |
 | Backups estruturais privados | 7,7 GB (cópias) | 4,1 GB (12 comprimidos com conferência, 2 recentes inteiros) |
 | Pasta do repositório no OneDrive | 3,06 GB de backups + 158 MB de bruto | 0 (movidos para a quarentena local) |
-| Pacote do Git | 38,8 MiB | 2,3 MiB depois da higienização (pendente de envio) |
+| Pacote do Git (GitHub) | 38,8 MiB | 2,8 MiB (clone novo depois do envio) |
 
 A política está em `docs/audits/privacidade/ARMAZENAMENTO_PRIVADO.md`, seção 4.
 
@@ -164,13 +162,11 @@ A política está em `docs/audits/privacidade/ARMAZENAMENTO_PRIVADO.md`, seção
 
 | Pendência | Impacto | Evidência | O que falta |
 |---|---|---|---|
-| Envio forçado do histórico higienizado | dados de credores continuam no histórico público | `HIGIENIZACAO_HISTORICO.md` | autorização explícita do responsável; depois, os comandos da seção 5 desse documento |
-| Pedido ao suporte do GitHub | `refs/pull/1..20` e caches mantêm os objetos antigos | idem, seção 6 | enviar o formulário com o texto pronto |
-| Novo clone da pasta de trabalho | o `.git` no OneDrive tem os blobs antigos | idem | recriar o clone depois do envio |
+| Pedido ao suporte do GitHub | `refs/pull/1..20` e a API ainda servem os commits antigos, com o bruto | `HIGIENIZACAO_HISTORICO.md`, seções 6 e 8 | enviar o formulário com o texto pronto e, depois, repetir a conferência |
 | Frase-senha da cópia cifrada | sem ela, a cópia fora do computador não restaura | `~/RestosAPagar_local/segredos/` | guardar num gerenciador de senhas |
 | e-SIC (não enviado) | pares: R$ 31,8 milhões; entidade 7: R$ 180.334,82; 2026 retroativo; versões do Siconfi | `docs/foi-requests/ESIC_MINUTA_V4_20261013.md` | envio pelo solicitante (exige CPF); registrar a resposta pelo procedimento |
 | 2 RREOs ilegíveis | sem conferência desses dois documentos | seção 6 | cópia legível do Município, ou conferência manual documentada |
-| Revisão e mesclagem | — | PR a abrir depois do envio do histórico | revisão do responsável |
+| Revisão e mesclagem | — | PR #21 e, em cima dele, PR #22 | revisão do responsável; mesclar o #21 antes do #22 |
 
 **Nenhuma resposta do Município foi presumida.** Nenhuma meta de 99,9% foi declarada fora das dimensões em que a
 medição a confirma:

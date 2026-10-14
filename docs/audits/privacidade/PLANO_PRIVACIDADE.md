@@ -6,8 +6,8 @@
 > |---|---|---|
 > | 1. Armazenamento privado | feita e conferida | `ARMAZENAMENTO_PRIVADO.md` |
 > | 2. Parar de publicar | feita no ramo `auditoria-corretiva-20261013` | commit `bcc4fcb` |
-> | 3. Retirar do histórico | preparada e validada, não publicada | `HIGIENIZACAO_HISTORICO.md` |
-> | 4. Conferir o resultado | depende do envio forçado, que exige autorização explícita, e do pedido ao suporte do GitHub | `HIGIENIZACAO_HISTORICO.md` |
+> | 3. Retirar do histórico | publicada em 14/10/2026 (ramos e tags, com autorização) | `HIGIENIZACAO_HISTORICO.md` |
+> | 4. Conferir o resultado | clone novo sem bruto; `refs/pull/1..20` e SHAs antigos ainda servidos, à espera do suporte do GitHub | `HIGIENIZACAO_HISTORICO.md` |
 >
 > O texto abaixo é o plano original, de 09/10/2026.
 

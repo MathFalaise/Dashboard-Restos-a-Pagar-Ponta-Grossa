@@ -2,9 +2,11 @@
 
 Auditoria corretiva de 13/10/2026, fase P0.
 
-**Situação: preparada e validada, NÃO publicada.** Ainda não houve envio forçado ao GitHub. O histórico público
-continua, até lá, com os dados descritos na seção 1. A publicação depende de autorização explícita do responsável
-(seção 5).
+**Situação (14/10/2026): reescrita publicada; remoção dos objetos antigos pendente no GitHub.**
+- **Publicação:** o responsável autorizou o envio forçado em 14/10/2026. Ramos e tags foram reenviados (seção 8).
+- **Pendência:** as `refs/pull/1..20` do GitHub ainda alcançam os commits antigos, e só o suporte do GitHub os remove
+  (seção 6).
+- **Conclusão:** a higienização **não está concluída** até essa remoção ser confirmada.
 
 ## 1. Inventário do histórico público
 
@@ -135,3 +137,33 @@ Pedido ao suporte do GitHub (formulário "Remove sensitive data", depois do envi
    suporte** isso vale para os commits só alcançáveis pelas `refs/pull/*`.
 4. A higienização só será declarada concluída quando o item 3 for confirmado. Até lá, cada ref residual fica listada
    como pendência.
+
+## 8. Execução do envio (14/10/2026)
+
+**Antes de enviar:**
+- `git ls-remote` igual ao do inventário de 13/10: ninguém enviou nada no meio.
+- O espelho foi reconstruído pelo script a partir da ponta final. A árvore é idêntica à local, os SHAs das refs do
+  GitHub são os da seção 4, e a varredura deu 0 de 1.031 blobs com dado pessoal.
+
+**Enviado com `--force`, sem `--mirror`:**
+- `main` `8166c5b → 24b993a`;
+- `cons-par-carga-2026` `9e11d1c → f9b3b51`;
+- `contrato-e-ausencias` `da5e25f → 63c5bb1`;
+- `auditoria-corretiva-20261013` (novo, `832b038`);
+- tags `etapa-04-final` → `ecb2843` (commit `b903980`) e `etapa-05-final` → `5a571d9` (commit `2972be5`).
+
+**Depois do envio:**
+
+| Conferência | Resultado |
+|---|---|
+| Clone novo do GitHub (todos os ramos e tags) | 99 commits, nenhum caminho bruto, pacote de 2,8 MiB |
+| `refs/pull/21/head` (PR aberto) | já aponta para `f9b3b51`, o commit reescrito |
+| `refs/pull/1..20/head` (PRs fechados) | continuam nos SHAs antigos: **pendência para o suporte do GitHub** |
+| API do GitHub com SHA antigo (`8166c5b1…`, `9e11d1c3…`) | ainda responde: **pendência para o suporte do GitHub** |
+| Pasta de trabalho local | ramos apontados para os commits reescritos pelo mapa de commits; reflog expirado; `gc --prune=now`; `.git` de 72 MB para 3 MB; nenhum blob bruto (restam só as duas listas públicas de SHA-256) |
+
+**Histórico antigo completo:** preservado só no espelho privado `~/RestosAPagar_local/auditoria_20261013/espelho_original.git`,
+fora do OneDrive.
+
+**Próximo passo, do responsável:** enviar ao suporte do GitHub o pedido da seção 6. Depois da resposta, repetir a
+conferência 3 da seção 7.
