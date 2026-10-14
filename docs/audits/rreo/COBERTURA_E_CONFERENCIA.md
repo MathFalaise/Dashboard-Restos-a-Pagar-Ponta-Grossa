@@ -1,17 +1,17 @@
 # Matriz de cobertura e conferência independente do RREO Anexo VII
 
-Gerada por `docs/audits/rreo/conferencia_independente.py` (segunda leitura: pdftotext version 4.06 [www.xpdfreader.com]; normalização 17).
+Gerada por `docs/audits/rreo/conferencia_independente.py` (segunda leitura: pdftotext version 4.06 [www.xpdfreader.com]; normalização 18).
 
-Esperados 114 · transcritos 96 (conferidos 96, divergentes 0) · recusados pelo extrator 18 · não coletados 0 · coletados sem extração 0
+Esperados 114 · transcritos 112 (conferidos 112, divergentes 0) · recusados pelo extrator 2 · não coletados 0 · coletados sem extração 0
 
 | Exercício | Documento | Escopo | Situação | Conferência independente | Observação |
 |---|---|---|---|---|---|
-| 2016 | 1º Bimestre | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']; segunda leitura: identidades ok, período impresso: FEVEREIRO 2016 |
-| 2016 | 2º Bimestre | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']; segunda leitura: identidades ok, período impresso: ABRIL 2016 |
-| 2016 | 3º Bimestre | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']; segunda leitura: identidades ok, período impresso: JUNHO 2016 |
-| 2016 | 4º Bimestre | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']; segunda leitura: identidades ok, período impresso: AGOSTO 2016 |
-| 2016 | 5º Bimestre | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']; segunda leitura: identidades ok, período impresso: OUTUBRO 2016 |
-| 2016 | 6º Bimestre | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']; segunda leitura: identidades ok, período impresso: DEZEMBRO 2016 |
+| 2016 | 1º Bimestre | entidade | transcrito | conferido |  |
+| 2016 | 2º Bimestre | entidade | transcrito | conferido |  |
+| 2016 | 3º Bimestre | entidade | transcrito | conferido |  |
+| 2016 | 4º Bimestre | entidade | transcrito | conferido |  |
+| 2016 | 5º Bimestre | entidade | transcrito | conferido |  |
+| 2016 | 6º Bimestre | entidade | transcrito | conferido |  |
 | 2017 | 1º Bimestre - Consolidado | consolidado | transcrito | conferido |  |
 | 2017 | 1º Bimestre | entidade | transcrito | conferido |  |
 | 2017 | 2º Bimestre - Consolidado | consolidado | transcrito | conferido |  |
@@ -24,24 +24,24 @@ Esperados 114 · transcritos 96 (conferidos 96, divergentes 0) · recusados pelo
 | 2017 | 5º Bimestre | entidade | transcrito | conferido |  |
 | 2017 | 6º Bimestre - Consolidado | consolidado | transcrito | conferido |  |
 | 2017 | 6º Bimestre | entidade | transcrito | conferido |  |
-| 2018 | 1º Bimestre | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 548); segunda leitura: identidades ok, período impresso: não impresso |
-| 2018 | 2º Bimestre | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 549); segunda leitura: identidades ok, período impresso: não impresso |
-| 2018 | 3º Bimestre | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 550); segunda leitura: identidades ok, período impresso: não impresso |
-| 2018 | 4º Bimestre | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 551); segunda leitura: identidades ok, período impresso: não impresso |
-| 2018 | 5º Bimestre | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 552); segunda leitura: identidades ok, período impresso: não impresso |
-| 2018 | 6º Bimestre | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 403); segunda leitura: identidades ok, período impresso: não impresso |
-| 2019 | 1º BIMESTRE | entidade | recusado_layout | nao_legivel_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 554); a segunda leitura também não leu as linhas (RESTOS A PAGAR (EXCETO: 11 número(s) na segunda leitura; PODER EXECUTIVO: 11 número(s) na segunda leitura; TOTAL (III): 11 número(s) na segunda leitura), período impresso: não impresso |
-| 2019 | 2º BIMESTRE | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 555); segunda leitura: identidades ok, período impresso: não impresso |
+| 2018 | 1º Bimestre | entidade | transcrito | conferido |  |
+| 2018 | 2º Bimestre | entidade | transcrito | conferido |  |
+| 2018 | 3º Bimestre | entidade | transcrito | conferido |  |
+| 2018 | 4º Bimestre | entidade | transcrito | conferido |  |
+| 2018 | 5º Bimestre | entidade | transcrito | conferido |  |
+| 2018 | 6º Bimestre | entidade | transcrito | conferido |  |
+| 2019 | 1º BIMESTRE | entidade | recusado_layout | nao_legivel_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 554); regras de layout versionadas: período não encontrado na impressão do Siconfi; a segunda leitura também não leu as linhas (RESTOS A PAGAR (EXCETO: 11 número(s) na segunda leitura; PODER EXECUTIVO: 11 número(s) na segunda leitura; TOTAL (III): 11 número(s) na segunda leitura), período impresso: não impresso |
+| 2019 | 2º BIMESTRE | entidade | transcrito | conferido |  |
 | 2019 | 3º BIMESTRE | entidade | transcrito | conferido |  |
-| 2019 | 4º BIMESTRE | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 557); segunda leitura: identidades ok, período impresso: não impresso |
-| 2019 | 5º BIMESTRE | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 558); segunda leitura: identidades ok, período impresso: não impresso |
-| 2019 | 6º BIMESTRE | entidade | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 431); segunda leitura: identidades ok, período impresso: não impresso |
+| 2019 | 4º BIMESTRE | entidade | transcrito | conferido |  |
+| 2019 | 5º BIMESTRE | entidade | transcrito | conferido |  |
+| 2019 | 6º BIMESTRE | entidade | transcrito | conferido |  |
 | 2020 | 1º Bimestre - Consolidado | consolidado | transcrito | conferido |  |
 | 2020 | 1º Bimestre | entidade | transcrito | conferido |  |
 | 2020 | 2º Bimestre - Consolidado | consolidado | transcrito | conferido |  |
 | 2020 | 2º Bimestre | entidade | transcrito | conferido |  |
 | 2020 | 3º Bimestre - Consolidado | consolidado | transcrito | conferido |  |
-| 2020 | 3º Bimestre 2020 Consolidado | consolidado | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 569); segunda leitura: identidades ok, período impresso: não impresso |
+| 2020 | 3º Bimestre 2020 Consolidado | consolidado | recusado_layout | lido_so_pela_conferencia | LayoutDesconhecido: período não encontrado no RREO (coleta 569); regras de layout versionadas: linha 'RESTOS A PAGAR (EXCETO' com 11 número(s); o layout conhecido tem 12 colunas: transcrição parcial recusada; segunda leitura: identidades ok, período impresso: não impresso |
 | 2020 | 3º Bimestre | entidade | transcrito | conferido |  |
 | 2020 | 4º Bimestre - Consolidado | consolidado | transcrito | conferido |  |
 | 2020 | 4º Bimestre | entidade | transcrito | conferido |  |

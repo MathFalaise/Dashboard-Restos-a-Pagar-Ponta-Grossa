@@ -153,13 +153,20 @@ def test_hash_da_derivacao_igual_ao_do_banco_ativo(real):
     # promotions of 09/10 and 10/10/2026: without the rows of the new rules the result is the homologated one
     # (2f6b4e29 / b8a0b2ed); without only CONS-PAR v4's it is the one of 09/10 (adc55b19 / 96777ec6); the complete result
     # gains those rows (test_casos_reais.HASH_ATUAL_20261010 / HASH_EM_2909_20261010)
+    # rp-normalizador/3 (13/10/2026): with the result rebuilt as it was while the 3 PDFs read by the layout rules were
+    # refused (`pdfs_novos`), every earlier hash is reproduced; the complete one is test_casos_reais.HASH_ATUAL_20261013
+    nid = real["con"].execute("SELECT normalizacao_id FROM derivacao_execucao WHERE id=?", (real["did"],)).fetchone()[0]
+    pdfs = derivar.pdfs_por_regras_de_layout(real["con"], nid)
     sem = derivar.REGRAS_DE_20261009 | derivar.REGRAS_DE_20261010
-    assert derivar.hash_resultado(real["con"], real["did"], sem).startswith("2f6b4e295ce79593")
-    assert derivar.hash_resultado(real["con"], real["did_2909"], sem).startswith("b8a0b2ed2328bf09")
+    assert derivar.hash_resultado(real["con"], real["did"], sem, pdfs).startswith("2f6b4e295ce79593")
+    assert derivar.hash_resultado(real["con"], real["did_2909"], sem, pdfs).startswith("b8a0b2ed2328bf09")
     sem = derivar.REGRAS_DE_20261010
-    assert derivar.hash_resultado(real["con"], real["did"], sem).startswith("adc55b1913d0b553")
-    assert derivar.hash_resultado(real["con"], real["did_2909"], sem).startswith("96777ec6a17da54b")
-    assert h.startswith("15e9199534d862c0") and h2909.startswith("4002ccc2634021ab")
+    assert derivar.hash_resultado(real["con"], real["did"], sem, pdfs).startswith("adc55b1913d0b553")
+    assert derivar.hash_resultado(real["con"], real["did_2909"], sem, pdfs).startswith("96777ec6a17da54b")
+    assert derivar.hash_resultado(real["con"], real["did"], None, pdfs).startswith("15e9199534d862c0")
+    assert derivar.hash_resultado(real["con"], real["did_2909"], None, pdfs).startswith("4002ccc2634021ab")
+    from test_casos_reais import HASH_ATUAL_20261013, HASH_EM_2909_20261013
+    assert (h, h2909) == (HASH_ATUAL_20261013, HASH_EM_2909_20261013)
 
 
 # ================================================================== section 5: regression cases against the raw data

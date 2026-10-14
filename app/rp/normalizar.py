@@ -25,7 +25,11 @@ from . import agora, ambiente, banco, hash_do_codigo
 
 log = logging.getLogger("rp.normalizar")
 
-VERSAO = "rp-normalizador/2"
+VERSAO = "rp-normalizador/3"
+# v3 (13/10/2026, corrective audit item 6.5): an RREO PDF the coordinate extractor refuses is tried, as a fallback,
+# by the versioned layout rules of rp/rreo_layouts.py (rp-rreo-2016/1, rp-rreo-siconfi/1), validated cell by cell
+# against an independent second reading (docs/audits/rreo/VALIDACAO_LAYOUTS.md). Each row records the version that
+# produced it; a PDF no rule reads stays refused with the reasons of both. Nothing else changes.
 # v2 (09/10/2026, correction request item 6): a recognized row is transcribed whole or not at all (12 numbers, each one
 # between the neighbouring column labels), and the document's own arithmetic must close (e = a + b - c - d,
 # k = f + g - i - j, L = e + k in every row; TOTAL (III) = (I) + (II)). v1 assigned each number to the NEAREST column
@@ -169,14 +173,15 @@ def normalizar(con):
                     resumo["ignoradas_sem_pagina"] += 1
                     continue
                 meta = json.loads(params)
+                versao = EXTRATOR_RREO
                 try:
-                    n, erro = _rreo(con, nid, cid, meta, corpo), None
+                    (n, versao), erro = _transcrever_rreo(con, nid, cid, meta, corpo), None
                     resumo["rreo_valor"] += n
                 except ERROS_DE_LAYOUT as e:  # a new layout does not stop the processing; it gets recorded
                     n, erro = 0, f"{type(e).__name__}: {e}"
                     resumo["problemas"].append({"coleta_id": cid, "extrator": EXTRATOR_RREO, "erro": erro})
                     log.warning("RREO da coleta %d não transcrito: %s", cid, e)
-                con.execute(SQL_EXTRACAO, (nid, rid, cid, EXTRATOR_RREO, "PyMuPDF/MuPDF", _versao_biblioteca_pdf(), sha,
+                con.execute(SQL_EXTRACAO, (nid, rid, cid, versao, "PyMuPDF/MuPDF", _versao_biblioteca_pdf(), sha,
                                            meta.get("id_arquivo"), meta.get("rotulo"), agora(), n, erro))
             elif tipo in ("entidades", "exercicios"):
                 lista = _lista_json(corpo)
@@ -307,6 +312,23 @@ def _rreo(con, nid, cid, params, corpo):
             valores.append((nid, cid, EXTRATOR_RREO, escopo, ano, data_final, emitido, linha, c, _centavos_pt(w)))
     _conferir_aritmetica(celulas)
     return con.executemany(SQL_RREO, valores).rowcount if valores else 0
+
+
+def _transcrever_rreo(con, nid, cid, meta, corpo):
+    """(rows written, extractor version). The coordinate extractor first; when it refuses the layout, the versioned
+    layout rules (rp/rreo_layouts.py). If both refuse, LayoutDesconhecido with both reasons (the first one first)."""
+    try:
+        return _rreo(con, nid, cid, meta, corpo), EXTRATOR_RREO
+    except LayoutDesconhecido as primeiro:
+        from . import rreo_layouts
+        try:
+            versao, escopo, ano, data_final, emitido, celulas = rreo_layouts.extrair(corpo, meta)
+        except ERROS_DE_LAYOUT as segundo:     # a data/PDF error of the fallback never hides the first reason
+            motivo = str(segundo) if isinstance(segundo, LayoutDesconhecido) else f"{type(segundo).__name__}: {segundo}"
+            raise LayoutDesconhecido(f"{primeiro}; regras de layout versionadas: {motivo}") from None
+    valores = [(nid, cid, versao, escopo, ano, data_final, emitido, linha, c, v)
+               for (linha, c), v in sorted(celulas.items())]
+    return con.executemany(SQL_RREO, valores).rowcount, versao
 
 
 def _centavos_pt(w):

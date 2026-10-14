@@ -1,0 +1,65 @@
+{
+ "pdfs_recusados_em_n1": 18,
+ "pdfs_novos_em_n2": [
+  "08671224",
+  "104ce0dc",
+  "31f6bf86",
+  "35dae607",
+  "36f1ef8e",
+  "49cc40f6",
+  "722468ea",
+  "77fd0254",
+  "9d38c530",
+  "a353e1dd",
+  "a93119d1",
+  "b2684286",
+  "d369f5b9",
+  "e37c512e",
+  "ea117bf6",
+  "ea623d30"
+ ],
+ "rp_registro": true,
+ "movimentacao_lancamento": true,
+ "entidade_ref": true,
+ "exercicio_ref": true,
+ "valor_recusado": true,
+ "rreo_valor": {
+  "n1_contido_em_n2": true,
+  "linhas_acrescidas": 504,
+  "acrescimos_so_de_pdfs_recusados_em_n1": true
+ },
+ "rreo_extracao_motivo_ampliado": [
+  "b218b702",
+  "c39d70b9"
+ ],
+ "rreo_extracao_fora_dos_novos_igual": true,
+ "derivacao_fora_dos_novos": {
+  "rp_derivado": true,
+  "movimentacao_interpretada": true,
+  "anomalia": true,
+  "espelhamento_par": true,
+  "visao_valor": true,
+  "conciliacao_rreo": true,
+  "verificacao": true
+ },
+ "conciliacao_acrescida": 576,
+ "verificacoes_removidas": [
+  "08671224",
+  "104ce0dc",
+  "31f6bf86",
+  "35dae607",
+  "36f1ef8e",
+  "49cc40f6",
+  "722468ea",
+  "77fd0254",
+  "9d38c530",
+  "a353e1dd",
+  "a93119d1",
+  "b2684286",
+  "d369f5b9",
+  "e37c512e",
+  "ea117bf6",
+  "ea623d30"
+ ],
+ "prova": true
+}

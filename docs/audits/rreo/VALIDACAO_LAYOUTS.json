@@ -1,0 +1,650 @@
+{
+ "normalizacao": 17,
+ "documentos": [
+  {
+   "snapshot": "722468ea",
+   "exercicio": 2016,
+   "rotulo": "6º Bimestre",
+   "sha256_pdf": "cac84b635fd6110a02e380bed19d31c2e423d18bef74ff944ed33e70ea7495cb",
+   "versao": "rp-rreo-2016/1",
+   "escopo": "entidade",
+   "data_final": "2016-12-31",
+   "emitido_em": "17/dez/2018 20:47",
+   "celulas": 24,
+   "conferidas": 24,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": null,
+   "diferencas_de_conteudo_com_o_siconfi": [],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "31f6bf86",
+   "exercicio": 2016,
+   "rotulo": "1º Bimestre",
+   "sha256_pdf": "bc37796bf8a140c21f82d3fa14ed5b1577cb90ed92d4613f1b6478aeb46330de",
+   "versao": "rp-rreo-2016/1",
+   "escopo": "entidade",
+   "data_final": "2016-02-29",
+   "emitido_em": "20/set/2016 10:26",
+   "celulas": 24,
+   "conferidas": 24,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": null,
+   "diferencas_de_conteudo_com_o_siconfi": [],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "9d38c530",
+   "exercicio": 2016,
+   "rotulo": "2º Bimestre",
+   "sha256_pdf": "73897fd4c5ef2693db07a4bc38e192168a03b6314af84be6c580d450b04d8990",
+   "versao": "rp-rreo-2016/1",
+   "escopo": "entidade",
+   "data_final": "2016-04-30",
+   "emitido_em": "20/set/2016 10:26",
+   "celulas": 24,
+   "conferidas": 24,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": null,
+   "diferencas_de_conteudo_com_o_siconfi": [],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "ea623d30",
+   "exercicio": 2016,
+   "rotulo": "3º Bimestre",
+   "sha256_pdf": "aeebd25e9db6269279c3ecb129be7e09747d7643c4ee565325859d8a34ff53ef",
+   "versao": "rp-rreo-2016/1",
+   "escopo": "entidade",
+   "data_final": "2016-06-30",
+   "emitido_em": "20/set/2016 10:26",
+   "celulas": 24,
+   "conferidas": 24,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": null,
+   "diferencas_de_conteudo_com_o_siconfi": [],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "b2684286",
+   "exercicio": 2016,
+   "rotulo": "4º Bimestre",
+   "sha256_pdf": "934a769d0cddf6da98331f34521c1f1178262020ea6b879c29df2900e5152101",
+   "versao": "rp-rreo-2016/1",
+   "escopo": "entidade",
+   "data_final": "2016-08-31",
+   "emitido_em": "20/set/2016 10:26",
+   "celulas": 24,
+   "conferidas": 24,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": null,
+   "diferencas_de_conteudo_com_o_siconfi": [],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "a93119d1",
+   "exercicio": 2016,
+   "rotulo": "5º Bimestre",
+   "sha256_pdf": "6b1c1d2024eff4d3b29a9311825919b86518065f41cd7e944e107b96d0fbfb9f",
+   "versao": "rp-rreo-2016/1",
+   "escopo": "entidade",
+   "data_final": "2016-10-31",
+   "emitido_em": "20/set/2016 10:26",
+   "celulas": 24,
+   "conferidas": 24,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": null,
+   "diferencas_de_conteudo_com_o_siconfi": [],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "d369f5b9",
+   "exercicio": 2018,
+   "rotulo": "6º Bimestre",
+   "sha256_pdf": "9b4c9f947df13ac1060d064cedf0f4a6fe2a87a8f511c412e5c00c6ccb083af8",
+   "versao": "rp-rreo-siconfi/1",
+   "escopo": "consolidado",
+   "data_final": "2018-12-31",
+   "emitido_em": null,
+   "celulas": 36,
+   "conferidas": 36,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": "coleta_20261013-223143/rreo_anexo07_2018_6.json",
+   "diferencas_de_conteudo_com_o_siconfi": [
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "h",
+     "pdf": 4061528409,
+     "siconfi": 4068480297
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "i",
+     "pdf": 3993615214,
+     "siconfi": 4000567102
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "j",
+     "pdf": 752649511,
+     "siconfi": 745697623
+    },
+    {
+     "linha": "RESTOS A PAGAR (EXCETO",
+     "coluna": "h",
+     "pdf": 4061528409,
+     "siconfi": 4068480297
+    },
+    {
+     "linha": "RESTOS A PAGAR (EXCETO",
+     "coluna": "i",
+     "pdf": 3993615214,
+     "siconfi": 4000567102
+    },
+    {
+     "linha": "RESTOS A PAGAR (EXCETO",
+     "coluna": "j",
+     "pdf": 752649511,
+     "siconfi": 745697623
+    },
+    {
+     "linha": "TOTAL (III)",
+     "coluna": "h",
+     "pdf": 4061528409,
+     "siconfi": 4068480297
+    },
+    {
+     "linha": "TOTAL (III)",
+     "coluna": "i",
+     "pdf": 3993615214,
+     "siconfi": 4000567102
+    },
+    {
+     "linha": "TOTAL (III)",
+     "coluna": "j",
+     "pdf": 752649511,
+     "siconfi": 745697623
+    }
+   ],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "77fd0254",
+   "exercicio": 2018,
+   "rotulo": "1º Bimestre",
+   "sha256_pdf": "c0e2875d594f6ec936af2459de7be5afa6cc03fa2fe78a70ba01b6074fd40e0a",
+   "versao": "rp-rreo-siconfi/1",
+   "escopo": "consolidado",
+   "data_final": "2018-02-28",
+   "emitido_em": null,
+   "celulas": 36,
+   "conferidas": 36,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": "coleta_20261013-223143/rreo_anexo07_2018_1.json",
+   "diferencas_de_conteudo_com_o_siconfi": [],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "e37c512e",
+   "exercicio": 2018,
+   "rotulo": "2º Bimestre",
+   "sha256_pdf": "61864edbe5f415ac33f773e65d60f79100a4053e678f5d56765e43e2f19a3934",
+   "versao": "rp-rreo-siconfi/1",
+   "escopo": "consolidado",
+   "data_final": "2018-04-30",
+   "emitido_em": null,
+   "celulas": 36,
+   "conferidas": 36,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": "coleta_20261013-223143/rreo_anexo07_2018_2.json",
+   "diferencas_de_conteudo_com_o_siconfi": [],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "08671224",
+   "exercicio": 2018,
+   "rotulo": "3º Bimestre",
+   "sha256_pdf": "7c60d48c31351ece296382e1a516d5a3362dd9077ed8a3d1e49005940984d87d",
+   "versao": "rp-rreo-siconfi/1",
+   "escopo": "consolidado",
+   "data_final": "2018-06-30",
+   "emitido_em": null,
+   "celulas": 36,
+   "conferidas": 36,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": "coleta_20261013-223143/rreo_anexo07_2018_3.json",
+   "diferencas_de_conteudo_com_o_siconfi": [],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "a353e1dd",
+   "exercicio": 2018,
+   "rotulo": "4º Bimestre",
+   "sha256_pdf": "c57e6a852019b3966d0d8b7f4e89fc018570cb0fa9e77fa5d0c8cd06ec95bd56",
+   "versao": "rp-rreo-siconfi/1",
+   "escopo": "consolidado",
+   "data_final": "2018-08-31",
+   "emitido_em": null,
+   "celulas": 36,
+   "conferidas": 36,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": "coleta_20261013-223143/rreo_anexo07_2018_4.json",
+   "diferencas_de_conteudo_com_o_siconfi": [],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "104ce0dc",
+   "exercicio": 2018,
+   "rotulo": "5º Bimestre",
+   "sha256_pdf": "8b08028629f743c0ed5f713cec1bcfd274b34f9244d98107b074094b65e4faa1",
+   "versao": "rp-rreo-siconfi/1",
+   "escopo": "consolidado",
+   "data_final": "2018-10-31",
+   "emitido_em": null,
+   "celulas": 36,
+   "conferidas": 36,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": "coleta_20261013-223143/rreo_anexo07_2018_5.json",
+   "diferencas_de_conteudo_com_o_siconfi": [],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "36f1ef8e",
+   "exercicio": 2019,
+   "rotulo": "6º BIMESTRE",
+   "sha256_pdf": "373aacea1b39de526883e6c5f3a423a47e73354a87e0ea9b2085dada69974635",
+   "versao": "rp-rreo-siconfi/1",
+   "escopo": "consolidado",
+   "data_final": "2019-12-31",
+   "emitido_em": null,
+   "celulas": 36,
+   "conferidas": 36,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": "coleta_20261013-223143/rreo_anexo07_2019_6.json",
+   "diferencas_de_conteudo_com_o_siconfi": [
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "L",
+     "pdf": 2034972246,
+     "siconfi": 2140132559
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "a",
+     "pdf": 523395299,
+     "siconfi": 525073739
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "b",
+     "pdf": 1986603615,
+     "siconfi": 2024831391
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "c",
+     "pdf": 1222893200,
+     "siconfi": 1261668478
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "d",
+     "pdf": 856118903,
+     "siconfi": 856486070
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "e",
+     "pdf": 430986811,
+     "siconfi": 431750582
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "f",
+     "pdf": 1309057061,
+     "siconfi": 1372690097
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "g",
+     "pdf": 6820622383,
+     "siconfi": 8062004461
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "h",
+     "pdf": 5169081935,
+     "siconfi": 6203954837
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "i",
+     "pdf": 5045747832,
+     "siconfi": 6080620734
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "j",
+     "pdf": 1479946177,
+     "siconfi": 1645691847
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "k",
+     "pdf": 1603985435,
+     "siconfi": 1708381977
+    }
+   ],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "b218b702",
+   "exercicio": 2019,
+   "rotulo": "1º BIMESTRE",
+   "sha256_pdf": "8077a733246d3260f3d9ceeb3a853dce5c50f4316f7ca0fb5aff4623fba24629",
+   "situacao": "continua_recusado",
+   "motivo": "período não encontrado na impressão do Siconfi"
+  },
+  {
+   "snapshot": "49cc40f6",
+   "exercicio": 2019,
+   "rotulo": "2º BIMESTRE",
+   "sha256_pdf": "754083c12f5d44755289c3d506bea1f34ba9e49bb0fbc2ff46eb9d98b8a32e56",
+   "versao": "rp-rreo-siconfi/1",
+   "escopo": "consolidado",
+   "data_final": "2019-04-30",
+   "emitido_em": null,
+   "celulas": 36,
+   "conferidas": 36,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": "coleta_20261013-223143/rreo_anexo07_2019_2.json",
+   "diferencas_de_conteudo_com_o_siconfi": [
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "L",
+     "pdf": 4139984504,
+     "siconfi": 4671907788
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "a",
+     "pdf": 523390350,
+     "siconfi": 525068790
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "b",
+     "pdf": 1986603615,
+     "siconfi": 2024831391
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "c",
+     "pdf": 1164701865,
+     "siconfi": 1202371743
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "e",
+     "pdf": 796803502,
+     "siconfi": 799039840
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "f",
+     "pdf": 1309057061,
+     "siconfi": 1372690097
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "g",
+     "pdf": 6820622383,
+     "siconfi": 8066255579
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "h",
+     "pdf": 4435358656,
+     "siconfi": 5172854312
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "i",
+     "pdf": 4071626771,
+     "siconfi": 4805766495
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "j",
+     "pdf": 714871671,
+     "siconfi": 760311233
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "k",
+     "pdf": 3343181002,
+     "siconfi": 3872867948
+    }
+   ],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "ea117bf6",
+   "exercicio": 2019,
+   "rotulo": "4º BIMESTRE",
+   "sha256_pdf": "54ca769594e754475e0a56bd814d6c937f3c9c84d01b7e5aa27d00d570b65a57",
+   "versao": "rp-rreo-siconfi/1",
+   "escopo": "consolidado",
+   "data_final": "2019-08-31",
+   "emitido_em": null,
+   "celulas": 36,
+   "conferidas": 36,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": "coleta_20261013-223143/rreo_anexo07_2019_4.json",
+   "diferencas_de_conteudo_com_o_siconfi": [
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "L",
+     "pdf": 3071310275,
+     "siconfi": 3369347070
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "a",
+     "pdf": 523390350,
+     "siconfi": 525068790
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "b",
+     "pdf": 1986603615,
+     "siconfi": 2024831391
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "c",
+     "pdf": 1208887808,
+     "siconfi": 1247663086
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "d",
+     "pdf": 553504143,
+     "siconfi": 553605171
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "e",
+     "pdf": 747602014,
+     "siconfi": 748631924
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "f",
+     "pdf": 1309057061,
+     "siconfi": 1372690097
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "g",
+     "pdf": 6820622383,
+     "siconfi": 8066255579
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "h",
+     "pdf": 5150927644,
+     "siconfi": 6111999454
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "i",
+     "pdf": 4885273803,
+     "siconfi": 5846210418
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "j",
+     "pdf": 920697380,
+     "siconfi": 972020112
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "k",
+     "pdf": 2323708261,
+     "siconfi": 2620715146
+    }
+   ],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "35dae607",
+   "exercicio": 2019,
+   "rotulo": "5º BIMESTRE",
+   "sha256_pdf": "63d37776f7a8b6adfef9f4df97121289e84b070c5ce5e145b8c2bd2930e41ad2",
+   "versao": "rp-rreo-siconfi/1",
+   "escopo": "consolidado",
+   "data_final": "2019-10-31",
+   "emitido_em": null,
+   "celulas": 36,
+   "conferidas": 36,
+   "divergentes": [],
+   "linhas_sem_fonte_independente": [],
+   "segunda_leitura_problemas": [],
+   "siconfi": "coleta_20261013-223143/rreo_anexo07_2019_5.json",
+   "diferencas_de_conteudo_com_o_siconfi": [
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "L",
+     "pdf": 2750528762,
+     "siconfi": 2976847368
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "a",
+     "pdf": 523390350,
+     "siconfi": 525068790
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "b",
+     "pdf": 1986603615,
+     "siconfi": 2024831391
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "c",
+     "pdf": 1210493477,
+     "siconfi": 1249268755
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "d",
+     "pdf": 555955652,
+     "siconfi": 556056680
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "e",
+     "pdf": 743544836,
+     "siconfi": 744574746
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "f",
+     "pdf": 1309057061,
+     "siconfi": 1372690097
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "g",
+     "pdf": 6820622383,
+     "siconfi": 8062004461
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "h",
+     "pdf": 5148717127,
+     "siconfi": 6168009760
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "i",
+     "pdf": 4978178779,
+     "siconfi": 5997374822
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "j",
+     "pdf": 1144516739,
+     "siconfi": 1205047114
+    },
+    {
+     "linha": "PODER EXECUTIVO",
+     "coluna": "k",
+     "pdf": 2006983926,
+     "siconfi": 2232272622
+    }
+   ],
+   "situacao": "validado"
+  },
+  {
+   "snapshot": "c39d70b9",
+   "exercicio": 2020,
+   "rotulo": "3º Bimestre 2020 Consolidado",
+   "sha256_pdf": "231fa1ba7e2b0623abfb39879261fe821e3f1bd3bb49b89096969ec1a29dd4f9",
+   "situacao": "continua_recusado",
+   "motivo": "linha 'RESTOS A PAGAR (EXCETO' com 11 número(s); o layout conhecido tem 12 colunas: transcrição parcial recusada"
+  }
+ ]
+}

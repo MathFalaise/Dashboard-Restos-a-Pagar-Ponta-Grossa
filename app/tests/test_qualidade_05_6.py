@@ -163,9 +163,11 @@ def test_verificacoes_iguais_a_derivacao_e_interpretadas(real, q_real):
         "continuidade fechamento→abertura": "sem falha", "pareamento de cópias 24xxxxx": "sem falha",
         # 09/10/2026: + RREO-COL v3 (174 of the 396 new columns differ) and the COPIA-ORIGEM v1 record (121 copies of
         # 2024/2025 left out of the v3 view); before: 466 de 792
-        "conciliação RREO × API (colunas com diferença)": "colunas com diferença: 640 de 1188",
+        # 13/10/2026 (rp-normalizador/3): the 3 PDFs the extractor refused are read by the layout rules; their 108
+        # columns (3 PDFs x 12 x 3 versions) join the reconciliation and the 'PDFs não lidos: 3' check is gone;
+        # before: 640 de 1188
+        "conciliação RREO × API (colunas com diferença)": "colunas com diferença: 706 de 1296",
         "cópias 24xxxxx fora do indicador (COPIA-ORIGEM v1)": "informativo: 121",
-        "RREO sem valores extraídos (ver problemas da normalização)": "PDFs não lidos: 3",
         # 10/10/2026: + CONS-PAR v4 (the homologated base's 2026 pairs, all counted once)
         "pares 1↔15 contados uma vez no Município (CONS-PAR v4)": "sem falha"}
     assert all(v["catalogada"] for v in vs.values())
@@ -184,16 +186,18 @@ def test_cinco_situacoes_iguais_a_reconciliacao(real, q_real):
                                                                and x["diferenca_c"] == 0)
     assert dr["sem_diferenca_contada_como_explicada"] == 0
     assert not any(x["diferenca_c"] == 0 and x["situacao_da_diferenca"] != "sem diferença" for x in linhas)
-    assert (dr["documentos"], dr["linhas"], dr["total_por_regra"]) == (
-        32, 1152, {"RREO-COL v1": 384, "RREO-COL v2": 384, "RREO-COL v3": 384})      # v3 since 09/10/2026
+    assert (dr["documentos"], dr["linhas"], dr["total_por_regra"]) == (            # v3 since 09/10/2026; 35 PDFs
+        35, 1260, {"RREO-COL v1": 420, "RREO-COL v2": 420, "RREO-COL v3": 420})      # since 13/10/2026 (before: 32)
     coe = p.coerencia_entre_publicacoes()["comparacoes"]
     exibidas = [x for x in coe if x["mais_recente"]]
-    assert len(exibidas) == 12 and dr["total_coerencia"] == {"exibida": 12, "todas": len(coe)}
+    # 16 since 13/10/2026: the December RREOs of 2016, 2018 and 2019 (layout rules) open 4 more comparisons
+    assert len(exibidas) == 16 and dr["total_coerencia"] == {"exibida": 16, "todas": len(coe)}
     contagem = Counter(x["situacao_da_diferenca"] for x in exibidas)
     assert dr["coerencia"]["exibida"] == {s: contagem[s] for s in SITUACOES_DAS_DIFERENCAS}
     c = dr["conferencia_com_a_verificacao"]
     assert c["confere"] and (c["verificacao"]["com_diferenca"], c["pdfs_repetidos"]["com_diferenca"],
-                             c["reconciliacao"]["com_diferenca"]) == (640, 12, 628)      # with v3; before: (466, 8, 458)
+                             c["reconciliacao"]["com_diferenca"]) == (706, 12, 694)      # with v3 and the 3 PDFs
+    # read by the layout rules (13/10/2026); before: (640, 12, 628); before v3: (466, 8, 458)
 
 
 def test_drill_down_real_leva_ao_registro(real):
