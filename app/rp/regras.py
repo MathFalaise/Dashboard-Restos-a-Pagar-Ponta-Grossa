@@ -15,6 +15,8 @@ from . import governanca
 
 E2 = "etapa02/RELATORIO_ETAPA02.md"
 E3 = "etapa03/RELATORIO_ETAPA03.md"
+CONC = "docs/audits/rreo/CONCILIACAO_20261009.md"
+RP26 = "docs/audits/rreo/RP_2024_2026.md"
 
 # codigo, versao, tipo, uso, status_evidencia, definicao, fonte
 REGRAS = [
@@ -39,6 +41,10 @@ REGRAS = [
     ("MOV-REF", 1, "interpretacao", "estavel", "FORTE EVIDÊNCIA",
      "Lançamentos 40/41: a liquidação paga é (exercicioPagamento, noPagamento) — rótulos trocados; "
      "30/31/50/51: (exercicioLiquidacao, noLiquidacao).", f"{E2} §2.2"),
+    ("MOV-REF", 2, "interpretacao", "experimental", "FORTE EVIDÊNCIA",
+     "Como a v1, mais o lançamento 33 'Em Liquidação': registro de etapa sem efeito nos saldos (valorALiquidar e "
+     "valorAPagar iguais antes e depois do lançamento nos 2 casos observados); efeito 'em_liquidacao', valor 0; "
+     "a liquidação referida está nos rótulos de liquidação, como em 30/31.", f"{CONC} §8"),
     ("PAR-24", 1, "pareamento", "estavel", "FORTE EVIDÊNCIA",
      "A (entidade 1, empenho ≥ 2.400.000) ↔ B (entidade 15, mesmo anoempenho, empenho − 2.400.000), mesmo corte, "
      "mesmo CNPJ/CPF e mesma data de emissão.", f"{E2} §3.5 + ADENDO"),
@@ -57,6 +63,35 @@ REGRAS = [
     ("ANOM-CONT", 1, "anomalia", "estavel", "CONFIRMADO",
      "Continuidade: proc(A+1)=S3 final de A e aproc(A+1)=S2 final de A; saldo final ≠ 0 exige presença em A+1.",
      f"{E2} §1.3"),
+    # ---- 09/10/2026: cell-by-cell reconciliation API x RREO x Siconfi (docs/audits/rreo/CONCILIACAO_20261009.md)
+    ("CANC", 2, "classificacao", "experimental", "FORTE EVIDÊNCIA",
+     "canceladoAProc de registro com aproc>0: primeiro cancela o RP não processado ainda a liquidar "
+     "(aproc − max(liquidado, 0)) → não processado (j); o excedente é processado (d). Registro só processado: tudo "
+     "processado (d). Valor negativo (estorno de cancelamento) fica no não processado, como na v1.", f"{CONC} §3"),
+    ("RREO-COL", 3, "agregacao", "experimental", "FORTE EVIDÊNCIA",
+     "Como a v2 (pagamento segue a CATEGORIA do registro: c += ΣpagoAProc[só-P]; i += ΣpagoProc[só-N]), com a divisão "
+     "dos cancelamentos entre (d) e (j) pela CANC v2. e=a+b−c−d; k=f+g−i−j; L=e+k. Calculada no escopo das regras "
+     "ESCOPO-MUN v1 e COPIA-ORIGEM v1 (visão da entidade 1 sem as cópias antes de 2026; Município com a entidade 7 "
+     "até 2020 quando conhecida).", f"{CONC} §3"),
+    ("ESCOPO-MUN", 1, "consolidacao", "experimental", "FORTE EVIDÊNCIA",
+     "Município = entidades do catálogo do portal + entidade 7 (fora do catálogo; Agência Reguladora de Águas e "
+     "Saneamento Básico, nome inferido da fonte de recurso 49) nos exercícios até 2020, a partir do momento em que a "
+     "base a conhece (alguma coleta dela até a vigência). Conhecida, falta de retrato num corte = Município "
+     "indisponível, nunca zero.", f"{CONC} §3"),
+    ("COPIA-ORIGEM", 1, "consolidacao", "experimental", "FORTE EVIDÊNCIA",
+     "Cópias 24xxxxx da entidade 1 (lado A do PAR-24) não compõem indicador nos exercícios anteriores a 2026: foram "
+     "criadas em 2026 com efeito retroativo. Ficam no bruto, na normalização, no pareamento e nas anomalias.",
+     f"{CONC} §3"),
+    # ---- 10/10/2026: pairs counted once in the Municipality (docs/audits/rreo/RP_2024_2026.md section 8, D1)
+    # v3 is the number the corrective review of 30/09/2026 reserved for a candidate that was never created ('saldo
+    # final de B' at the year's closing; CORRECTIONS_STAGES_01_TO_04_4.md section 4): this rule is v4, not that one.
+    ("CONS-PAR", 4, "consolidacao", "experimental", "FORTE EVIDÊNCIA",
+     "Município, com a cópia A dentro do indicador (a partir de 2026, pela COPIA-ORIGEM v1): par do PAR-24 v1 no mesmo "
+     "corte com a mesma inscrição (proc e aproc iguais) e sem nenhuma execução no original B (pago, cancelado e "
+     "liquidado zero) → o registro B não é somado no Município; o RP é contado uma vez, na cópia A, onde é executado. "
+     "Como B não tem execução, sair o registro é o mesmo que sair a inscrição (CONS-PAR v1). Par com execução em B não "
+     "é consolidado (os dois lados ficam e a verificação registra). A visão de cada entidade não muda.",
+     f"{RP26} §8 (D1)"),
 ]
 
 ANOMALIAS = [
@@ -83,6 +118,9 @@ PARAMETROS = {
     ("PAR-24", 1): {"entidade_copia": 1, "entidade_original": 15, "base_empenho_copia": 2400000,
                     "campos_de_conferencia": ["cnpj", "data_emissao"]},
     ("CONC-RREO", 1): {"entidade_do_rreo_por_entidade": 1},
+    ("ESCOPO-MUN", 1): {"entidade": 7, "ate_exercicio": 2020,
+                        "nome_inferido": "Agência Reguladora de Águas e Saneamento Básico"},
+    ("COPIA-ORIGEM", 1): {"entidade_copia": 1, "base_empenho_copia": 2400000, "primeiro_exercicio": 2026},
 }
 
 

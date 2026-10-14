@@ -138,6 +138,11 @@ DERIVADOS = {
                                 ("CANC", 1)),
 }
 
+# Limitation about the 1 <-> 15 pairs: the methodology query replaces it with the text of the rules in force
+# (Nucleo.tratamento_dos_pares).
+LIMITACAO_PARES = ("Os empenhos 24xxxxx da Prefeitura espelham registros da Fundação Municipal de Saúde; a natureza "
+                   "dessas cópias não está determinada e os dois lados continuam nos totais, como a API devolve.")
+
 METODOLOGIA = {
     "dados_operacionais": ("Portal da Transparência de Ponta Grossa — dados da API do sistema Elotech/Oxy Transparência. "
                            "São os registros granulares de Restos a Pagar por empenho, coletados pelo coletor do projeto."),
@@ -165,8 +170,7 @@ METODOLOGIA = {
     "limitacoes": [
         "A base do Município muda depois do fim do exercício: lançamentos com data no passado e registros incluídos "
         "depois aparecem em cortes antigos (Etapa 04.4).",
-        "Os empenhos 24xxxxx da Prefeitura espelham registros da Fundação Municipal de Saúde; a natureza dessas "
-        "cópias não está determinada e os dois lados continuam nos totais, como a API devolve.",
+        LIMITACAO_PARES,
         "Parte das diferenças entre a API e o RREO está sem explicação documentada ('não determinada'); a origem foi "
         "perguntada no pedido e-SIC em rascunho.",
         "A reconciliação 'como estava em' só existe para as datas que têm derivação 'como estava em' própria "

@@ -10,12 +10,21 @@ docs/stages/04-pipeline/batches/consistencia_rreo.md.
 """
 import re
 
-from conftest import ARMAZEM_REAL, RAIZ_PROJETO, SNAPSHOTS_HOMOLOGADOS, manifestos_homologados
+from conftest import ARMAZEM_REAL, RAIZ_PROJETO, SNAPSHOTS_HOMOLOGADOS, evidencias_homologadas, manifestos_homologados
 
-from rp import banco
+from rp import banco, derivar
 
 HASH_ATUAL = "2f6b4e295ce795934f7051fba31d9d3c1b5bc42c8858d4622a3e89ec88e3f2a5"      # REPORT_04_4.md, Lote M
 HASH_EM_2909 = "b8a0b2ed2328bf093f3f44d4a51dd70f0063d2c9c827b981520a8f921f142a68"
+# Promotion of 09/10/2026 (RREO-COL v3, CANC v2, ESCOPO-MUN v1, COPIA-ORIGEM v1; docs/audits/rreo/CONCILIACAO_20261009.md):
+# the complete result of the same homologated base gains the rows of the new rules. The homologated hashes above stay
+# the reference: WITHOUT those rows the result must be exactly the homologated one (the promotion only adds rows).
+HASH_ATUAL_20261009 = "adc55b1913d0b553a2644f0c783e388074cbd1da1eb2e90902b6e07fc29952f2"
+HASH_EM_2909_20261009 = "96777ec6a17da54b09812422695b14a9bb0dc89b4d3563a3712f9964ccc699a4"
+# Promotion of 10/10/2026 (CONS-PAR v4; docs/audits/rreo/RP_2024_2026.md): one step later, same proof. Without the
+# CONS-PAR v4 rows the result is exactly the one of 09/10 (the hashes above); the complete result is recorded here.
+HASH_ATUAL_20261010 = "15e9199534d862c030d13ce7b3036df1d6926dc8de31c3506f9bf7583c27f530"
+HASH_EM_2909_20261010 = "4002ccc2634021abf2e3ace910b8d18dc3311f572405912ffe389728277ea791"
 
 
 def test_armazem_real_intacto_e_integro(real):
@@ -25,13 +34,23 @@ def test_armazem_real_intacto_e_integro(real):
     # the whole homologated base is intact; the store may only have, IN ADDITION, the snapshots of later loads (D1)
     todos = {p.relative_to(ARMAZEM_REAL).as_posix() for p in (ARMAZEM_REAL / "coletas").rglob("*.json")}
     posteriores = todos - {rel for rel, _ in homologados}
+    # ... and the external evidence recorded after it (the first one: Siconfi declarations, 09/10/2026)
+    ev_homologadas = {rel for rel, _ in evidencias_homologadas(real["armazem"])}
+    ev_posteriores = [rel for rel, _ in real["armazem"].evidencias() if rel not in ev_homologadas]
     assert sorted(banco.verificar(real["con"], real["armazem"])) == sorted(
-        f"manifesto fora do banco: {rel}" for rel in posteriores)
+        [f"manifesto fora do banco: {rel}" for rel in posteriores] + [f"evidencia fora do banco: {rel}" for rel in ev_posteriores])
 
 
 def test_hashes_de_resultado_iguais_aos_da_04_4(real):
-    h = dict(real["con"].execute("SELECT id, hash_resultado FROM derivacao_execucao").fetchall())
-    assert h[real["did"]] == HASH_ATUAL and h[real["did_2909"]] == HASH_EM_2909
+    con = real["con"]
+    sem = derivar.REGRAS_DE_20261009 | derivar.REGRAS_DE_20261010
+    assert derivar.hash_resultado(con, real["did"], sem) == HASH_ATUAL               # homologated part: unchanged
+    assert derivar.hash_resultado(con, real["did_2909"], sem) == HASH_EM_2909
+    sem = derivar.REGRAS_DE_20261010                                                 # 09/10 result: unchanged
+    assert derivar.hash_resultado(con, real["did"], sem) == HASH_ATUAL_20261009
+    assert derivar.hash_resultado(con, real["did_2909"], sem) == HASH_EM_2909_20261009
+    h = dict(con.execute("SELECT id, hash_resultado FROM derivacao_execucao").fetchall())
+    assert (h[real["did"]], h[real["did_2909"]]) == (HASH_ATUAL_20261010, HASH_EM_2909_20261010)
 
 
 def test_caso_5659_2025(real):
@@ -141,7 +160,7 @@ def test_674_426_01_e_coerencia_entre_publicacoes(real):
     (x,) = [x for x in coe if (x["escopo"], x["de"], x["data_final_para"]) == ("entidade", 2024, "2025-12-31")]
     assert x["diferenca_c"] == 67442601 and (x["rreo_L_de_c"], x["rreo_a_mais_f_para_c"]) == (1784893028, 1852335629)
     assert x["api_s1_de_c"] == x["api_a_mais_f_para_c"] == 1853176629          # the API reproduces the later publication
-    assert x["situacao_da_diferenca"] == "parcialmente explicada"
+    assert x["situacao_da_diferenca"] == "explicada"       # attributed to records on 09/10/2026 (before: partially)
     # the whole 04.4 table that the production extractor can read (2020 onwards) is reproduced to the cent
     tabela = _consistencia_da_04_4()
     conferidas = 0
@@ -172,7 +191,7 @@ def test_retrato_historico_29_09(real):
     r = p.indicadores(2025, "2025-12-31", entidade=1, em="2026-09-29")
     assert r["retrato"]["texto"] == ("Como a base estava em 29/09/2026: exercício de 2025, corte 31/12/2025, "
                                      "coletado em 29/09/2026")
-    assert r["reconciliacao"].startswith("24 comparações coluna a coluna")      # 12 columns x RREO-COL v1/v2
+    assert r["reconciliacao"].startswith("36 comparações coluna a coluna")      # 12 columns x RREO-COL v1/v2/v3 (09/10/2026)
     atual = p.indicadores(2025, "2025-12-31", entidade=1)
     assert atual["retrato"]["texto"].startswith("Estado atual da base para o exercício de 2025, corte 31/12/2025")
     assert atual["valores"]["saldo_total"]["valor_c"] == r["valores"]["saldo_total"]["valor_c"]   # identical re-collection

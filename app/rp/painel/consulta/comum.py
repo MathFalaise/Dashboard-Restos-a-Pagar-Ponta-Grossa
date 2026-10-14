@@ -24,6 +24,8 @@ SITUACOES_DO_DADO = {
     "valor_recusado": "dado indisponível: o retrato do corte tem campo monetário ausente, nulo ou inválido "
                       "(VALOR-RECUSADO); o registro nunca é somado como zero",
     "divergente": "dado com diferença em relação ao RREO (a diferença é mostrada; o valor da API não muda)",
+    "fora_do_escopo": "entidade fora do catálogo do portal e fora do escopo do Município neste exercício (regra "
+                      "ESCOPO-MUN v1): listada, não somada",
 }
 # Situation of a series POINT (docs/stages/05-analysis/ANALYTICAL_CONTRACT.md section 2): extends the taxonomy
 # above, without a parallel one. 'municipio_indisponivel' comes in 05.2; 'exercicio_sem_cobertura' comes in 05.3.
@@ -80,6 +82,19 @@ INTERPRETACOES_DE_VERIFICACAO = {
     "RREO sem valores extraídos (ver problemas da normalização)": {
         "regra": ("CONC-RREO", 1), "natureza": "pdfs_nao_lidos", "anomalias": (),
         "verificados": "PDFs do RREO", "falhas": "PDFs que o extrator de produção não leu"},
+    "cópias 24xxxxx fora do indicador (COPIA-ORIGEM v1)": {
+        "regra": ("COPIA-ORIGEM", 1), "natureza": "informativo", "anomalias": ("COPIA-24",),
+        "verificados": "cópias 24xxxxx da entidade 1 deixadas fora da visão da RREO-COL v3 num retrato anterior a 2026",
+        "falhas": "sempre 0: registro informativo (as cópias continuam no bruto, na normalização e no pareamento)"},
+    "entidade fora do catálogo no Município (ESCOPO-MUN v1)": {
+        "regra": ("ESCOPO-MUN", 1), "natureza": "conformidade", "anomalias": (),
+        "verificados": "cortes até 2020 em que a entidade 7 compõe o Município (base que já a conhece)",
+        "falhas": "cortes sem retrato da entidade 7: o Município da RREO-COL v3 fica indisponível (nunca zero)"},
+    "pares 1↔15 contados uma vez no Município (CONS-PAR v4)": {
+        "regra": ("CONS-PAR", 4), "natureza": "conformidade",
+        "anomalias": ("PAR-INSCRICAO-DIVERGENTE", "PAR-EXECUCAO-DOIS-LADOS"),
+        "verificados": "pares cópia ↔ original do corte com a cópia dentro do indicador (a partir de 2026)",
+        "falhas": "pares que continuam contados duas vezes no Município: o original tem execução ou inscrição diferente"},
     vigencia.VERIF_RETRATO_AMBIGUO: {
         "regra": ("ANOM-REG", 1), "natureza": "conformidade", "anomalias": ("CHAVE-DUP",),
         "verificados": "retrato mais recente de um corte com chave de empenho repetida",
@@ -153,6 +168,10 @@ SOMAS = [
 ]
 # rules the indicators and groupings depend on (S1-S3 in the balances, CAT in the grouping by category)
 REGRAS_DO_INDICADOR = {("S1", 1), ("S2", 1), ("S3", 1), ("CAT", 1)}
+# scope rules: applied to the published indicator only while operational with compoe_indicador_publicado = 1
+REGRA_ESCOPO_MUN = ("ESCOPO-MUN", 1)
+REGRA_COPIAS = ("COPIA-ORIGEM", 1)
+REGRA_PARES = ("CONS-PAR", 4)   # Municipality: the original of a pair with the same inscription and no execution leaves
 
 DIMENSOES = {
     "entidade": ["r.entidade"], "anoempenho": ["r.anoempenho"], "categoria": ["d.categoria"],

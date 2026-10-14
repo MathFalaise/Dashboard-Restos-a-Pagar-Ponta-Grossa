@@ -10,7 +10,7 @@ Only three things are computed here, all in integers and checked:
 Everything else (indicators, series, composition, entities) comes unchanged from the other methods.
 """
 from .. import classificacao
-from .comum import fechamento
+from .comum import fechamento, instante
 
 TOPO_FONTES = 6
 TOPO_FUNCOES = 8
@@ -100,8 +100,16 @@ class Visao:
 
     def _saldo_por_entidade(self, exercicio, data_final, em, total):
         linhas = self.entidades_do_corte(exercicio, data_final, em)["linhas"]
+        no_municipio = None
+        if self._escopo_aplicado()["pares"]:
+            # CONS-PAR v4: each entity's share of the Municipality (an original counted in its copy adds nothing here),
+            # so that the parts still add up to the total
+            ctx = self.contexto()
+            corte = self._corte(ctx, exercicio, data_final, None, instante(em))
+            no_municipio = {g["chave"][0]: g["saldo_total_c"] for g in self._por_grupo(ctx, corte["somar"], ["r.entidade"])}
         itens = [{"chave": x["entidade"], "rotulo": x["nome"] or f"entidade {x['entidade']}",
-                  "valor_c": x["valores"]["saldo_total"], "entidade": x["entidade"]}
+                  "valor_c": (x["valores"]["saldo_total"] if no_municipio is None
+                              else no_municipio.get(x["entidade"], 0)), "entidade": x["entidade"]}
                  for x in linhas if x["entra_no_total"] and x["valores"]]
         return particao(total, itens, TOPO_ENTIDADES)
 

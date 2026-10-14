@@ -161,8 +161,13 @@ def test_verificacoes_iguais_a_derivacao_e_interpretadas(real, q_real):
     assert {k: (len(v["itens"]), v["verificados"], v["falhas"]) for k, v in vs.items()} == esperado
     assert {v["descricao"]: v["situacao"] for v in vs.values()} == {
         "continuidade fechamento→abertura": "sem falha", "pareamento de cópias 24xxxxx": "sem falha",
-        "conciliação RREO × API (colunas com diferença)": "colunas com diferença: 466 de 792",
-        "RREO sem valores extraídos (ver problemas da normalização)": "PDFs não lidos: 3"}
+        # 09/10/2026: + RREO-COL v3 (174 of the 396 new columns differ) and the COPIA-ORIGEM v1 record (121 copies of
+        # 2024/2025 left out of the v3 view); before: 466 de 792
+        "conciliação RREO × API (colunas com diferença)": "colunas com diferença: 640 de 1188",
+        "cópias 24xxxxx fora do indicador (COPIA-ORIGEM v1)": "informativo: 121",
+        "RREO sem valores extraídos (ver problemas da normalização)": "PDFs não lidos: 3",
+        # 10/10/2026: + CONS-PAR v4 (the homologated base's 2026 pairs, all counted once)
+        "pares 1↔15 contados uma vez no Município (CONS-PAR v4)": "sem falha"}
     assert all(v["catalogada"] for v in vs.values())
     cont = vs[("continuidade fechamento→abertura", "ANOM-CONT v1")]
     assert [a["tipo"] for a in cont["anomalias_ligadas"]] == ["SALDO-SEM-CONTINUIDADE", "DESCONTINUIDADE"]
@@ -172,14 +177,15 @@ def test_verificacoes_iguais_a_derivacao_e_interpretadas(real, q_real):
 def test_cinco_situacoes_iguais_a_reconciliacao(real, q_real):
     p, dr = real["painel"], q_real["diferencas_rreo"]
     linhas = p.reconciliacao()["linhas"]
-    for regra in ("RREO-COL v1", "RREO-COL v2"):
+    for regra in ("RREO-COL v1", "RREO-COL v2", "RREO-COL v3"):
         assert dr["por_regra"][regra] == {s: sum(1 for x in linhas if x["regra_agregacao"]["regra"] == regra and
                                                  x["situacao_da_diferenca"] == s) for s in SITUACOES_DAS_DIFERENCAS}
         assert dr["por_regra"][regra]["sem diferença"] == sum(1 for x in linhas if x["regra_agregacao"]["regra"] == regra
                                                                and x["diferenca_c"] == 0)
     assert dr["sem_diferenca_contada_como_explicada"] == 0
     assert not any(x["diferenca_c"] == 0 and x["situacao_da_diferenca"] != "sem diferença" for x in linhas)
-    assert (dr["documentos"], dr["linhas"], dr["total_por_regra"]) == (32, 768, {"RREO-COL v1": 384, "RREO-COL v2": 384})
+    assert (dr["documentos"], dr["linhas"], dr["total_por_regra"]) == (
+        32, 1152, {"RREO-COL v1": 384, "RREO-COL v2": 384, "RREO-COL v3": 384})      # v3 since 09/10/2026
     coe = p.coerencia_entre_publicacoes()["comparacoes"]
     exibidas = [x for x in coe if x["mais_recente"]]
     assert len(exibidas) == 12 and dr["total_coerencia"] == {"exibida": 12, "todas": len(coe)}
@@ -187,7 +193,7 @@ def test_cinco_situacoes_iguais_a_reconciliacao(real, q_real):
     assert dr["coerencia"]["exibida"] == {s: contagem[s] for s in SITUACOES_DAS_DIFERENCAS}
     c = dr["conferencia_com_a_verificacao"]
     assert c["confere"] and (c["verificacao"]["com_diferenca"], c["pdfs_repetidos"]["com_diferenca"],
-                             c["reconciliacao"]["com_diferenca"]) == (466, 8, 458)
+                             c["reconciliacao"]["com_diferenca"]) == (640, 12, 628)      # with v3; before: (466, 8, 458)
 
 
 def test_drill_down_real_leva_ao_registro(real):

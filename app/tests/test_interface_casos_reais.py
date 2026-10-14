@@ -99,7 +99,8 @@ def test_674_426_01(app):
     assert v["coe-entidade-2024"] == 67442601 and v["coe-consolidado-2024"] == 66976165
     assert v["coe-entidade-2025"] == v["coe-consolidado-2025"] == 92570262
     linha = re.search(r'id="coe-entidade-2024".*?</tr>', corpo, re.S).group(0)
-    assert "parcialmente explicada" in linha and "R$ 18.531.766,29" in linha      # API today = opening published later
+    # attributed to records on 09/10/2026 (before: partially explained); API today = opening published later
+    assert "explicada" in linha and "parcialmente explicada" not in linha and "R$ 18.531.766,29" in linha
     assert "PDFs do RREO" in linha and len(re.findall(r"<code>[0-9a-f]{32}</code>", linha)) >= 3   # 2 PDFs + API
 
 

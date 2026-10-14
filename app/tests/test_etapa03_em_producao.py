@@ -195,8 +195,10 @@ def test_visoes_publicado_e_analiticas(producao):
 
 
 def test_regras_de_consolidacao_sao_experimentais(producao):
-    for uso, status in producao["con"].execute("SELECT uso, status_evidencia FROM regra WHERE codigo='CONS-PAR'"):
-        assert (uso, status) == ("experimental", "HIPÓTESE")
+    # Stage 03's versions (v1, v2). CONS-PAR v4 (10/10/2026) entered the catalog as experimental with strong evidence
+    # (731 of 731 pairs matched and equal to the Siconfi declarations); before it, every CONS-PAR row was this pair
+    for v, uso, status in producao["con"].execute("SELECT versao, uso, status_evidencia FROM regra WHERE codigo='CONS-PAR'"):
+        assert (uso, status) == (("experimental", "FORTE EVIDÊNCIA") if v == 4 else ("experimental", "HIPÓTESE"))
 
 
 # ---------------------------------------------------------------- RREO
@@ -235,7 +237,7 @@ def test_rreo_col_v2_torna_L_igual_a_S1_em_todas_as_visoes(producao):
 
 def test_rreo_sem_snapshot_correspondente_e_registrado_nao_inventado(producao):
     n = um(producao["con"], "SELECT COUNT(*) FROM verificacao WHERE derivacao_id=? AND descricao LIKE 'RREO sem snapshot%'", producao["did"])[0]
-    assert n == 2 * 2
+    assert n == 2 * 3      # 2 PDFs x RREO-COL v1/v2/v3 (v3 since 09/10/2026)
 
 
 # ---------------------------------------------------------------- snapshots over time

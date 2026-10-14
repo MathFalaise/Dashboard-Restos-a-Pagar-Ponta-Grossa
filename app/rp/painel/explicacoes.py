@@ -5,8 +5,9 @@ API value; it only qualifies the difference shown in the reconciliation area. A 
 up with the situation "nao determinada".
 
 EXPLICACOES: API x RREO differences (conciliacao_rreo table). Fields: exercicios, datas_finais (None = all of the
-year), escopo (None = entity and consolidated), colunas (None = all), regra ("RREO-COL v1"/"RREO-COL v2" or
-None = any), classe, situacao, status_evidencia, texto, fonte.
+year), escopo (None = entity and consolidated), colunas (None = all), regra ("RREO-COL v1"/"RREO-COL v2"; "S1 v1" =
+only the comparison of the indicator's S1 balance with the RREO's L; None = any), classe, situacao, status_evidencia,
+texto, fonte; optional `requer` = rule label that must be in the published indicator for the entry to apply.
 COERENCIA: differences between two publications (L of December's RREO of A x (a)+(f) of the RREOs of A+1).
 
 Classes (docs/stages/04-pipeline/REPORT_04_4.md section 9): T = backdated entry made after the RREO was issued;
@@ -21,16 +22,18 @@ SITUACOES = ("explicada", "parcialmente explicada", "hipótese", "não determina
 
 L44 = "docs/stages/04-pipeline/REPORT_04_4.md"
 COR = "docs/stages/04-pipeline/CORRECTIONS_STAGES_01_TO_04_4.md"
+CONC = "docs/audits/rreo/CONCILIACAO_20261009.md"
 
 EXPLICACOES = [
     dict(exercicios=[2024], datas_finais=["2024-12-31"], escopo="entidade", colunas=["c", "d", "e", "i", "j", "k", "L"],
-         regra=None, classe="T", situacao="parcialmente explicada", status_evidencia="FORTE EVIDÊNCIA",
+         regra=None, classe="T", situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
          texto=("As duas publicações oficiais divergem entre si: o RREO de 2024 (emitido em 30/01/2025) fecha a entidade 1 "
                 "em 17.848.930,28 e a abertura de exercícios anteriores do RREO de 2025 é 18.523.356,29 (diferença de "
                 "674.426,01); a API reproduz a publicação posterior (diferença temporal, FORTE EVIDÊNCIA no agregado). "
-                "Localizado: o cancelamento de 2023/9459 (511.782,00), datado de 31/12/2024 e ausente do RREO emitido "
-                "depois. Os demais registros responsáveis (pagamentos, estornos) não foram determinados."),
-         fonte=f"docs/stages/04-pipeline/batches/LOTE_A.md seções 1, 3 e 4; docs/stages/04-pipeline/batches/LOTE_M.md; {L44} seções 7 e 9"),
+                "Atribuída ao centavo: estorno e cancelamento de 2023/9459 (511.782,00) e estornos de pagamento de "
+                "2023/20463, 21018 e 23301 (1.189.159,49 = 1.139.390,69 em i + 49.768,80 em c), todos datados no 6º "
+                "bimestre de 2024 e ausentes do RREO emitido em 30/01/2025."),
+         fonte=f"{CONC} seção 4 (M3); docs/stages/04-pipeline/batches/LOTE_A.md seções 1, 3 e 4; {L44} seções 7 e 9"),
     dict(exercicios=[2024], datas_finais=["2024-12-31"], escopo="consolidado", colunas=["c", "d", "e", "i", "j", "k", "L"],
          regra=None, classe="T", situacao="parcialmente explicada", status_evidencia="FORTE EVIDÊNCIA",
          texto=("No consolidado, o RREO de 2024 fecha em 18.296.817,34 e a abertura de exercícios anteriores do RREO de "
@@ -49,31 +52,30 @@ EXPLICACOES = [
                 "estão na API e não estão em nenhum RREO de 2025; aparecem nos RREOs de 2026. O valor confere ao "
                 "centavo; a causa (inserção depois das publicações) é hipótese forte."),
          fonte=f"docs/stages/04-pipeline/batches/LOTE_R.md; {L44} seções 8, 9 e 13"),
-    dict(exercicios=[2024], datas_finais=["2024-12-31"], escopo=None, colunas=["a", "f"], regra=None, classe="R",
-         situacao="não determinada", status_evidencia="NÃO DETERMINADO",
-         texto="Reclassificação de soma zero de 1.829,50 entre processado e não processado; nenhum registro tem esse valor.",
-         fonte=f"docs/stages/04-pipeline/batches/LOTE_A.md seção 5; {L44} seção 9"),
+    dict(exercicios=[2024, 2025], datas_finais=None, escopo=None, colunas=["a", "f", "d", "j"], regra=None, classe="R",
+         situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("Reclassificação de soma zero de 1.829,50 entre processado (a, d) e não processado (f, j): artefato "
+                "contábil do empenho 2011/7561 (1.829,50), com 'Cancel: 2' e 'Cancel: 3' em 29/12/2023 e um só estorno. "
+                "No RREO defeituoso do 3º bim/2025 os únicos cancelamentos impressos são d −1.829,50 e j +1.829,50; "
+                "some a partir do RREO do 2º bim/2026. Saldos e, k e L não mudam."),
+         fonte=f"{CONC} seção 4 (A1); docs/stages/04-pipeline/batches/LOTE_A.md seção 5"),
     dict(exercicios=[2024], datas_finais=["2024-12-31"], escopo="entidade", colunas=["d", "j"], regra=None, classe="R",
          situacao="não determinada", status_evidencia="NÃO DETERMINADO",
-         texto="Reclassificação de 3.972,66 entre cancelamento de processado (d) e de não processado (j); registros não determinados.",
-         fonte=f"docs/stages/04-pipeline/batches/LOTE_A.md seção 3; {L44} seção 9"),
-    dict(exercicios=[2025], datas_finais=None, escopo=None, colunas=["a", "f", "d", "j"], regra=None, classe="R",
-         situacao="não determinada", status_evidencia="NÃO DETERMINADO",
-         texto="Reclassificação de soma zero de 1.829,50 entre (a)/(f) e (d)/(j); nenhum registro tem esse valor.",
-         fonte=f"docs/stages/02-accounting-validation/REPORT.md seção 7; {L44} seção 9"),
+         texto=("Troca de 3.972,66 entre cancelamento de processado (d) e de não processado (j): o RREO cancela primeiro o "
+                "não processado ainda a liquidar e põe o excedente no processado (CANC v2); com a RREO-COL v3 a troca "
+                "desaparece."),
+         fonte=f"{CONC} seção 3; docs/stages/04-pipeline/batches/LOTE_A.md seção 3"),
     dict(exercicios=[2026], datas_finais=["2026-02-28"], escopo=None, colunas=["a", "f", "d", "j"], regra=None, classe="R",
-         situacao="não determinada", status_evidencia="NÃO DETERMINADO",
-         texto="A mesma reclassificação de 1.829,50 aparece no 1º bimestre de 2026.", fonte=f"{L44} seção 9"),
-    dict(exercicios=[2024], datas_finais=["2024-12-31"], escopo=None, colunas=["f"], regra=None, classe="R",
          situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
-         texto=("2.951,48 = 2011/21040 (entidade 1): estorno de liquidação em 11/01/2024; os RREOs emitidos depois dessa data o tratam "
-                "como não processado, e a API o mantém processado na abertura."),
-         fonte=f"docs/stages/04-pipeline/batches/LOTE_C.md; docs/stages/04-pipeline/batches/LOTE_M.md; {L44} seção 9"),
-    dict(exercicios=[2024], datas_finais=["2024-12-31"], escopo="entidade", colunas=["h"], regra=None, classe="R",
-         situacao="hipótese", status_evidencia="HIPÓTESE",
-         texto=("(h) +2.951,48: o RREO parece somar em (h) a liquidação negativa de 2011/21040, que a regra RREO-COL não "
-                "soma por o registro ser só processado na API (candidato, não confirmado)."),
-         fonte="docs/stages/04-pipeline/batches/LOTE_A.md seção 5"),
+         texto="A mesma reclassificação de 1.829,50 (artefato do empenho 2011/7561) aparece no 1º bimestre de 2026.",
+         fonte=f"{CONC} seção 4 (A1)"),
+    dict(exercicios=[2024], datas_finais=None, escopo=None, colunas=["d", "e", "f", "h", "j", "k", "L"], regra=None,
+         classe="R", situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("2.951,48 = 2011/21040 (entidade 1): estorno da liquidação 2/2011 e cancelamento em 11/01/2024. Os RREOs "
+                "de 2024 o contam como não processado inscrito (f), liquidado negativamente (h) e cancelado (j), sem "
+                "tirá-lo do processado (a): fica em dobro no saldo. Na API é processado, cancelado (d) e fecha; o RREO "
+                "do 1º bim/2025 abre sem ele."),
+         fonte=f"{CONC} seção 4 (A2); docs/stages/04-pipeline/batches/LOTE_C.md e LOTE_A.md seção 5"),
     dict(exercicios=[2023], datas_finais=["2023-12-31"], escopo=None, colunas=["f"], regra=None, classe="R",
          situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
          texto=("2.951,48 = 2011/21040: estorno de liquidação em 11/01/2024; o RREO de 2023, emitido em 29/01/2024, "
@@ -81,8 +83,9 @@ EXPLICACOES = [
          fonte=f"docs/stages/04-pipeline/batches/LOTE_C.md; docs/stages/04-pipeline/batches/LOTE_M.md; {L44} seção 9"),
     dict(exercicios=[2025], datas_finais=["2025-06-30"], escopo=None, colunas=["d", "e", "j", "k", "L"], regra=None,
          classe="T", situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
-         texto=("O RREO do 3º bimestre de 2025 (emitido em 29/07/2025) não tem cancelamentos com data no semestre que o "
-                "4º bimestre (emitido em 26/09/2025) já inclui: foram lançados entre as duas emissões."),
+         texto=("O RREO do 3º bimestre de 2025 (emitido em 29/07/2025) está com defeito nos cancelamentos: o acumulado "
+                "cai de 3.374.389,18 (2º bimestre) para 1.829,50, o que é impossível num valor acumulado. A declaração ao "
+                "Siconfi do mesmo bimestre (j = 12.039.633,26) e o RREO do 4º bimestre são coerentes com a API."),
          fonte=f"docs/stages/04-pipeline/batches/LOTE_R.md; {L44} seção 9"),
     dict(exercicios=[2026], datas_finais=["2026-02-28"], escopo=None, colunas=None, regra=None, classe="T",
          situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
@@ -102,35 +105,90 @@ EXPLICACOES = [
          texto=("Entidade 5, empenho 1485/2025: pagoProc 9.773,02 acima do inscrito processado 6.080,77 (excesso "
                 "3.692,25); hipótese de que o RREO limita o pago processado ao inscrito (1 caso)."),
          fonte=f"docs/stages/04-pipeline/REPORT_04_3.md; {L44} seção 9"),
+    dict(exercicios=[2023], datas_finais=["2023-12-31"], escopo=None, colunas=["j", "k", "L"], regra=None, classe="T",
+         situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("(j) −47.692,04: cancelamentos de 2019/16774 (17.692,04) e 2022/23726 (30.000,00) estornados com data do "
+                "6º bimestre de 2023, depois da emissão do RREO (29/01/2024), que ainda os conta; o RREO do 1º bim/2024 "
+                "abre com eles em aberto, como a API."),
+         fonte=f"{CONC} seção 4 (M2)"),
+    dict(exercicios=[2023, 2024], datas_finais=["2023-12-31", "2024-02-29"], escopo=None, colunas=["d", "e"], regra=None,
+         classe="T", situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("±165,00: cancelamento do empenho 2014/3586 datado de 09/01/2024 na API, contado no RREO do 6º bim/2023 "
+                "e ausente do RREO do 1º bim/2024."),
+         fonte=f"{CONC} seção 4 (M1)"),
+    dict(exercicios=[2024], datas_finais=["2024-02-29"], escopo=None, colunas=["c", "e", "L"], regra=None, classe="T",
+         situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("(c) +25.593,00: pagamentos de 2023/4989 (6.916,00), 2023/20196 (17.817,00) e 2023/22008 (860,00), de "
+                "liquidações de dezembro/2023, fora do RREO de março e dentro do de maio."),
+         fonte=f"{CONC} seção 4 (M5)"),
+    dict(exercicios=[2024], datas_finais=["2024-02-29"], escopo=None, colunas=["h", "i", "k", "L"], regra=None,
+         classe="T", situacao="hipótese", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("(i) e (h) do 1º bimestre de 2024: pagamentos e liquidações que a API data no bimestre e o RREO de março "
+                "não tem; o RREO de maio já os inclui (registrados depois da emissão). Registros não identificados."),
+         fonte=f"{CONC} seção 5"),
+    dict(exercicios=[2026], datas_finais=None, escopo="consolidado", colunas=["L"], regra="S1 v1", classe="C",
+         requer="CONS-PAR v4", situacao="explicada", status_evidencia="CONFIRMADO",
+         texto=("Com a regra CONS-PAR v4 no indicador (desde 10/10/2026), o saldo conta uma vez cada par cópia ↔ "
+                "original: em 2026, os 731 RP da entidade 15 (R$ 31.813.905,47 de inscrição) também estão como cópias "
+                "na entidade 1, com o mesmo credor, data e valor, e só as cópias são executadas. O RREO do portal soma "
+                "os dois lados; a declaração ao Siconfi conta uma vez, como o indicador."),
+         fonte="docs/audits/rreo/RP_2024_2026.md seção 8 (D1)"),
+    dict(exercicios=[2026], datas_finais=["2026-04-30", "2026-06-30", "2026-08-31"], escopo=None, colunas=["j"],
+         regra=None, classe="T", situacao="explicada", status_evidencia="CONFIRMADO",
+         texto=("(j) +1.270.679,25 / +1.251.860,27: cancelamentos com data retroativa lançados entre os retratos de "
+                "29/09 e 06/10/2026 nos empenhos 14515, 15743, 16817, 16818, 18883, 18890, 19215 e 20903 de 2025; o "
+                "retrato de 29/09 bate com o RREO nessa coluna."),
+         fonte="docs/audits/rreo/DIVERGENCIA_2026.md"),
     dict(exercicios=[2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], datas_finais=None, escopo=None,
          colunas=["c", "e", "i", "k", "L"], regra="RREO-COL v1", classe="P", situacao="parcialmente explicada",
          status_evidencia="FORTE EVIDÊNCIA",
          texto=("Com a RREO-COL v1 o pagamento segue o campo da API; com a v2 (experimental), que segue a categoria do "
                 "registro, a diferença em (c)/(i) desaparece ou diminui. Compare com a linha da v2."),
          fonte=f"docs/stages/03-data-model/REPORT.md seção 8; {L44} seções 9 e 14"),
-    dict(exercicios=[2022], datas_finais=["2022-12-31"], escopo=None, colunas=["d", "e", "L"], regra=None, classe="ND",
-         situacao="não determinada", status_evidencia="NÃO DETERMINADO", texto="(d) −159.904,72 em 2022.",
-         fonte="docs/stages/04-pipeline/batches/LOTE_C.md; docs/stages/04-pipeline/batches/hipotese_canc_2020_2026.md"),
-    dict(exercicios=[2020], datas_finais=["2020-12-31"], escopo=None, colunas=["d", "e", "j", "k"], regra=None, classe="H",
-         situacao="hipótese", status_evidencia="HIPÓTESE",
-         texto=("Troca (d)/(j) de 249.027,59 (14 registros 'ambos'): a hipótese do excedente de cancelamento sobre o "
-                "aproc a fecha ao centavo; CANC v2 é candidata, não criada."),
+    dict(exercicios=[2022], datas_finais=["2022-10-31", "2022-12-31"], escopo=None, colunas=["d", "e", "L"], regra=None,
+         classe="R", situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("(d) −151.752,22: o relatório de 2022 contou como cancelamento de processado três estornos de liquidação "
+                "SEM cancelamento, de 24/10/2022: 2019/7079 (142.274,26), 2019/16 (6.715,23) e 2019/8401 (2.762,73). O "
+                "RREO de 2023 os reabre como não processados (abertura = API); os cancelamentos reais são de 2023/2024. "
+                "No 5º bimestre há mais 4.074,49: cancelamento do empenho 2021/16636 que não existe na movimentação "
+                "(lançamento excluído; o 6º bimestre já não o tem)."),
+         fonte=f"{CONC} seção 4 (A3, M4); docs/stages/04-pipeline/batches/LOTE_C.md"),
+    dict(exercicios=[2022], datas_finais=["2022-10-31", "2022-12-31"], escopo=None, colunas=["j", "k", "L"], regra=None,
+         classe="ND", situacao="não determinada", status_evidencia="NÃO DETERMINADO",
+         texto="(j) −7.833,27 no 5º e no 6º bimestres de 2022 (o saldo L contém essa parte).", fonte=f"{CONC} seção 5"),
+    dict(exercicios=[2022], datas_finais=["2022-06-30"], escopo=None, colunas=["c", "e"], regra=None, classe="T",
+         situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("(c) −4.074,49: pagamento do empenho 2021/16636 que o RREO do 3º bimestre mostra e que não existe na "
+                "movimentação (lançamento excluído; o RREO do 4º bimestre já não o tem)."),
+         fonte=f"{CONC} seção 4 (M4)"),
+    dict(exercicios=[2020], datas_finais=None, escopo=None, colunas=["d", "e", "j", "k"], regra=None, classe="H",
+         situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("Troca (d)/(j) de 249.027,59 (14 registros 'ambos'): o RREO cancela primeiro o não processado a liquidar "
+                "e o excedente é processado (CANC v2); com a RREO-COL v3 a troca desaparece."),
          fonte="docs/stages/04-pipeline/batches/LOTE_D.md; docs/stages/04-pipeline/batches/hipotese_canc_2020_2026.md"),
     dict(exercicios=[2021], datas_finais=["2021-12-31"], escopo="consolidado", colunas=["d", "e", "j", "k"], regra=None,
-         classe="H", situacao="hipótese", status_evidencia="HIPÓTESE",
-         texto="Troca (d)/(j) de 757,56: excedente de cancelamento de 2019/1684 (entidade 6) sobre o aproc.",
+         classe="H", situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("Troca (d)/(j) de 757,56: excedente de cancelamento de 2019/1684 (entidade 6) sobre o aproc (CANC v2; "
+                "com a RREO-COL v3 a troca desaparece)."),
          fonte="docs/stages/04-pipeline/batches/LOTE_D.md; docs/stages/04-pipeline/batches/hipotese_canc_2020_2026.md"),
-    dict(exercicios=[2020], datas_finais=["2020-12-31"], escopo="consolidado", colunas=["f", "k", "L"], regra=None,
-         classe="ND", situacao="não determinada", status_evidencia="NÃO DETERMINADO",
-         texto="(f) −180.334,82 de outra entidade que não a 1; o PDF consolidado não detalha por órgão.",
-         fonte=f"docs/stages/04-pipeline/batches/LOTE_D.md; {L44} seções 9 e 15"),
-    dict(exercicios=[2017], datas_finais=["2017-12-31"], escopo=None, colunas=["h"], regra=None, classe="ND",
-         situacao="não determinada", status_evidencia="NÃO DETERMINADO", texto="(h) +1.065.159,06 em 2017.",
-         fonte=f"docs/stages/04-pipeline/batches/LOTE_F.md; {L44} seção 9"),
-    dict(exercicios=[2017], datas_finais=["2017-12-31"], escopo=None, colunas=["d", "e", "j", "k"], regra=None,
-         classe="H", situacao="hipótese", status_evidencia="HIPÓTESE",
-         texto=("Com a hipótese do excedente (7 registros 'ambos'), (j) fecha ao centavo em 2017 e (d) fica em "
-                "−95.522,00 (script da 04.4 reexecutado sobre a base completa na revisão de 30/09/2026)."),
+    dict(exercicios=[2017, 2019, 2020], datas_finais=None, escopo="consolidado", colunas=["a", "b", "f", "g", "k", "L"],
+         regra=None, classe="E", situacao="explicada", status_evidencia="CONFIRMADO",
+         texto=("Entidade 7 (Agência Reguladora de Águas e Saneamento Básico, fora do catálogo do portal): 4 empenhos "
+                "parados desde 2018 somam 180.334,82 (2011/163, 2014/174, 2016/41, 2016/166); em 2017 fecham b 84.524,52, "
+                "f 13.259,02 e g 178.633,74. O RREO consolidado os inclui em 2017, no 3º bim/2019 e em 2020. Com o escopo "
+                "ESCOPO-MUN v1 (RREO-COL v3) a diferença desaparece."),
+         fonte=f"{CONC} seção 3; docs/stages/04-pipeline/batches/LOTE_D.md"),
+    dict(exercicios=[2017], datas_finais=None, escopo=None, colunas=["h"], regra=None, classe="R",
+         situacao="hipótese", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("(h) do RREO menor que as liquidações: os RREOs de 2017 foram gerados entre agosto e dezembro de 2018 e, "
+                "nos do 5º e do 6º bimestre, o próprio PDF tem pagos (i) maiores que liquidados (h), o que a definição do "
+                "MDF não permite. Não afeta e, k nem L."),
+         fonte=f"{CONC} seção 4 (D3); docs/stages/04-pipeline/batches/LOTE_F.md"),
+    dict(exercicios=[2017], datas_finais=["2017-10-31", "2017-12-31"], escopo=None, colunas=["d", "e", "j", "k", "L"],
+         regra=None, classe="T", situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("Com a CANC v2 (excedente de cancelamento), (j) fecha ao centavo em 2017; (d) −95.522,00 = proc + aproc do "
+                "empenho 2014/11805 (79.352,00 + 16.170,00): o RREO conta seu cancelamento em 2017, e a API o mostra em "
+                "aberto em 2018 e 2019 e cancelado em 2020."),
          fonte=f"docs/stages/04-pipeline/batches/hipotese_canc.py; {COR}"),
 ]
 
@@ -139,26 +197,32 @@ COERENCIA = [
          texto=("925.702,62 = inscrição das 20 cópias 24xxxxx: ausentes de todos os RREOs de 2025 e presentes nos de "
                 "2026 (confere pelo valor)."),
          fonte=f"{L44} seções 9 e 12; docs/stages/04-pipeline/batches/consistencia_rreo.md"),
-    dict(escopos=("entidade",), de=2024, classe="T", situacao="parcialmente explicada", status_evidencia="FORTE EVIDÊNCIA",
-         texto=("Diferença temporal entre as publicações (FORTE EVIDÊNCIA no agregado): a API reproduz a abertura "
-                "publicada em 2025. Localizado o cancelamento de 2023/9459 (511.782,00), datado de 31/12/2024 e ausente "
-                "do RREO de 2024; os demais registros responsáveis não foram determinados."),
+    dict(escopos=("entidade",), de=2024, classe="T", situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("A API reproduz a abertura publicada em 2025. Atribuído ao centavo: 674.426,01 = estornos de pagamento de "
+                "2023/20463, 21018 e 23301 (1.189.159,49) − estorno e cancelamento de 2023/9459 (511.782,00) − 2.951,48 "
+                "de 2011/21040 contados em dobro no RREO de 2024."),
          fonte=f"docs/stages/04-pipeline/batches/LOTE_A.md; {L44} seções 7, 9 e 12"),
     dict(escopos=("consolidado",), de=2024, classe="T", situacao="hipótese", status_evidencia="FORTE EVIDÊNCIA",
          texto=("Salto entre publicações: lançamentos com data retroativa feitos depois da emissão (FORTE EVIDÊNCIA no "
                 "agregado; registros localizados só em parte)."),
          fonte=f"{L44} seção 9; docs/stages/04-pipeline/batches/consistencia_rreo.md"),
-    dict(escopos=("entidade", "consolidado"), de=2022, classe="T", situacao="hipótese", status_evidencia="FORTE EVIDÊNCIA",
-         texto=("Salto entre publicações: lançamentos com data retroativa feitos depois da emissão (FORTE EVIDÊNCIA no "
-                "agregado; registros não localizados)."),
+    dict(escopos=("entidade", "consolidado"), de=2022, classe="R", situacao="parcialmente explicada",
+         status_evidencia="FORTE EVIDÊNCIA",
+         texto=("159.585,49 = 151.752,22 de três estornos de liquidação de 24/10/2022 contados como cancelamento no "
+                "fechamento de 2022 (2019/7079, 2019/16, 2019/8401) e reabertos em 2023 + 7.833,27 não determinados."),
          fonte=f"{L44} seção 9; docs/stages/04-pipeline/batches/consistencia_rreo.md"),
-    dict(escopos=("entidade", "consolidado"), de=2023, classe="T", situacao="hipótese", status_evidencia="FORTE EVIDÊNCIA",
-         texto=("Salto entre publicações: lançamentos com data retroativa feitos depois da emissão (FORTE EVIDÊNCIA no "
-                "agregado; registros não localizados)."),
+    dict(escopos=("entidade",), de=2023, classe="T", situacao="explicada", status_evidencia="FORTE EVIDÊNCIA",
+         texto=("47.857,04 = estornos de cancelamento de 2019/16774 e 2022/23726 (47.692,04) + cancelamento de 2014/3586 "
+                "contado em 2023 (165,00); os 2.951,48 de 2011/21040 aparecem nos dois documentos."),
+         fonte=f"{CONC} seção 4 (M1, M2, A2)"),
+    dict(escopos=("consolidado",), de=2023, classe="T", situacao="parcialmente explicada",
+         status_evidencia="FORTE EVIDÊNCIA",
+         texto=("Os mesmos 47.857,04 da entidade 1, menos 3.202,52 de outras entidades não atribuídos a registros."),
          fonte=f"{L44} seção 9; docs/stages/04-pipeline/batches/consistencia_rreo.md"),
-    dict(escopos=("consolidado",), de=2020, classe="ND", situacao="não determinada", status_evidencia="NÃO DETERMINADO",
-         texto="−180.334,82 de outra entidade que não a 1; o PDF consolidado não detalha por órgão.",
-         fonte=f"{L44} seções 9, 12 e 15"),
+    dict(escopos=("consolidado",), de=2020, classe="E", situacao="explicada", status_evidencia="CONFIRMADO",
+         texto=("−180.334,82 = restos a pagar da entidade 7 (Agência Reguladora de Águas e Saneamento Básico, fora do "
+                "catálogo do portal): o consolidado os inclui até 2020 e deixa de incluir em 2021."),
+         fonte=f"{CONC} seção 3"),
 ]
 
 CAMPOS_SAIDA = ("classe", "situacao", "status_evidencia", "texto", "fonte")
@@ -178,10 +242,12 @@ def resumo(achadas):
     return "hipótese" if "hipótese" in s else "não determinada"
 
 
-def explicar(exercicio, data_final, escopo, coluna, regra):
-    """Entries applicable to an API x RREO difference and the summarized situation (see `resumo`)."""
+def explicar(exercicio, data_final, escopo, coluna, regra, aplicadas=frozenset()):
+    """Entries applicable to an API x RREO difference and the summarized situation (see `resumo`). An entry with
+    `requer` (a rule label) only applies while that rule is in the published indicator (`aplicadas`)."""
     achadas = [e for e in EXPLICACOES
                if exercicio in e["exercicios"]
+               and (e.get("requer") is None or e["requer"] in aplicadas)
                and (e["datas_finais"] is None or data_final in e["datas_finais"])
                and (e["escopo"] is None or e["escopo"] == escopo)
                and (e["colunas"] is None or coluna in e["colunas"])

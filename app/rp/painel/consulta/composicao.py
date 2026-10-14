@@ -72,7 +72,7 @@ class Composicao:
         corte = self._corte(ctx, exercicio, data_final, entidade, em)
         codigo = self._situacao_do_ponto(corte, entidade)
         saida = {"consulta": {"exercicio": exercicio, "data_final": data_final, "entidade": entidade, "como_estava_em": em},
-                 "escopo": f"entidade {entidade}" if entidade is not None else "Município (entidades do catálogo oficial do exercício)",
+                 "escopo": f"entidade {entidade}" if entidade is not None else self._texto_escopo_municipio(),
                  "situacao": {"codigo": codigo, "texto": SITUACOES_DO_PONTO[codigo]}, "disponivel": codigo in TEM_VALOR,
                  "motivo_indisponivel": None if codigo in TEM_VALOR else corte["motivo"], "retrato": corte["retrato"],
                  "fonte": fontes.ELOTECH["rotulo"], "total": None, "dimensoes": {},

@@ -99,6 +99,8 @@ class Qualidade:
             return f"colunas com diferença: {falhas} de {verificados}"
         if natureza == "pdfs_nao_lidos":
             return f"PDFs não lidos: {falhas}"
+        if natureza == "informativo":
+            return f"informativo: {verificados}"
         return NAO_CATALOGADA
 
     def _situacao_das_diferencas(self, did):

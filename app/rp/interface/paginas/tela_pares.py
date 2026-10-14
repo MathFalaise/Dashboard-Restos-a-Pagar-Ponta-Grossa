@@ -29,9 +29,8 @@ def pares(p, q):
               for x in r.get("pares", [])[:500]]
     corpo = (f"<h1>{esc(titulo)}</h1>" + _formulario("/pares", sel)
              + '<p class="aviso">Área técnica. Identificação de pares pela regra PAR-24 v1 (operacional): não é '
-               "consolidação. Os dois lados continuam nos indicadores, como a API os devolve. A natureza das cópias "
-               "(duplicidade ou transferência) não está determinada. As visões analíticas CONS-PAR (experimentais) "
-               "não são exibidas nesta interface.</p>"
+               f"consolidação. Nos indicadores: {esc(p.tratamento_dos_pares())} As visões analíticas CONS-PAR "
+               "experimentais não são exibidas nesta interface.</p>"
              + fm.selo("elotech", "derivado", [{"codigo": "PAR-24", "versao": 1, "situacao": "operacional"}],
                        "identificação por regra; nenhum valor é alterado")
              + resumo_html + (_origem_conjunto(r["proveniencia"]) if r.get("proveniencia") else "")

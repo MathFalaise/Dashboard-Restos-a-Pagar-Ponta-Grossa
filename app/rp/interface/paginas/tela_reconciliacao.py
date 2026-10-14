@@ -4,6 +4,8 @@ from .. import formato as fm, portal as P
 from ..formato import esc
 from .estrutura import _explicacoes, _pdf, _registro_tecnico
 
+VERSOES = ("RREO-COL v1", "RREO-COL v2", "RREO-COL v3")
+
 
 def reconciliacao(p, q):
     em = q.data("em")
@@ -11,8 +13,8 @@ def reconciliacao(p, q):
     cab = ('<p class="fontes"><strong>Fonte primária:</strong> API Elotech (Portal da Transparência de Ponta Grossa) · '
            "<strong>Fonte de reconciliação:</strong> RREO Anexo VII (PDF publicado pelo Município)</p>"
            '<p class="nota">A diferença é registro: o valor da API nunca é trocado pelo do RREO. O lado API é a projeção '
-           "dos registros nas colunas do RREO pela regra indicada (RREO-COL v1 não recomendada, v2 experimental), por "
-           "isso sai como valor analítico; o indicador principal não depende dela.</p>")
+           "dos registros nas colunas do RREO pela regra indicada; a situação de cada versão aparece ao lado (só a versão "
+           "operacional compõe o indicador publicado; as outras saem como valor analítico).</p>")
     if exercicio is not None and df is not None and escopo is not None:
         return _reconciliacao_documento(p, q, exercicio, df, escopo, em, cab)
     docs = p.documentos_rreo(em)
@@ -36,7 +38,7 @@ def reconciliacao(p, q):
 
 def _reconciliacao_documento(p, q, exercicio, df, escopo, em, cab):
     somente = q.marcado("somente_diferencas")
-    versao = q.escolha("regra", ("RREO-COL v1", "RREO-COL v2"))
+    versao = q.escolha("regra", VERSOES)
     r = p.reconciliacao(exercicio, df, escopo, somente, em)
     linhas_r = [x for x in r["linhas"] if versao is None or x["regra_agregacao"]["regra"] == versao]
     titulo = f"Reconciliação — {escopo}, exercício {exercicio}, corte {fm.data_br(df)}"
@@ -58,8 +60,8 @@ def _reconciliacao_documento(p, q, exercicio, df, escopo, em, cab):
               f'<input type="hidden" name="data_final" value="{esc(df)}">'
               f'<input type="hidden" name="escopo" value="{esc(escopo)}">'
               + (f'<input type="hidden" name="em" value="{esc(em)}">' if em else "")
-              + f'<label>Regra <select name="regra"><option value="">as duas</option>'
-                f'{fm.opcoes([("RREO-COL v1", "RREO-COL v1"), ("RREO-COL v2", "RREO-COL v2")], versao or "")}</select></label>'
+              + f'<label>Regra <select name="regra"><option value="">todas</option>'
+                f'{fm.opcoes([(v, v) for v in VERSOES], versao or "")}</select></label>'
               + f'<label><input type="checkbox" name="somente_diferencas" value="1"{" checked" if somente else ""}> só '
                 "diferenças</label><button type=\"submit\">Filtrar</button></form>")
     corpo = (f"<h1>{esc(titulo)}</h1>{cab}"

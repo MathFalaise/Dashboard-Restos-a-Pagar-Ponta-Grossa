@@ -1,6 +1,6 @@
 {
  "derivacao": 26,
- "hash_resultado": "b6f80d879ee89d5f17c42de25c6ff3c030b5c7d238a1235035b6b18f23e1802f",
+ "hash_resultado": "ed386665b653a287d7ec60ea2a1ef492397bfa3ff2794426b1b0d4df994f43a8",
  "regras": {
   "CONS-PAR v1": {
    "tipo": "consolidacao",
@@ -42,6 +42,241 @@
   }
  },
  "cortes": [
+  {
+   "exercicio": 2024,
+   "data_final": "2024-02-29",
+   "pares": 1,
+   "mesma_inscricao": 0,
+   "inscricao_lado_a_entidade_1": 841000,
+   "inscricao_lado_b_entidade_15": 1975000,
+   "execucao_lado_a": 0,
+   "execucao_lado_b": 156000,
+   "relacao_inscricao": {
+    "outra": 1
+   },
+   "lado_com_execucao": {
+    "B": 1
+   },
+   "pares_por_anoempenho": {
+    "2023": 1
+   },
+   "efeito_no_municipio": {
+    "oficial (dois lados)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 9401717845,
+     "S1": 9399155999
+    },
+    "CONS-PAR v1 (experimental)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 9401717845,
+     "S1": 9399155999
+    },
+    "CONS-PAR v2 (experimental)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 9401717845,
+     "S1": 9399155999
+    }
+   },
+   "rreo_consolidado_L": 9403800300,
+   "rreo_consolidado_snapshot": "55a3af5b4838488f837763414c9a622a"
+  },
+  {
+   "exercicio": 2024,
+   "data_final": "2024-04-30",
+   "pares": 1,
+   "mesma_inscricao": 0,
+   "inscricao_lado_a_entidade_1": 841000,
+   "inscricao_lado_b_entidade_15": 1975000,
+   "execucao_lado_a": 0,
+   "execucao_lado_b": 576000,
+   "relacao_inscricao": {
+    "outra": 1
+   },
+   "lado_com_execucao": {
+    "B": 1
+   },
+   "pares_por_anoempenho": {
+    "2023": 1
+   },
+   "efeito_no_municipio": {
+    "oficial (dois lados)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 6482841792,
+     "S1": 6476493883
+    },
+    "CONS-PAR v1 (experimental)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 6482841792,
+     "S1": 6476493883
+    },
+    "CONS-PAR v2 (experimental)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 6482841792,
+     "S1": 6476493883
+    }
+   },
+   "rreo_consolidado_L": 6475988589,
+   "rreo_consolidado_snapshot": "bf98fde548a4484c896be9b6f83b570c"
+  },
+  {
+   "exercicio": 2024,
+   "data_final": "2024-06-30",
+   "pares": 1,
+   "mesma_inscricao": 0,
+   "inscricao_lado_a_entidade_1": 841000,
+   "inscricao_lado_b_entidade_15": 1975000,
+   "execucao_lado_a": 0,
+   "execucao_lado_b": 726000,
+   "relacao_inscricao": {
+    "outra": 1
+   },
+   "lado_com_execucao": {
+    "B": 1
+   },
+   "pares_por_anoempenho": {
+    "2023": 1
+   },
+   "efeito_no_municipio": {
+    "oficial (dois lados)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 4994212905,
+     "S1": 4987864996
+    },
+    "CONS-PAR v1 (experimental)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 4994212905,
+     "S1": 4987864996
+    },
+    "CONS-PAR v2 (experimental)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 4994212905,
+     "S1": 4987864996
+    }
+   },
+   "rreo_consolidado_L": 4987319144,
+   "rreo_consolidado_snapshot": "51317c8d70be4e9797ccfc203051b36f"
+  },
+  {
+   "exercicio": 2024,
+   "data_final": "2024-08-31",
+   "pares": 1,
+   "mesma_inscricao": 0,
+   "inscricao_lado_a_entidade_1": 841000,
+   "inscricao_lado_b_entidade_15": 1975000,
+   "execucao_lado_a": 0,
+   "execucao_lado_b": 900000,
+   "relacao_inscricao": {
+    "outra": 1
+   },
+   "lado_com_execucao": {
+    "B": 1
+   },
+   "pares_por_anoempenho": {
+    "2023": 1
+   },
+   "efeito_no_municipio": {
+    "oficial (dois lados)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 3815912903,
+     "S1": 3809564994
+    },
+    "CONS-PAR v1 (experimental)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 3815912903,
+     "S1": 3809564994
+    },
+    "CONS-PAR v2 (experimental)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 3815912903,
+     "S1": 3809564994
+    }
+   },
+   "rreo_consolidado_L": 3809052742,
+   "rreo_consolidado_snapshot": "b721f5df15304a2aa778f0c2f46cedef"
+  },
+  {
+   "exercicio": 2024,
+   "data_final": "2024-10-31",
+   "pares": 1,
+   "mesma_inscricao": 0,
+   "inscricao_lado_a_entidade_1": 841000,
+   "inscricao_lado_b_entidade_15": 1975000,
+   "execucao_lado_a": 0,
+   "execucao_lado_b": 1542000,
+   "relacao_inscricao": {
+    "outra": 1
+   },
+   "lado_com_execucao": {
+    "B": 1
+   },
+   "pares_por_anoempenho": {
+    "2023": 1
+   },
+   "efeito_no_municipio": {
+    "oficial (dois lados)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 2785717771,
+     "S1": 2779369862
+    },
+    "CONS-PAR v1 (experimental)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 2785717771,
+     "S1": 2779369862
+    },
+    "CONS-PAR v2 (experimental)": {
+     "a": 379966848,
+     "b": 1361389674,
+     "f": 1743989201,
+     "g": 12805353444,
+     "L": 2785717771,
+     "S1": 2779369862
+    }
+   },
+   "rreo_consolidado_L": 2778824010,
+   "rreo_consolidado_snapshot": "b694b42a462e4706a354dce55fbb03a2"
+  },
   {
    "exercicio": 2024,
    "data_final": "2024-12-31",
