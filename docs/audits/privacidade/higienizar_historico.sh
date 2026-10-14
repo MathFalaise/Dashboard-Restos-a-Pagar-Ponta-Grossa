@@ -19,9 +19,13 @@ for b in "$@"; do
 done
 git -C "$WORK/espelho.git" for-each-ref --format='%(refname) %(objectname)' > "$WORK/refs_antes.txt"
 git -C "$WORK/espelho.git" count-objects -vH > "$WORK/tamanho_antes.txt"
-# The only text replaced: one real masked-CPF fragment that old report versions cited (the current versions already
-# use a synthetic one). Raw folders, old and new names, leave the history entirely; the public SHA-256 lists stay.
-printf '%s\n' '****NNN****==>****NNN****' > "$WORK/substituicoes.txt"
+# Text replaced in every blob: one real masked-CPF fragment that old report versions cited (the current versions
+# already use a synthetic one). The replacement list itself names that fragment, so it is PRIVATE and never
+# versioned: ~/RestosAPagar_local/segredos/substituicoes_historico.txt (or RP_SUBSTITUICOES), one line
+# "<fragment>==>****NNN****". Raw folders, old and new names, leave the history entirely; the public SHA-256 lists stay.
+SUBST="${RP_SUBSTITUICOES:-$HOME/RestosAPagar_local/segredos/substituicoes_historico.txt}"
+[ -s "$SUBST" ] || { echo "lista privada de substituições ausente: $SUBST" >&2; exit 1; }
+cp "$SUBST" "$WORK/substituicoes.txt"
 python -m git_filter_repo --source "$WORK/espelho.git" --target "$WORK/espelho.git" --force \
     --invert-paths \
     --path data/snapshots --path data/stage01-samples --path data/stage02-raw --path data/backups \
