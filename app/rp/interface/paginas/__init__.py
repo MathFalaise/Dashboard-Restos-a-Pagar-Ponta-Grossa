@@ -26,6 +26,7 @@ from .tela_entidades import entidades
 from .tela_evolucao import evolucao, SERIE_COLUNAS
 from .tela_historico import historico, HISTORICO_COLUNAS
 from .tela_metodologia import metodologia
+from .tela_oficial import oficial
 from .tela_pares import pares
 from .tela_qualidade import qualidade, SITUACAO_CURTA
 from .tela_reconciliacao import reconciliacao
@@ -36,5 +37,5 @@ from .tela_visao import visao
 
 __all__ = ["CABECALHO_CONTRIBUICAO", "comparar", "composicao", "DESTAQUES", "documento", "empenho", "empenho_cortes",
            "empenhos", "entidades", "erro", "esc", "evolucao", "GRUPOS", "historico", "HISTORICO_COLUNAS", "MENU",
-           "metodologia", "NOME_CATEGORIA", "NOME_FAIXA", "pares", "qualidade", "reconciliacao", "resumo", "retratos",
+           "metodologia", "NOME_CATEGORIA", "NOME_FAIXA", "oficial", "pares", "qualidade", "reconciliacao", "resumo", "retratos",
            "SemDados", "SERIE_COLUNAS", "SITUACAO_CURTA", "TAMANHO_PAGINA", "TOTAL_NA_LISTA", "variacao", "visao"]

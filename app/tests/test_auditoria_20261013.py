@@ -267,3 +267,80 @@ def test_metodologia_na_interface(mundo):
     assert status.startswith("400") and "exige a data" in html
     status, _, _ = chamar(app, "/", exercicio=2018, metodologia="outra")
     assert status.startswith("400")
+
+
+# ================================================================== official consolidated series (item 5.1)
+def _leitura_siconfi(pasta, itens_por_periodo, extrato=None):
+    import hashlib
+    import json
+    pasta.mkdir(parents=True)
+    arquivos = {}
+    for (ano, bim), itens in itens_por_periodo.items():
+        corpo = json.dumps({"items": itens, "hasMore": False}).encode()
+        (pasta / f"rreo_anexo07_{ano}_{bim}.json").write_bytes(corpo)
+        arquivos[f"rreo_anexo07_{ano}_{bim}.json"] = {"sha256": hashlib.sha256(corpo).hexdigest()}
+    for ano, itens in (extrato or {}).items():
+        corpo = json.dumps({"items": itens}).encode()
+        (pasta / f"extrato_entregas_{ano}.json").write_bytes(corpo)
+        arquivos[f"extrato_entregas_{ano}.json"] = {"sha256": hashlib.sha256(corpo).hexdigest()}
+    (pasta / "manifest.json").write_text(json.dumps({"arquivos": arquivos}), encoding="utf-8")
+
+
+def _linha(conta, valores):
+    rot = {"a": "Em Exercícios Anteriores (a)", "b": "Em 31 de dezembro de 2025 (b)", "c": "Pagos (c)",
+           "d": "Cancelados (d)", "e": "Saldo e = (a+ b) - (c + d)", "f": "Em Exercícios Anteriores (f)",
+           "g": "Em 31 de dezembro de 2025 (g)", "h": "Liquidados (h)", "i": "Pagos (i)", "j": "Cancelados (j)",
+           "k": "Saldo k = (f + g) - (i + j)", "L": "Saldo Total L = (e + k)"}
+    return [{"conta": conta, "coluna": rot[c], "valor": v} for c, v in valores.items()]
+
+
+def test_SINTETICO_siconfi_ausente_nao_vira_zero_e_sha_divergente_e_recusado(tmp_path):
+    from rp import siconfi
+    exe = {"a": 0, "b": 0, "f": 0, "g": 130.0, "h": 10.0, "i": 10.0, "j": 0, "k": 120.0, "L": 120.0, "e": 0}
+    pasta = tmp_path / "raw" / "coleta_x"
+    _leitura_siconfi(pasta, {
+        (2026, 1): _linha("RESTOS A PAGAR (EXCETO INTRA-ORÇAMENTÁRIOS) (I)", {**exe, "c": 0, "d": 0})
+        + _linha("PODER EXECUTIVO", {**exe, "c": 0, "d": 0}),
+        (2026, 2): _linha("PODER EXECUTIVO", {k: v for k, v in exe.items() if k != "i"}),    # identity breaks
+    }, extrato={2026: [{"entregavel": "Relatório Resumido de Execução Orçamentária", "periodo": 1,
+                         "periodicidade": "B", "status_relatorio": "RE", "data_status": "2026-03-30T10:00:00Z"}]})
+    d1 = siconfi.declaracao(pasta, 2026, 1)
+    assert d1["linhas"]["executivo"]["c"] == 0                      # omitted, identities close: zero
+    assert d1["linhas"]["legislativo"] == {c: 0 for c in siconfi.COLUNAS}   # (I) == Executive: no Legislative RP
+    assert siconfi.grupos(d1["linhas"]["executivo"]) == {"inscricao": 13000, "pagos": 1000, "cancelados": 0,
+                                                         "liquidados": 1000, "saldo": 12000}
+    d2 = siconfi.declaracao(pasta, 2026, 2)
+    assert d2["linhas"]["executivo"]["c"] is None and d2["linhas"]["executivo"]["i"] is None   # absent, never zero
+    assert siconfi.grupos(d2["linhas"]["executivo"])["pagos"] is None
+    assert "legislativo" not in d2["linhas"]                         # no row (I): nothing inferred
+    assert siconfi.situacao_da_entrega(pasta, 2026, 1)["situacao"] == "retificada"
+    (pasta / "rreo_anexo07_2026_1.json").write_bytes(b'{"items": []}')
+    with pytest.raises(siconfi.LeituraInvalida, match="SHA-256"):
+        siconfi.declaracao(pasta, 2026, 1)
+
+
+def test_SINTETICO_consolidado_oficial_separa_os_escopos(mundo, tmp_path):
+    from rp.interface import Aplicacao
+    from rp.painel.consulta import oficial
+    mundo.catalogos({1: [2026]})
+    mundo.listagem(1, 2026, "2026-02-28", [_reg(1, ano=2025, aproc=130.0, liquidado=10.0, pagoAProc=10.0)], T0)
+    mundo.processar()
+    mundo.con.commit()
+    exe = {"a": 0, "b": 0, "c": 0, "d": 0, "e": 0, "f": 0, "g": 130.0, "h": 10.0, "i": 10.0, "j": 0, "k": 120.0,
+           "L": 120.0}
+    leg = {**{c: 0 for c in exe}, "b": 5.0, "e": 5.0, "L": 5.0}
+    total = {c: exe[c] + leg[c] for c in exe}
+    pasta = tmp_path / "raw"
+    _leitura_siconfi(pasta / "coleta_1", {(2026, 1): _linha("RESTOS A PAGAR (EXCETO INTRA-ORÇAMENTÁRIOS) (I)", total)
+                                          + _linha("PODER EXECUTIVO", exe) + _linha("PODER LEGISLATIVO", leg)})
+    with mundo.painel() as p:
+        r = p.consolidado_oficial(2026, pasta=pasta)
+        (b1,) = [b for b in r["bimestres"] if b["bimestre"] == 1]
+        assert b1["declaracao"]["linhas"]["I"]["saldo"] == 12500           # the official consolidated, as declared
+        assert b1["declaracao"]["linhas"]["legislativo"]["saldo"] == 500   # the Câmara, never added to Elotech
+        assert b1["executivo_elotech"]["valores"]["saldo"] == 12000
+        assert b1["diferencas"] == {"inscricao": 0, "pagos": 0, "cancelados": 0, "liquidados": 0, "saldo": 0}
+        assert "Poder Executivo, fonte Elotech" in b1["executivo_elotech"]["escopo"]
+    status, _, html = chamar(Aplicacao(mundo.cfg.banco), "/oficial", exercicio=2026)
+    assert status.startswith("200") and "Consolidado oficial" in html
+    assert oficial.CORRESPONDENCIA["saldo"] == "saldo_total"

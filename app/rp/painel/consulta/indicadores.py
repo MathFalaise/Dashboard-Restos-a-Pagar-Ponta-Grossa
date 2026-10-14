@@ -79,7 +79,7 @@ class Indicadores:
     def _texto_escopo_municipio(self):
         esc = self._escopo_aplicado()
         if not esc["municipio"] and not esc["copias"] and not esc["pares"]:
-            return "Município (entidades do catálogo oficial do exercício)"
+            return "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício)"
         partes = ["entidades do catálogo oficial do exercício"]
         if esc["municipio"]:
             m = esc["municipio"]
@@ -93,7 +93,7 @@ class Indicadores:
         if esc["pares"]:
             partes.append(f"pares {esc['pares']['entidade_copia']}↔{esc['pares']['entidade_original']} contados uma vez "
                           "(CONS-PAR v4)")
-        return "Município (" + "; ".join(partes) + ")"
+        return "Município — Poder Executivo, fonte Elotech (" + "; ".join(partes) + ")"
 
     @staticmethod
     def _conferencia_saldo(somas, rec, exercicio, data_final, aplicadas=frozenset()):

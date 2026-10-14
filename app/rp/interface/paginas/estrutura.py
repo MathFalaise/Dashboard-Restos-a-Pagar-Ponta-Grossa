@@ -10,6 +10,7 @@ MENU = [("/", "Visão geral"), ("/resumo", "Resumo do corte"), ("/evolucao", "Ev
         ("/historico", "Série entre exercícios"), ("/composicao", "Composição do saldo"),
         ("/variacao", "Variação entre cortes"), ("/entidades", "Entidades"),
         ("/empenhos", "Empenhos"), ("/retratos", "Retratos"), ("/reconciliacao", "Reconciliação com o RREO"),
+        ("/oficial", "Consolidado oficial (Siconfi)"),
         ("/qualidade", "Qualidade dos dados"), ("/metodologia", "Metodologia e fontes"),
         ("/pares", "Técnico: pares espelhados")]
 NOME_CATEGORIA = ROTULO_CATEGORIA
@@ -117,8 +118,8 @@ def _formulario(acao, sel, entidades=None, extra="", com_corte=True):
                       "</select></label>")
     if entidades is not None:
         lista = fm.opcoes([(e, f"{e} — {n}") for e, n in entidades], sel["entidade"] if sel["entidade"] else "")
-        campos.append('<label>Entidade <select name="entidade"><option value="">Município (entidades do catálogo '
-                      f"oficial)</option>{lista}</select></label>")
+        campos.append('<label>Entidade <select name="entidade"><option value="">Município — Poder Executivo, fonte Elotech '
+                      f"(entidades do catálogo oficial)</option>{lista}</select></label>")
     campos.append(f'<label>Como estava em (opcional) <input type="date" name="em" value="{esc(sel["em"] or "")}"></label>')
     campos.append('<label>Metodologia <select name="metodologia">'
                   + fm.opcoes([("atual", "atual (regras de hoje)"), ("vigente", "vigente na data escolhida")],

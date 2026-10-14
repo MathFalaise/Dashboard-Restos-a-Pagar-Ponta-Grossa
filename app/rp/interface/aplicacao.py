@@ -39,7 +39,7 @@ CABECALHOS = [
 ROTAS = {
     "/": paginas.visao, "/resumo": paginas.resumo, "/evolucao": paginas.evolucao, "/historico": paginas.historico, "/composicao": paginas.composicao, "/variacao": paginas.variacao, "/empenho/cortes": paginas.empenho_cortes, "/qualidade": paginas.qualidade, "/entidades": paginas.entidades, "/empenhos": paginas.empenhos, "/empenho": paginas.empenho,
     "/retratos": paginas.retratos, "/comparar": paginas.comparar, "/reconciliacao": paginas.reconciliacao,
-    "/pares": paginas.pares, "/metodologia": paginas.metodologia,
+    "/pares": paginas.pares, "/metodologia": paginas.metodologia, "/oficial": paginas.oficial,
 }
 _UID = re.compile(r"[0-9a-f]{32}")
 
