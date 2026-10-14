@@ -1,6 +1,6 @@
 {
- "derivacao": 35,
- "normalizacao": 17,
+ "derivacao": 37,
+ "normalizacao": 18,
  "siconfi": "coleta_20261013-223143",
  "regras_de_escopo": [
   "CONS-PAR v4",
@@ -8,6 +8,186 @@
   "ESCOPO-MUN v2"
  ],
  "celulas": [
+  {
+   "exercicio": 2016,
+   "bimestre": 1,
+   "data_final": "2016-02-29",
+   "comparacao": "elotech_x_pdf",
+   "documento": "31f6bf86",
+   "escopo": "entidade",
+   "coluna": "a",
+   "esperado": 655530639,
+   "observado": 655531389,
+   "diferenca": 750,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 1,
+   "data_final": "2016-02-29",
+   "comparacao": "elotech_x_pdf",
+   "documento": "31f6bf86",
+   "escopo": "entidade",
+   "coluna": "b",
+   "esperado": 1273805066,
+   "observado": 1273805066,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 1,
+   "data_final": "2016-02-29",
+   "comparacao": "elotech_x_pdf",
+   "documento": "31f6bf86",
+   "escopo": "entidade",
+   "coluna": "c",
+   "esperado": 1122460584,
+   "observado": 1122460584,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 1,
+   "data_final": "2016-02-29",
+   "comparacao": "elotech_x_pdf",
+   "documento": "31f6bf86",
+   "escopo": "entidade",
+   "coluna": "d",
+   "esperado": 100564340,
+   "observado": 100564340,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 1,
+   "data_final": "2016-02-29",
+   "comparacao": "elotech_x_pdf",
+   "documento": "31f6bf86",
+   "escopo": "entidade",
+   "coluna": "e",
+   "esperado": 706310781,
+   "observado": 706311531,
+   "diferenca": 750,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 1,
+   "data_final": "2016-02-29",
+   "comparacao": "elotech_x_pdf",
+   "documento": "31f6bf86",
+   "escopo": "entidade",
+   "coluna": "f",
+   "esperado": 1922323471,
+   "observado": 1922323471,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 1,
+   "data_final": "2016-02-29",
+   "comparacao": "elotech_x_pdf",
+   "documento": "31f6bf86",
+   "escopo": "entidade",
+   "coluna": "g",
+   "esperado": 4103013319,
+   "observado": 4103013319,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 1,
+   "data_final": "2016-02-29",
+   "comparacao": "elotech_x_pdf",
+   "documento": "31f6bf86",
+   "escopo": "entidade",
+   "coluna": "h",
+   "esperado": 1597440236,
+   "observado": 1597440236,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 1,
+   "data_final": "2016-02-29",
+   "comparacao": "elotech_x_pdf",
+   "documento": "31f6bf86",
+   "escopo": "entidade",
+   "coluna": "i",
+   "esperado": 1350577266,
+   "observado": 1350577266,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 1,
+   "data_final": "2016-02-29",
+   "comparacao": "elotech_x_pdf",
+   "documento": "31f6bf86",
+   "escopo": "entidade",
+   "coluna": "j",
+   "esperado": 6240998,
+   "observado": 6240998,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 1,
+   "data_final": "2016-02-29",
+   "comparacao": "elotech_x_pdf",
+   "documento": "31f6bf86",
+   "escopo": "entidade",
+   "coluna": "k",
+   "esperado": 4668518526,
+   "observado": 4668518526,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 1,
+   "data_final": "2016-02-29",
+   "comparacao": "elotech_x_pdf",
+   "documento": "31f6bf86",
+   "escopo": "entidade",
+   "coluna": "L",
+   "esperado": 5374829307,
+   "observado": 5374830057,
+   "diferenca": 750,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
   {
    "exercicio": 2016,
    "bimestre": 1,
@@ -211,6 +391,190 @@
    "diferenca": -1128024167,
    "classe": "causa_nao_determinada",
    "com_ressalva": true
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 2,
+   "data_final": "2016-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "9d38c530",
+   "escopo": "entidade",
+   "coluna": "a",
+   "esperado": 655530639,
+   "observado": 655531389,
+   "diferenca": 750,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 2,
+   "data_final": "2016-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "9d38c530",
+   "escopo": "entidade",
+   "coluna": "b",
+   "esperado": 1273805066,
+   "observado": 1273805066,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 2,
+   "data_final": "2016-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "9d38c530",
+   "escopo": "entidade",
+   "coluna": "c",
+   "esperado": 1237348058,
+   "observado": 1237348058,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 2,
+   "data_final": "2016-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "9d38c530",
+   "escopo": "entidade",
+   "coluna": "d",
+   "esperado": 103091055,
+   "observado": 102977229,
+   "diferenca": -113826,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (d) e (j): 1.138,26 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 2,
+   "data_final": "2016-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "9d38c530",
+   "escopo": "entidade",
+   "coluna": "e",
+   "esperado": 588896592,
+   "observado": 589011168,
+   "diferenca": 114576,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 2,
+   "data_final": "2016-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "9d38c530",
+   "escopo": "entidade",
+   "coluna": "f",
+   "esperado": 1922323471,
+   "observado": 1922323471,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 2,
+   "data_final": "2016-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "9d38c530",
+   "escopo": "entidade",
+   "coluna": "g",
+   "esperado": 4103013319,
+   "observado": 4103013319,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 2,
+   "data_final": "2016-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "9d38c530",
+   "escopo": "entidade",
+   "coluna": "h",
+   "esperado": 2206222563,
+   "observado": 2206587783,
+   "diferenca": 365220,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 2,
+   "data_final": "2016-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "9d38c530",
+   "escopo": "entidade",
+   "coluna": "i",
+   "esperado": 2074692318,
+   "observado": 2074692318,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 2,
+   "data_final": "2016-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "9d38c530",
+   "escopo": "entidade",
+   "coluna": "j",
+   "esperado": 163950883,
+   "observado": 164064709,
+   "diferenca": 113826,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (d) e (j): 1.138,26 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 2,
+   "data_final": "2016-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "9d38c530",
+   "escopo": "entidade",
+   "coluna": "k",
+   "esperado": 3786693589,
+   "observado": 3786579763,
+   "diferenca": -113826,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 2,
+   "data_final": "2016-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "9d38c530",
+   "escopo": "entidade",
+   "coluna": "L",
+   "esperado": 4375590181,
+   "observado": 4375590931,
+   "diferenca": 750,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
   },
   {
    "exercicio": 2016,
@@ -420,6 +784,190 @@
    "exercicio": 2016,
    "bimestre": 3,
    "data_final": "2016-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea623d30",
+   "escopo": "entidade",
+   "coluna": "a",
+   "esperado": 655530639,
+   "observado": 655531389,
+   "diferenca": 750,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 3,
+   "data_final": "2016-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea623d30",
+   "escopo": "entidade",
+   "coluna": "b",
+   "esperado": 1273805066,
+   "observado": 1273805066,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 3,
+   "data_final": "2016-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea623d30",
+   "escopo": "entidade",
+   "coluna": "c",
+   "esperado": 1261908156,
+   "observado": 1261908156,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 3,
+   "data_final": "2016-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea623d30",
+   "escopo": "entidade",
+   "coluna": "d",
+   "esperado": 103091055,
+   "observado": 102977229,
+   "diferenca": -113826,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (d) e (j): 1.138,26 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 3,
+   "data_final": "2016-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea623d30",
+   "escopo": "entidade",
+   "coluna": "e",
+   "esperado": 564336494,
+   "observado": 564451070,
+   "diferenca": 114576,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 3,
+   "data_final": "2016-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea623d30",
+   "escopo": "entidade",
+   "coluna": "f",
+   "esperado": 1922323471,
+   "observado": 1922323471,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 3,
+   "data_final": "2016-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea623d30",
+   "escopo": "entidade",
+   "coluna": "g",
+   "esperado": 4103013319,
+   "observado": 4103013319,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 3,
+   "data_final": "2016-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea623d30",
+   "escopo": "entidade",
+   "coluna": "h",
+   "esperado": 2477820513,
+   "observado": 2478185733,
+   "diferenca": 365220,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 3,
+   "data_final": "2016-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea623d30",
+   "escopo": "entidade",
+   "coluna": "i",
+   "esperado": 2346275486,
+   "observado": 2378714064,
+   "diferenca": 32438578,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 3,
+   "data_final": "2016-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea623d30",
+   "escopo": "entidade",
+   "coluna": "j",
+   "esperado": 322176182,
+   "observado": 322290008,
+   "diferenca": 113826,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (d) e (j): 1.138,26 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 3,
+   "data_final": "2016-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea623d30",
+   "escopo": "entidade",
+   "coluna": "k",
+   "esperado": 3356885122,
+   "observado": 3324332718,
+   "diferenca": -32552404,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 3,
+   "data_final": "2016-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea623d30",
+   "escopo": "entidade",
+   "coluna": "L",
+   "esperado": 3921221616,
+   "observado": 3888783788,
+   "diferenca": -32437828,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 3,
+   "data_final": "2016-06-30",
    "comparacao": "elotech_x_siconfi",
    "coluna": "a",
    "esperado": 651535604,
@@ -619,6 +1167,186 @@
    "diferenca": -72362477,
    "classe": "causa_nao_determinada",
    "com_ressalva": true
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 4,
+   "data_final": "2016-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "b2684286",
+   "escopo": "entidade",
+   "coluna": "a",
+   "esperado": 655530639,
+   "observado": 655531389,
+   "diferenca": 750,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 4,
+   "data_final": "2016-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "b2684286",
+   "escopo": "entidade",
+   "coluna": "b",
+   "esperado": 1273805066,
+   "observado": 1273805066,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 4,
+   "data_final": "2016-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "b2684286",
+   "escopo": "entidade",
+   "coluna": "c",
+   "esperado": 1278177067,
+   "observado": 1278901208,
+   "diferenca": 724141,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 4,
+   "data_final": "2016-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "b2684286",
+   "escopo": "entidade",
+   "coluna": "d",
+   "esperado": 103758637,
+   "observado": 113502558,
+   "diferenca": 9743921,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 4,
+   "data_final": "2016-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "b2684286",
+   "escopo": "entidade",
+   "coluna": "e",
+   "esperado": 547400001,
+   "observado": 536932689,
+   "diferenca": -10467312,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 4,
+   "data_final": "2016-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "b2684286",
+   "escopo": "entidade",
+   "coluna": "f",
+   "esperado": 1922323471,
+   "observado": 1922323471,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 4,
+   "data_final": "2016-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "b2684286",
+   "escopo": "entidade",
+   "coluna": "g",
+   "esperado": 4103013319,
+   "observado": 4103013319,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 4,
+   "data_final": "2016-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "b2684286",
+   "escopo": "entidade",
+   "coluna": "h",
+   "esperado": 2721399434,
+   "observado": 2723464654,
+   "diferenca": 2065220,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 4,
+   "data_final": "2016-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "b2684286",
+   "escopo": "entidade",
+   "coluna": "i",
+   "esperado": 2555780211,
+   "observado": 2613428805,
+   "diferenca": 57648594,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 4,
+   "data_final": "2016-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "b2684286",
+   "escopo": "entidade",
+   "coluna": "j",
+   "esperado": 336665926,
+   "observado": 336779752,
+   "diferenca": 113826,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 4,
+   "data_final": "2016-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "b2684286",
+   "escopo": "entidade",
+   "coluna": "k",
+   "esperado": 3132890653,
+   "observado": 3075128233,
+   "diferenca": -57762420,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 4,
+   "data_final": "2016-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "b2684286",
+   "escopo": "entidade",
+   "coluna": "L",
+   "esperado": 3680290654,
+   "observado": 3612060922,
+   "diferenca": -68229732,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
   },
   {
    "exercicio": 2016,
@@ -828,6 +1556,186 @@
    "exercicio": 2016,
    "bimestre": 5,
    "data_final": "2016-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a93119d1",
+   "escopo": "entidade",
+   "coluna": "a",
+   "esperado": 655530639,
+   "observado": 655531389,
+   "diferenca": 750,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 5,
+   "data_final": "2016-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a93119d1",
+   "escopo": "entidade",
+   "coluna": "b",
+   "esperado": 1273805066,
+   "observado": 1273805066,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 5,
+   "data_final": "2016-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a93119d1",
+   "escopo": "entidade",
+   "coluna": "c",
+   "esperado": 1278197832,
+   "observado": 1282813663,
+   "diferenca": 4615831,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 5,
+   "data_final": "2016-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a93119d1",
+   "escopo": "entidade",
+   "coluna": "d",
+   "esperado": 103758637,
+   "observado": 113502558,
+   "diferenca": 9743921,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 5,
+   "data_final": "2016-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a93119d1",
+   "escopo": "entidade",
+   "coluna": "e",
+   "esperado": 547379236,
+   "observado": 533020234,
+   "diferenca": -14359002,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 5,
+   "data_final": "2016-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a93119d1",
+   "escopo": "entidade",
+   "coluna": "f",
+   "esperado": 1922323471,
+   "observado": 1922323471,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 5,
+   "data_final": "2016-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a93119d1",
+   "escopo": "entidade",
+   "coluna": "g",
+   "esperado": 4103013319,
+   "observado": 4103013319,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 5,
+   "data_final": "2016-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a93119d1",
+   "escopo": "entidade",
+   "coluna": "h",
+   "esperado": 2759823696,
+   "observado": 2875919061,
+   "diferenca": 116095365,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 5,
+   "data_final": "2016-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a93119d1",
+   "escopo": "entidade",
+   "coluna": "i",
+   "esperado": 2584537992,
+   "observado": 2716128517,
+   "diferenca": 131590525,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 5,
+   "data_final": "2016-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a93119d1",
+   "escopo": "entidade",
+   "coluna": "j",
+   "esperado": 360826703,
+   "observado": 377131909,
+   "diferenca": 16305206,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 5,
+   "data_final": "2016-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a93119d1",
+   "escopo": "entidade",
+   "coluna": "k",
+   "esperado": 3079972095,
+   "observado": 2932076364,
+   "diferenca": -147895731,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 5,
+   "data_final": "2016-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a93119d1",
+   "escopo": "entidade",
+   "coluna": "L",
+   "esperado": 3627351331,
+   "observado": 3465096598,
+   "diferenca": -162254733,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 5,
+   "data_final": "2016-10-31",
    "comparacao": "elotech_x_siconfi",
    "coluna": "a",
    "esperado": 656972572,
@@ -1027,6 +1935,194 @@
    "diferenca": -8668320,
    "classe": "causa_nao_determinada",
    "com_ressalva": true
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 6,
+   "data_final": "2016-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "722468ea",
+   "escopo": "entidade",
+   "coluna": "a",
+   "esperado": 655531389,
+   "observado": 655531389,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 6,
+   "data_final": "2016-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "722468ea",
+   "escopo": "entidade",
+   "coluna": "b",
+   "esperado": 1273805066,
+   "observado": 1273805066,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 6,
+   "data_final": "2016-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "722468ea",
+   "escopo": "entidade",
+   "coluna": "c",
+   "esperado": 1307637163,
+   "observado": 1307637163,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 6,
+   "data_final": "2016-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "722468ea",
+   "escopo": "entidade",
+   "coluna": "d",
+   "esperado": 115180879,
+   "observado": 115067053,
+   "diferenca": -113826,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (d) e (j): 1.138,26 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 6,
+   "data_final": "2016-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "722468ea",
+   "escopo": "entidade",
+   "coluna": "e",
+   "esperado": 506518413,
+   "observado": 506632239,
+   "diferenca": 113826,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (e) e (k): 1.138,26 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 6,
+   "data_final": "2016-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "722468ea",
+   "escopo": "entidade",
+   "coluna": "f",
+   "esperado": 1922323471,
+   "observado": 1922323471,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 6,
+   "data_final": "2016-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "722468ea",
+   "escopo": "entidade",
+   "coluna": "g",
+   "esperado": 4103013319,
+   "observado": 4103013319,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 6,
+   "data_final": "2016-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "722468ea",
+   "escopo": "entidade",
+   "coluna": "h",
+   "esperado": 2881172312,
+   "observado": 3011327678,
+   "diferenca": 130155366,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 6,
+   "data_final": "2016-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "722468ea",
+   "escopo": "entidade",
+   "coluna": "i",
+   "esperado": 2900524754,
+   "observado": 2900524754,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 6,
+   "data_final": "2016-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "722468ea",
+   "escopo": "entidade",
+   "coluna": "j",
+   "esperado": 433128551,
+   "observado": 433242377,
+   "diferenca": 113826,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (d) e (j): 1.138,26 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 6,
+   "data_final": "2016-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "722468ea",
+   "escopo": "entidade",
+   "coluna": "k",
+   "esperado": 2691683485,
+   "observado": 2691569659,
+   "diferenca": -113826,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (e) e (k): 1.138,26 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 6,
+   "data_final": "2016-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "722468ea",
+   "escopo": "entidade",
+   "coluna": "L",
+   "esperado": 3198201898,
+   "observado": 3198201898,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
   },
   {
    "exercicio": 2016,
@@ -5766,13 +6862,361 @@
    "exercicio": 2018,
    "bimestre": 1,
    "data_final": "2018-02-28",
+   "comparacao": "oficial_x_oficial",
+   "documento": "77fd0254",
+   "coluna": "a",
+   "esperado": 514597332,
+   "observado": 514597332,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "oficial_x_oficial",
+   "documento": "77fd0254",
+   "coluna": "b",
+   "esperado": 1394430292,
+   "observado": 1394430292,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "oficial_x_oficial",
+   "documento": "77fd0254",
+   "coluna": "c",
+   "esperado": 1035883186,
+   "observado": 1035883186,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "oficial_x_oficial",
+   "documento": "77fd0254",
+   "coluna": "d",
+   "esperado": 11637197,
+   "observado": 11637197,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "oficial_x_oficial",
+   "documento": "77fd0254",
+   "coluna": "e",
+   "esperado": 861507241,
+   "observado": 861507241,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "oficial_x_oficial",
+   "documento": "77fd0254",
+   "coluna": "f",
+   "esperado": 2208931290,
+   "observado": 2208931290,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "oficial_x_oficial",
+   "documento": "77fd0254",
+   "coluna": "g",
+   "esperado": 5340259403,
+   "observado": 5340259403,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "oficial_x_oficial",
+   "documento": "77fd0254",
+   "coluna": "h",
+   "esperado": 2264579109,
+   "observado": 2264579109,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "oficial_x_oficial",
+   "documento": "77fd0254",
+   "coluna": "i",
+   "esperado": 2061527921,
+   "observado": 2061527921,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "oficial_x_oficial",
+   "documento": "77fd0254",
+   "coluna": "j",
+   "esperado": 31442573,
+   "observado": 31442573,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "oficial_x_oficial",
+   "documento": "77fd0254",
+   "coluna": "k",
+   "esperado": 5456220199,
+   "observado": 5456220199,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "oficial_x_oficial",
+   "documento": "77fd0254",
+   "coluna": "L",
+   "esperado": 6317727440,
+   "observado": 6317727440,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "elotech_x_pdf",
+   "documento": "77fd0254",
+   "escopo": "consolidado",
+   "coluna": "a",
+   "esperado": 514597332,
+   "observado": 456752771,
+   "diferenca": -57844561,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "elotech_x_pdf",
+   "documento": "77fd0254",
+   "escopo": "consolidado",
+   "coluna": "b",
+   "esperado": 1394430292,
+   "observado": 1275241670,
+   "diferenca": -119188622,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "elotech_x_pdf",
+   "documento": "77fd0254",
+   "escopo": "consolidado",
+   "coluna": "c",
+   "esperado": 1035883186,
+   "observado": 1226702973,
+   "diferenca": 190819787,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "elotech_x_pdf",
+   "documento": "77fd0254",
+   "escopo": "consolidado",
+   "coluna": "d",
+   "esperado": 11637197,
+   "observado": 3507002,
+   "diferenca": -8130195,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "elotech_x_pdf",
+   "documento": "77fd0254",
+   "escopo": "consolidado",
+   "coluna": "e",
+   "esperado": 861507241,
+   "observado": 501784466,
+   "diferenca": -359722775,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "elotech_x_pdf",
+   "documento": "77fd0254",
+   "escopo": "consolidado",
+   "coluna": "f",
+   "esperado": 2208931290,
+   "observado": 1301453936,
+   "diferenca": -907477354,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "elotech_x_pdf",
+   "documento": "77fd0254",
+   "escopo": "consolidado",
+   "coluna": "g",
+   "esperado": 5340259403,
+   "observado": 4907516057,
+   "diferenca": -432743346,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "elotech_x_pdf",
+   "documento": "77fd0254",
+   "escopo": "consolidado",
+   "coluna": "h",
+   "esperado": 2264579109,
+   "observado": 2328674826,
+   "diferenca": 64095717,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "elotech_x_pdf",
+   "documento": "77fd0254",
+   "escopo": "consolidado",
+   "coluna": "i",
+   "esperado": 2061527921,
+   "observado": 2173769146,
+   "diferenca": 112241225,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "elotech_x_pdf",
+   "documento": "77fd0254",
+   "escopo": "consolidado",
+   "coluna": "j",
+   "esperado": 31442573,
+   "observado": 225395513,
+   "diferenca": 193952940,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "elotech_x_pdf",
+   "documento": "77fd0254",
+   "escopo": "consolidado",
+   "coluna": "k",
+   "esperado": 5456220199,
+   "observado": 3809805334,
+   "diferenca": -1646414865,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "comparacao": "elotech_x_pdf",
+   "documento": "77fd0254",
+   "escopo": "consolidado",
+   "coluna": "L",
+   "esperado": 6317727440,
+   "observado": 4311589800,
+   "diferenca": -2006137640,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
    "comparacao": "elotech_x_siconfi",
    "coluna": "a",
    "esperado": 514597332,
    "observado": 456752771,
    "diferenca": -57844561,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -5784,7 +7228,7 @@
    "observado": 1275241670,
    "diferenca": -119188622,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -5796,7 +7240,7 @@
    "observado": 1226702973,
    "diferenca": 190819787,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -5808,7 +7252,7 @@
    "observado": 3507002,
    "diferenca": -8130195,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -5820,7 +7264,7 @@
    "observado": 501784466,
    "diferenca": -359722775,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -5832,7 +7276,7 @@
    "observado": 1301453936,
    "diferenca": -907477354,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -5844,7 +7288,7 @@
    "observado": 4907516057,
    "diferenca": -432743346,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -5856,7 +7300,7 @@
    "observado": 2328674826,
    "diferenca": 64095717,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -5868,7 +7312,7 @@
    "observado": 2173769146,
    "diferenca": 112241225,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -5880,7 +7324,7 @@
    "observado": 225395513,
    "diferenca": 193952940,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -5892,7 +7336,7 @@
    "observado": 3809805334,
    "diferenca": -1646414865,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -5904,7 +7348,7 @@
    "observado": 4311589800,
    "diferenca": -2006137640,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -5970,6 +7414,360 @@
    "exercicio": 2018,
    "bimestre": 2,
    "data_final": "2018-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "e37c512e",
+   "coluna": "a",
+   "esperado": 456752771,
+   "observado": 456752771,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "e37c512e",
+   "coluna": "b",
+   "esperado": 1275241670,
+   "observado": 1275241670,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "e37c512e",
+   "coluna": "c",
+   "esperado": 1218714251,
+   "observado": 1218714251,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "e37c512e",
+   "coluna": "d",
+   "esperado": 7148532,
+   "observado": 7148532,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "e37c512e",
+   "coluna": "e",
+   "esperado": 506131658,
+   "observado": 506131658,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "e37c512e",
+   "coluna": "f",
+   "esperado": 1283420454,
+   "observado": 1283420454,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "e37c512e",
+   "coluna": "g",
+   "esperado": 4907516057,
+   "observado": 4907516057,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "e37c512e",
+   "coluna": "h",
+   "esperado": 3145144837,
+   "observado": 3145144837,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "e37c512e",
+   "coluna": "i",
+   "esperado": 3008593657,
+   "observado": 3008593657,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "e37c512e",
+   "coluna": "j",
+   "esperado": 458138846,
+   "observado": 458138846,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "e37c512e",
+   "coluna": "k",
+   "esperado": 2724204008,
+   "observado": 2724204008,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "e37c512e",
+   "coluna": "L",
+   "esperado": 3230335666,
+   "observado": 3230335666,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "e37c512e",
+   "escopo": "consolidado",
+   "coluna": "a",
+   "esperado": 456752771,
+   "observado": 456752771,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "e37c512e",
+   "escopo": "consolidado",
+   "coluna": "b",
+   "esperado": 1275241670,
+   "observado": 1275241670,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "e37c512e",
+   "escopo": "consolidado",
+   "coluna": "c",
+   "esperado": 1218714251,
+   "observado": 1233333546,
+   "diferenca": 14619295,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "e37c512e",
+   "escopo": "consolidado",
+   "coluna": "d",
+   "esperado": 7148532,
+   "observado": 3785668,
+   "diferenca": -3362864,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "e37c512e",
+   "escopo": "consolidado",
+   "coluna": "e",
+   "esperado": 506131658,
+   "observado": 494875227,
+   "diferenca": -11256431,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "e37c512e",
+   "escopo": "consolidado",
+   "coluna": "f",
+   "esperado": 1283420454,
+   "observado": 1301453936,
+   "diferenca": 18033482,
+   "classe": "diferenca_de_escopo (causa_comprovada_por_empenho)",
+   "situacao_catalogo": "explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md; docs/audits/escopo/ESCOPO_ENTIDADE_7.md"
+   ]
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "e37c512e",
+   "escopo": "consolidado",
+   "coluna": "g",
+   "esperado": 4907516057,
+   "observado": 4907516057,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "e37c512e",
+   "escopo": "consolidado",
+   "coluna": "h",
+   "esperado": 3145144837,
+   "observado": 3179422863,
+   "diferenca": 34278026,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "e37c512e",
+   "escopo": "consolidado",
+   "coluna": "i",
+   "esperado": 3008593657,
+   "observado": 3060489552,
+   "diferenca": 51895895,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "e37c512e",
+   "escopo": "consolidado",
+   "coluna": "j",
+   "esperado": 458138846,
+   "observado": 458138846,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "e37c512e",
+   "escopo": "consolidado",
+   "coluna": "k",
+   "esperado": 2724204008,
+   "observado": 2690341595,
+   "diferenca": -33862413,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "e37c512e",
+   "escopo": "consolidado",
+   "coluna": "L",
+   "esperado": 3230335666,
+   "observado": 3185216822,
+   "diferenca": -45118844,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
    "comparacao": "elotech_x_siconfi",
    "coluna": "a",
    "esperado": 456752771,
@@ -6000,7 +7798,7 @@
    "observado": 1233333546,
    "diferenca": 14619295,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6012,7 +7810,7 @@
    "observado": 3785668,
    "diferenca": -3362864,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6024,7 +7822,7 @@
    "observado": 494875227,
    "diferenca": -11256431,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6060,7 +7858,7 @@
    "observado": 3179422863,
    "diferenca": 34278026,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6072,7 +7870,7 @@
    "observado": 3060489552,
    "diferenca": 51895895,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6095,8 +7893,10 @@
    "esperado": 2724204008,
    "observado": 2672308113,
    "diferenca": -51895895,
-   "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "classe": "diferenca_de_escopo",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6107,8 +7907,10 @@
    "esperado": 3230335666,
    "observado": 3167183340,
    "diferenca": -63152326,
-   "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "classe": "diferenca_de_escopo",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6167,8 +7969,362 @@
    "esperado": 3230335666,
    "observado": 3167183340,
    "diferenca": -63152326,
-   "classe": "causa_nao_determinada",
+   "classe": "diferenca_de_escopo",
    "com_ressalva": false
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "08671224",
+   "coluna": "a",
+   "esperado": 456752771,
+   "observado": 456752771,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "08671224",
+   "coluna": "b",
+   "esperado": 1275241670,
+   "observado": 1275241670,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "08671224",
+   "coluna": "c",
+   "esperado": 1243824965,
+   "observado": 1243824965,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "08671224",
+   "coluna": "d",
+   "esperado": 3785668,
+   "observado": 3785668,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "08671224",
+   "coluna": "e",
+   "esperado": 484383808,
+   "observado": 484383808,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "08671224",
+   "coluna": "f",
+   "esperado": 1283420454,
+   "observado": 1283420454,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "08671224",
+   "coluna": "g",
+   "esperado": 4907516057,
+   "observado": 4907516057,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "08671224",
+   "coluna": "h",
+   "esperado": 3578597392,
+   "observado": 3578597392,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "08671224",
+   "coluna": "i",
+   "esperado": 3493766421,
+   "observado": 3493766421,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "08671224",
+   "coluna": "j",
+   "esperado": 510345131,
+   "observado": 510345131,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "08671224",
+   "coluna": "k",
+   "esperado": 2186824959,
+   "observado": 2186824959,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "08671224",
+   "coluna": "L",
+   "esperado": 2671208767,
+   "observado": 2671208767,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "08671224",
+   "escopo": "consolidado",
+   "coluna": "a",
+   "esperado": 456752771,
+   "observado": 456752771,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "08671224",
+   "escopo": "consolidado",
+   "coluna": "b",
+   "esperado": 1275241670,
+   "observado": 1275241670,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "08671224",
+   "escopo": "consolidado",
+   "coluna": "c",
+   "esperado": 1243824965,
+   "observado": 1241290080,
+   "diferenca": -2534885,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "08671224",
+   "escopo": "consolidado",
+   "coluna": "d",
+   "esperado": 3785668,
+   "observado": 3785668,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "08671224",
+   "escopo": "consolidado",
+   "coluna": "e",
+   "esperado": 484383808,
+   "observado": 486918693,
+   "diferenca": 2534885,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "08671224",
+   "escopo": "consolidado",
+   "coluna": "f",
+   "esperado": 1283420454,
+   "observado": 1301453936,
+   "diferenca": 18033482,
+   "classe": "diferenca_de_escopo (causa_comprovada_por_empenho)",
+   "situacao_catalogo": "explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md; docs/audits/escopo/ESCOPO_ENTIDADE_7.md"
+   ]
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "08671224",
+   "escopo": "consolidado",
+   "coluna": "g",
+   "esperado": 4907516057,
+   "observado": 4907516057,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "08671224",
+   "escopo": "consolidado",
+   "coluna": "h",
+   "esperado": 3578597392,
+   "observado": 3580630279,
+   "diferenca": 2032887,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "08671224",
+   "escopo": "consolidado",
+   "coluna": "i",
+   "esperado": 3493766421,
+   "observado": 3475571427,
+   "diferenca": -18194994,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "08671224",
+   "escopo": "consolidado",
+   "coluna": "j",
+   "esperado": 510345131,
+   "observado": 506518651,
+   "diferenca": -3826480,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "08671224",
+   "escopo": "consolidado",
+   "coluna": "k",
+   "esperado": 2186824959,
+   "observado": 2226879915,
+   "diferenca": 40054956,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "08671224",
+   "escopo": "consolidado",
+   "coluna": "L",
+   "esperado": 2671208767,
+   "observado": 2713798608,
+   "diferenca": 42589841,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6204,7 +8360,7 @@
    "observado": 1241290080,
    "diferenca": -2534885,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6228,7 +8384,7 @@
    "observado": 486918693,
    "diferenca": 2534885,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6264,7 +8420,7 @@
    "observado": 3580630279,
    "diferenca": 2032887,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6276,7 +8432,7 @@
    "observado": 3475571427,
    "diferenca": -18194994,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6288,7 +8444,7 @@
    "observado": 506518651,
    "diferenca": -3826480,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6299,8 +8455,10 @@
    "esperado": 2186824959,
    "observado": 2208846433,
    "diferenca": 22021474,
-   "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "classe": "diferenca_de_escopo",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6311,8 +8469,10 @@
    "esperado": 2671208767,
    "observado": 2695765126,
    "diferenca": 24556359,
-   "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "classe": "diferenca_de_escopo",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6371,8 +8531,362 @@
    "esperado": 2671208767,
    "observado": 2695765126,
    "diferenca": 24556359,
-   "classe": "causa_nao_determinada",
+   "classe": "diferenca_de_escopo",
    "com_ressalva": false
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "a353e1dd",
+   "coluna": "a",
+   "esperado": 456752771,
+   "observado": 456752771,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "a353e1dd",
+   "coluna": "b",
+   "esperado": 1275241670,
+   "observado": 1275241670,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "a353e1dd",
+   "coluna": "c",
+   "esperado": 1252497169,
+   "observado": 1252497169,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "a353e1dd",
+   "coluna": "d",
+   "esperado": 3785668,
+   "observado": 3785668,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "a353e1dd",
+   "coluna": "e",
+   "esperado": 475711604,
+   "observado": 475711604,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "a353e1dd",
+   "coluna": "f",
+   "esperado": 1283420454,
+   "observado": 1283420454,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "a353e1dd",
+   "coluna": "g",
+   "esperado": 4907516057,
+   "observado": 4907516057,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "a353e1dd",
+   "coluna": "h",
+   "esperado": 3835317766,
+   "observado": 3835317766,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "a353e1dd",
+   "coluna": "i",
+   "esperado": 3756465116,
+   "observado": 3756465116,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "a353e1dd",
+   "coluna": "j",
+   "esperado": 521904976,
+   "observado": 521904976,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "a353e1dd",
+   "coluna": "k",
+   "esperado": 1912566419,
+   "observado": 1912566419,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "a353e1dd",
+   "coluna": "L",
+   "esperado": 2388278023,
+   "observado": 2388278023,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a353e1dd",
+   "escopo": "consolidado",
+   "coluna": "a",
+   "esperado": 456752771,
+   "observado": 456752771,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a353e1dd",
+   "escopo": "consolidado",
+   "coluna": "b",
+   "esperado": 1275241670,
+   "observado": 1275241670,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a353e1dd",
+   "escopo": "consolidado",
+   "coluna": "c",
+   "esperado": 1252497169,
+   "observado": 1249899240,
+   "diferenca": -2597929,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a353e1dd",
+   "escopo": "consolidado",
+   "coluna": "d",
+   "esperado": 3785668,
+   "observado": 3785668,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a353e1dd",
+   "escopo": "consolidado",
+   "coluna": "e",
+   "esperado": 475711604,
+   "observado": 478309533,
+   "diferenca": 2597929,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a353e1dd",
+   "escopo": "consolidado",
+   "coluna": "f",
+   "esperado": 1283420454,
+   "observado": 1301453936,
+   "diferenca": 18033482,
+   "classe": "diferenca_de_escopo (causa_comprovada_por_empenho)",
+   "situacao_catalogo": "explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md; docs/audits/escopo/ESCOPO_ENTIDADE_7.md"
+   ]
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a353e1dd",
+   "escopo": "consolidado",
+   "coluna": "g",
+   "esperado": 4907516057,
+   "observado": 4907516057,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a353e1dd",
+   "escopo": "consolidado",
+   "coluna": "h",
+   "esperado": 3835317766,
+   "observado": 3836508116,
+   "diferenca": 1190350,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a353e1dd",
+   "escopo": "consolidado",
+   "coluna": "i",
+   "esperado": 3756465116,
+   "observado": 3784589335,
+   "diferenca": 28124219,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a353e1dd",
+   "escopo": "consolidado",
+   "coluna": "j",
+   "esperado": 521904976,
+   "observado": 521904976,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a353e1dd",
+   "escopo": "consolidado",
+   "coluna": "k",
+   "esperado": 1912566419,
+   "observado": 1902475682,
+   "diferenca": -10090737,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "a353e1dd",
+   "escopo": "consolidado",
+   "coluna": "L",
+   "esperado": 2388278023,
+   "observado": 2380785215,
+   "diferenca": -7492808,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6408,7 +8922,7 @@
    "observado": 1249899240,
    "diferenca": -2597929,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6432,7 +8946,7 @@
    "observado": 478309533,
    "diferenca": 2597929,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6468,7 +8982,7 @@
    "observado": 3836508116,
    "diferenca": 1190350,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6480,7 +8994,7 @@
    "observado": 3784589335,
    "diferenca": 28124219,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6503,8 +9017,10 @@
    "esperado": 1912566419,
    "observado": 1884442200,
    "diferenca": -28124219,
-   "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "classe": "diferenca_de_escopo",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6515,8 +9031,10 @@
    "esperado": 2388278023,
    "observado": 2362751733,
    "diferenca": -25526290,
-   "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "classe": "diferenca_de_escopo",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6575,8 +9093,362 @@
    "esperado": 2388278023,
    "observado": 2362751733,
    "diferenca": -25526290,
-   "classe": "causa_nao_determinada",
+   "classe": "diferenca_de_escopo",
    "com_ressalva": false
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "104ce0dc",
+   "coluna": "a",
+   "esperado": 456752771,
+   "observado": 456752771,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "104ce0dc",
+   "coluna": "b",
+   "esperado": 1275241670,
+   "observado": 1275241670,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "104ce0dc",
+   "coluna": "c",
+   "esperado": 1252709503,
+   "observado": 1252709503,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "104ce0dc",
+   "coluna": "d",
+   "esperado": 8411268,
+   "observado": 8411268,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "104ce0dc",
+   "coluna": "e",
+   "esperado": 470873670,
+   "observado": 470873670,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "104ce0dc",
+   "coluna": "f",
+   "esperado": 1283420454,
+   "observado": 1283420454,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "104ce0dc",
+   "coluna": "g",
+   "esperado": 4907516057,
+   "observado": 4907516057,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "104ce0dc",
+   "coluna": "h",
+   "esperado": 4003876945,
+   "observado": 4003876945,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "104ce0dc",
+   "coluna": "i",
+   "esperado": 3921574053,
+   "observado": 3921574053,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "104ce0dc",
+   "coluna": "j",
+   "esperado": 579647804,
+   "observado": 579647804,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "104ce0dc",
+   "coluna": "k",
+   "esperado": 1689714654,
+   "observado": 1689714654,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "104ce0dc",
+   "coluna": "L",
+   "esperado": 2160588324,
+   "observado": 2160588324,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "104ce0dc",
+   "escopo": "consolidado",
+   "coluna": "a",
+   "esperado": 456752771,
+   "observado": 456752771,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "104ce0dc",
+   "escopo": "consolidado",
+   "coluna": "b",
+   "esperado": 1275241670,
+   "observado": 1275241670,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "104ce0dc",
+   "escopo": "consolidado",
+   "coluna": "c",
+   "esperado": 1252709503,
+   "observado": 1250111564,
+   "diferenca": -2597939,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "104ce0dc",
+   "escopo": "consolidado",
+   "coluna": "d",
+   "esperado": 8411268,
+   "observado": 8106068,
+   "diferenca": -305200,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "104ce0dc",
+   "escopo": "consolidado",
+   "coluna": "e",
+   "esperado": 470873670,
+   "observado": 473776809,
+   "diferenca": 2903139,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "104ce0dc",
+   "escopo": "consolidado",
+   "coluna": "f",
+   "esperado": 1283420454,
+   "observado": 1301453936,
+   "diferenca": 18033482,
+   "classe": "diferenca_de_escopo (causa_comprovada_por_empenho)",
+   "situacao_catalogo": "explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md; docs/audits/escopo/ESCOPO_ENTIDADE_7.md"
+   ]
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "104ce0dc",
+   "escopo": "consolidado",
+   "coluna": "g",
+   "esperado": 4907516057,
+   "observado": 4907516057,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "104ce0dc",
+   "escopo": "consolidado",
+   "coluna": "h",
+   "esperado": 4003876945,
+   "observado": 4002891045,
+   "diferenca": -985900,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "104ce0dc",
+   "escopo": "consolidado",
+   "coluna": "i",
+   "esperado": 3921574053,
+   "observado": 3925857571,
+   "diferenca": 4283518,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "104ce0dc",
+   "escopo": "consolidado",
+   "coluna": "j",
+   "esperado": 579647804,
+   "observado": 579647804,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "104ce0dc",
+   "escopo": "consolidado",
+   "coluna": "k",
+   "esperado": 1689714654,
+   "observado": 1703464618,
+   "diferenca": 13749964,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "104ce0dc",
+   "escopo": "consolidado",
+   "coluna": "L",
+   "esperado": 2160588324,
+   "observado": 2177241427,
+   "diferenca": 16653103,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6612,7 +9484,7 @@
    "observado": 1250111564,
    "diferenca": -2597939,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6624,7 +9496,7 @@
    "observado": 8106068,
    "diferenca": -305200,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6636,7 +9508,7 @@
    "observado": 473776809,
    "diferenca": 2903139,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6672,7 +9544,7 @@
    "observado": 4002891045,
    "diferenca": -985900,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6684,7 +9556,7 @@
    "observado": 3925857571,
    "diferenca": 4283518,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6707,8 +9579,10 @@
    "esperado": 1689714654,
    "observado": 1685431136,
    "diferenca": -4283518,
-   "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "classe": "diferenca_de_escopo",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6719,8 +9593,10 @@
    "esperado": 2160588324,
    "observado": 2159207945,
    "diferenca": -1380379,
-   "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "classe": "diferenca_de_escopo",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6779,8 +9655,366 @@
    "esperado": 2160588324,
    "observado": 2159207945,
    "diferenca": -1380379,
-   "classe": "causa_nao_determinada",
+   "classe": "diferenca_de_escopo",
    "com_ressalva": false
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "d369f5b9",
+   "coluna": "a",
+   "esperado": 456752771,
+   "observado": 456752771,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "d369f5b9",
+   "coluna": "b",
+   "esperado": 1275241670,
+   "observado": 1275241670,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "d369f5b9",
+   "coluna": "c",
+   "esperado": 1266236538,
+   "observado": 1266236538,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "d369f5b9",
+   "coluna": "d",
+   "esperado": 12976002,
+   "observado": 12976002,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "d369f5b9",
+   "coluna": "e",
+   "esperado": 452781901,
+   "observado": 452781901,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "d369f5b9",
+   "coluna": "f",
+   "esperado": 1283420454,
+   "observado": 1283420454,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "d369f5b9",
+   "coluna": "g",
+   "esperado": 4907516057,
+   "observado": 4907516057,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "d369f5b9",
+   "coluna": "h",
+   "esperado": 4068480297,
+   "observado": 4061528409,
+   "diferenca": -6951888,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-04-05",
+   "residuo": -6951888
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "d369f5b9",
+   "coluna": "i",
+   "esperado": 4000567102,
+   "observado": 3993615214,
+   "diferenca": -6951888,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-04-05",
+   "residuo": -6951888
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "d369f5b9",
+   "coluna": "j",
+   "esperado": 745697623,
+   "observado": 752649511,
+   "diferenca": 6951888,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-04-05",
+   "residuo": 6951888
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "d369f5b9",
+   "coluna": "k",
+   "esperado": 1444671786,
+   "observado": 1444671786,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "d369f5b9",
+   "coluna": "L",
+   "esperado": 1897453687,
+   "observado": 1897453687,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "d369f5b9",
+   "escopo": "consolidado",
+   "coluna": "a",
+   "esperado": 456752771,
+   "observado": 456752771,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "d369f5b9",
+   "escopo": "consolidado",
+   "coluna": "b",
+   "esperado": 1275241670,
+   "observado": 1275241670,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "d369f5b9",
+   "escopo": "consolidado",
+   "coluna": "c",
+   "esperado": 1266236538,
+   "observado": 1261438330,
+   "diferenca": -4798208,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (c) e (i): 47.982,08 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "d369f5b9",
+   "escopo": "consolidado",
+   "coluna": "d",
+   "esperado": 12976002,
+   "observado": 12670802,
+   "diferenca": -305200,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "d369f5b9",
+   "escopo": "consolidado",
+   "coluna": "e",
+   "esperado": 452781901,
+   "observado": 457885309,
+   "diferenca": 5103408,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "d369f5b9",
+   "escopo": "consolidado",
+   "coluna": "f",
+   "esperado": 1283420454,
+   "observado": 1301453936,
+   "diferenca": 18033482,
+   "classe": "diferenca_de_escopo (causa_comprovada_por_empenho)",
+   "situacao_catalogo": "explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md; docs/audits/escopo/ESCOPO_ENTIDADE_7.md"
+   ]
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "d369f5b9",
+   "escopo": "consolidado",
+   "coluna": "g",
+   "esperado": 4907516057,
+   "observado": 4907516057,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "d369f5b9",
+   "escopo": "consolidado",
+   "coluna": "h",
+   "esperado": 4061528409,
+   "observado": 4058856930,
+   "diferenca": -2671479,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "d369f5b9",
+   "escopo": "consolidado",
+   "coluna": "i",
+   "esperado": 3993615214,
+   "observado": 3998413422,
+   "diferenca": 4798208,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (c) e (i): 47.982,08 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "d369f5b9",
+   "escopo": "consolidado",
+   "coluna": "j",
+   "esperado": 752649511,
+   "observado": 752649511,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "d369f5b9",
+   "escopo": "consolidado",
+   "coluna": "k",
+   "esperado": 1444671786,
+   "observado": 1457907060,
+   "diferenca": 13235274,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "d369f5b9",
+   "escopo": "consolidado",
+   "coluna": "L",
+   "esperado": 1897453687,
+   "observado": 1915792369,
+   "diferenca": 18338682,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6816,7 +10050,7 @@
    "observado": 1261438330,
    "diferenca": -4798208,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6828,7 +10062,7 @@
    "observado": 12670802,
    "diferenca": -305200,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6840,7 +10074,7 @@
    "observado": 457885309,
    "diferenca": 5103408,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": null
   },
   {
    "exercicio": 2018,
@@ -6876,7 +10110,7 @@
    "observado": 4058856930,
    "diferenca": -9623367,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2018,
@@ -6888,7 +10122,7 @@
    "observado": 3998413422,
    "diferenca": -2153680,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2018,
@@ -6899,8 +10133,8 @@
    "esperado": 745697623,
    "observado": 752649511,
    "diferenca": 6951888,
-   "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "classe": "divergencia_entre_documentos_oficiais",
+   "evidencia": "a fonte Elotech reproduz o RREO do portal; a declaração ao Siconfi diverge (ver A)"
   },
   {
    "exercicio": 2018,
@@ -6911,8 +10145,10 @@
    "esperado": 1444671786,
    "observado": 1439873578,
    "diferenca": -4798208,
-   "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "classe": "diferenca_de_escopo",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6923,8 +10159,10 @@
    "esperado": 1897453687,
    "observado": 1897758887,
    "diferenca": 305200,
-   "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "classe": "diferenca_de_escopo",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
   },
   {
    "exercicio": 2018,
@@ -6983,7 +10221,7 @@
    "esperado": 1897453687,
    "observado": 1897758887,
    "diferenca": 305200,
-   "classe": "causa_nao_determinada",
+   "classe": "diferenca_de_escopo",
    "com_ressalva": false
   },
   {
@@ -7194,6 +10432,360 @@
    "exercicio": 2019,
    "bimestre": 2,
    "data_final": "2019-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "49cc40f6",
+   "coluna": "a",
+   "esperado": 525068790,
+   "observado": 523390350,
+   "diferenca": -1678440,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-08-19",
+   "residuo": -1678440
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "49cc40f6",
+   "coluna": "b",
+   "esperado": 2024831391,
+   "observado": 1986603615,
+   "diferenca": -38227776,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-08-19",
+   "residuo": -38227776
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "49cc40f6",
+   "coluna": "c",
+   "esperado": 1202371743,
+   "observado": 1164701865,
+   "diferenca": -37669878,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-08-19",
+   "residuo": -37669878
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "49cc40f6",
+   "coluna": "d",
+   "esperado": 548488598,
+   "observado": 548488598,
+   "diferenca": 0,
+   "classe": "concorda",
+   "evidencia": null,
+   "residuo": 0
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "49cc40f6",
+   "coluna": "e",
+   "esperado": 799039840,
+   "observado": 796803502,
+   "diferenca": -2236338,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-08-19",
+   "residuo": -2236338
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "49cc40f6",
+   "coluna": "f",
+   "esperado": 1372690097,
+   "observado": 1309057061,
+   "diferenca": -63633036,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-08-19",
+   "residuo": -63633036
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "49cc40f6",
+   "coluna": "g",
+   "esperado": 8066255579,
+   "observado": 6820622383,
+   "diferenca": -1245633196,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-08-19",
+   "residuo": -1245633196
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "49cc40f6",
+   "coluna": "h",
+   "esperado": 5172854312,
+   "observado": 4435358656,
+   "diferenca": -737495656,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-08-19",
+   "residuo": -737495656
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "49cc40f6",
+   "coluna": "i",
+   "esperado": 4805766495,
+   "observado": 4071626771,
+   "diferenca": -734139724,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-08-19",
+   "residuo": -734139724
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "49cc40f6",
+   "coluna": "j",
+   "esperado": 760311233,
+   "observado": 714871671,
+   "diferenca": -45439562,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-08-19",
+   "residuo": -45439562
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "49cc40f6",
+   "coluna": "k",
+   "esperado": 3872867948,
+   "observado": 3343181002,
+   "diferenca": -529686946,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-08-19",
+   "residuo": -529686946
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "oficial_x_oficial",
+   "documento": "49cc40f6",
+   "coluna": "L",
+   "esperado": 4671907788,
+   "observado": 4139984504,
+   "diferenca": -531923284,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-08-19",
+   "residuo": -531923284
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "49cc40f6",
+   "escopo": "consolidado",
+   "coluna": "a",
+   "esperado": 525068790,
+   "observado": 525068790,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "49cc40f6",
+   "escopo": "consolidado",
+   "coluna": "b",
+   "esperado": 2024831391,
+   "observado": 2024831391,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "49cc40f6",
+   "escopo": "consolidado",
+   "coluna": "c",
+   "esperado": 1202371743,
+   "observado": 1202371743,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "49cc40f6",
+   "escopo": "consolidado",
+   "coluna": "d",
+   "esperado": 548488598,
+   "observado": 548488598,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "49cc40f6",
+   "escopo": "consolidado",
+   "coluna": "e",
+   "esperado": 799039840,
+   "observado": 799039840,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "49cc40f6",
+   "escopo": "consolidado",
+   "coluna": "f",
+   "esperado": 1372690097,
+   "observado": 1390723579,
+   "diferenca": 18033482,
+   "classe": "diferenca_de_escopo (causa_comprovada_por_empenho)",
+   "situacao_catalogo": "explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md; docs/audits/escopo/ESCOPO_ENTIDADE_7.md"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "49cc40f6",
+   "escopo": "consolidado",
+   "coluna": "g",
+   "esperado": 8066255579,
+   "observado": 8066255579,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "49cc40f6",
+   "escopo": "consolidado",
+   "coluna": "h",
+   "esperado": 5172854312,
+   "observado": 5172854312,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "49cc40f6",
+   "escopo": "consolidado",
+   "coluna": "i",
+   "esperado": 4805766495,
+   "observado": 4805972064,
+   "diferenca": 205569,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "49cc40f6",
+   "escopo": "consolidado",
+   "coluna": "j",
+   "esperado": 760311233,
+   "observado": 760311233,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "49cc40f6",
+   "escopo": "consolidado",
+   "coluna": "k",
+   "esperado": 3872867948,
+   "observado": 3890695861,
+   "diferenca": 17827913,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "comparacao": "elotech_x_pdf",
+   "documento": "49cc40f6",
+   "escopo": "consolidado",
+   "coluna": "L",
+   "esperado": 4671907788,
+   "observado": 4689735701,
+   "diferenca": 17827913,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
    "comparacao": "elotech_x_siconfi",
    "coluna": "a",
    "esperado": 525068790,
@@ -7296,7 +10888,7 @@
    "observado": 4805972064,
    "diferenca": 205569,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -7320,7 +10912,7 @@
    "observado": 3872662379,
    "diferenca": -205569,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -7332,7 +10924,7 @@
    "observado": 4671702219,
    "diferenca": -205569,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -7782,6 +11374,364 @@
    "exercicio": 2019,
    "bimestre": 4,
    "data_final": "2019-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "ea117bf6",
+   "coluna": "a",
+   "esperado": 525068790,
+   "observado": 523390350,
+   "diferenca": -1678440,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-09-30",
+   "residuo": -1678440
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "ea117bf6",
+   "coluna": "b",
+   "esperado": 2024831391,
+   "observado": 1986603615,
+   "diferenca": -38227776,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-09-30",
+   "residuo": -38227776
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "ea117bf6",
+   "coluna": "c",
+   "esperado": 1247663086,
+   "observado": 1208887808,
+   "diferenca": -38775278,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-09-30",
+   "residuo": -38775278
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "ea117bf6",
+   "coluna": "d",
+   "esperado": 553605171,
+   "observado": 553504143,
+   "diferenca": -101028,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-09-30",
+   "residuo": -101028
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "ea117bf6",
+   "coluna": "e",
+   "esperado": 748631924,
+   "observado": 747602014,
+   "diferenca": -1029910,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-09-30",
+   "residuo": -1029910
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "ea117bf6",
+   "coluna": "f",
+   "esperado": 1372690097,
+   "observado": 1309057061,
+   "diferenca": -63633036,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-09-30",
+   "residuo": -63633036
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "ea117bf6",
+   "coluna": "g",
+   "esperado": 8066255579,
+   "observado": 6820622383,
+   "diferenca": -1245633196,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-09-30",
+   "residuo": -1245633196
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "ea117bf6",
+   "coluna": "h",
+   "esperado": 6111999454,
+   "observado": 5150927644,
+   "diferenca": -961071810,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-09-30",
+   "residuo": -961071810
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "ea117bf6",
+   "coluna": "i",
+   "esperado": 5846210418,
+   "observado": 4885273803,
+   "diferenca": -960936615,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-09-30",
+   "residuo": -960936615
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "ea117bf6",
+   "coluna": "j",
+   "esperado": 972020112,
+   "observado": 920697380,
+   "diferenca": -51322732,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-09-30",
+   "residuo": -51322732
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "ea117bf6",
+   "coluna": "k",
+   "esperado": 2620715146,
+   "observado": 2323708261,
+   "diferenca": -297006885,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-09-30",
+   "residuo": -297006885
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "ea117bf6",
+   "coluna": "L",
+   "esperado": 3369347070,
+   "observado": 3071310275,
+   "diferenca": -298036795,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-09-30",
+   "residuo": -298036795
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea117bf6",
+   "escopo": "consolidado",
+   "coluna": "a",
+   "esperado": 525068790,
+   "observado": 525068790,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea117bf6",
+   "escopo": "consolidado",
+   "coluna": "b",
+   "esperado": 2024831391,
+   "observado": 2024831391,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea117bf6",
+   "escopo": "consolidado",
+   "coluna": "c",
+   "esperado": 1247663086,
+   "observado": 1247639686,
+   "diferenca": -23400,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (c) e (i): 234,00 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea117bf6",
+   "escopo": "consolidado",
+   "coluna": "d",
+   "esperado": 553605171,
+   "observado": 553605171,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea117bf6",
+   "escopo": "consolidado",
+   "coluna": "e",
+   "esperado": 748631924,
+   "observado": 748655324,
+   "diferenca": 23400,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea117bf6",
+   "escopo": "consolidado",
+   "coluna": "f",
+   "esperado": 1372690097,
+   "observado": 1390723579,
+   "diferenca": 18033482,
+   "classe": "diferenca_de_escopo (causa_comprovada_por_empenho)",
+   "situacao_catalogo": "explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md; docs/audits/escopo/ESCOPO_ENTIDADE_7.md"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea117bf6",
+   "escopo": "consolidado",
+   "coluna": "g",
+   "esperado": 8066255579,
+   "observado": 8066255579,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea117bf6",
+   "escopo": "consolidado",
+   "coluna": "h",
+   "esperado": 6111999454,
+   "observado": 6111999454,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea117bf6",
+   "escopo": "consolidado",
+   "coluna": "i",
+   "esperado": 5846210418,
+   "observado": 5846233818,
+   "diferenca": 23400,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (c) e (i): 234,00 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea117bf6",
+   "escopo": "consolidado",
+   "coluna": "j",
+   "esperado": 972020112,
+   "observado": 972020112,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea117bf6",
+   "escopo": "consolidado",
+   "coluna": "k",
+   "esperado": 2620715146,
+   "observado": 2638725228,
+   "diferenca": 18010082,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "ea117bf6",
+   "escopo": "consolidado",
+   "coluna": "L",
+   "esperado": 3369347070,
+   "observado": 3387380552,
+   "diferenca": 18033482,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
    "comparacao": "elotech_x_siconfi",
    "coluna": "a",
    "esperado": 525068790,
@@ -7986,6 +11936,364 @@
    "exercicio": 2019,
    "bimestre": 5,
    "data_final": "2019-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "35dae607",
+   "coluna": "a",
+   "esperado": 525068790,
+   "observado": 523390350,
+   "diferenca": -1678440,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-11-29",
+   "residuo": -1678440
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "35dae607",
+   "coluna": "b",
+   "esperado": 2024831391,
+   "observado": 1986603615,
+   "diferenca": -38227776,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-11-29",
+   "residuo": -38227776
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "35dae607",
+   "coluna": "c",
+   "esperado": 1249268755,
+   "observado": 1210493477,
+   "diferenca": -38775278,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-11-29",
+   "residuo": -38775278
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "35dae607",
+   "coluna": "d",
+   "esperado": 556056680,
+   "observado": 555955652,
+   "diferenca": -101028,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-11-29",
+   "residuo": -101028
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "35dae607",
+   "coluna": "e",
+   "esperado": 744574746,
+   "observado": 743544836,
+   "diferenca": -1029910,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-11-29",
+   "residuo": -1029910
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "35dae607",
+   "coluna": "f",
+   "esperado": 1372690097,
+   "observado": 1309057061,
+   "diferenca": -63633036,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-11-29",
+   "residuo": -63633036
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "35dae607",
+   "coluna": "g",
+   "esperado": 8062004461,
+   "observado": 6820622383,
+   "diferenca": -1241382078,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-11-29",
+   "residuo": -1241382078
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "35dae607",
+   "coluna": "h",
+   "esperado": 6168009760,
+   "observado": 5148717127,
+   "diferenca": -1019292633,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-11-29",
+   "residuo": -1019292633
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "35dae607",
+   "coluna": "i",
+   "esperado": 5997374822,
+   "observado": 4978178779,
+   "diferenca": -1019196043,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-11-29",
+   "residuo": -1019196043
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "35dae607",
+   "coluna": "j",
+   "esperado": 1205047114,
+   "observado": 1144516739,
+   "diferenca": -60530375,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-11-29",
+   "residuo": -60530375
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "35dae607",
+   "coluna": "k",
+   "esperado": 2232272622,
+   "observado": 2006983926,
+   "diferenca": -225288696,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-11-29",
+   "residuo": -225288696
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "35dae607",
+   "coluna": "L",
+   "esperado": 2976847368,
+   "observado": 2750528762,
+   "diferenca": -226318606,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2019-11-29",
+   "residuo": -226318606
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "35dae607",
+   "escopo": "consolidado",
+   "coluna": "a",
+   "esperado": 525068790,
+   "observado": 525068790,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "35dae607",
+   "escopo": "consolidado",
+   "coluna": "b",
+   "esperado": 2024831391,
+   "observado": 2024831391,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "35dae607",
+   "escopo": "consolidado",
+   "coluna": "c",
+   "esperado": 1249268755,
+   "observado": 1249245355,
+   "diferenca": -23400,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (c) e (i): 234,00 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "35dae607",
+   "escopo": "consolidado",
+   "coluna": "d",
+   "esperado": 556056680,
+   "observado": 556056680,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "35dae607",
+   "escopo": "consolidado",
+   "coluna": "e",
+   "esperado": 744574746,
+   "observado": 744598146,
+   "diferenca": 23400,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "35dae607",
+   "escopo": "consolidado",
+   "coluna": "f",
+   "esperado": 1372690097,
+   "observado": 1390723579,
+   "diferenca": 18033482,
+   "classe": "diferenca_de_escopo (causa_comprovada_por_empenho)",
+   "situacao_catalogo": "explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md; docs/audits/escopo/ESCOPO_ENTIDADE_7.md"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "35dae607",
+   "escopo": "consolidado",
+   "coluna": "g",
+   "esperado": 8062004461,
+   "observado": 8066255579,
+   "diferenca": 4251118,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "35dae607",
+   "escopo": "consolidado",
+   "coluna": "h",
+   "esperado": 6168009760,
+   "observado": 6168009760,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "35dae607",
+   "escopo": "consolidado",
+   "coluna": "i",
+   "esperado": 5997374822,
+   "observado": 5997398222,
+   "diferenca": 23400,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (c) e (i): 234,00 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "35dae607",
+   "escopo": "consolidado",
+   "coluna": "j",
+   "esperado": 1205047114,
+   "observado": 1205047114,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "35dae607",
+   "escopo": "consolidado",
+   "coluna": "k",
+   "esperado": 2232272622,
+   "observado": 2254533822,
+   "diferenca": 22261200,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "35dae607",
+   "escopo": "consolidado",
+   "coluna": "L",
+   "esperado": 2976847368,
+   "observado": 2999131968,
+   "diferenca": 22284600,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
    "comparacao": "elotech_x_siconfi",
    "coluna": "a",
    "esperado": 525068790,
@@ -8040,7 +12348,7 @@
    "observado": 744598146,
    "diferenca": 23400,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -8052,7 +12360,7 @@
    "observado": 1390723579,
    "diferenca": 18033482,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -8064,7 +12372,7 @@
    "observado": 8066255579,
    "diferenca": 4251118,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -8112,7 +12420,7 @@
    "observado": 2254533822,
    "diferenca": 22261200,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -8124,7 +12432,7 @@
    "observado": 2999131968,
    "diferenca": 22284600,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -8190,13 +12498,371 @@
    "exercicio": 2019,
    "bimestre": 6,
    "data_final": "2019-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "36f1ef8e",
+   "coluna": "a",
+   "esperado": 525073739,
+   "observado": 523395299,
+   "diferenca": -1678440,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2020-02-19",
+   "residuo": -1678440
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "36f1ef8e",
+   "coluna": "b",
+   "esperado": 2024831391,
+   "observado": 1986603615,
+   "diferenca": -38227776,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2020-02-19",
+   "residuo": -38227776
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "36f1ef8e",
+   "coluna": "c",
+   "esperado": 1261668478,
+   "observado": 1222893200,
+   "diferenca": -38775278,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2020-02-19",
+   "residuo": -38775278
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "36f1ef8e",
+   "coluna": "d",
+   "esperado": 856486070,
+   "observado": 856118903,
+   "diferenca": -367167,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2020-02-19",
+   "residuo": -367167
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "36f1ef8e",
+   "coluna": "e",
+   "esperado": 431750582,
+   "observado": 430986811,
+   "diferenca": -763771,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2020-02-19",
+   "residuo": -763771
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "36f1ef8e",
+   "coluna": "f",
+   "esperado": 1372690097,
+   "observado": 1309057061,
+   "diferenca": -63633036,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2020-02-19",
+   "residuo": -63633036
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "36f1ef8e",
+   "coluna": "g",
+   "esperado": 8062004461,
+   "observado": 6820622383,
+   "diferenca": -1241382078,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2020-02-19",
+   "residuo": -1241382078
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "36f1ef8e",
+   "coluna": "h",
+   "esperado": 6203954837,
+   "observado": 5169081935,
+   "diferenca": -1034872902,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2020-02-19",
+   "residuo": -1034872902
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "36f1ef8e",
+   "coluna": "i",
+   "esperado": 6080620734,
+   "observado": 5045747832,
+   "diferenca": -1034872902,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2020-02-19",
+   "residuo": -1034872902
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "36f1ef8e",
+   "coluna": "j",
+   "esperado": 1645691847,
+   "observado": 1479946177,
+   "diferenca": -165745670,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2020-02-19",
+   "residuo": -165745670
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "36f1ef8e",
+   "coluna": "k",
+   "esperado": 1708381977,
+   "observado": 1603985435,
+   "diferenca": -104396542,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2020-02-19",
+   "residuo": -104396542
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "oficial_x_oficial",
+   "documento": "36f1ef8e",
+   "coluna": "L",
+   "esperado": 2140132559,
+   "observado": 2034972246,
+   "diferenca": -105160313,
+   "classe": "divergencia_entre_documentos_oficiais_sem_causa",
+   "evidencia": "causa não determinada; PDF emitido em —; declaração ao Siconfi homologada em 2020-02-19",
+   "residuo": -105160313
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "36f1ef8e",
+   "escopo": "consolidado",
+   "coluna": "a",
+   "esperado": 525073739,
+   "observado": 525068790,
+   "diferenca": -4949,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "36f1ef8e",
+   "escopo": "consolidado",
+   "coluna": "b",
+   "esperado": 2024831391,
+   "observado": 2024831391,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "36f1ef8e",
+   "escopo": "consolidado",
+   "coluna": "c",
+   "esperado": 1261668478,
+   "observado": 1261611565,
+   "diferenca": -56913,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (c) e (i): 569,13 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "36f1ef8e",
+   "escopo": "consolidado",
+   "coluna": "d",
+   "esperado": 856486070,
+   "observado": 851322243,
+   "diferenca": -5163827,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "36f1ef8e",
+   "escopo": "consolidado",
+   "coluna": "e",
+   "esperado": 431750582,
+   "observado": 436966373,
+   "diferenca": 5215791,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "36f1ef8e",
+   "escopo": "consolidado",
+   "coluna": "f",
+   "esperado": 1372690097,
+   "observado": 1390723579,
+   "diferenca": 18033482,
+   "classe": "diferenca_de_escopo (causa_comprovada_por_empenho)",
+   "situacao_catalogo": "explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md; docs/audits/escopo/ESCOPO_ENTIDADE_7.md"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "36f1ef8e",
+   "escopo": "consolidado",
+   "coluna": "g",
+   "esperado": 8062004461,
+   "observado": 8066255579,
+   "diferenca": 4251118,
+   "classe": "causa_nao_determinada",
+   "situacao_catalogo": "não determinada",
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "36f1ef8e",
+   "escopo": "consolidado",
+   "coluna": "h",
+   "esperado": 6203954837,
+   "observado": 6203954837,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "36f1ef8e",
+   "escopo": "consolidado",
+   "coluna": "i",
+   "esperado": 6080620734,
+   "observado": 6080677647,
+   "diferenca": 56913,
+   "classe": "regra_de_classificacao",
+   "situacao_catalogo": "não determinada",
+   "evidencia": [
+    "troca de soma zero entre (c) e (i): 569,13 (padrão; empenho não atribuído)"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "36f1ef8e",
+   "escopo": "consolidado",
+   "coluna": "j",
+   "esperado": 1645691847,
+   "observado": 1645691847,
+   "diferenca": 0,
+   "classe": "concorda",
+   "situacao_catalogo": null,
+   "evidencia": null
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "36f1ef8e",
+   "escopo": "consolidado",
+   "coluna": "k",
+   "esperado": 1708381977,
+   "observado": 1730609664,
+   "diferenca": 22227687,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "comparacao": "elotech_x_pdf",
+   "documento": "36f1ef8e",
+   "escopo": "consolidado",
+   "coluna": "L",
+   "esperado": 2140132559,
+   "observado": 2167576037,
+   "diferenca": 27443478,
+   "classe": "diferenca_de_escopo",
+   "situacao_catalogo": "parcialmente explicada",
+   "evidencia": [
+    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
+   ]
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
    "comparacao": "elotech_x_siconfi",
    "coluna": "a",
    "esperado": 525073739,
    "observado": 525068790,
    "diferenca": -4949,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -8232,7 +12898,7 @@
    "observado": 851322243,
    "diferenca": -5163827,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -8244,7 +12910,7 @@
    "observado": 436966373,
    "diferenca": 5215791,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -8256,7 +12922,7 @@
    "observado": 1390723579,
    "diferenca": 18033482,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -8268,7 +12934,7 @@
    "observado": 8066255579,
    "diferenca": 4251118,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -8316,7 +12982,7 @@
    "observado": 1730609664,
    "diferenca": 22227687,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -8328,7 +12994,7 @@
    "observado": 2167576037,
    "diferenca": 27443478,
    "classe": "causa_nao_determinada",
-   "evidencia": "sem PDF transcrito do período para conferir a causa"
+   "evidencia": "PDF, Siconfi e Elotech diferem entre si nesta coluna"
   },
   {
    "exercicio": 2019,
@@ -39374,6 +44040,15 @@
  "resumo": [
   {
    "comparacao": "elotech_x_pdf",
+   "exercicio": 2016,
+   "celulas": 72,
+   "concordam": 31,
+   "explicadas": 8,
+   "nao_determinadas": 33,
+   "valor_nao_determinado_c": 1038279074
+  },
+  {
+   "comparacao": "elotech_x_pdf",
    "exercicio": 2017,
    "celulas": 144,
    "concordam": 71,
@@ -39383,12 +44058,21 @@
   },
   {
    "comparacao": "elotech_x_pdf",
+   "exercicio": 2018,
+   "celulas": 72,
+   "concordam": 21,
+   "explicadas": 17,
+   "nao_determinadas": 34,
+   "valor_nao_determinado_c": 6296971879
+  },
+  {
+   "comparacao": "elotech_x_pdf",
    "exercicio": 2019,
-   "celulas": 12,
-   "concordam": 0,
-   "explicadas": 0,
-   "nao_determinadas": 12,
-   "valor_nao_determinado_c": 4048029515
+   "celulas": 60,
+   "concordam": 22,
+   "explicadas": 18,
+   "nao_determinadas": 20,
+   "valor_nao_determinado_c": 4067168687
   },
   {
    "comparacao": "elotech_x_pdf",
@@ -39476,9 +44160,9 @@
    "exercicio": 2018,
    "celulas": 72,
    "concordam": 25,
-   "explicadas": 0,
-   "nao_determinadas": 47,
-   "valor_nao_determinado_c": 6543871411
+   "explicadas": 11,
+   "nao_determinadas": 36,
+   "valor_nao_determinado_c": 6310875655
   },
   {
    "comparacao": "elotech_x_siconfi",
@@ -39560,6 +44244,24 @@
    "explicadas": 10,
    "nao_determinadas": 43,
    "valor_nao_determinado_c": 3832800928
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2018,
+   "celulas": 72,
+   "concordam": 69,
+   "explicadas": 0,
+   "nao_determinadas": 3,
+   "valor_nao_determinado_c": 20855664
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2019,
+   "celulas": 48,
+   "concordam": 1,
+   "explicadas": 0,
+   "nao_determinadas": 47,
+   "valor_nao_determinado_c": 15690547111
   },
   {
    "comparacao": "oficial_x_oficial",
@@ -39647,9 +44349,9 @@
    "exercicio": 2018,
    "celulas": 30,
    "concordam": 6,
-   "explicadas": 0,
-   "nao_determinadas": 24,
-   "valor_nao_determinado_c": 4378845820
+   "explicadas": 5,
+   "nao_determinadas": 19,
+   "valor_nao_determinado_c": 4263925266
   },
   {
    "comparacao": "painel_x_siconfi",
@@ -39727,6 +44429,48 @@
  "residuos": [
   {
    "comparacao": "elotech_x_pdf",
+   "exercicio": 2016,
+   "por_coluna": {
+    "a": {
+     "celulas": 5,
+     "valor_c": 3750
+    },
+    "e": {
+     "celulas": 5,
+     "valor_c": 25056216
+    },
+    "L": {
+     "celulas": 5,
+     "valor_c": 262923793
+    },
+    "h": {
+     "celulas": 5,
+     "valor_c": 249046391
+    },
+    "k": {
+     "celulas": 4,
+     "valor_c": 238324381
+    },
+    "i": {
+     "celulas": 3,
+     "valor_c": 221677697
+    },
+    "c": {
+     "celulas": 2,
+     "valor_c": 5339972
+    },
+    "d": {
+     "celulas": 2,
+     "valor_c": 19487842
+    },
+    "j": {
+     "celulas": 2,
+     "valor_c": 16419032
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_pdf",
    "exercicio": 2017,
    "por_coluna": {
     "c": {
@@ -39761,11 +44505,69 @@
   },
   {
    "comparacao": "elotech_x_pdf",
-   "exercicio": 2019,
+   "exercicio": 2018,
    "por_coluna": {
     "a": {
      "celulas": 1,
-     "valor_c": 1678440
+     "valor_c": 57844561
+    },
+    "b": {
+     "celulas": 1,
+     "valor_c": 119188622
+    },
+    "c": {
+     "celulas": 5,
+     "valor_c": 213169835
+    },
+    "d": {
+     "celulas": 4,
+     "valor_c": 12103459
+    },
+    "e": {
+     "celulas": 6,
+     "valor_c": 384118567
+    },
+    "f": {
+     "celulas": 1,
+     "valor_c": 907477354
+    },
+    "g": {
+     "celulas": 1,
+     "valor_c": 432743346
+    },
+    "h": {
+     "celulas": 6,
+     "valor_c": 105254359
+    },
+    "i": {
+     "celulas": 5,
+     "valor_c": 214739851
+    },
+    "j": {
+     "celulas": 2,
+     "valor_c": 197779420
+    },
+    "k": {
+     "celulas": 1,
+     "valor_c": 1646414865
+    },
+    "L": {
+     "celulas": 1,
+     "valor_c": 2006137640
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2019,
+   "por_coluna": {
+    "i": {
+     "celulas": 2,
+     "valor_c": 870666261
+    },
+    "a": {
+     "celulas": 2,
+     "valor_c": 1683389
     },
     "b": {
      "celulas": 1,
@@ -39776,28 +44578,24 @@
      "valor_c": 11033067
     },
     "d": {
-     "celulas": 1,
-     "valor_c": 958309
+     "celulas": 2,
+     "valor_c": 6122136
     },
     "e": {
-     "celulas": 1,
-     "valor_c": 29738458
+     "celulas": 4,
+     "valor_c": 35001049
     },
     "f": {
      "celulas": 1,
      "valor_c": 81666518
     },
     "g": {
-     "celulas": 1,
-     "valor_c": 1245726196
+     "celulas": 3,
+     "valor_c": 1254228432
     },
     "h": {
      "celulas": 1,
      "valor_c": 875803225
-    },
-    "i": {
-     "celulas": 1,
-     "valor_c": 870460692
     },
     "j": {
      "celulas": 1,
@@ -40070,16 +44868,16 @@
      "valor_c": 216893531
     },
     "j": {
-     "celulas": 3,
-     "valor_c": 204731308
+     "celulas": 2,
+     "valor_c": 197779420
     },
     "k": {
-     "celulas": 6,
-     "valor_c": 1757538179
+     "celulas": 1,
+     "valor_c": 1646414865
     },
     "L": {
-     "celulas": 6,
-     "valor_c": 2121058194
+     "celulas": 1,
+     "valor_c": 2006137640
     }
    }
   },
@@ -40368,6 +45166,78 @@
     "L": {
      "celulas": 6,
      "valor_c": 1142578161
+    }
+   }
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2018,
+   "por_coluna": {
+    "h": {
+     "celulas": 1,
+     "valor_c": 6951888
+    },
+    "i": {
+     "celulas": 1,
+     "valor_c": 6951888
+    },
+    "j": {
+     "celulas": 1,
+     "valor_c": 6951888
+    }
+   }
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2019,
+   "por_coluna": {
+    "a": {
+     "celulas": 4,
+     "valor_c": 6713760
+    },
+    "b": {
+     "celulas": 4,
+     "valor_c": 152911104
+    },
+    "c": {
+     "celulas": 4,
+     "valor_c": 153995712
+    },
+    "e": {
+     "celulas": 4,
+     "valor_c": 5059929
+    },
+    "f": {
+     "celulas": 4,
+     "valor_c": 254532144
+    },
+    "g": {
+     "celulas": 4,
+     "valor_c": 4974030548
+    },
+    "h": {
+     "celulas": 4,
+     "valor_c": 3752733001
+    },
+    "i": {
+     "celulas": 4,
+     "valor_c": 3749145284
+    },
+    "j": {
+     "celulas": 4,
+     "valor_c": 323038339
+    },
+    "k": {
+     "celulas": 4,
+     "valor_c": 1156379069
+    },
+    "L": {
+     "celulas": 4,
+     "valor_c": 1161438998
+    },
+    "d": {
+     "celulas": 3,
+     "valor_c": 569223
     }
    }
   },
@@ -40714,8 +45584,8 @@
      "valor_c": 116099928
     },
     "saldo": {
-     "celulas": 6,
-     "valor_c": 2121058194
+     "celulas": 1,
+     "valor_c": 2006137640
     }
    }
   },

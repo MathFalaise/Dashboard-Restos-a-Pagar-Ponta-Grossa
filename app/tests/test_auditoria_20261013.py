@@ -396,3 +396,46 @@ def test_SINTETICO_cli_registra_a_versao_sucessora(mundo, tmp_path, capsys):
                       "ON r2.id = s.supersedida_por WHERE r.codigo='CONS-PAR' AND r.versao=2").fetchall()
     con.close()
     assert sup == [("CONS-PAR", 4)]
+
+
+# ================================================================== retention of runs (item 10)
+def test_SINTETICO_manutencao_mantem_a_atual_e_cada_vigencia_e_recupera_do_backup(mundo):
+    import sqlite3
+    from rp import manutencao
+    mundo.catalogos({1: [2026]})
+    mundo.listagem(1, 2026, "2026-02-28", [_reg(1, ano=2025, aproc=100.0)], T0)
+    mundo.processar()                                         # normalization 1, derivation 1
+    mundo.processar("2026-09-29T23:59:59-03:00")              # normalization 2, derivation 2 ('as it was on')
+    nid, did = mundo.processar()                              # normalization 3, derivation 3 (current)
+    from rp import derivar
+    did_vig = derivar.derivar(mundo.con, nid, "2026-09-29T23:59:59-03:00")
+    mundo.con.commit()
+    (mundo.cfg.dados_locais / manutencao.PRESERVAR).write_text("derivacao 1  # kept on purpose\n", encoding="utf-8")
+    p = manutencao.plano(mundo.con, mundo.cfg)
+    assert p["manter"] == {"normalizacoes": [1, nid], "derivacoes": [1, did, did_vig]}
+    assert [d["id"] for d in p["apagar"]["derivacoes"]] == [2] and [n["id"] for n in p["apagar"]["normalizacoes"]] == [2]
+    camada0 = mundo.con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0]
+    r = manutencao.executar(mundo.con, mundo.cfg, mundo.armazem, mundo.cfg.banco)
+    assert r["executada"] and r["backup"]["integrity_check"] == "ok" and r["camada0_intacta"]
+    assert [d for (d,) in mundo.con.execute("SELECT id FROM derivacao_execucao ORDER BY id")] == [1, did, did_vig]
+    assert mundo.con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0] == camada0          # raw layer untouched
+    assert manutencao.executar(mundo.con, mundo.cfg, mundo.armazem, mundo.cfg.banco)["executada"] is False
+    b = sqlite3.connect(r["backup"]["arquivo"])                # the removed runs are in the checked backup
+    assert b.execute("SELECT COUNT(*) FROM derivacao_execucao WHERE id=2").fetchone()[0] == 1
+    b.close()
+
+
+def test_SINTETICO_manutencao_recusa_backup_que_nao_confere(mundo, monkeypatch):
+    from rp import banco, manutencao
+    mundo.catalogos({1: [2026]})
+    mundo.listagem(1, 2026, "2026-02-28", [_reg(1, ano=2025, aproc=100.0)], T0)
+    mundo.processar()
+    mundo.processar()
+    mundo.con.commit()
+    vazio = mundo.cfg.dados_locais / "vazio.sqlite"
+    import sqlite3
+    sqlite3.connect(vazio).close()
+    monkeypatch.setattr(banco, "backup", lambda *a, **k: vazio)
+    with pytest.raises(manutencao.ManutencaoRecusada, match="não confere"):
+        manutencao.executar(mundo.con, mundo.cfg, mundo.armazem, mundo.cfg.banco)
+    assert mundo.con.execute("SELECT COUNT(*) FROM derivacao_execucao").fetchone()[0] == 2     # nothing deleted

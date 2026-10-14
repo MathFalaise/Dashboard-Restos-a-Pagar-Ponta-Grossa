@@ -23,20 +23,20 @@ Gerado por `docs/audits/rreo/divergencia_2026.py`. Somente leitura; nenhum valor
 | 2026-06-30 | k | 55.163.825,13 | 55.272.937,56 | 109.112,43 | 54.076.422,31 | -1.087.402,82 |
 | 2026-06-30 | L | 59.456.457,33 | 59.565.569,76 | 109.112,43 | 58.369.054,51 | -1.087.402,82 |
 | 2026-08-31 | h | 85.599.108,05 | 85.253.628,49 | -345.479,56 | 84.913.209,33 | -685.898,72 |
-| 2026-08-31 | i | 83.893.145,91 | 83.655.417,66 | -237.728,25 | 83.341.328,56 | -551.817,35 |
+| 2026-08-31 | i | 83.893.145,91 | 83.655.417,66 | -237.728,25 | 83.336.952,48 | -556.193,43 |
 | 2026-08-31 | j | 8.015.744,44 | 8.015.744,44 | 0,00 | 9.267.604,71 | 1.251.860,27 |
-| 2026-08-31 | k | 45.203.188,42 | 45.440.916,67 | 237.728,25 | 44.503.145,50 | -700.042,92 |
-| 2026-08-31 | L | 48.444.791,17 | 48.682.519,42 | 237.728,25 | 47.744.748,25 | -700.042,92 |
+| 2026-08-31 | k | 45.203.188,42 | 45.440.916,67 | 237.728,25 | 44.507.521,58 | -695.666,84 |
+| 2026-08-31 | L | 48.444.791,17 | 48.682.519,42 | 237.728,25 | 47.749.124,33 | -695.666,84 |
 
 ## O que a API mudou no mesmo período fechado entre as coletas
 
 ### Corte 2026-02-28 (2026-09-29T23:59:59-03:00 -> atual)
 
-Retrato da API de 2026-09-29T20:22:57-03:00 × de 2026-10-06T10:23:15-03:00: 2 registro(s) alterado(s) só em campos não monetários; nenhum valor mudou.
+Retrato da API de 2026-09-29T20:22:57-03:00 × de 2026-10-10T13:21:15-03:00: 2 registro(s) alterado(s) só em campos não monetários; nenhum valor mudou.
 
 ### Corte 2026-04-30 (2026-09-29T23:59:59-03:00 -> atual)
 
-Retrato da API de 2026-09-29T20:23:16-03:00 (`9393c957`) × de 2026-10-06T10:25:56-03:00 (`40b8d3f3`): 10 registro(s) alterado(s), 0 novo(s), 0 removido(s).
+Retrato da API de 2026-09-29T20:23:16-03:00 (`9393c957`) × de 2026-10-10T13:22:29-03:00 (`243f9a60`): 10 registro(s) alterado(s), 0 novo(s), 0 removido(s).
 
 Impacto por grupo: cancelamentos 1.270.679,25
 
@@ -53,7 +53,7 @@ Impacto por grupo: cancelamentos 1.270.679,25
 
 ### Corte 2026-06-30 (2026-09-29T23:59:59-03:00 -> atual)
 
-Retrato da API de 2026-09-29T20:15:04-03:00 (`c53d3741`) × de 2026-10-06T10:27:34-03:00 (`5b414f03`): 10 registro(s) alterado(s), 0 novo(s), 0 removido(s).
+Retrato da API de 2026-09-29T20:15:04-03:00 (`c53d3741`) × de 2026-10-10T13:23:05-03:00 (`a84d76a0`): 10 registro(s) alterado(s), 0 novo(s), 0 removido(s).
 
 Impacto por grupo: pagamentos -74.164,00, cancelamentos 1.270.679,25, liquidacoes -74.164,00, retencoes -3.100,71
 
@@ -76,14 +76,16 @@ Impacto por grupo: pagamentos -74.164,00, cancelamentos 1.270.679,25, liquidacoe
 
 ### Corte 2026-08-31 (2026-09-29T23:59:59-03:00 -> atual)
 
-Retrato da API de 2026-09-29T21:35:35-03:00 (`b8208f35`) × de 2026-10-06T10:29:08-03:00 (`748bfc35`): 12 registro(s) alterado(s), 0 novo(s), 0 removido(s).
+Retrato da API de 2026-09-29T21:35:35-03:00 (`b8208f35`) × de 2026-10-10T13:23:42-03:00 (`d0d6fd66`): 13 registro(s) alterado(s), 0 novo(s), 0 removido(s).
 
-Impacto por grupo: pagamentos -314.089,10, cancelamentos 1.251.860,27, liquidacoes -340.419,16, retencoes -24.001,91
+Impacto por grupo: pagamentos -318.465,18, estornos_de_pagamento 115.015,20, cancelamentos 1.251.860,27, liquidacoes -340.419,16, retencoes -24.001,91
 
 | Empenho | Campo | Antes | Depois |
 |---|---|---|---|
 | 17442/2024 | pago_aproc_c | 14.224,98 | 28.679,43 |
 | 17443/2024 | pago_aproc_c | 2.640,01 | 54.999,51 |
+| 10187/2025 | pago_aproc_c | 1.209.153,80 | 1.204.777,72 |
+| 10187/2025 | pago_aproc_estornado_c | 523.301,42 | 638.316,62 |
 | 14515/2025 | cancelado_aproc_c | 0,00 | 149.879,25 |
 | 15743/2025 | cancelado_aproc_c | 0,00 | 218.408,02 |
 | 16817/2025 | cancelado_aproc_c | 0,00 | 300.294,27 |

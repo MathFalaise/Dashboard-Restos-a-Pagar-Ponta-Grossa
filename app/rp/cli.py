@@ -116,10 +116,14 @@ def _main(argv=None):
     p.add_argument("--permitir-mais-recente", action="store_true")
     sub.add_parser("importar-etapas-anteriores", help="bruto das Etapas 01/02 como snapshots históricos")
     sub.add_parser("compactar", help="VACUUM: devolve ao disco o espaço de execuções apagadas")
+    p = sub.add_parser("manutencao", help="retenção das execuções (mantém a normalização atual e a derivação mais "
+                                          "recente de cada vigência); sem --confirmar só mostra a prévia")
+    p.add_argument("--confirmar", action="store_true", help="faz backup conferido, apaga, verifica e compacta")
     p = sub.add_parser("comprimir-backups", help="comprime (gzip conferido) os backups operacionais antigos; "
                                                  "sem --confirmar so lista")
     p.add_argument("--manter", type=int, default=3, help="os N mais recentes ficam sem comprimir (padrao 3)")
     p.add_argument("--confirmar", action="store_true")
+    p.add_argument("--estruturais", action="store_true", help="os backups estruturais (backups/), nao os operacionais")
     p = sub.add_parser("comparar-snapshots", help="retratos do mesmo corte: bytes e registros")
     p.add_argument("--entidade", type=int, required=True)
     p.add_argument("--exercicio", type=int, required=True)
@@ -290,7 +294,7 @@ def _main(argv=None):
     if a.cmd == "diagnosticar-api":   # same: queries the portal, but records no snapshot and does not open the database for writing
         return _diagnosticar_api(a, cfg)
     if a.cmd == "comprimir-backups":   # backup files only: does not open the database
-        r = banco.comprimir_backups_operacionais(cfg, a.manter, simular=not a.confirmar)
+        r = banco.comprimir_backups_operacionais(cfg, a.manter, simular=not a.confirmar, estruturais=a.estruturais)
         print(json.dumps({"simulado": not a.confirmar, "arquivos": r}, ensure_ascii=False, indent=1))
         return 0
     armazem = Armazem(cfg.snapshots)
@@ -341,6 +345,18 @@ def _main(argv=None):
                 f.write(json.dumps(r, ensure_ascii=False, indent=1, default=str))
         resumo = {k: r[k] for k in ("corte", "anterior", "posterior", "bytes_identicos", "contagens", "impacto_financeiro_por_grupo", "saldo_s1")}
         print(json.dumps(resumo, ensure_ascii=False, indent=1, default=str))
+        return 0
+    if a.cmd == "manutencao":
+        from . import manutencao
+        if not a.confirmar:
+            print(json.dumps({"previa": manutencao.plano(con, cfg)}, ensure_ascii=False, indent=1))
+            return 0
+        try:
+            r = manutencao.executar(con, cfg, armazem, cfg.banco)
+        except manutencao.ManutencaoRecusada as e:
+            print(json.dumps({"recusada": str(e)}, ensure_ascii=False, indent=1))
+            return 3
+        print(json.dumps(r, ensure_ascii=False, indent=1))
         return 0
     if a.cmd == "compactar":
         antes, depois = banco.compactar(con, cfg.banco)

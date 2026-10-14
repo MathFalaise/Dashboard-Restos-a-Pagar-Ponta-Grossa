@@ -177,6 +177,11 @@ def homologar(cfg, armazem, caminho_banco=None, referencia=None, raiz=None, exec
             verificacoes.append(_verif("reproducao_deterministica", "reprodução a partir do armazém", None,
                                        "não executada (--sem-reproducao)"))
         pendencias = pendencias_contabeis(con)
+        from . import rreo_cobertura
+        cob = rreo_cobertura.matriz(con)["resumo"]
+        cobertura = {"rreo_esperados": sum(v for k, v in cob.items() if k in rreo_cobertura.SITUACOES),
+                     **{k: v for k, v in cob.items() if k in rreo_cobertura.SITUACOES}}
+        cobertura["completa"] = cobertura.get("transcrito", 0) == cobertura["rreo_esperados"]
     finally:
         con.close()
     for nome, (pasta, args) in (suites or SUITES).items():
@@ -191,7 +196,7 @@ def homologar(cfg, armazem, caminho_banco=None, referencia=None, raiz=None, exec
         resultado = "reprovada"
     elif nao_executadas:
         resultado = "incompleta"
-    elif pendencias:
+    elif pendencias or not cobertura["completa"]:    # 'sem ressalvas' also requires every document checked
         resultado = "aprovada_com_ressalvas"
     else:
         resultado = "aprovada_sem_ressalvas"
@@ -199,6 +204,12 @@ def homologar(cfg, armazem, caminho_banco=None, referencia=None, raiz=None, exec
             "aprovacao_tecnica": not falhas and not nao_executadas,
             "aprovacao_sem_ressalvas": resultado == "aprovada_sem_ressalvas",
             "falhas": falhas, "nao_executadas": nao_executadas, "pendencias_contabeis": pendencias,
+            # corrective audit of 13/10/2026, item 9: the three dimensions apart, never one verdict hiding the others
+            "dimensoes": {"tecnica": {"aprovada": not falhas and not nao_executadas, "falhas": falhas,
+                                      "nao_executadas": nao_executadas},
+                          "cobertura_documental": cobertura,
+                          "pendencias_contabeis": {"quantidade": len(pendencias),
+                                                   "tipos": [x["tipo"] for x in pendencias]}},
             "verificacoes": verificacoes, "banco": str(caminho_banco), "codigo": hash_do_codigo(),
             "executado_em": agora(), "segundos": round(time.time() - inicio, 1),
             "nota": ("'incompleta' não é homologação: alguma verificação obrigatória não foi executada. "

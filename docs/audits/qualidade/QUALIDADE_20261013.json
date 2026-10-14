@@ -1,0 +1,1900 @@
+{
+ "normalizacao": 18,
+ "fidelidade_da_ingestao": {
+  "registros": {
+   "numerador": 604142,
+   "denominador": 604142,
+   "taxa": 1.0,
+   "universo": "604142 registros da normalização 18 (listagens completas)",
+   "criterio": "registro igual ao item bruto em todos os campos conferidos",
+   "fora_do_denominador": [],
+   "meta_99_9": true
+  },
+  "campos": {
+   "numerador": 10874556,
+   "denominador": 10874556,
+   "taxa": 1.0,
+   "universo": "10 campos monetários + 8 de identificação por registro",
+   "criterio": "valor do campo igual ao do bruto (centavos exatos)",
+   "fora_do_denominador": [],
+   "meta_99_9": true
+  },
+  "itens_brutos_sem_registro": 0
+ },
+ "reprodutibilidade": {
+  "numerador": 9347,
+  "denominador": 9347,
+  "taxa": 1.0,
+  "universo": "indicadores publicados de todos os cortes processados (Município e cada entidade)",
+  "criterio": "valor do painel igual ao recálculo independente a partir do bruto",
+  "fora_do_denominador": [
+   "Município indisponível no painel (nunca zero): 2026|2026-01-31, 2026|2026-03-31, 2026|2026-12-31"
+  ],
+  "meta_99_9": true,
+  "divergentes": [],
+  "regras_de_escopo_reimplementadas": [
+   "COPIA-ORIGEM v1",
+   "ESCOPO-MUN v2",
+   "PAR-24 v1"
+  ]
+ },
+ "integridade_da_proveniencia": {
+  "numerador": 65,
+  "denominador": 65,
+  "taxa": 1.0,
+  "universo": "cortes publicados do Município (605 snapshots distintos)",
+  "criterio": "todo snapshot do corte: manifesto com o SHA-256 registrado e todo objeto bruto com o SHA-256 do nome",
+  "fora_do_denominador": [],
+  "meta_99_9": true
+ },
+ "concordancia_documental": {
+  "elotech_x_pdf": {
+   "numerador": 773,
+   "denominador": 1356,
+   "taxa": 0.5700589970501475,
+   "universo": "células comparáveis (elotech_x_pdf)",
+   "criterio": "valores iguais ao centavo",
+   "fora_do_denominador": [],
+   "meta_99_9": false
+  },
+  "elotech_x_siconfi": {
+   "numerador": 269,
+   "denominador": 768,
+   "taxa": 0.3502604166666667,
+   "universo": "células comparáveis (elotech_x_siconfi)",
+   "criterio": "valores iguais ao centavo",
+   "fora_do_denominador": [],
+   "meta_99_9": false
+  },
+  "painel_x_siconfi": {
+   "numerador": 161,
+   "denominador": 320,
+   "taxa": 0.503125,
+   "universo": "células comparáveis (painel_x_siconfi)",
+   "criterio": "valores iguais ao centavo",
+   "fora_do_denominador": [],
+   "meta_99_9": false
+  },
+  "oficial_x_oficial": {
+   "numerador": 229,
+   "denominador": 696,
+   "taxa": 0.3290229885057471,
+   "universo": "células comparáveis (oficial_x_oficial)",
+   "criterio": "valores iguais ao centavo",
+   "fora_do_denominador": [],
+   "meta_99_9": false
+  }
+ },
+ "cobertura_documental": {
+  "rreo_transcritos": {
+   "numerador": 112,
+   "denominador": 114,
+   "taxa": 0.9824561403508771,
+   "universo": "documentos do Anexo VII listados pelo portal (114)",
+   "criterio": "coletado e transcrito pelo extrator de produção",
+   "fora_do_denominador": [
+    "recusado_layout: 2",
+    "coletado_sem_extracao: 0",
+    "nao_coletado: 0"
+   ],
+   "meta_99_9": false
+  },
+  "rreo_conferidos_por_leitura_independente": {
+   "numerador": 112,
+   "denominador": 112,
+   "taxa": 1.0,
+   "universo": "documentos transcritos",
+   "criterio": "todas as células iguais na segunda leitura (xpdf)",
+   "fora_do_denominador": [],
+   "meta_99_9": true
+  },
+  "siconfi_declaracoes": {
+   "periodos_com_declaracao": 64,
+   "leitura": "coleta_20261013-223143"
+  },
+  "por_exercicio": {
+   "2016": {
+    "transcrito": 6,
+    "recusado_layout": 0,
+    "coletado_sem_extracao": 0,
+    "nao_coletado": 0
+   },
+   "2017": {
+    "transcrito": 12,
+    "recusado_layout": 0,
+    "coletado_sem_extracao": 0,
+    "nao_coletado": 0
+   },
+   "2018": {
+    "transcrito": 6,
+    "recusado_layout": 0,
+    "coletado_sem_extracao": 0,
+    "nao_coletado": 0
+   },
+   "2019": {
+    "transcrito": 5,
+    "recusado_layout": 1,
+    "coletado_sem_extracao": 0,
+    "nao_coletado": 0
+   },
+   "2020": {
+    "transcrito": 12,
+    "recusado_layout": 1,
+    "coletado_sem_extracao": 0,
+    "nao_coletado": 0
+   },
+   "2021": {
+    "transcrito": 15,
+    "recusado_layout": 0,
+    "coletado_sem_extracao": 0,
+    "nao_coletado": 0
+   },
+   "2022": {
+    "transcrito": 12,
+    "recusado_layout": 0,
+    "coletado_sem_extracao": 0,
+    "nao_coletado": 0
+   },
+   "2023": {
+    "transcrito": 12,
+    "recusado_layout": 0,
+    "coletado_sem_extracao": 0,
+    "nao_coletado": 0
+   },
+   "2024": {
+    "transcrito": 12,
+    "recusado_layout": 0,
+    "coletado_sem_extracao": 0,
+    "nao_coletado": 0
+   },
+   "2025": {
+    "transcrito": 12,
+    "recusado_layout": 0,
+    "coletado_sem_extracao": 0,
+    "nao_coletado": 0
+   },
+   "2026": {
+    "transcrito": 8,
+    "recusado_layout": 0,
+    "coletado_sem_extracao": 0,
+    "nao_coletado": 0
+   }
+  }
+ },
+ "residuos": [
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2016,
+   "por_coluna": {
+    "a": {
+     "celulas": 5,
+     "valor_c": 3750
+    },
+    "e": {
+     "celulas": 5,
+     "valor_c": 25056216
+    },
+    "L": {
+     "celulas": 5,
+     "valor_c": 262923793
+    },
+    "h": {
+     "celulas": 5,
+     "valor_c": 249046391
+    },
+    "k": {
+     "celulas": 4,
+     "valor_c": 238324381
+    },
+    "i": {
+     "celulas": 3,
+     "valor_c": 221677697
+    },
+    "c": {
+     "celulas": 2,
+     "valor_c": 5339972
+    },
+    "d": {
+     "celulas": 2,
+     "valor_c": 19487842
+    },
+    "j": {
+     "celulas": 2,
+     "valor_c": 16419032
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2017,
+   "por_coluna": {
+    "c": {
+     "celulas": 1,
+     "valor_c": 22547048
+    },
+    "d": {
+     "celulas": 1,
+     "valor_c": 456782
+    },
+    "e": {
+     "celulas": 1,
+     "valor_c": 22718830
+    },
+    "i": {
+     "celulas": 1,
+     "valor_c": 75154630
+    },
+    "j": {
+     "celulas": 1,
+     "valor_c": 285000
+    },
+    "k": {
+     "celulas": 1,
+     "valor_c": 75154630
+    },
+    "L": {
+     "celulas": 1,
+     "valor_c": 97873460
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2018,
+   "por_coluna": {
+    "a": {
+     "celulas": 1,
+     "valor_c": 57844561
+    },
+    "b": {
+     "celulas": 1,
+     "valor_c": 119188622
+    },
+    "c": {
+     "celulas": 5,
+     "valor_c": 213169835
+    },
+    "d": {
+     "celulas": 4,
+     "valor_c": 12103459
+    },
+    "e": {
+     "celulas": 6,
+     "valor_c": 384118567
+    },
+    "f": {
+     "celulas": 1,
+     "valor_c": 907477354
+    },
+    "g": {
+     "celulas": 1,
+     "valor_c": 432743346
+    },
+    "h": {
+     "celulas": 6,
+     "valor_c": 105254359
+    },
+    "i": {
+     "celulas": 5,
+     "valor_c": 214739851
+    },
+    "j": {
+     "celulas": 2,
+     "valor_c": 197779420
+    },
+    "k": {
+     "celulas": 1,
+     "valor_c": 1646414865
+    },
+    "L": {
+     "celulas": 1,
+     "valor_c": 2006137640
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2019,
+   "por_coluna": {
+    "i": {
+     "celulas": 2,
+     "valor_c": 870666261
+    },
+    "a": {
+     "celulas": 2,
+     "valor_c": 1683389
+    },
+    "b": {
+     "celulas": 1,
+     "valor_c": 38134776
+    },
+    "c": {
+     "celulas": 1,
+     "valor_c": 11033067
+    },
+    "d": {
+     "celulas": 2,
+     "valor_c": 6122136
+    },
+    "e": {
+     "celulas": 4,
+     "valor_c": 35001049
+    },
+    "f": {
+     "celulas": 1,
+     "valor_c": 81666518
+    },
+    "g": {
+     "celulas": 3,
+     "valor_c": 1254228432
+    },
+    "h": {
+     "celulas": 1,
+     "valor_c": 875803225
+    },
+    "j": {
+     "celulas": 1,
+     "valor_c": 50772668
+    },
+    "k": {
+     "celulas": 1,
+     "valor_c": 406159354
+    },
+    "L": {
+     "celulas": 1,
+     "valor_c": 435897812
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2020,
+   "por_coluna": {
+    "L": {
+     "celulas": 3,
+     "valor_c": 14847
+    },
+    "c": {
+     "celulas": 2,
+     "valor_c": 15377195
+    },
+    "i": {
+     "celulas": 2,
+     "valor_c": 19917647
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2021,
+   "por_coluna": {
+    "h": {
+     "celulas": 1,
+     "valor_c": 1402307
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2022,
+   "por_coluna": {
+    "c": {
+     "celulas": 2,
+     "valor_c": 549922
+    },
+    "e": {
+     "celulas": 2,
+     "valor_c": 549922
+    },
+    "i": {
+     "celulas": 4,
+     "valor_c": 5816865
+    },
+    "k": {
+     "celulas": 8,
+     "valor_c": 8950173
+    },
+    "L": {
+     "celulas": 8,
+     "valor_c": 70200983
+    },
+    "h": {
+     "celulas": 2,
+     "valor_c": 2016687
+    },
+    "j": {
+     "celulas": 4,
+     "valor_c": 3133308
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2023,
+   "por_coluna": {
+    "h": {
+     "celulas": 7,
+     "valor_c": 12294276
+    },
+    "i": {
+     "celulas": 11,
+     "valor_c": 23226341
+    },
+    "k": {
+     "celulas": 10,
+     "valor_c": 22827064
+    },
+    "L": {
+     "celulas": 10,
+     "valor_c": 25017808
+    },
+    "c": {
+     "celulas": 9,
+     "valor_c": 4722973
+    },
+    "e": {
+     "celulas": 8,
+     "valor_c": 4466640
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2024,
+   "por_coluna": {
+    "i": {
+     "celulas": 4,
+     "valor_c": 1232666
+    },
+    "c": {
+     "celulas": 2,
+     "valor_c": 1084350
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2026,
+   "por_coluna": {
+    "h": {
+     "celulas": 7,
+     "valor_c": 264113896
+    },
+    "k": {
+     "celulas": 7,
+     "valor_c": 679592866
+    },
+    "L": {
+     "celulas": 7,
+     "valor_c": 680331316
+    },
+    "i": {
+     "celulas": 5,
+     "valor_c": 204236915
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2016,
+   "por_coluna": {
+    "a": {
+     "celulas": 6,
+     "valor_c": 11512129
+    },
+    "b": {
+     "celulas": 1,
+     "valor_c": 40762917
+    },
+    "c": {
+     "celulas": 5,
+     "valor_c": 519465932
+    },
+    "d": {
+     "celulas": 1,
+     "valor_c": 58223
+    },
+    "e": {
+     "celulas": 6,
+     "valor_c": 549296225
+    },
+    "f": {
+     "celulas": 3,
+     "valor_c": 19466364
+    },
+    "g": {
+     "celulas": 1,
+     "valor_c": 32966736
+    },
+    "h": {
+     "celulas": 6,
+     "valor_c": 872260712
+    },
+    "i": {
+     "celulas": 5,
+     "valor_c": 1000738106
+    },
+    "j": {
+     "celulas": 1,
+     "valor_c": 2879165
+    },
+    "k": {
+     "celulas": 6,
+     "valor_c": 952385409
+    },
+    "L": {
+     "celulas": 6,
+     "valor_c": 1495005610
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2017,
+   "por_coluna": {
+    "c": {
+     "celulas": 4,
+     "valor_c": 35665268
+    },
+    "e": {
+     "celulas": 5,
+     "valor_c": 75508321
+    },
+    "h": {
+     "celulas": 3,
+     "valor_c": 78421165
+    },
+    "i": {
+     "celulas": 4,
+     "valor_c": 157919043
+    },
+    "k": {
+     "celulas": 6,
+     "valor_c": 1126902346
+    },
+    "d": {
+     "celulas": 2,
+     "valor_c": 37772227
+    },
+    "L": {
+     "celulas": 2,
+     "valor_c": 994690003
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2018,
+   "por_coluna": {
+    "a": {
+     "celulas": 1,
+     "valor_c": 57844561
+    },
+    "b": {
+     "celulas": 1,
+     "valor_c": 119188622
+    },
+    "c": {
+     "celulas": 6,
+     "valor_c": 217968043
+    },
+    "d": {
+     "celulas": 4,
+     "valor_c": 12103459
+    },
+    "e": {
+     "celulas": 6,
+     "valor_c": 384118567
+    },
+    "f": {
+     "celulas": 1,
+     "valor_c": 907477354
+    },
+    "g": {
+     "celulas": 1,
+     "valor_c": 432743346
+    },
+    "h": {
+     "celulas": 6,
+     "valor_c": 112206247
+    },
+    "i": {
+     "celulas": 6,
+     "valor_c": 216893531
+    },
+    "j": {
+     "celulas": 2,
+     "valor_c": 197779420
+    },
+    "k": {
+     "celulas": 1,
+     "valor_c": 1646414865
+    },
+    "L": {
+     "celulas": 1,
+     "valor_c": 2006137640
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2019,
+   "por_coluna": {
+    "i": {
+     "celulas": 1,
+     "valor_c": 205569
+    },
+    "k": {
+     "celulas": 3,
+     "valor_c": 44694456
+    },
+    "L": {
+     "celulas": 3,
+     "valor_c": 49933647
+    },
+    "e": {
+     "celulas": 2,
+     "valor_c": 5239191
+    },
+    "f": {
+     "celulas": 2,
+     "valor_c": 36066964
+    },
+    "g": {
+     "celulas": 2,
+     "valor_c": 8502236
+    },
+    "a": {
+     "celulas": 1,
+     "valor_c": 4949
+    },
+    "d": {
+     "celulas": 1,
+     "valor_c": 5163827
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2020,
+   "por_coluna": {
+    "c": {
+     "celulas": 2,
+     "valor_c": 45685107
+    },
+    "e": {
+     "celulas": 2,
+     "valor_c": 45812998
+    },
+    "i": {
+     "celulas": 2,
+     "valor_c": 121007027
+    },
+    "k": {
+     "celulas": 3,
+     "valor_c": 135341208
+    },
+    "L": {
+     "celulas": 3,
+     "valor_c": 181134489
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2022,
+   "por_coluna": {
+    "c": {
+     "celulas": 1,
+     "valor_c": 22639801
+    },
+    "e": {
+     "celulas": 3,
+     "valor_c": 56254714
+    },
+    "i": {
+     "celulas": 2,
+     "valor_c": 25838454
+    },
+    "k": {
+     "celulas": 3,
+     "valor_c": 42679920
+    },
+    "L": {
+     "celulas": 3,
+     "valor_c": 19157202
+    },
+    "h": {
+     "celulas": 1,
+     "valor_c": 99457
+    },
+    "d": {
+     "celulas": 1,
+     "valor_c": 16223457
+    },
+    "j": {
+     "celulas": 1,
+     "valor_c": 142541
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2023,
+   "por_coluna": {
+    "h": {
+     "celulas": 4,
+     "valor_c": 8529178
+    },
+    "c": {
+     "celulas": 4,
+     "valor_c": 1932263
+    },
+    "e": {
+     "celulas": 4,
+     "valor_c": 11431448
+    },
+    "i": {
+     "celulas": 4,
+     "valor_c": 9147180
+    },
+    "k": {
+     "celulas": 4,
+     "valor_c": 16088897
+    },
+    "L": {
+     "celulas": 4,
+     "valor_c": 10934479
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2024,
+   "por_coluna": {
+    "h": {
+     "celulas": 6,
+     "valor_c": 102400940
+    },
+    "a": {
+     "celulas": 5,
+     "valor_c": 1689745
+    },
+    "f": {
+     "celulas": 5,
+     "valor_c": 4282855
+    },
+    "c": {
+     "celulas": 1,
+     "valor_c": 9900
+    },
+    "e": {
+     "celulas": 2,
+     "valor_c": 106196276
+    },
+    "i": {
+     "celulas": 1,
+     "valor_c": 43500
+    },
+    "k": {
+     "celulas": 2,
+     "valor_c": 106191712
+    },
+    "L": {
+     "celulas": 2,
+     "valor_c": 62636
+    },
+    "d": {
+     "celulas": 1,
+     "valor_c": 80414105
+    },
+    "j": {
+     "celulas": 1,
+     "valor_c": 80443141
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2025,
+   "por_coluna": {
+    "f": {
+     "celulas": 1,
+     "valor_c": 4155292
+    },
+    "j": {
+     "celulas": 1,
+     "valor_c": 48204183
+    }
+   }
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2026,
+   "por_coluna": {
+    "h": {
+     "celulas": 4,
+     "valor_c": 97921688
+    },
+    "k": {
+     "celulas": 3,
+     "valor_c": 300501276
+    },
+    "L": {
+     "celulas": 3,
+     "valor_c": 305539517
+    },
+    "c": {
+     "celulas": 2,
+     "valor_c": 8546
+    },
+    "e": {
+     "celulas": 2,
+     "valor_c": 5041837
+    },
+    "i": {
+     "celulas": 2,
+     "valor_c": 73933490
+    },
+    "b": {
+     "celulas": 1,
+     "valor_c": 2423860
+    },
+    "f": {
+     "celulas": 1,
+     "valor_c": 92570262
+    },
+    "g": {
+     "celulas": 1,
+     "valor_c": 94994122
+    },
+    "j": {
+     "celulas": 1,
+     "valor_c": 117715380
+    }
+   }
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2017,
+   "por_coluna": {
+    "a": {
+     "celulas": 1,
+     "valor_c": 917858
+    },
+    "b": {
+     "celulas": 1,
+     "valor_c": 8523
+    },
+    "c": {
+     "celulas": 4,
+     "valor_c": 42161235
+    },
+    "d": {
+     "celulas": 5,
+     "valor_c": 39360496
+    },
+    "e": {
+     "celulas": 4,
+     "valor_c": 79757396
+    },
+    "f": {
+     "celulas": 1,
+     "valor_c": 917108
+    },
+    "h": {
+     "celulas": 6,
+     "valor_c": 401831721
+    },
+    "i": {
+     "celulas": 4,
+     "valor_c": 117589878
+    },
+    "j": {
+     "celulas": 5,
+     "valor_c": 944857787
+    },
+    "k": {
+     "celulas": 6,
+     "valor_c": 1062820765
+    },
+    "L": {
+     "celulas": 6,
+     "valor_c": 1142578161
+    }
+   }
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2018,
+   "por_coluna": {
+    "h": {
+     "celulas": 1,
+     "valor_c": 6951888
+    },
+    "i": {
+     "celulas": 1,
+     "valor_c": 6951888
+    },
+    "j": {
+     "celulas": 1,
+     "valor_c": 6951888
+    }
+   }
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2019,
+   "por_coluna": {
+    "a": {
+     "celulas": 4,
+     "valor_c": 6713760
+    },
+    "b": {
+     "celulas": 4,
+     "valor_c": 152911104
+    },
+    "c": {
+     "celulas": 4,
+     "valor_c": 153995712
+    },
+    "e": {
+     "celulas": 4,
+     "valor_c": 5059929
+    },
+    "f": {
+     "celulas": 4,
+     "valor_c": 254532144
+    },
+    "g": {
+     "celulas": 4,
+     "valor_c": 4974030548
+    },
+    "h": {
+     "celulas": 4,
+     "valor_c": 3752733001
+    },
+    "i": {
+     "celulas": 4,
+     "valor_c": 3749145284
+    },
+    "j": {
+     "celulas": 4,
+     "valor_c": 323038339
+    },
+    "k": {
+     "celulas": 4,
+     "valor_c": 1156379069
+    },
+    "L": {
+     "celulas": 4,
+     "valor_c": 1161438998
+    },
+    "d": {
+     "celulas": 3,
+     "valor_c": 569223
+    }
+   }
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2020,
+   "por_coluna": {
+    "h": {
+     "celulas": 6,
+     "valor_c": 156424441
+    },
+    "c": {
+     "celulas": 4,
+     "valor_c": 64133417
+    },
+    "d": {
+     "celulas": 4,
+     "valor_c": 518019
+    },
+    "e": {
+     "celulas": 4,
+     "valor_c": 178736040
+    },
+    "i": {
+     "celulas": 4,
+     "valor_c": 137853559
+    },
+    "j": {
+     "celulas": 4,
+     "valor_c": 14699643
+    },
+    "k": {
+     "celulas": 4,
+     "valor_c": 158132174
+    },
+    "L": {
+     "celulas": 4,
+     "valor_c": 180367316
+    }
+   }
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2021,
+   "por_coluna": {
+    "h": {
+     "celulas": 5,
+     "valor_c": 1506089
+    }
+   }
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2022,
+   "por_coluna": {
+    "h": {
+     "celulas": 6,
+     "valor_c": 47540005
+    },
+    "a": {
+     "celulas": 1,
+     "valor_c": 464328
+    },
+    "b": {
+     "celulas": 1,
+     "valor_c": 6250764
+    },
+    "d": {
+     "celulas": 1,
+     "valor_c": 640786
+    },
+    "e": {
+     "celulas": 1,
+     "valor_c": 7355878
+    },
+    "g": {
+     "celulas": 1,
+     "valor_c": 6715092
+    },
+    "j": {
+     "celulas": 1,
+     "valor_c": 16599335
+    },
+    "k": {
+     "celulas": 1,
+     "valor_c": 23314427
+    },
+    "L": {
+     "celulas": 1,
+     "valor_c": 15958549
+    }
+   }
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2023,
+   "por_coluna": {
+    "c": {
+     "celulas": 5,
+     "valor_c": 811807
+    },
+    "e": {
+     "celulas": 5,
+     "valor_c": 34115300
+    },
+    "h": {
+     "celulas": 6,
+     "valor_c": 10147793
+    },
+    "i": {
+     "celulas": 5,
+     "valor_c": 2402212
+    },
+    "k": {
+     "celulas": 5,
+     "valor_c": 31505253
+    },
+    "L": {
+     "celulas": 5,
+     "valor_c": 5744729
+    },
+    "d": {
+     "celulas": 2,
+     "valor_c": 8303457
+    },
+    "j": {
+     "celulas": 2,
+     "valor_c": 4618629
+    },
+    "a": {
+     "celulas": 1,
+     "valor_c": 24275579
+    },
+    "f": {
+     "celulas": 1,
+     "valor_c": 24570727
+    }
+   }
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2024,
+   "por_coluna": {
+    "a": {
+     "celulas": 6,
+     "valor_c": 2404089
+    },
+    "c": {
+     "celulas": 2,
+     "valor_c": 7521330
+    },
+    "d": {
+     "celulas": 3,
+     "valor_c": 135844432
+    },
+    "e": {
+     "celulas": 6,
+     "valor_c": 162567571
+    },
+    "f": {
+     "celulas": 6,
+     "valor_c": 2370463
+    },
+    "h": {
+     "celulas": 6,
+     "valor_c": 100766846
+    },
+    "i": {
+     "celulas": 3,
+     "valor_c": 116455429
+    },
+    "j": {
+     "celulas": 3,
+     "valor_c": 84398733
+    },
+    "k": {
+     "celulas": 6,
+     "valor_c": 235023913
+    },
+    "L": {
+     "celulas": 6,
+     "valor_c": 73711652
+    },
+    "b": {
+     "celulas": 5,
+     "valor_c": 2593110
+    }
+   }
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2025,
+   "por_coluna": {
+    "e": {
+     "celulas": 2,
+     "valor_c": 3416199
+    },
+    "h": {
+     "celulas": 6,
+     "valor_c": 58262608
+    },
+    "i": {
+     "celulas": 2,
+     "valor_c": 22810966
+    },
+    "k": {
+     "celulas": 3,
+     "valor_c": 1299943217
+    },
+    "L": {
+     "celulas": 3,
+     "valor_c": 1296540158
+    },
+    "d": {
+     "celulas": 1,
+     "valor_c": 182950
+    },
+    "j": {
+     "celulas": 2,
+     "valor_c": 1251801609
+    },
+    "f": {
+     "celulas": 1,
+     "valor_c": 3972342
+    },
+    "g": {
+     "celulas": 1,
+     "valor_c": 159423549
+    }
+   }
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2026,
+   "por_coluna": {
+    "a": {
+     "celulas": 1,
+     "valor_c": 182950
+    },
+    "b": {
+     "celulas": 2,
+     "valor_c": 21132745
+    },
+    "c": {
+     "celulas": 1,
+     "valor_c": 26271627
+    },
+    "e": {
+     "celulas": 3,
+     "valor_c": 20047111
+    },
+    "f": {
+     "celulas": 2,
+     "valor_c": 92753212
+    },
+    "g": {
+     "celulas": 2,
+     "valor_c": 424069420
+    },
+    "h": {
+     "celulas": 4,
+     "valor_c": 352405548
+    },
+    "i": {
+     "celulas": 2,
+     "valor_c": 423850877
+    },
+    "k": {
+     "celulas": 4,
+     "valor_c": 92374884
+    },
+    "L": {
+     "celulas": 2,
+     "valor_c": 1236921136
+    }
+   }
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2016,
+   "por_coluna": {
+    "inscricao": {
+     "celulas": 6,
+     "valor_c": 33555600
+    },
+    "pagos": {
+     "celulas": 5,
+     "valor_c": 1515249034
+    },
+    "cancelados": {
+     "celulas": 1,
+     "valor_c": 2937388
+    },
+    "liquidados": {
+     "celulas": 6,
+     "valor_c": 976362783
+    },
+    "saldo": {
+     "celulas": 6,
+     "valor_c": 1495005610
+    }
+   }
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2017,
+   "por_coluna": {
+    "pagos": {
+     "celulas": 4,
+     "valor_c": 159751113
+    },
+    "liquidados": {
+     "celulas": 6,
+     "valor_c": 281306746
+    },
+    "cancelados": {
+     "celulas": 2,
+     "valor_c": 981995262
+    },
+    "saldo": {
+     "celulas": 2,
+     "valor_c": 994690003
+    }
+   }
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2018,
+   "por_coluna": {
+    "inscricao": {
+     "celulas": 1,
+     "valor_c": 1517253883
+    },
+    "pagos": {
+     "celulas": 6,
+     "valor_c": 424469838
+    },
+    "cancelados": {
+     "celulas": 5,
+     "valor_c": 199963977
+    },
+    "liquidados": {
+     "celulas": 6,
+     "valor_c": 116099928
+    },
+    "saldo": {
+     "celulas": 1,
+     "valor_c": 2006137640
+    }
+   }
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2019,
+   "por_coluna": {
+    "pagos": {
+     "celulas": 1,
+     "valor_c": 205569
+    },
+    "liquidados": {
+     "celulas": 5,
+     "valor_c": 3055118106
+    },
+    "saldo": {
+     "celulas": 3,
+     "valor_c": 49933647
+    },
+    "inscricao": {
+     "celulas": 2,
+     "valor_c": 44564251
+    },
+    "cancelados": {
+     "celulas": 1,
+     "valor_c": 5163827
+    }
+   }
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2020,
+   "por_coluna": {
+    "pagos": {
+     "celulas": 2,
+     "valor_c": 166692134
+    },
+    "saldo": {
+     "celulas": 3,
+     "valor_c": 181134489
+    }
+   }
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2021,
+   "por_coluna": {
+    "liquidados": {
+     "celulas": 3,
+     "valor_c": 2638856
+    }
+   }
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2022,
+   "por_coluna": {
+    "pagos": {
+     "celulas": 2,
+     "valor_c": 2791204
+    },
+    "saldo": {
+     "celulas": 3,
+     "valor_c": 19157202
+    },
+    "liquidados": {
+     "celulas": 1,
+     "valor_c": 6439288
+    },
+    "cancelados": {
+     "celulas": 1,
+     "valor_c": 16365998
+    }
+   }
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2023,
+   "por_coluna": {
+    "liquidados": {
+     "celulas": 4,
+     "valor_c": 7531417
+    },
+    "pagos": {
+     "celulas": 4,
+     "valor_c": 11047275
+    },
+    "saldo": {
+     "celulas": 4,
+     "valor_c": 10934479
+    }
+   }
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2024,
+   "por_coluna": {
+    "liquidados": {
+     "celulas": 6,
+     "valor_c": 275558029
+    },
+    "pagos": {
+     "celulas": 1,
+     "valor_c": 33600
+    },
+    "saldo": {
+     "celulas": 2,
+     "valor_c": 62636
+    },
+    "cancelados": {
+     "celulas": 1,
+     "valor_c": 29036
+    }
+   }
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2025,
+   "por_coluna": {
+    "inscricao": {
+     "celulas": 1,
+     "valor_c": 163395891
+    },
+    "cancelados": {
+     "celulas": 1,
+     "valor_c": 48021233
+    }
+   }
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2026,
+   "por_coluna": {
+    "liquidados": {
+     "celulas": 3,
+     "valor_c": 105538903
+    },
+    "saldo": {
+     "celulas": 3,
+     "valor_c": 305539517
+    },
+    "pagos": {
+     "celulas": 2,
+     "valor_c": 73942036
+    },
+    "cancelados": {
+     "celulas": 1,
+     "valor_c": 125186027
+    }
+   }
+  }
+ ],
+ "residuos_resumo": [
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2016,
+   "celulas": 72,
+   "concordam": 31,
+   "explicadas": 8,
+   "nao_determinadas": 33,
+   "valor_nao_determinado_c": 1038279074
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2017,
+   "celulas": 144,
+   "concordam": 71,
+   "explicadas": 66,
+   "nao_determinadas": 7,
+   "valor_nao_determinado_c": 294190380
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2018,
+   "celulas": 72,
+   "concordam": 21,
+   "explicadas": 17,
+   "nao_determinadas": 34,
+   "valor_nao_determinado_c": 6296971879
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2019,
+   "celulas": 60,
+   "concordam": 22,
+   "explicadas": 18,
+   "nao_determinadas": 20,
+   "valor_nao_determinado_c": 4067168687
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2020,
+   "celulas": 144,
+   "concordam": 109,
+   "explicadas": 28,
+   "nao_determinadas": 7,
+   "valor_nao_determinado_c": 35309689
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2021,
+   "celulas": 180,
+   "concordam": 179,
+   "explicadas": 0,
+   "nao_determinadas": 1,
+   "valor_nao_determinado_c": 1402307
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2022,
+   "celulas": 144,
+   "concordam": 102,
+   "explicadas": 12,
+   "nao_determinadas": 30,
+   "valor_nao_determinado_c": 91217860
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2023,
+   "celulas": 144,
+   "concordam": 75,
+   "explicadas": 14,
+   "nao_determinadas": 55,
+   "valor_nao_determinado_c": 92555102
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2024,
+   "celulas": 144,
+   "concordam": 26,
+   "explicadas": 112,
+   "nao_determinadas": 6,
+   "valor_nao_determinado_c": 2317016
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2025,
+   "celulas": 144,
+   "concordam": 90,
+   "explicadas": 54,
+   "nao_determinadas": 0,
+   "valor_nao_determinado_c": 0
+  },
+  {
+   "comparacao": "elotech_x_pdf",
+   "exercicio": 2026,
+   "celulas": 108,
+   "concordam": 47,
+   "explicadas": 35,
+   "nao_determinadas": 26,
+   "valor_nao_determinado_c": 1828274993
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2016,
+   "celulas": 72,
+   "concordam": 15,
+   "explicadas": 10,
+   "nao_determinadas": 47,
+   "valor_nao_determinado_c": 5496797528
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2017,
+   "celulas": 72,
+   "concordam": 16,
+   "explicadas": 30,
+   "nao_determinadas": 26,
+   "valor_nao_determinado_c": 2506878373
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2018,
+   "celulas": 72,
+   "concordam": 25,
+   "explicadas": 11,
+   "nao_determinadas": 36,
+   "valor_nao_determinado_c": 6310875655
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2019,
+   "celulas": 72,
+   "concordam": 49,
+   "explicadas": 8,
+   "nao_determinadas": 15,
+   "valor_nao_determinado_c": 149810839
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2020,
+   "celulas": 72,
+   "concordam": 30,
+   "explicadas": 30,
+   "nao_determinadas": 12,
+   "valor_nao_determinado_c": 528980829
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2021,
+   "celulas": 72,
+   "concordam": 19,
+   "explicadas": 53,
+   "nao_determinadas": 0,
+   "valor_nao_determinado_c": 0
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2022,
+   "celulas": 72,
+   "concordam": 24,
+   "explicadas": 33,
+   "nao_determinadas": 15,
+   "valor_nao_determinado_c": 183035546
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2023,
+   "celulas": 72,
+   "concordam": 24,
+   "explicadas": 24,
+   "nao_determinadas": 24,
+   "valor_nao_determinado_c": 58063445
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2024,
+   "celulas": 72,
+   "concordam": 17,
+   "explicadas": 29,
+   "nao_determinadas": 26,
+   "valor_nao_determinado_c": 481734810
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2025,
+   "celulas": 72,
+   "concordam": 30,
+   "explicadas": 40,
+   "nao_determinadas": 2,
+   "valor_nao_determinado_c": 52359475
+  },
+  {
+   "comparacao": "elotech_x_siconfi",
+   "exercicio": 2026,
+   "celulas": 48,
+   "concordam": 20,
+   "explicadas": 8,
+   "nao_determinadas": 20,
+   "valor_nao_determinado_c": 1090649978
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2017,
+   "celulas": 72,
+   "concordam": 19,
+   "explicadas": 10,
+   "nao_determinadas": 43,
+   "valor_nao_determinado_c": 3832800928
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2018,
+   "celulas": 72,
+   "concordam": 69,
+   "explicadas": 0,
+   "nao_determinadas": 3,
+   "valor_nao_determinado_c": 20855664
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2019,
+   "celulas": 48,
+   "concordam": 1,
+   "explicadas": 0,
+   "nao_determinadas": 47,
+   "valor_nao_determinado_c": 15690547111
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2020,
+   "celulas": 72,
+   "concordam": 27,
+   "explicadas": 11,
+   "nao_determinadas": 34,
+   "valor_nao_determinado_c": 890864609
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2021,
+   "celulas": 96,
+   "concordam": 25,
+   "explicadas": 66,
+   "nao_determinadas": 5,
+   "valor_nao_determinado_c": 1506089
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2022,
+   "celulas": 72,
+   "concordam": 28,
+   "explicadas": 30,
+   "nao_determinadas": 14,
+   "valor_nao_determinado_c": 124839164
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2023,
+   "celulas": 72,
+   "concordam": 23,
+   "explicadas": 12,
+   "nao_determinadas": 37,
+   "valor_nao_determinado_c": 146495486
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2024,
+   "celulas": 72,
+   "concordam": 8,
+   "explicadas": 12,
+   "nao_determinadas": 52,
+   "valor_nao_determinado_c": 923657568
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2025,
+   "celulas": 72,
+   "concordam": 21,
+   "explicadas": 30,
+   "nao_determinadas": 21,
+   "valor_nao_determinado_c": 4096353598
+  },
+  {
+   "comparacao": "oficial_x_oficial",
+   "exercicio": 2026,
+   "celulas": 48,
+   "concordam": 8,
+   "explicadas": 17,
+   "nao_determinadas": 23,
+   "valor_nao_determinado_c": 2690009510
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2016,
+   "celulas": 30,
+   "concordam": 6,
+   "explicadas": 0,
+   "nao_determinadas": 24,
+   "valor_nao_determinado_c": 4023110415
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2017,
+   "celulas": 30,
+   "concordam": 8,
+   "explicadas": 8,
+   "nao_determinadas": 14,
+   "valor_nao_determinado_c": 2417743124
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2018,
+   "celulas": 30,
+   "concordam": 6,
+   "explicadas": 5,
+   "nao_determinadas": 19,
+   "valor_nao_determinado_c": 4263925266
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2019,
+   "celulas": 30,
+   "concordam": 18,
+   "explicadas": 0,
+   "nao_determinadas": 12,
+   "valor_nao_determinado_c": 3154985400
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2020,
+   "celulas": 30,
+   "concordam": 16,
+   "explicadas": 9,
+   "nao_determinadas": 5,
+   "valor_nao_determinado_c": 347826623
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2021,
+   "celulas": 30,
+   "concordam": 24,
+   "explicadas": 3,
+   "nao_determinadas": 3,
+   "valor_nao_determinado_c": 2638856
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2022,
+   "celulas": 30,
+   "concordam": 18,
+   "explicadas": 5,
+   "nao_determinadas": 7,
+   "valor_nao_determinado_c": 44753692
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2023,
+   "celulas": 30,
+   "concordam": 15,
+   "explicadas": 3,
+   "nao_determinadas": 12,
+   "valor_nao_determinado_c": 29513171
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2024,
+   "celulas": 30,
+   "concordam": 20,
+   "explicadas": 0,
+   "nao_determinadas": 10,
+   "valor_nao_determinado_c": 275683301
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2025,
+   "celulas": 30,
+   "concordam": 22,
+   "explicadas": 6,
+   "nao_determinadas": 2,
+   "valor_nao_determinado_c": 211417124
+  },
+  {
+   "comparacao": "painel_x_siconfi",
+   "exercicio": 2026,
+   "celulas": 20,
+   "concordam": 8,
+   "explicadas": 3,
+   "nao_determinadas": 9,
+   "valor_nao_determinado_c": 610206483
+  }
+ ],
+ "atualidade": {
+  "agora": "2026-10-14T00:15:05-03:00",
+  "ultima_coleta_por_tipo": {
+   "entidades": "2026-10-10T13:20:20-03:00",
+   "exercicios": "2026-10-10T13:20:35-03:00",
+   "movimentacao": "2026-10-09T21:20:39-03:00",
+   "publicacoes": "2026-10-10T13:26:27-03:00",
+   "rp_listagem": "2026-10-10T13:26:25-03:00",
+   "rreo_pdf": "2026-10-09T15:10:24-03:00"
+  },
+  "dias_desde_a_ultima_listagem": 3,
+  "retratos_armazenados_nao_processados": 0,
+  "cortes_com_alteracao": 11,
+  "alertas_retrospectivos": 10
+ }
+}

@@ -1,7 +1,7 @@
 {
  "vigencias": {
   "2026-09-29T23:59:59-03:00": {
-   "derivacao": 27,
+   "derivacao": 38,
    "cortes": {
     "2026-02-28": {
      "rreo_snapshot": "60c2f6918a925d1ca97f2aa9320320c1",
@@ -282,13 +282,13 @@
    }
   },
   "atual": {
-   "derivacao": 26,
+   "derivacao": 37,
    "cortes": {
     "2026-02-28": {
      "rreo_snapshot": "60c2f6918a925d1ca97f2aa9320320c1",
      "rreo_emitido_em": "27/mar/2026 12:26",
      "api_snapshots": [
-      "743955ae86fe4620869650ca7bfa7a6a"
+      "b1991f576d6c46f89ad928aefc5d9bd7"
      ],
      "colunas": {
       "L": {
@@ -357,7 +357,7 @@
      "rreo_snapshot": "56e85f8cae6158f782a8e5022d5d13cc",
      "rreo_emitido_em": "29/mai/2026 14:05",
      "api_snapshots": [
-      "40b8d3f3814a4e51858959857cb1bb83"
+      "243f9a6096b64a9cac187d1045caf85b"
      ],
      "colunas": {
       "L": {
@@ -426,7 +426,7 @@
      "rreo_snapshot": "4a865eb752a15c238757027864c3c946",
      "rreo_emitido_em": "29/jul/2026 12:15",
      "api_snapshots": [
-      "5b414f03f61d46b0889553e82ec46632"
+      "a84d76a0172f49dda5e6551871548755"
      ],
      "colunas": {
       "L": {
@@ -495,13 +495,13 @@
      "rreo_snapshot": "3e6f0e378f3f45cf960e1f88f90e34ad",
      "rreo_emitido_em": "29/set/2026 12:33",
      "api_snapshots": [
-      "748bfc35e2f148cea52bd58c6d02f379"
+      "d0d6fd6657b1429c86530b0def4aa81e"
      ],
      "colunas": {
       "L": {
        "rreo": 4844479117,
-       "api": 4774474825,
-       "diferenca_api_menos_rreo": -70004292
+       "api": 4774912433,
+       "diferenca_api_menos_rreo": -69566684
       },
       "a": {
        "rreo": 149082417,
@@ -545,8 +545,8 @@
       },
       "i": {
        "rreo": 8389314591,
-       "api": 8334132856,
-       "diferenca_api_menos_rreo": -55181735
+       "api": 8333695248,
+       "diferenca_api_menos_rreo": -55619343
       },
       "j": {
        "rreo": 801574444,
@@ -555,8 +555,8 @@
       },
       "k": {
        "rreo": 4520318842,
-       "api": 4450314550,
-       "diferenca_api_menos_rreo": -70004292
+       "api": 4450752158,
+       "diferenca_api_menos_rreo": -69566684
       }
      }
     }
@@ -567,8 +567,8 @@
   "2026-02-28 (2026-09-29T23:59:59-03:00 -> atual)": {
    "snapshot_antes": "be2d23c6fef857a2ae9cfb5ad2cb56f2",
    "coletado_antes": "2026-09-29T20:22:57-03:00",
-   "snapshot_depois": "743955ae86fe4620869650ca7bfa7a6a",
-   "coletado_depois": "2026-10-06T10:23:15-03:00",
+   "snapshot_depois": "b1991f576d6c46f89ad928aefc5d9bd7",
+   "coletado_depois": "2026-10-10T13:21:15-03:00",
    "contagens": {
     "novos": 0,
     "removidos": 0,
@@ -583,8 +583,8 @@
   "2026-04-30 (2026-09-29T23:59:59-03:00 -> atual)": {
    "snapshot_antes": "9393c957eeb05117bcb3d8f3f0e24bcb",
    "coletado_antes": "2026-09-29T20:23:16-03:00",
-   "snapshot_depois": "40b8d3f3814a4e51858959857cb1bb83",
-   "coletado_depois": "2026-10-06T10:25:56-03:00",
+   "snapshot_depois": "243f9a6096b64a9cac187d1045caf85b",
+   "coletado_depois": "2026-10-10T13:22:29-03:00",
    "contagens": {
     "novos": 0,
     "removidos": 0,
@@ -674,8 +674,8 @@
   "2026-06-30 (2026-09-29T23:59:59-03:00 -> atual)": {
    "snapshot_antes": "c53d3741c3145ac6b55d8c27491d38bb",
    "coletado_antes": "2026-09-29T20:15:04-03:00",
-   "snapshot_depois": "5b414f03f61d46b0889553e82ec46632",
-   "coletado_depois": "2026-10-06T10:27:34-03:00",
+   "snapshot_depois": "a84d76a0172f49dda5e6551871548755",
+   "coletado_depois": "2026-10-10T13:23:05-03:00",
    "contagens": {
     "novos": 0,
     "removidos": 0,
@@ -792,18 +792,19 @@
   "2026-08-31 (2026-09-29T23:59:59-03:00 -> atual)": {
    "snapshot_antes": "b8208f35bce540a4b53b4c56fe2e9711",
    "coletado_antes": "2026-09-29T21:35:35-03:00",
-   "snapshot_depois": "748bfc35e2f148cea52bd58c6d02f379",
-   "coletado_depois": "2026-10-06T10:29:08-03:00",
+   "snapshot_depois": "d0d6fd6657b1429c86530b0def4aa81e",
+   "coletado_depois": "2026-10-10T13:23:42-03:00",
    "contagens": {
     "novos": 0,
     "removidos": 0,
     "comuns": 4557,
-    "alterados": 12,
+    "alterados": 13,
     "alterados_em_espelhamento": 0,
     "novos_ou_removidos_em_espelhamento": 0
    },
    "impacto_por_grupo": {
-    "pagamentos": -31408910,
+    "pagamentos": -31846518,
+    "estornos_de_pagamento": 11501520,
     "cancelamentos": 125186027,
     "liquidacoes": -34041916,
     "retencoes": -2400191
@@ -824,6 +825,19 @@
       "pago_aproc_c": [
        264001,
        5499951
+      ]
+     }
+    },
+    {
+     "empenho": "10187/2025",
+     "campos": {
+      "pago_aproc_c": [
+       120915380,
+       120477772
+      ],
+      "pago_aproc_estornado_c": [
+       52330142,
+       63831662
       ]
      }
     },

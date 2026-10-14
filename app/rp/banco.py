@@ -639,11 +639,14 @@ def comprimir_backup(arquivo, bloco=1 << 20):
     return destino
 
 
-def comprimir_backups_operacionais(cfg, manter=3, simular=True):
+def comprimir_backups_operacionais(cfg, manter=3, simular=True, estruturais=False):
     """Compresses the operational backups outside the window of the `manter` most recent, INCLUDING the preserved ones
     (PRESERVAR.txt protects against deletion; compressing deletes nothing). The most recent stay as they are, ready
-    to restore. `simular` only lists."""
-    pasta = cfg.backups_operacionais
+    to restore. `simular` only lists. `estruturais`: the same for the structural backups (backups/), which are never
+    deleted either (retention policy of the corrective audit of 13/10/2026: the old ones are kept compressed)."""
+    pasta = cfg.backups if estruturais else cfg.backups_operacionais
+    if em_pasta_sincronizada(pasta):
+        raise BancoEmPastaSincronizada(f"compressão recusada: {pasta} é uma pasta sincronizada ou de rede")
     if not pasta.exists():
         return []
     recentes = set(_na_retencao(pasta)[-manter:]) if manter else set()
