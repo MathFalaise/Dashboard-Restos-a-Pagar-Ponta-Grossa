@@ -17,7 +17,8 @@ ELOTECH = {
     "evidencia_da_atribuicao": [
         "Etapa 01: GET /portaltransparencia-api/actuator/info identificou a plataforma como Oxy Transparência, da Elotech "
         "Gestão Pública, versão 3.128.0 (registrado em docs/stages/01-source-discovery/REPORT.md; a resposta não foi guardada no bruto).",
-        "data/stage01-samples/openapi_v3_api-docs.json: especificação OpenAPI da API, com contato 'Elotech Gestão Pública'.",
+        "stage01-samples/openapi_v3_api-docs.json (bruto da Etapa 01, no armazenamento privado; SHA-256 público em "
+        "data/stage01-samples.SHA256.txt): especificação OpenAPI da API, com contato 'Elotech Gestão Pública'.",
         "O endpoint de RP usado pelo projeto (/empenhos/restos-a-pagar) não consta dessa especificação; foi identificado "
         "na Etapa 01 pelo funcionamento do próprio portal.",
     ],

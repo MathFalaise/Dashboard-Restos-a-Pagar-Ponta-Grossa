@@ -1,19 +1,26 @@
-# Python caches. Raw data, the snapshot store and SQLite backups are versioned
-# (decision of the project owner on 30/09/2026: they are public data from the portal).
+# Python caches.
 __pycache__/
 *.py[cod]
 .pytest_cache/
 
-# SQLite backups above GitHub's 100 MB per-file limit: they stay only in the local copy (OneDrive folder),
-# are never deleted and do not go to the repository. The whole database can be rebuilt from data/snapshots/
-# (python -m rp reconstruir --destino NOVO.sqlite). A new large backup goes into this list by name.
-data/backups/20260930-145737_antes-migracao-v3-v4.sqlite
-
-# Technical audit (REP-01): a NEW SQLite backup no longer goes to Git. The database can be rebuilt from the store
-# (data/snapshots/) and a 100+ MB backup does not fit on GitHub; the 4 backups already versioned stay versioned.
-data/backups/*.sqlite
-
-# Critical review, D2 (06/10/2026): NEW raw data does not enter Git without an explicit decision. The 466 snapshots of
-# the homologated base (and their objects) stay versioned: ignoring a folder does not remove from Git what is already in it.
-# To version a new snapshot on purpose: git add -f <file>.
-data/snapshots/
+# Corrective audit of 13/10/2026 (phase P0, privacy): raw API responses, the raw data of stages 01/02 and database
+# copies hold creditor records (names, masked CPF). They live ONLY in the private storage of app/config.toml
+# [caminhos] (outside the repository and outside OneDrive) and are never versioned again, wherever they are.
+# The public hash lists data/stage01-samples.SHA256.txt and data/stage02-raw.SHA256.txt stay versioned.
+# Guard: app/tests/test_privacidade_repositorio.py. History: docs/audits/privacidade/HIGIENIZACAO_HISTORICO.md.
+/data/snapshots/
+/data/stage01-samples/
+/data/stage02-raw/
+/data/backups/
+/snapshots/
+/etapa01/amostras_brutas/
+/etapa02/dados_brutos/
+/backups/
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.sqlite-wal
+*.db
+*.zlib
+*.sqlite.gz
+*.tar.gpg

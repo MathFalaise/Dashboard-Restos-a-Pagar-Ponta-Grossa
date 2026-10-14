@@ -1,12 +1,13 @@
 # Automated tests (critical review, items 34, 36, 37 and 38). No test accesses the internet; only pip downloads packages.
 #
 # * sinteticos: Linux and Windows, Python 3.11 to 3.14. Only the tests with invented data (-m "not dados_reais"):
-#   this is what proves the portability stated in the README.
-# * dados_reais: the homologated environment (requirements-lock.txt with hashes, Python 3.14) on both systems. Builds
-#   temporary databases from the ../data/snapshots store and the raw data of stages 01/02, checks the homologated hashes and runs
-#   the 26 investigation tests (docs/stages/03-data-model/validation). If the raw data ever leaves the repository, these steps are skipped.
+#   this is what proves the portability stated in the README. It also runs the privacy guard of the public repository
+#   (tests/test_privacidade_repositorio.py): no raw data, database copy or real CPF may be versioned again.
 # * dependencias: pip-audit over the lock file with hashes (decision D5): a locked version with a known vulnerability fails.
 # * pacote: editable install and the `rp` command.
+# Corrective audit of 13/10/2026 (phase P0): the raw data left the public repository. The tests with real data (marker
+# dados_reais, 169 tests, and the 26 investigation tests) run only in the PRIVATE environment that holds the store, as
+# part of `python -m rp homologar`; the CI no longer has the data to run them and no longer pretends to.
 name: testes
 
 on:
@@ -44,32 +45,6 @@ jobs:
         run: python -m compileall -q rp tests ../rp.py ../docs/stages/03-data-model/validation
       - run: python -m pytest tests -q -m "not dados_reais"
 
-  dados_reais:
-    name: dados reais (${{ matrix.os }}, ambiente homologado)
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 45
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-latest]
-    defaults:
-      run:
-        working-directory: app
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.14"
-      - name: ambiente homologado, cada arquivo conferido pelo hash da trava
-        run: python -m pip install --require-hashes -r requirements-lock.txt
-      - name: testes com o armazem real e o bruto das Etapas 01/02
-        if: hashFiles('data/snapshots/coletas/**') != '' && hashFiles('data/stage02-raw/**') != ''
-        run: python -m pytest tests -q -m dados_reais
-      - name: testes da investigacao (Etapa 03)
-        if: hashFiles('data/stage02-raw/**') != ''
-        working-directory: docs/stages/03-data-model/validation
-        run: python -m pytest tests -q
-
   dependencias:
     # Decision D5 of the critical review (06/10/2026): a known vulnerability in a locked version fails the CI.
     # The lock file has hashes: pip-audit checks the same files the homologated environment installs.
@@ -98,14 +73,18 @@ jobs:
           python-version: "3.14"
       - run: python -m pip install -e .
       - run: rp --help
-      - name: de outra pasta, o comando acha config.toml e o armazem do repositorio
+      - name: de outra pasta, o comando acha config.toml e o armazem privado fica fora do repositorio
         working-directory: ${{ runner.temp }}
         shell: bash
         run: |
           rp iniciar > iniciar.json
           python - <<'EOF'
           import json, os
+          from pathlib import Path
           d = json.load(open("iniciar.json", encoding="utf-8"))
-          assert os.path.samefile(d["snapshots"], os.path.join(os.environ["GITHUB_WORKSPACE"], "data", "snapshots")), d
+          raiz = Path(os.environ["GITHUB_WORKSPACE"]).resolve()
+          for chave in ("snapshots", "backups"):
+              assert not Path(d[chave]).resolve().is_relative_to(raiz), d
+              assert Path(d[chave]).resolve().is_relative_to(Path.home().resolve()), d
           print(d)
           EOF

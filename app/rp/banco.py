@@ -508,6 +508,8 @@ def abrir(cfg, caminho=None):
     if caminho is None and em_pasta_sincronizada(cfg.banco):
         raise BancoEmPastaSincronizada(f"banco ativo em pasta sincronizada ou de rede: {cfg.banco}. "
                                        "Aponte [caminhos].dados_locais para uma pasta local.")
+    if caminho is None:
+        recusar_pastas_privadas_sincronizadas(cfg)
     caminho = Path(caminho or cfg.banco)
     caminho.parent.mkdir(parents=True, exist_ok=True)
     if not caminho.exists():
@@ -537,6 +539,18 @@ def abrir(cfg, caminho=None):
     return con
 
 
+def recusar_pastas_privadas_sincronizadas(cfg):
+    """Corrective audit (13/10/2026): the store, the raw data of stages 01/02 and the database copies hold creditor
+    records. With the active database, none of them may sit in a synced or network folder (OneDrive would publish
+    them to the cloud and can corrupt a SQLite copy being written)."""
+    for nome, pasta in (("snapshots", cfg.snapshots), ("backups", cfg.backups),
+                        ("etapas_anteriores", cfg.etapas_anteriores),
+                        ("backups_operacionais", cfg.backups_operacionais)):
+        if em_pasta_sincronizada(pasta):
+            raise BancoEmPastaSincronizada(f"[caminhos].{nome} em pasta sincronizada ou de rede: {pasta}. Os dados "
+                                           "brutos e as cópias do banco ficam só no armazenamento privado local.")
+
+
 def _semear_catalogo(con):
     """Rules, rule parameters and governance decisions from the code go into the database (INSERT OR IGNORE only)."""
     from . import regras
@@ -556,6 +570,8 @@ def backup(con, cfg, motivo, operacional=False, manter=3):
     carimbo = datetime.now(BRT).strftime("%Y%m%d-%H%M%S")
     motivo = _MOTIVO.sub("-", str(motivo)).strip(".-") or "sem-motivo"
     pasta = cfg.backups_operacionais if operacional else cfg.backups
+    if em_pasta_sincronizada(pasta):
+        raise BancoEmPastaSincronizada(f"backup recusado: {pasta} é uma pasta sincronizada ou de rede")
     cfg.temporario.mkdir(parents=True, exist_ok=True)
     pasta.mkdir(parents=True, exist_ok=True)
     nome, n = f"{carimbo}_{motivo}.sqlite", 1

@@ -328,7 +328,7 @@ def _main(argv=None):
         from . import importar
         from .config import RAIZ_APP
         arq = banco.backup(con, cfg, "antes-importar-etapas-anteriores")
-        r = importar.importar_etapas_anteriores(con, armazem, RAIZ_APP.parent)
+        r = importar.importar_etapas_anteriores(con, armazem, RAIZ_APP.parent, cfg.etapas_anteriores)
         print(json.dumps({"backup": str(arq), "novos": r, "problemas": banco.verificar(con, armazem)}, ensure_ascii=False, indent=1))
         return 0
     if a.cmd == "comparar-snapshots":

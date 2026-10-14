@@ -6,10 +6,13 @@
 # The program refuses to open the active database inside a OneDrive folder.
 # "~" = the user's folder on any system. Another folder: the RP_DADOS_LOCAIS environment variable.
 dados_locais = "~/RestosAPagar_local"
-# Immutable raw data (objects + manifests) and database copies: files written only once.
-# They stay in the project, in OneDrive, and the sync serves as an off-machine copy.
-snapshots = "../data/snapshots"
-backups = "../data/backups"
+# Immutable raw data (objects + manifests), the raw data of stages 01/02 and database copies hold creditor records
+# (names, masked CPF). Corrective audit of 13/10/2026: they live ONLY in private local storage, outside the public
+# repository and outside OneDrive (the program refuses a store or backup folder in a synced folder). The off-machine
+# copy is the encrypted archive described in docs/audits/privacidade/ARMAZENAMENTO_PRIVADO.md.
+snapshots = "~/RestosAPagar_local/armazem"
+backups = "~/RestosAPagar_local/backups"
+etapas_anteriores = "~/RestosAPagar_local/etapas_anteriores"
 
 [api]
 # https only: validation refuses http, credentials in the URL, query or fragment.

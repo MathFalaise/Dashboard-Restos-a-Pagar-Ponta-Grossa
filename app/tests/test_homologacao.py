@@ -193,7 +193,7 @@ def test_SINTETICO_busca_por_empenho_e_parametros_invalidos(mundo):
 # ================================================================== section 22: portability
 def test_configuracao_versionada_sem_caminho_da_maquina_do_desenvolvedor():
     c = tomllib.loads((APP / "config.toml").read_text(encoding="utf-8"))["caminhos"]
-    for chave in ("dados_locais", "snapshots", "backups"):
+    for chave in ("dados_locais", "snapshots", "backups", "etapas_anteriores"):
         assert not Path(c[chave]).is_absolute() and not re.match(r"[A-Za-z]:", c[chave]), chave
     padrao = re.compile(r"[A-Za-z]:[\\/]+Users|/home/|maped", re.I)
     arquivos = list((APP / "rp").rglob("*.py")) + list((APP / "rp").rglob("*.css")) + [
@@ -214,7 +214,10 @@ def test_pasta_local_configuravel_por_variavel_de_ambiente(tmp_path, monkeypatch
                      encoding="utf-8")
     cfg = carregar(outro)
     assert cfg.dados_locais == (tmp_path / "cfg" / "local").resolve()
-    assert cfg.snapshots == (tmp_path / "data" / "snapshots").resolve()     # "../data/snapshots" since 06/10/2026
+    # "../data/snapshots" from 06/10/2026; the private "~/RestosAPagar_local/armazem" since the corrective audit of
+    # 13/10/2026 ("~" is expanded, never resolved against the config file's folder)
+    assert cfg.snapshots == Path.home() / "RestosAPagar_local" / "armazem"
+    assert cfg.etapas_anteriores == Path.home() / "RestosAPagar_local" / "etapas_anteriores"
 
 
 # ================================================================== section 27: gates of a new load

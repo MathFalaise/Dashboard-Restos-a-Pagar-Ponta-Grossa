@@ -16,10 +16,12 @@ from rp.coletor import EP_ENT, EP_EXE, EP_RP, Coletor  # noqa: E402
 from rp.config import carregar  # noqa: E402
 from rp.http import Cliente  # noqa: E402
 
-# Fixtures that read REAL data: `real` builds a database from the store data/snapshots and `producao`, from the raw
-# data of stages 01/02. Both hold creditor data (name, CNPJ, masked CPF). Every test that uses one of them, directly or
-# indirectly, gets the `dados_reais` marker (critical review, item 34): `-m "not dados_reais"` runs only what is
-# synthetic, in an environment without the raw data.
+# Fixtures that read REAL data: `real` builds a database from the store and `producao`, from the raw data of stages
+# 01/02. Both hold creditor data (name, CNPJ, masked CPF). Every test that uses one of them, directly or indirectly,
+# gets the `dados_reais` marker (critical review, item 34): `-m "not dados_reais"` runs only what is synthetic, in an
+# environment without the raw data. Corrective audit (13/10/2026): the raw data left the public repository; the real
+# store and the stage raw data are the PRIVATE folders of config.toml [caminhos] (or RP_CONFIG). Where they do not
+# exist, the real-data tests are SKIPPED with that reason, never passed.
 FIXTURES_DE_DADOS_REAIS = {"real", "producao"}
 
 
@@ -113,6 +115,16 @@ def pagina(conteudo, pagina, total, ultima, total_paginas, completar=True, **met
 
 
 RAIZ_PROJETO = Path(__file__).resolve().parents[2]
+_CFG_PRIVADA = carregar()
+ARMAZEM_REAL = _CFG_PRIVADA.snapshots
+ETAPAS_ANTERIORES = _CFG_PRIVADA.etapas_anteriores
+
+
+def exigir_dados_privados(*pastas):
+    """Skips (with the reason) when the private raw data is not on this machine: a public clone or the CI."""
+    for p in pastas:
+        if not Path(p).is_dir():
+            pytest.skip(f"dados reais privados ausentes nesta máquina: {p}")
 
 
 def montar_producao(base, armazem_de=None, so_homologados=False):
@@ -124,7 +136,8 @@ def montar_producao(base, armazem_de=None, so_homologados=False):
     con = banco.abrir(cfg)
     armazem = Armazem(cfg.snapshots)
     if armazem_de is None:
-        resumo_import = importar.importar_etapas_anteriores(con, armazem, RAIZ_PROJETO)
+        exigir_dados_privados(ETAPAS_ANTERIORES / "stage02-raw", ETAPAS_ANTERIORES / "stage01-samples")
+        resumo_import = importar.importar_etapas_anteriores(con, armazem, RAIZ_PROJETO, ETAPAS_ANTERIORES)
     else:
         if so_homologados:
             novos = sum(banco.registrar_manifesto(con, armazem, rel, m)[1] for rel, m in manifestos_homologados(armazem))
@@ -156,7 +169,6 @@ def ambiente(tmp_path):
 
 
 # ------------------------------------------------------------------ database built from the REAL store
-ARMAZEM_REAL = RAIZ_PROJETO / "data" / "snapshots"
 EM_2909 = "2026-09-29T23:59:59-03:00"
 # HOMOLOGATED base (stages 01-05): the 466 snapshots collected from 29/09 19:56 to 30/09 01:27 of 2026. A new load
 # (D1) only ADDS snapshots to the store; the real-case tests keep proving the homologated base, and the new load is
@@ -190,6 +202,7 @@ def real(tmp_path_factory):
     -> derive current and 'as it was on' 29/09/2026. Shared by the real-case tests."""
     from rp import derivar
     from rp.painel import Painel
+    exigir_dados_privados(ARMAZEM_REAL / "coletas")
     antes = retrato_do_armazem()
     base = tmp_path_factory.mktemp("real")
     m = montar_producao(base, armazem_de=ARMAZEM_REAL, so_homologados=True)

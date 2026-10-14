@@ -4,7 +4,7 @@ import json
 import sqlite3
 
 import pytest
-from conftest import RAIZ_PROJETO
+from conftest import ETAPAS_ANTERIORES, RAIZ_PROJETO
 
 from rp import banco, consultas, derivar, execucoes, importar, normalizar
 from rp.armazem import Armazem
@@ -171,5 +171,5 @@ def test_nova_normalizacao_nao_sobrescreve_extracao_anterior(producao):
 def test_importar_de_novo_nao_duplica_nada(producao):
     con = producao["con"]
     antes = con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0]
-    r = importar.importar_etapas_anteriores(con, producao["armazem"], RAIZ_PROJETO)
+    r = importar.importar_etapas_anteriores(con, producao["armazem"], RAIZ_PROJETO, ETAPAS_ANTERIORES)
     assert all(v == 0 for v in r.values()) and con.execute("SELECT COUNT(*) FROM coleta").fetchone()[0] == antes == 197

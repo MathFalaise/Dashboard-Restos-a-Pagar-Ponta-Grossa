@@ -18,6 +18,9 @@ from rpval import bruto, consultas, derivar, normalizar  # noqa: E402
 
 @pytest.fixture(scope="session")
 def banco(tmp_path_factory):
+    from construir_banco import BRUTO
+    if not (BRUTO / "stage02-raw").is_dir():
+        pytest.skip(f"bruto privado das Etapas 01/02 ausente nesta máquina: {BRUTO}")
     con, nid, did, resumo, _ = construir(tmp_path_factory.mktemp("db") / "validacao.sqlite")
     return {"con": con, "nid": nid, "did": did}
 

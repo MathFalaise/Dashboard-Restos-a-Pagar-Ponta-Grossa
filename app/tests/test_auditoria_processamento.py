@@ -46,8 +46,10 @@ def _config_do_mundo(mundo, tmp_path):
     arq.parent.mkdir()
     texto = (APP / "config.toml").read_text(encoding="utf-8")
     texto = (texto.replace('"~/RestosAPagar_local"', json.dumps(str(mundo.cfg.dados_locais)))
-             .replace('"../data/snapshots"', json.dumps(str(mundo.cfg.snapshots)))
-             .replace('"../data/backups"', json.dumps(str(mundo.cfg.backups))))
+             .replace('"~/RestosAPagar_local/armazem"', json.dumps(str(mundo.cfg.snapshots)))
+             .replace('"~/RestosAPagar_local/backups"', json.dumps(str(mundo.cfg.backups)))
+             .replace('"~/RestosAPagar_local/etapas_anteriores"', json.dumps(str(base / "etapas"))))
+    assert "~/RestosAPagar_local" not in texto      # never the real private folders
     arq.write_text(texto, encoding="utf-8")
     assert base.exists()
     return str(arq)

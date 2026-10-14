@@ -32,6 +32,8 @@ class Config:
     limite_resposta_bytes: int = LIMITE_RESPOSTA_PADRAO
     entidade_rreo: int = 1          # entity whose publications (LRF group) carry the RREO Annex VII
     timeout_conexao: float = 30.0   # time limit to establish the connection (the read limit is `timeout`; see http.py)
+    # raw data of stages 01/02 (folders stage01-samples and stage02-raw): private, like the store
+    etapas_anteriores: Path = Path("~/RestosAPagar_local/etapas_anteriores").expanduser()
 
     def __post_init__(self):
         _validar(self)
@@ -98,6 +100,8 @@ def carregar(arquivo=None, **substituir):
         limite_resposta_bytes=int(c["api"].get("limite_resposta_bytes", LIMITE_RESPOSTA_PADRAO)),
         entidade_rreo=int(c.get("rreo", {}).get("entidade_publicacoes", 1)),
         timeout_conexao=float(c["api"].get("timeout_conexao_segundos", 30)),
+        etapas_anteriores=_caminho(c["caminhos"].get("etapas_anteriores", "~/RestosAPagar_local/etapas_anteriores"),
+                                   base),
     )
     valores.update(substituir)
     return Config(**valores)

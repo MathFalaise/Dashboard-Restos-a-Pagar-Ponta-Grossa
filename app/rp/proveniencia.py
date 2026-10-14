@@ -12,8 +12,9 @@ The chain of a value (`cadeia`), walked through relations with FOREIGN KEYs (sch
 Root manifest (`gerar_raiz` / `conferir_raiz`): a JSON with the SHA-256 of every manifest and object and the result
 hashes of the derivations. On its own it proves nothing against whoever administers the database AND the store:
 both are under the same control. It is worth something only when kept OUTSIDE them - another disk, an e-mail, a
-signed commit, a timestamping service - and compared later. The Git history of data/snapshots (manifests versioned
-byte by byte, -text) is one such external reference for the manifests; it is not one for the database.
+signed commit, a timestamping service - and compared later. Since the corrective audit of 13/10/2026 the raw data is
+no longer versioned (privacy); the root manifest itself holds only hashes and identifiers, so a copy of it committed
+to the public repository (docs/audits/raiz/) is the timestamped external reference for the store.
 """
 import hashlib
 import json

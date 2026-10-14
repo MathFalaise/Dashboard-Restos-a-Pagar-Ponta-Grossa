@@ -93,14 +93,16 @@ def test_D6_espaco_por_pasta(tmp_path):
 
 
 # ------------------------------------------------------------------ D2: new raw data outside Git
+# D2 (06/10/2026) kept the 466 snapshots of the homologated base versioned. The corrective audit of 13/10/2026 (phase
+# P0, privacy) superseded it: NO raw snapshot is versioned any more; the store lives in the private storage
+# (app/config.toml [caminhos]) and the history is sanitized (docs/audits/privacidade/HIGIENIZACAO_HISTORICO.md).
 @pytest.mark.skipif(shutil.which("git") is None or not (RAIZ_PROJETO / ".git").exists(), reason="sem git/repositorio")
-def test_D2_snapshot_novo_e_ignorado_e_os_versionados_continuam_no_git():
+def test_D2_snapshot_novo_e_ignorado_e_nenhum_snapshot_versionado():
     def git(*a):
         return subprocess.run(["git", *a], cwd=RAIZ_PROJETO, capture_output=True, text=True, encoding="utf-8")
     assert git("check-ignore", "-q", "--no-index", "data/snapshots/coletas/2099/01/novo.json").returncode == 0
     assert git("check-ignore", "-q", "--no-index", "data/snapshots/objetos/ab/" + "a" * 64 + ".zlib").returncode == 0
-    versionados = git("ls-files", "data/snapshots/coletas").stdout.split()
-    assert len(versionados) >= 466        # the homologated base is still versioned
+    assert git("ls-files", "data/snapshots").stdout.split() == []
 
 
 # ------------------------------------------------------------------ D1: block and say how to re-collect
