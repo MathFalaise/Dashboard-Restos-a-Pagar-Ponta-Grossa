@@ -344,3 +344,55 @@ def test_SINTETICO_consolidado_oficial_separa_os_escopos(mundo, tmp_path):
     status, _, html = chamar(Aplicacao(mundo.cfg.banco), "/oficial", exercicio=2026)
     assert status.startswith("200") and "Consolidado oficial" in html
     assert oficial.CORRESPONDENCIA["saldo"] == "saldo_total"
+
+
+# ================================================================== freshness and retrospective changes (item 7)
+def test_SINTETICO_alteracao_retrospectiva_por_empenho_com_alerta(mundo):
+    from rp import atualizacao
+    mundo.catalogos({1: [2026]})
+    mundo.listagem(1, 2026, "2026-04-30", [_reg(1, ano=2025, aproc=100.0), _reg(2, ano=2025, aproc=50.0)],
+                   "2026-09-29T20:00:00-03:00")
+    mundo.listagem(1, 2026, "2026-04-30", [_reg(1, ano=2025, aproc=100.0, canceladoAProc=40.0),
+                                           _reg(2, ano=2025, aproc=50.0)], "2026-10-06T20:00:00-03:00")
+    mundo.processar()
+    r = atualizacao.alteracoes_retrospectivas(mundo.con)
+    (c,) = r["cortes"]
+    assert c["retrospectiva"] and r["alertas"] == 1                       # 30/04 had ended before the first collection
+    assert c["impacto_por_grupo"]["cancelamentos"]["diferenca"] == 4000 and c["saldo_s1"]["diferenca"] == -4000
+    (e,) = c["empenhos"]
+    assert e["chave"] == [1, 2025, 1] and e["diferencas_c"] == {"cancelado_aproc_c": 4000}
+    assert e["data_de_registro_no_sistema"] == "não disponível na API"    # never assumed equal to the document date
+    a = atualizacao.atualidade(mundo.con, "2026-10-13")
+    assert a["dias_desde_a_ultima_listagem"] == 7 and a["alertas_retrospectivos"] == 1
+    assert a["retratos_armazenados_nao_processados"] == 0
+    mundo.listagem(1, 2026, "2026-04-30", [_reg(1, ano=2025, aproc=100.0)], "2026-10-12T20:00:00-03:00")
+    assert atualizacao.atualidade(mundo.con, "2026-10-13")["retratos_armazenados_nao_processados"] == 1   # stored, not published
+
+
+# ================================================================== governance (item 8)
+def test_SINTETICO_cli_registra_a_versao_sucessora(mundo, tmp_path, capsys):
+    import json
+    from rp import cli
+    mundo.catalogos({1: [2026]})
+    mundo.processar()
+    mundo.con.commit()
+    cfg = tmp_path / "config.toml"
+    from conftest import RAIZ_PROJETO
+    texto = (RAIZ_PROJETO / "app" / "config.toml").read_text(encoding="utf-8")
+    for velho, novo in (('"~/RestosAPagar_local"', mundo.cfg.dados_locais), ('"~/RestosAPagar_local/armazem"', mundo.cfg.snapshots),
+                        ('"~/RestosAPagar_local/backups"', mundo.cfg.backups),
+                        ('"~/RestosAPagar_local/etapas_anteriores"', tmp_path / "etapas")):
+        texto = texto.replace(velho, json.dumps(str(novo)))
+    assert "~/RestosAPagar_local" not in texto
+    cfg.write_text(texto, encoding="utf-8")
+    base = ["--config", str(cfg), "decidir-regra", "--codigo", "CONS-PAR", "--versao", "2", "--status", "HIPÓTESE",
+            "--motivo", "teste", "--fonte", "docs/x.md"]
+    assert cli.main(base + ["--situacao", "experimental", "--supersedida-por", "CONS-PAR:4"]) != 0   # only with supersedida
+    assert cli.main(base + ["--situacao", "supersedida", "--supersedida-por", "CONS-PAR:4"]) == 0
+    capsys.readouterr()
+    import sqlite3
+    con = sqlite3.connect(mundo.cfg.banco)
+    sup = con.execute("SELECT r2.codigo, r2.versao FROM regra_situacao s JOIN regra r ON r.id = s.regra_id JOIN regra r2 "
+                      "ON r2.id = s.supersedida_por WHERE r.codigo='CONS-PAR' AND r.versao=2").fetchall()
+    con.close()
+    assert sup == [("CONS-PAR", 4)]

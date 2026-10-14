@@ -137,6 +137,7 @@ def _main(argv=None):
     p.add_argument("--teste", help="teste de regressao: tests/<arquivo>.py::<teste> (obrigatorio na promocao)")
     p.add_argument("--evidencia", type=int, help="id da evidencia externa da conferencia independente")
     p.add_argument("--ressalva", help="sem conferencia independente no prazo: o motivo (aparece na metodologia)")
+    p.add_argument("--supersedida-por", help="versao sucessora, CODIGO:VERSAO (so com --situacao supersedida)")
     p = sub.add_parser("registrar-evidencia", help="registra documento externo (e-SIC, norma, nota...) com SHA-256")
     p.add_argument("--tipo", choices=sorted(TIPOS_EVIDENCIA), required=True)
     p.add_argument("--descricao", required=True)
@@ -175,6 +176,10 @@ def _main(argv=None):
     p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
     p.add_argument("--referencia", help="JSON gravado antes da carga (--gravar-referencia): confere o bruto anterior")
     p.add_argument("--gravar-referencia", help="grava o retrato do bruto atual neste arquivo (nunca sobrescreve) e sai")
+    p = sub.add_parser("atualizacao", help="atualidade da base e alteracoes retrospectivas por corte e por empenho "
+                                           "(somente leitura)")
+    p.add_argument("--banco", help="padrao: banco ativo do config.toml (aberto so para leitura)")
+    p.add_argument("--saida", help="grava o relatorio completo em JSON (nunca sobrescreve)")
     p = sub.add_parser("rastrear", help="cadeia de um valor calculado ate o manifesto e o objeto bruto (somente "
                                         "leitura)")
     p.add_argument("--valor", type=int, required=True, help="id de visao_valor")
@@ -231,6 +236,23 @@ def _main(argv=None):
         r = portoes.avaliar(a.banco or cfg.banco, Armazem(cfg.snapshots), ref)
         print(json.dumps(r, ensure_ascii=False, indent=1, default=str))
         return 0 if r["apto"] else 1
+    if a.cmd == "atualizacao":   # same: read-only
+        from . import atualizacao
+        from .portoes import _abrir
+        con_ro = _abrir(a.banco or cfg.banco)
+        try:
+            r = {"atualidade": atualizacao.atualidade(con_ro), "alteracoes": atualizacao.alteracoes_retrospectivas(con_ro)}
+        finally:
+            con_ro.close()
+        if a.saida:
+            with open(a.saida, "x", encoding="utf-8") as f:      # "x": never overwrites
+                json.dump(r, f, ensure_ascii=False, indent=1, default=str)
+        resumo = {"atualidade": r["atualidade"],
+                  "cortes": [{k: c[k] for k in ("entidade", "exercicio", "data_final", "retrospectiva",
+                                                "empenhos_alterados_com_valor")}
+                             | {"saldo_s1_diferenca": c["saldo_s1"]["diferenca"]} for c in r["alteracoes"]["cortes"]]}
+        print(json.dumps(resumo, ensure_ascii=False, indent=1, default=str))
+        return 0
     if a.cmd == "homologar":   # same: read-only; the reproduction lives in a temporary folder
         from . import homologar
         ler = lambda arq: json.loads(open(arq, encoding="utf-8").read()) if arq else None
@@ -369,8 +391,14 @@ def _main(argv=None):
         return 0
     if a.cmd == "decidir-regra":
         from . import governanca
+        sucessora = None
+        if a.supersedida_por:
+            codigo, _, versao = a.supersedida_por.rpartition(":")
+            if a.situacao != "supersedida" or not codigo or not versao.isdigit():
+                raise DecisaoInvalida("--supersedida-por exige --situacao supersedida e o formato CODIGO:VERSAO")
+            sucessora = (codigo, int(versao))
         ident = governanca.registrar_decisao(con, a.codigo, a.versao, a.situacao, a.status, a.compoe_indicador, a.motivo,
-                                             a.fonte, a.origem, evidencia_externa_id=a.evidencia,
+                                             a.fonte, a.origem, supersedida_por=sucessora, evidencia_externa_id=a.evidencia,
                                              teste_regressao=a.teste, ressalva=a.ressalva)
         print(json.dumps({"decisao": ident, **governanca.situacao_atual(con)[(a.codigo, a.versao)]},
                          ensure_ascii=False, indent=1))
