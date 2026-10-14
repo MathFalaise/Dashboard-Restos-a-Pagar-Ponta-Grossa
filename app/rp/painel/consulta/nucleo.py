@@ -8,7 +8,7 @@ from ... import banco, governanca, regras, vigencia
 from .. import fontes, publico
 from .comum import (CADEIA, CAMPOS_REGISTRO, _data_br, DERIVADOS, DINHEIRO, ErroDoPainel, ESQUEMA_MINIMO,
                     EsquemaAntigo, EXPR_CANCELAMENTOS, _in, instante, _instante_br, NIVEIS, NivelInvalido,
-                    REGRA_COPIAS, REGRA_ESCOPO_MUN, REGRA_PARES, RegraNaoOperacional, SemProcessamento, SITUACOES_DO_DADO, SOMAS,
+                    REGRA_COPIAS, REGRA_ESCOPO_MUN, REGRA_ESCOPO_MUN_V2, REGRA_PARES, RESSALVA_ESCOPO_MUN, RegraNaoOperacional, SemProcessamento, SITUACOES_DO_DADO, SOMAS,
                     VERSAO)
 
 
@@ -23,6 +23,7 @@ class Nucleo:
         if nivel not in NIVEIS:
             raise NivelInvalido(f"nivel precisa ser um de {NIVEIS}: {nivel!r}")
         self.con, self.nivel = con, nivel
+        self._governanca_em = None      # None: today's methodology; an instant: the one in force on that date
         # creditor type computed in SQL by the same function as the public layer (registering a function does not write to the database)
         con.create_function("tipo_credor", 1, publico.tipo_credor, deterministic=True)
 
@@ -55,6 +56,46 @@ class Nucleo:
 
     def __exit__(self, *_):
         self.fechar()
+
+    # ------------------------------------------------------------------ methodology (corrective audit, item 8)
+    def definir_metodologia(self, modo, em=None):
+        """'atual': today's rules and governance decisions applied to the data of any date (the default). 'vigente':
+        only the decisions recorded up to `em` - the methodology published on that date. Before the first decision
+        there was no published indicator: refused (indisponibilidade), never replaced by today's rules."""
+        if modo == "atual":
+            self._governanca_em = None
+        elif modo == "vigente":
+            em = instante(em)
+            if em is None:
+                raise ErroDoPainel("metodologia 'vigente' exige a data (como estava em)")
+            primeira = governanca.primeira_decisao(self.con)
+            if primeira is None or governanca._momento(em) < primeira:
+                raise ErroDoPainel(f"metodologia vigente em {em} indisponível: a primeira decisão de governança "
+                                   f"registrada é de {primeira.isoformat() if primeira else '—'}; antes dela não havia "
+                                   "indicador publicado para reconstruir")
+            self._governanca_em = em
+        else:
+            raise ErroDoPainel(f"metodologia desconhecida: {modo!r} (use 'atual' ou 'vigente')")
+        self._escopo_cache = None
+
+    def _governanca(self):
+        return (governanca.situacao_atual(self.con) if self._governanca_em is None
+                else governanca.situacao_em(self.con, self._governanca_em))
+
+    def metodologia_aplicada(self):
+        """Label of the methodology used, shown next to every snapshot."""
+        ctx = self.contexto()
+        der = ctx["derivacao"]
+        versao = self.con.execute("SELECT derivador_versao FROM derivacao_execucao WHERE id=?", (der["id"],)).fetchone()
+        base = {"derivador_versao": versao[0] if versao else None, "derivacao": der["id"],
+                "regras_de_escopo": [f"{r['codigo']} v{r['versao']}" for r in self.regras_de_escopo()]}
+        if self._governanca_em is None:
+            return {"modo": "atual", "governanca_em": None, **base,
+                    "texto": "metodologia atual: regras e decisões de governança de hoje"}
+        return {"modo": "vigente", "governanca_em": self._governanca_em, **base,
+                "texto": ("metodologia vigente na data: só as decisões de governança registradas até "
+                          f"{self._governanca_em}; o cálculo de cada versão de regra é o do código atual (uma versão "
+                          "de regra nunca muda de significado)")}
 
     # ------------------------------------------------------------------ context
     def contexto(self):
@@ -218,17 +259,21 @@ class Nucleo:
         ambiguas = {e for (e, ex, d0, df) in self._cortes_ambiguos(ctx, em) if ex == exercicio and d0 == di
                     and df == data_final}
         esc = self._escopo_aplicado()["municipio"]
-        extra, fora_do_escopo = set(), set()
+        extra, fora_do_escopo, avisos_escopo = set(), set(), []
         if esc and entidade is None and cat["entidades"]:
-            # ESCOPO-MUN v1: the entity outside the portal catalog makes up the Municipality up to its last fiscal year,
-            # once the base knows it (some processed snapshot of it up to `em`); any other entity outside the catalog
-            # is listed but never summed
-            if exercicio <= esc["ate_exercicio"] and any(k[0] == esc["entidade"] for k in vig):
+            # ESCOPO-MUN: the entity outside the portal catalog makes up the Municipality once the base knows it (some
+            # processed snapshot of it up to `em`) - v1 up to its last fiscal year, v2 in the periods whose official
+            # statement includes it; any other entity outside the catalog is listed but never summed
+            conhecida = any(k[0] == esc["entidade"] for k in vig)
+            incluir, aviso = self._escopo_da_entidade_extra(esc, exercicio, data_final)
+            if conhecida and incluir:
                 extra = {esc["entidade"]}
+            if conhecida and aviso:
+                avisos_escopo.append(aviso)
             fora_do_escopo = (com_snapshot | ambiguas) - set(cat["entidades"]) - extra
         universo = ([entidade] if entidade is not None else
                     sorted(set(cat["entidades"]) | com_snapshot | ambiguas | extra))
-        itens, somar, faltam, fora, avisos = [], [], [], [], []
+        itens, somar, faltam, fora, avisos = [], [], [], [], list(avisos_escopo)
         filtro_em, p_em = vigencia.filtro_disponivel(em, "coleta")
         for e in universo:
             status = self._status_no_exercicio(cat, e, exercicio)
@@ -264,7 +309,7 @@ class Nucleo:
                 estado = "fora_do_escopo"
                 if item["snapshot"] and item["snapshot"]["registros"]:
                     avisos.append(f"entidade {e} fora do catálogo do portal com registros no snapshot: não compõe o "
-                                  f"Município de {exercicio} (regra ESCOPO-MUN v1)")
+                                  f"Município neste corte de {exercicio} (regra ESCOPO-MUN v{esc['versao']})")
             elif status == "fora do catálogo oficial":
                 fora.append(e)
                 estado = "inexistente"
@@ -294,10 +339,12 @@ class Nucleo:
             motivo = None
         coletadas = [i["snapshot"]["coletada_em"] for i in itens if i["entra_no_total"]]
         uids = [i["snapshot"]["snapshot_uid"] for i in itens if i["entra_no_total"]]
+        retrato = self._retrato(exercicio, data_final, coletadas, em, uids)
+        if retrato:      # every snapshot label also says which methodology produced the values (item 8)
+            retrato["metodologia"] = self.metodologia_aplicada()
         return {"exercicio": exercicio, "data_inicial": di, "data_final": data_final, "entidade": entidade, "em": em,
                 "entidades": itens, "fora_do_catalogo": fora, "faltam": faltam, "somar": somar, "avisos": avisos,
-                "disponivel": motivo is None, "motivo": motivo,
-                "retrato": self._retrato(exercicio, data_final, coletadas, em, uids)}
+                "disponivel": motivo is None, "motivo": motivo, "retrato": retrato}
 
     @staticmethod
     def _retrato(exercicio, data_final, coletadas, em, snapshots=None):
@@ -340,7 +387,7 @@ class Nucleo:
         'pares': PAR-24 v1 parameters when CONS-PAR v4 is applied, or None}. A rule that is not operational changes
         nothing (the panel keeps the catalog scope)."""
         if getattr(self, "_escopo_cache", None) is None:
-            atual = governanca.situacao_atual(self.con)
+            atual = self._governanca()
 
             def aplicada(chave, parametros_de=None):
                 g = atual.get(chave)
@@ -352,15 +399,43 @@ class Nucleo:
                     return None
             # CONS-PAR v4 has no parameters of its own: it is applied with PAR-24 v1's (entities, base, matching fields)
             pares = aplicada(REGRA_PARES, ("PAR-24", 1))
-            self._escopo_cache = {"copias": aplicada(REGRA_COPIAS), "municipio": aplicada(REGRA_ESCOPO_MUN),
-                                  "pares": pares}
+            # ESCOPO-MUN: v2 (period by period) when operational in the indicator, otherwise v1
+            municipio = None
+            for regra in (REGRA_ESCOPO_MUN_V2, REGRA_ESCOPO_MUN):
+                p = aplicada(regra)
+                if p is not None:
+                    municipio = {**p, "versao": regra[1]}
+                    break
+            self._escopo_cache = {"copias": aplicada(REGRA_COPIAS), "municipio": municipio, "pares": pares}
         return self._escopo_cache
+
+    @staticmethod
+    def _escopo_da_entidade_extra(esc, exercicio, data_final):
+        """(include?, notice or None) of the ESCOPO-MUN entity in the cut-off. v1: up to `ate_exercicio`, no notice. v2:
+        the treatment recorded for the cut-off's bimester (the bimester of its month); outside 'comprovado' the
+        Municipality is published with the reservation of RESSALVA_ESCOPO_MUN."""
+        if esc["versao"] == 1:
+            return exercicio <= esc["ate_exercicio"], None
+        bimestre = (int(str(data_final)[5:7]) + 1) // 2
+        tratamento, situacao = esc["periodos"].get(f"{exercicio}-{bimestre}", esc["sem_periodo"])
+        if tratamento not in ("inclui", "exclui"):
+            raise ErroDoPainel(f"ESCOPO-MUN v2: tratamento desconhecido {tratamento!r} em {exercicio}-{bimestre}")
+        aviso = None
+        if situacao != "comprovado":
+            if situacao not in RESSALVA_ESCOPO_MUN:
+                raise ErroDoPainel(f"ESCOPO-MUN v2: situação desconhecida {situacao!r} em {exercicio}-{bimestre}")
+            acao = "somada ao" if tratamento == "inclui" else "fora do"
+            aviso = (f"Município com ressalva (ESCOPO-MUN v2, {bimestre}º bimestre de {exercicio}): entidade "
+                     f"{esc['entidade']} ({esc['nome_inferido']}) {acao} Município - {RESSALVA_ESCOPO_MUN[situacao]}. "
+                     "Evidência: docs/audits/escopo/ESCOPO_ENTIDADE_7.md")
+        return tratamento == "inclui", aviso
 
     def regras_de_escopo(self):
         """The scope rules in force in the published indicator, for the provenance and the methodology."""
         esc = self._escopo_aplicado()
-        return [{"codigo": c, "versao": v, "parametros": esc[k]} for k, (c, v) in
-                (("municipio", REGRA_ESCOPO_MUN), ("copias", REGRA_COPIAS), ("pares", REGRA_PARES)) if esc[k]]
+        mun = ("ESCOPO-MUN", esc["municipio"]["versao"]) if esc["municipio"] else REGRA_ESCOPO_MUN
+        return [{"codigo": c, "versao": v, "parametros": {x: y for x, y in esc[k].items() if x != "versao"}}
+                for k, (c, v) in (("municipio", mun), ("copias", REGRA_COPIAS), ("pares", REGRA_PARES)) if esc[k]]
 
     def tratamento_dos_pares(self):
         """How the 1 <-> 15 pairs enter the published indicators under the rules in force (single text for every notice
@@ -387,7 +462,7 @@ class Nucleo:
                 "determinada.")
 
     def _regras_publicaveis(self, usadas):
-        atual = governanca.situacao_atual(self.con)
+        atual = self._governanca()
         saida = []
         for codigo, versao in sorted(usadas):
             g = atual.get((codigo, versao))
@@ -466,6 +541,39 @@ class Nucleo:
                 f"AND a.coleta_id IN ({ph}) AND ca.exercicio = cr.exercicio AND ca.data_inicial = cr.data_inicial "
                 f"AND ca.data_final = cr.data_final {dentro}AND a.proc_c = r.proc_c AND a.aproc_c = r.aproc_c {conferir})")
         return cond, tuple(params)
+
+    def _pares_com_ressalva(self, ctx, coletas):
+        """Pairs of this set of collections that make the Municipality total uncertain (corrective audit 13/10/2026,
+        item 5.3; it changes no value, only states the reservation):
+          * 'nao_consolidados': PAR-24 pairs with the copy inside the indicator whose original was NOT consolidated -
+            execution in the original or a different inscription. Both sides are summed: possible double counting;
+          * 'evidencia_incompleta': consolidated originals whose matching field (CNPJ/CPF, issue date) is null on both
+            sides - CONS-PAR v4 compares with IS, so null equals null, which proves nothing.
+        Zeros when CONS-PAR v4 is not applied."""
+        par, cop = self._escopo_aplicado()["pares"], self._escopo_aplicado()["copias"]
+        if not par:
+            return {"nao_consolidados": 0, "inscricao_original_c": 0, "evidencia_incompleta": 0}
+        ph = _in(len(coletas))
+        dentro, extra = "", []
+        if cop:
+            dentro, extra = "AND ca.exercicio >= ? ", [cop["primeiro_exercicio"]]
+        par_sql = ("FROM rp_registro r JOIN coleta cr ON cr.id = r.coleta_id JOIN rp_registro a ON "
+                   "a.normalizacao_id = r.normalizacao_id AND a.entidade = ? AND a.anoempenho = r.anoempenho AND "
+                   "a.empenho = r.empenho + ? JOIN coleta ca ON ca.id = a.coleta_id AND ca.exercicio = cr.exercicio AND "
+                   "ca.data_inicial = cr.data_inicial AND ca.data_final = cr.data_final "
+                   f"WHERE r.normalizacao_id = ? AND r.entidade = ? AND r.coleta_id IN ({ph}) AND a.coleta_id IN ({ph}) "
+                   f"{dentro}")
+        base = [par["entidade_copia"], par["base_empenho_copia"], ctx["normalizacao"]["id"], par["entidade_original"],
+                *coletas, *coletas, *extra]
+        conferir = " AND ".join(f"a.{c} IS r.{c}" for c in par["campos_de_conferencia"]) or "1"
+        execucao = ("(r.pago_proc_c <> 0 OR r.pago_aproc_c <> 0 OR r.cancelado_aproc_c <> 0 OR r.liquidado_c <> 0 "
+                    "OR a.proc_c <> r.proc_c OR a.aproc_c <> r.aproc_c)")
+        n, insc = self.con.execute(f"SELECT COUNT(*), COALESCE(SUM(r.proc_c + r.aproc_c), 0) {par_sql} AND {conferir} "
+                                   f"AND {execucao}", base).fetchone()
+        nulo = " OR ".join(f"r.{c} IS NULL" for c in par["campos_de_conferencia"]) or "0"
+        (m,) = self.con.execute(f"SELECT COUNT(*) {par_sql} AND {conferir} AND NOT {execucao} AND ({nulo})",
+                                base).fetchone()
+        return {"nao_consolidados": n, "inscricao_original_c": insc, "evidencia_incompleta": m}
 
     def _consolidados(self, ctx, coletas):
         """(records, inscription) of the originals that CONS-PAR v4 leaves out of this set of collections (0, 0 when the
@@ -565,7 +673,7 @@ class Nucleo:
     def _naturezas_derivados(self):
         """Nature of each per-record derived value: 'derivado' if the rule makes up a published indicator, otherwise
         'analitico' (e.g. CANC v1, not recommended)."""
-        governo = governanca.situacao_atual(self.con)
+        governo = self._governanca()
         return {c: ("derivado" if governo.get(regra, {}).get("compoe_indicador_publicado") else "analitico")
                 for c, (_, _, regra) in fontes.DERIVADOS.items()}
 

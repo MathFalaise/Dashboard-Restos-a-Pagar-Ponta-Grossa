@@ -96,7 +96,8 @@ def _selecao(p, q, com_entidade=True):
         avisos.append(f"Corte {fm.data_br(df)} não processado no exercício {ex}{ate}: nenhum outro corte é mostrado "
                       "no lugar dele. Cortes processados deste exercício: "
                       f"{', '.join(fm.data_br(x) for x in processados)}.")
-    return {"em": em, "exercicio": ex, "data_final": df, "entidade": entidade, "exercicios": exercicios,
+    return {"em": em, "metodologia": q.texto("metodologia", 10) or "atual",
+            "exercicio": ex, "data_final": df, "entidade": entidade, "exercicios": exercicios,
             "cortes_do_exercicio": do_exercicio, "corte_processado": df in processados, "avisos": avisos}
 
 
@@ -119,6 +120,9 @@ def _formulario(acao, sel, entidades=None, extra="", com_corte=True):
         campos.append('<label>Entidade <select name="entidade"><option value="">Município (entidades do catálogo '
                       f"oficial)</option>{lista}</select></label>")
     campos.append(f'<label>Como estava em (opcional) <input type="date" name="em" value="{esc(sel["em"] or "")}"></label>')
+    campos.append('<label>Metodologia <select name="metodologia">'
+                  + fm.opcoes([("atual", "atual (regras de hoje)"), ("vigente", "vigente na data escolhida")],
+                              sel.get("metodologia") or "atual") + "</select></label>")
     dica = ('<p class="dica">Mudou o exercício? Consulte uma vez para atualizar a lista de cortes.</p>'
             if com_corte else "")
     return (f'<form class="filtros" method="get" action="{esc(acao)}">{"".join(campos)}{extra}'
@@ -151,6 +155,11 @@ def _retrato(ret):
     ]
     if snaps:
         definicoes.append(("Snapshots usados", " ".join(f"<code>{esc(u)}</code>" for u in snaps)))
+    met = ret.get("metodologia")
+    if met:
+        regras = ", ".join(met["regras_de_escopo"]) or "nenhuma regra de escopo"
+        definicoes.append(("Metodologia", esc(f"{met['texto']} — derivação {met['derivacao']} "
+                                              f"({met['derivador_versao']}); escopo: {regras}")))
     nota = ""
     if ret.get("corte_posterior_a_coleta"):
         nota = ('<p class="nota">O corte é posterior à data da coleta: os valores vão só até o dia em que a API foi '

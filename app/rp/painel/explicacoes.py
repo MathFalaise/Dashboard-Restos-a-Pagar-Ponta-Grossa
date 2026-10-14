@@ -133,6 +133,14 @@ EXPLICACOES = [
                 "na entidade 1, com o mesmo credor, data e valor, e só as cópias são executadas. O RREO do portal soma "
                 "os dois lados; a declaração ao Siconfi conta uma vez, como o indicador."),
          fonte="docs/audits/rreo/RP_2024_2026.md seção 8 (D1)"),
+    dict(exercicios=[2020], datas_finais=["2020-04-30", "2020-06-30", "2020-08-31", "2020-10-31", "2020-12-31"],
+         escopo="consolidado", colunas=["L"], regra="S1 v1", classe="E", requer="ESCOPO-MUN v2",
+         situacao="explicada", status_evidencia="CONFIRMADO",
+         texto=("Com a regra ESCOPO-MUN v2 no indicador (desde 13/10/2026), a entidade 7 (Agência Reguladora de Águas e "
+                "Saneamento Básico, 180.334,82 de inscrição) fica fora do Município do 2º ao 6º bimestre de 2020, como na "
+                "declaração ao Siconfi; o RREO do portal desses bimestres a inclui. Os dois documentos oficiais são "
+                "contraditórios, e o indicador é publicado com ressalva."),
+         fonte="docs/audits/escopo/ESCOPO_ENTIDADE_7.md"),
     dict(exercicios=[2026], datas_finais=["2026-04-30", "2026-06-30", "2026-08-31"], escopo=None, colunas=["j"],
          regra=None, classe="T", situacao="explicada", status_evidencia="CONFIRMADO",
          texto=("(j) +1.270.679,25 / +1.251.860,27: cancelamentos com data retroativa lançados entre os retratos de "

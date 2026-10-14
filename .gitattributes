@@ -7,3 +7,4 @@ data/stage02-raw/** -text
 *.sqlite binary
 *.zlib binary
 *.pdf binary
+docs/audits/rreo/siconfi/raw/** -text

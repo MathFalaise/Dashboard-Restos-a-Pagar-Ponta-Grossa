@@ -148,7 +148,7 @@ class Empenhos:
         if not ocorrencias:
             return {"encontrado": False, "chave": chave, "motivo_indisponivel": "empenho ausente deste corte",
                     "retrato": corte["retrato"]}
-        governo = governanca.situacao_atual(self.con)
+        governo = self._governanca()
         saida = []
         for reg, prov, nome, cnpj in ocorrencias:
             campos = {c: {"campo_api": fontes.CAMPOS[c][0], "rotulo": fontes.CAMPOS[c][1], "valor": reg[c],
@@ -223,7 +223,7 @@ class Empenhos:
         if did is None:
             return {"pares": [], "nota": f"não há derivação 'como estava em' {em}"}
         par = regras.parametros(self.con, "PAR-24", 1)
-        governo = governanca.situacao_atual(self.con).get(("PAR-24", 1), {})
+        governo = self._governanca().get(("PAR-24", 1), {})
         pares = [{"a": {"entidade": ea, "anoempenho": aa, "empenho": pa, "inscrito_c": ia},
                   "b": {"entidade": eb, "anoempenho": ab, "empenho": pb, "inscrito_c": ib},
                   "mesma_inscricao": bool(mesma), "relacao_inscricao": rel, "lado_com_execucao": lado,

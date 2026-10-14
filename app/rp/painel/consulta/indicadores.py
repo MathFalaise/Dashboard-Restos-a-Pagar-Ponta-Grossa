@@ -48,6 +48,19 @@ class Indicadores:
                           f"({_reais(consolidados[1])} de inscrição) não são somados no Município: são originais de pares "
                           f"cujas cópias estão na entidade {par['entidade_copia']}, com a mesma inscrição e onde o RP é "
                           "executado; cada par conta uma vez (regra CONS-PAR v4). Na visão da entidade eles continuam.")
+        if entidade is None and corte["disponivel"]:
+            r = self._pares_com_ressalva(ctx, corte["somar"])
+            par = self._escopo_aplicado()["pares"]
+            if r["nao_consolidados"]:
+                avisos.append(f"Município com ressalva (CONS-PAR v4): {r['nao_consolidados']} par(es) "
+                              f"{par['entidade_copia']}↔{par['entidade_original']} não consolidado(s), por execução no "
+                              "original ou inscrição diferente nos dois lados: os dois lados entram no total "
+                              f"({_reais(r['inscricao_original_c'])} de inscrição do original). Pode haver dupla "
+                              "contagem enquanto a natureza das cópias não for confirmada.")
+            if r["evidencia_incompleta"]:
+                avisos.append(f"Município com ressalva (CONS-PAR v4): {r['evidencia_incompleta']} par(es) consolidado(s) "
+                              f"com campo de conferência nulo ({', '.join(par['campos_de_conferencia'])}): a igualdade de "
+                              "dois campos vazios não prova que é o mesmo credor e a mesma data.")
         if self._pendentes(ctx):
             avisos.append("Há snapshots de listagem ainda não processados; rode 'python -m rp processar'.")
         return {"consulta": {"exercicio": exercicio, "data_final": data_final, "entidade": entidade, "como_estava_em": em},
@@ -60,6 +73,7 @@ class Indicadores:
                                                              {f"{r['codigo']} v{r['versao']}" for r in self.regras_de_escopo()})
                                      if corte["disponivel"] else None),
                 "avisos": avisos,
+                "com_ressalva": any(a.startswith("Município com ressalva") for a in avisos),
                 "proveniencia": self._proveniencia(ctx, corte["somar"], "somas sobre rp_registro + rp_derivado")}
 
     def _texto_escopo_municipio(self):
@@ -69,7 +83,11 @@ class Indicadores:
         partes = ["entidades do catálogo oficial do exercício"]
         if esc["municipio"]:
             m = esc["municipio"]
-            partes.append(f"entidade {m['entidade']} até {m['ate_exercicio']} (ESCOPO-MUN v1)")
+            if m["versao"] == 1:
+                partes.append(f"entidade {m['entidade']} até {m['ate_exercicio']} (ESCOPO-MUN v1)")
+            else:
+                partes.append(f"entidade {m['entidade']} nos períodos em que o demonstrativo oficial a inclui "
+                              "(ESCOPO-MUN v2)")
         if esc["copias"]:
             partes.append(f"sem as cópias 24xxxxx antes de {esc['copias']['primeiro_exercicio']} (COPIA-ORIGEM v1)")
         if esc["pares"]:

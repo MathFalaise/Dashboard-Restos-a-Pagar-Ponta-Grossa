@@ -130,6 +130,9 @@ class Aplicacao:
         try:
             q = Parametros(environ.get("QUERY_STRING", ""))
             with Painel.abrir(self.caminho) as p:
+                modo = q.texto("metodologia", 10) or "atual"
+                if modo != "atual":     # methodology in force on the 'como estava em' date (audit 13/10/2026, item 8)
+                    p.definir_metodologia(modo, q.data("em"))
                 titulo, corpo = rota(p, q)
                 html = paginas.documento(titulo, corpo, p.contexto(), caminho)
         except ParametroInvalido as e:

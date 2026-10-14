@@ -24,8 +24,8 @@ SITUACOES_DO_DADO = {
     "valor_recusado": "dado indisponível: o retrato do corte tem campo monetário ausente, nulo ou inválido "
                       "(VALOR-RECUSADO); o registro nunca é somado como zero",
     "divergente": "dado com diferença em relação ao RREO (a diferença é mostrada; o valor da API não muda)",
-    "fora_do_escopo": "entidade fora do catálogo do portal e fora do escopo do Município neste exercício (regra "
-                      "ESCOPO-MUN v1): listada, não somada",
+    "fora_do_escopo": "entidade fora do catálogo do portal e fora do escopo do Município neste período (regra "
+                      "ESCOPO-MUN): listada, não somada",
 }
 # Situation of a series POINT (docs/stages/05-analysis/ANALYTICAL_CONTRACT.md section 2): extends the taxonomy
 # above, without a parallel one. 'municipio_indisponivel' comes in 05.2; 'exercicio_sem_cobertura' comes in 05.3.
@@ -170,6 +170,17 @@ SOMAS = [
 REGRAS_DO_INDICADOR = {("S1", 1), ("S2", 1), ("S3", 1), ("CAT", 1)}
 # scope rules: applied to the published indicator only while operational with compoe_indicador_publicado = 1
 REGRA_ESCOPO_MUN = ("ESCOPO-MUN", 1)
+REGRA_ESCOPO_MUN_V2 = ("ESCOPO-MUN", 2)     # preferred when operational: entity 7 period by period (13/10/2026)
+# ESCOPO-MUN v2 situations other than 'comprovado': the Municipality is published WITH a reservation
+RESSALVA_ESCOPO_MUN = {
+    "comprovado_rreo_portal": "escopo provado pelo RREO do portal; a declaração ao Siconfi do período não o prova",
+    "provavel": "nenhum demonstrativo prova o escopo ao centavo; segue o tratamento de menor resíduo (provável)",
+    "inconclusivo": "nenhum demonstrativo prova o escopo; mantido o tratamento da v1 (inconclusivo)",
+    "contraditorio": "o RREO do portal inclui a entidade e a declaração ao Siconfi não; segue o Siconfi "
+                     "(documentos oficiais contraditórios)",
+    "sem_demonstrativo": "período ainda sem demonstrativo oficial conferido; a entidade fica fora, como nos "
+                         "períodos anteriores",
+}
 REGRA_COPIAS = ("COPIA-ORIGEM", 1)
 REGRA_PARES = ("CONS-PAR", 4)   # Municipality: the original of a pair with the same inscription and no execution leaves
 

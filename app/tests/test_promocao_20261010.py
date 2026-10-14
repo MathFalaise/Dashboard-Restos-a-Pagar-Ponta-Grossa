@@ -86,7 +86,10 @@ def test_cons_par_v4_nao_consolida_original_com_execucao(mundo):
     with mundo.painel() as p:
         mun = p.indicadores(*CORTE)
         assert mun["valores"]["inscricao_total"]["valor_c"] == 21000
-        assert not any("CONS-PAR v4" in a for a in mun["avisos"])
+        assert not any("não são somados no Município" in a for a in mun["avisos"])     # nothing consolidated
+        # corrective audit 13/10/2026 (item 5.3): the pair counted on both sides is no longer silent
+        assert [a for a in mun["avisos"] if a.startswith("Município com ressalva (CONS-PAR v4)")]
+        assert mun["com_ressalva"]
 
 
 def test_cons_par_v4_respeita_copia_origem(mundo):

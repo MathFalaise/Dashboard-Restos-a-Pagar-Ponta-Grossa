@@ -11,7 +11,7 @@ class Documentacao:
 
     # ------------------------------------------------------------------ catalog, sources, methodology
     def regras(self):
-        atual = governanca.situacao_atual(self.con)
+        atual = self._governanca()
         params = {}
         for cod, ver, nome, valor in self.con.execute("SELECT r.codigo, r.versao, p.nome, p.valor_json FROM "
                                                       "regra_parametro p JOIN regra r ON r.id = p.regra_id"):
