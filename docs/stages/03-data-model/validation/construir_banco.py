@@ -10,7 +10,12 @@ from pathlib import Path
 
 from rpval import bruto, derivar, normalizar
 
+import os
+
 RAIZ = Path(__file__).resolve().parents[4]
+# Raw data of stages 01/02 (creditor records): private storage since the corrective audit of 13/10/2026, outside the
+# public repository. RP_ETAPAS_ANTERIORES points to another folder; the default is the one of app/config.toml.
+BRUTO = Path(os.environ.get("RP_ETAPAS_ANTERIORES") or "~/RestosAPagar_local/etapas_anteriores").expanduser()
 
 
 def construir(caminho):
@@ -19,7 +24,7 @@ def construir(caminho):
         caminho.unlink()  # disposable by definition
     t = time.time()
     con = bruto.criar_banco(caminho)
-    resumo = bruto.carregar_etapas_anteriores(con, RAIZ)
+    resumo = bruto.carregar_etapas_anteriores(con, RAIZ, BRUTO)
     nid = normalizar.normalizar(con)
     did = derivar.derivar(con, nid)
     return con, nid, did, resumo, time.time() - t

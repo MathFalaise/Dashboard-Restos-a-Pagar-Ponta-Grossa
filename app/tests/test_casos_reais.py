@@ -25,6 +25,16 @@ HASH_EM_2909_20261009 = "96777ec6a17da54b09812422695b14a9bb0dc89b4d3563a3712f996
 # CONS-PAR v4 rows the result is exactly the one of 09/10 (the hashes above); the complete result is recorded here.
 HASH_ATUAL_20261010 = "15e9199534d862c030d13ce7b3036df1d6926dc8de31c3506f9bf7583c27f530"
 HASH_EM_2909_20261010 = "4002ccc2634021abf2e3ace910b8d18dc3311f572405912ffe389728277ea791"
+# rp-normalizador/3 of 13/10/2026 (layout rules, docs/audits/rreo/VALIDACAO_LAYOUTS.md): 3 PDFs of this base (6th bimester
+# of 2016, 2018 and 2019) are now transcribed. Every hash above is still reproduced, with the result rebuilt as it was
+# while they were refused (derivar.resultado_estavel, `pdfs_novos`); the complete result gains their reconciliation rows.
+HASH_ATUAL_20261013 = "4e0a066f294fb4ad530a633a2f36957c8616a514d1548a8f57b9c19fab9f8f0d"
+HASH_EM_2909_20261013 = "4002ccc2634021abf2e3ace910b8d18dc3311f572405912ffe389728277ea791"   # those 3 PDFs are not in it
+
+
+def _pdfs_novos(real):
+    nid = real["con"].execute("SELECT normalizacao_id FROM derivacao_execucao WHERE id=?", (real["did"],)).fetchone()[0]
+    return derivar.pdfs_por_regras_de_layout(real["con"], nid)
 
 
 def test_armazem_real_intacto_e_integro(real):
@@ -42,15 +52,18 @@ def test_armazem_real_intacto_e_integro(real):
 
 
 def test_hashes_de_resultado_iguais_aos_da_04_4(real):
-    con = real["con"]
+    con, pdfs = real["con"], _pdfs_novos(real)
+    assert len(pdfs) == 3                                                            # 722468ea, d369f5b9, 36f1ef8e
     sem = derivar.REGRAS_DE_20261009 | derivar.REGRAS_DE_20261010
-    assert derivar.hash_resultado(con, real["did"], sem) == HASH_ATUAL               # homologated part: unchanged
-    assert derivar.hash_resultado(con, real["did_2909"], sem) == HASH_EM_2909
+    assert derivar.hash_resultado(con, real["did"], sem, pdfs) == HASH_ATUAL         # homologated part: unchanged
+    assert derivar.hash_resultado(con, real["did_2909"], sem, pdfs) == HASH_EM_2909
     sem = derivar.REGRAS_DE_20261010                                                 # 09/10 result: unchanged
-    assert derivar.hash_resultado(con, real["did"], sem) == HASH_ATUAL_20261009
-    assert derivar.hash_resultado(con, real["did_2909"], sem) == HASH_EM_2909_20261009
+    assert derivar.hash_resultado(con, real["did"], sem, pdfs) == HASH_ATUAL_20261009
+    assert derivar.hash_resultado(con, real["did_2909"], sem, pdfs) == HASH_EM_2909_20261009
+    assert derivar.hash_resultado(con, real["did"], None, pdfs) == HASH_ATUAL_20261010   # 10/10 result: unchanged
+    assert derivar.hash_resultado(con, real["did_2909"], None, pdfs) == HASH_EM_2909_20261010
     h = dict(con.execute("SELECT id, hash_resultado FROM derivacao_execucao").fetchall())
-    assert (h[real["did"]], h[real["did_2909"]]) == (HASH_ATUAL_20261010, HASH_EM_2909_20261010)
+    assert (h[real["did"]], h[real["did_2909"]]) == (HASH_ATUAL_20261013, HASH_EM_2909_20261013)
 
 
 def test_caso_5659_2025(real):
@@ -161,7 +174,9 @@ def test_674_426_01_e_coerencia_entre_publicacoes(real):
     assert x["diferenca_c"] == 67442601 and (x["rreo_L_de_c"], x["rreo_a_mais_f_para_c"]) == (1784893028, 1852335629)
     assert x["api_s1_de_c"] == x["api_a_mais_f_para_c"] == 1853176629          # the API reproduces the later publication
     assert x["situacao_da_diferenca"] == "explicada"       # attributed to records on 09/10/2026 (before: partially)
-    # the whole 04.4 table that the production extractor can read (2020 onwards) is reproduced to the cent
+    # the whole 04.4 table that the production extractor can read is reproduced to the cent: 12 comparisons (2020
+    # onwards) up to 10/10/2026; 15 since rp-normalizador/3 (13/10/2026) also reads the December RREOs of 2016, 2018 and
+    # 2019 (layout rules) - the 3 new comparisons equal the 04.4 table too
     tabela = _consistencia_da_04_4()
     conferidas = 0
     for x in coe:
@@ -172,7 +187,7 @@ def test_674_426_01_e_coerencia_entre_publicacoes(real):
             if api_af is not None:
                 assert x["api_a_mais_f_para_c"] == api_af, k
             conferidas += 1
-    assert conferidas == 12
+    assert conferidas == 15
 
 
 def test_entidade_inexistente_no_exercicio_nao_e_zero(real):

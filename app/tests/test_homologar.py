@@ -101,3 +101,24 @@ def test_SINTETICO_cli_homologar(mundo, tmp_path, monkeypatch, capsys):
 @pytest.mark.parametrize("resultado, codigo", sorted(homologar.CODIGO_DE_SAIDA.items()))
 def test_codigos_de_saida_distintos(resultado, codigo):
     assert list(homologar.CODIGO_DE_SAIDA.values()).count(codigo) == 1
+
+
+def test_SINTETICO_dimensoes_separadas_e_sem_ressalvas_exige_cobertura(mundo, tmp_path, monkeypatch):
+    """Corrective audit of 13/10/2026, item 9: technical approval, documentary coverage and accounting pendencies are
+    reported apart; with no pendency at all, a refused RREO still keeps the result 'com ressalvas'."""
+    from rp import rreo_cobertura
+    ref = portoes.gravar_referencia(mundo.cfg.banco, tmp_path / "ref.json")
+    _carga(mundo)
+    raiz = proveniencia.gerar_raiz(mundo.con)
+    monkeypatch.setattr(homologar, "pendencias_contabeis", lambda con: [])
+    r = _homologar(mundo, referencia=ref, raiz=raiz, suites=_suite(tmp_path, "a"))
+    assert r["resultado"] == "aprovada_sem_ressalvas"           # no document expected, nothing pending
+    assert r["dimensoes"]["tecnica"]["aprovada"] and r["dimensoes"]["cobertura_documental"]["completa"]
+    assert r["dimensoes"]["pendencias_contabeis"] == {"quantidade": 0, "tipos": []}
+    monkeypatch.setattr(rreo_cobertura, "matriz",
+                        lambda con, nid=None: {"resumo": {"transcrito": 3, "recusado_layout": 1, "coletado_sem_extracao": 0,
+                                                          "nao_coletado": 0}})
+    r = _homologar(mundo, referencia=ref, raiz=raiz, suites=_suite(tmp_path, "b"))
+    assert r["resultado"] == "aprovada_com_ressalvas" and r["aprovacao_tecnica"] is True
+    assert r["dimensoes"]["cobertura_documental"] == {"rreo_esperados": 4, "transcrito": 3, "recusado_layout": 1,
+                                                      "coletado_sem_extracao": 0, "nao_coletado": 0, "completa": False}

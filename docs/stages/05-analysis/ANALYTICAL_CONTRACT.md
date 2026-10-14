@@ -419,6 +419,18 @@ São agregadas. Colunas: `derivacao_id`, `regra_id`, `descricao`, `escopo_json`,
 
 - **Validação:** soma de verificados e falhas por descrição igual à tabela; snapshots de `escopo_json` existem.
 
+**Desde 13/10/2026 (auditoria corretiva):**
+- **Rótulo do escopo:** o Município do painel é o **Poder Executivo, fonte Elotech**. O consolidado oficial (todos os
+  Poderes) vem da declaração ao Siconfi, em série separada (`consolidado_oficial`, página `/oficial`), e nunca é
+  somado aos valores da fonte Elotech.
+- **ESCOPO-MUN v2:** decide a entidade 7 no indicador publicado, por bimestre, conforme o demonstrativo oficial. É
+  aplicada pelo painel e não grava verificação. A derivação continua a gravar a verificação da v1, que é o escopo da
+  conciliação com os PDFs do portal.
+- **Ressalva no indicador:** fora de "comprovado", e quando há par 1↔15 contado nos dois lados ou consolidado com
+  campo de conferência nulo, o indicador do Município sai com aviso iniciado por "Município com ressalva" e
+  `com_ressalva = true`.
+- **`RREO sem valores extraídos`:** desde o `rp-normalizador/3`, só os 2 PDFs que nenhuma regra lê.
+
 ### E-03 — Situação das diferenças com o RREO
 
 | Situação | Critério |

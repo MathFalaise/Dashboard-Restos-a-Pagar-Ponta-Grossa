@@ -1,0 +1,1226 @@
+{
+ "2016|2016-02-29": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 8874497903,
+   "pagamentos": 2848549291,
+   "cancelamentos": 109777674,
+   "liquidacoes": 1825401448,
+   "saldo_total": 5916170938,
+   "registros": 7776
+  }
+ },
+ "2016|2016-04-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 8874497903,
+   "pagamentos": 3879405995,
+   "cancelamentos": 270301774,
+   "liquidacoes": 2592809760,
+   "saldo_total": 4724790134,
+   "registros": 7776
+  }
+ },
+ "2016|2016-06-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 8874497903,
+   "pagamentos": 4269149407,
+   "cancelamentos": 437257073,
+   "liquidacoes": 2922603818,
+   "saldo_total": 4168091423,
+   "registros": 7776
+  }
+ },
+ "2016|2016-08-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 8874497903,
+   "pagamentos": 4555144710,
+   "cancelamentos": 462672146,
+   "liquidacoes": 3191965398,
+   "saldo_total": 3856681047,
+   "registros": 7776
+  }
+ },
+ "2016|2016-10-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 8874497903,
+   "pagamentos": 4676667457,
+   "cancelamentos": 536183443,
+   "liquidacoes": 3361855718,
+   "saldo_total": 3661647003,
+   "registros": 7776
+  }
+ },
+ "2016|2016-12-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 8874497903,
+   "pagamentos": 4897754380,
+   "cancelamentos": 605066230,
+   "liquidacoes": 3504685732,
+   "saldo_total": 3371677293,
+   "registros": 7776
+  }
+ },
+ "2017|2017-02-28": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 9295501524,
+   "pagamentos": 2541731729,
+   "cancelamentos": 67750752,
+   "liquidacoes": 1756820952,
+   "saldo_total": 6686019043,
+   "registros": 8695
+  }
+ },
+ "2017|2017-04-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 9295501524,
+   "pagamentos": 4497412528,
+   "cancelamentos": 135671053,
+   "liquidacoes": 2900078958,
+   "saldo_total": 4662417943,
+   "registros": 8695
+  }
+ },
+ "2017|2017-06-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 9295501524,
+   "pagamentos": 4957419737,
+   "cancelamentos": 1029985189,
+   "liquidacoes": 3251439759,
+   "saldo_total": 3308096598,
+   "registros": 8695
+  }
+ },
+ "2017|2017-08-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 9295501524,
+   "pagamentos": 5147397729,
+   "cancelamentos": 1107245338,
+   "liquidacoes": 3382999993,
+   "saldo_total": 3040858457,
+   "registros": 8695
+  }
+ },
+ "2017|2017-10-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 9295501524,
+   "pagamentos": 5274096381,
+   "cancelamentos": 1134495163,
+   "liquidacoes": 3408424367,
+   "saldo_total": 2886909980,
+   "registros": 8695
+  }
+ },
+ "2017|2017-12-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 9295501524,
+   "pagamentos": 5326756824,
+   "cancelamentos": 2210537993,
+   "liquidacoes": 3421501464,
+   "saldo_total": 1758206707,
+   "registros": 8695
+  }
+ },
+ "2018|2018-02-28": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 7940964434,
+   "pagamentos": 3400472119,
+   "cancelamentos": 228902515,
+   "liquidacoes": 2328365632,
+   "saldo_total": 4311589800,
+   "registros": 6825
+  }
+ },
+ "2018|2018-04-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 7922930952,
+   "pagamentos": 4293823098,
+   "cancelamentos": 461924514,
+   "liquidacoes": 3178558886,
+   "saldo_total": 3167183340,
+   "registros": 6821
+  }
+ },
+ "2018|2018-06-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 7922930952,
+   "pagamentos": 4716861507,
+   "cancelamentos": 510304319,
+   "liquidacoes": 3579766302,
+   "saldo_total": 2695765126,
+   "registros": 6821
+  }
+ },
+ "2018|2018-08-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 7922930952,
+   "pagamentos": 5034488575,
+   "cancelamentos": 525690644,
+   "liquidacoes": 3835644139,
+   "saldo_total": 2362751733,
+   "registros": 6821
+  }
+ },
+ "2018|2018-10-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 7922930952,
+   "pagamentos": 5175969135,
+   "cancelamentos": 587753872,
+   "liquidacoes": 4002027068,
+   "saldo_total": 2159207945,
+   "registros": 6821
+  }
+ },
+ "2018|2018-12-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 7922930952,
+   "pagamentos": 5259851752,
+   "cancelamentos": 765320313,
+   "liquidacoes": 4052926101,
+   "saldo_total": 1897758887,
+   "registros": 6821
+  }
+ },
+ "2019|2019-02-28": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 11988845857,
+   "pagamentos": 4233630279,
+   "cancelamentos": 63602586,
+   "liquidacoes": 3506777834,
+   "saldo_total": 7691612992,
+   "registros": 6809
+  }
+ },
+ "2019|2019-04-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 11988845857,
+   "pagamentos": 6008343807,
+   "cancelamentos": 1308799831,
+   "liquidacoes": 4625402363,
+   "saldo_total": 4671702219,
+   "registros": 6809
+  }
+ },
+ "2019|2019-06-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 11988845857,
+   "pagamentos": 6797675858,
+   "cancelamentos": 1397341023,
+   "liquidacoes": 5203688307,
+   "saldo_total": 3793828976,
+   "registros": 6809
+  }
+ },
+ "2019|2019-08-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 11988845857,
+   "pagamentos": 7093873504,
+   "cancelamentos": 1525625283,
+   "liquidacoes": 5559946332,
+   "saldo_total": 3369347070,
+   "registros": 6809
+  }
+ },
+ "2019|2019-10-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12006879339,
+   "pagamentos": 7246643577,
+   "cancelamentos": 1761103794,
+   "liquidacoes": 5609944027,
+   "saldo_total": 2999131968,
+   "registros": 6813
+  }
+ },
+ "2019|2019-12-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12006879339,
+   "pagamentos": 7342289212,
+   "cancelamentos": 2497014090,
+   "liquidacoes": 5354653340,
+   "saldo_total": 2167576037,
+   "registros": 6813
+  }
+ },
+ "2020|2020-02-29": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12225889818,
+   "pagamentos": 4387581522,
+   "cancelamentos": 42184960,
+   "liquidacoes": 3921591560,
+   "saldo_total": 7796123336,
+   "registros": 7917
+  }
+ },
+ "2020|2020-04-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12207856336,
+   "pagamentos": 6185513031,
+   "cancelamentos": 142382693,
+   "liquidacoes": 5186894903,
+   "saldo_total": 5879960612,
+   "registros": 7913
+  }
+ },
+ "2020|2020-06-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12207856336,
+   "pagamentos": 7276001655,
+   "cancelamentos": 483005413,
+   "liquidacoes": 5920062018,
+   "saldo_total": 4448849268,
+   "registros": 7913
+  }
+ },
+ "2020|2020-08-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12207856336,
+   "pagamentos": 8081713451,
+   "cancelamentos": 578019101,
+   "liquidacoes": 6475655199,
+   "saldo_total": 3548123784,
+   "registros": 7913
+  }
+ },
+ "2020|2020-10-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12207856336,
+   "pagamentos": 8561310521,
+   "cancelamentos": 788235444,
+   "liquidacoes": 6862597887,
+   "saldo_total": 2858310371,
+   "registros": 7913
+  }
+ },
+ "2020|2020-12-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12207856336,
+   "pagamentos": 8857449724,
+   "cancelamentos": 1502199379,
+   "liquidacoes": 6876782052,
+   "saldo_total": 1848207233,
+   "registros": 7913
+  }
+ },
+ "2021|2021-02-28": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12546842520,
+   "pagamentos": 3359523748,
+   "cancelamentos": 224764606,
+   "liquidacoes": 2594047111,
+   "saldo_total": 8962554166,
+   "registros": 4414
+  }
+ },
+ "2021|2021-04-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12546842520,
+   "pagamentos": 4186520467,
+   "cancelamentos": 433376507,
+   "liquidacoes": 3273733726,
+   "saldo_total": 7926945546,
+   "registros": 4414
+  }
+ },
+ "2021|2021-06-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12546842520,
+   "pagamentos": 5005178623,
+   "cancelamentos": 580757841,
+   "liquidacoes": 4011396523,
+   "saldo_total": 6960906056,
+   "registros": 4414
+  }
+ },
+ "2021|2021-08-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12546842520,
+   "pagamentos": 5624163359,
+   "cancelamentos": 1050373833,
+   "liquidacoes": 4425630566,
+   "saldo_total": 5872305328,
+   "registros": 4414
+  }
+ },
+ "2021|2021-10-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12546842520,
+   "pagamentos": 5967415865,
+   "cancelamentos": 1104216818,
+   "liquidacoes": 4773984660,
+   "saldo_total": 5475209837,
+   "registros": 4414
+  }
+ },
+ "2021|2021-12-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 12546842520,
+   "pagamentos": 6289287240,
+   "cancelamentos": 1734879799,
+   "liquidacoes": 5030619781,
+   "saldo_total": 4522675481,
+   "registros": 4414
+  }
+ },
+ "2022|2022-02-28": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 14480841773,
+   "pagamentos": 3841117796,
+   "cancelamentos": 53294068,
+   "liquidacoes": 3052852834,
+   "saldo_total": 10586429909,
+   "registros": 4375
+  }
+ },
+ "2022|2022-04-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 14480841773,
+   "pagamentos": 5722469758,
+   "cancelamentos": 167627810,
+   "liquidacoes": 4818349651,
+   "saldo_total": 8590744205,
+   "registros": 4375
+  }
+ },
+ "2022|2022-06-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 14480841773,
+   "pagamentos": 7245081347,
+   "cancelamentos": 452708618,
+   "liquidacoes": 6298917616,
+   "saldo_total": 6783051808,
+   "registros": 4375
+  }
+ },
+ "2022|2022-08-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 14480841773,
+   "pagamentos": 7977362272,
+   "cancelamentos": 598842426,
+   "liquidacoes": 6989405558,
+   "saldo_total": 5904637075,
+   "registros": 4375
+  }
+ },
+ "2022|2022-10-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 14480841773,
+   "pagamentos": 8473684351,
+   "cancelamentos": 1009183971,
+   "liquidacoes": 7483199821,
+   "saldo_total": 4997973451,
+   "registros": 4375
+  }
+ },
+ "2022|2022-12-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 14480841773,
+   "pagamentos": 8760513970,
+   "cancelamentos": 3329328879,
+   "liquidacoes": 7729241753,
+   "saldo_total": 2390998924,
+   "registros": 4375
+  }
+ },
+ "2023|2023-02-28": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 17636020646,
+   "pagamentos": 6096286106,
+   "cancelamentos": 161603084,
+   "liquidacoes": 5855300778,
+   "saldo_total": 11378131456,
+   "registros": 5699
+  }
+ },
+ "2023|2023-04-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 17636020646,
+   "pagamentos": 9681440138,
+   "cancelamentos": 430029798,
+   "liquidacoes": 9236504785,
+   "saldo_total": 7524550710,
+   "registros": 5699
+  }
+ },
+ "2023|2023-06-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 17636020646,
+   "pagamentos": 11345545361,
+   "cancelamentos": 740163729,
+   "liquidacoes": 10906505172,
+   "saldo_total": 5550311556,
+   "registros": 5699
+  }
+ },
+ "2023|2023-08-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 17636020646,
+   "pagamentos": 12607818639,
+   "cancelamentos": 1261222282,
+   "liquidacoes": 12149976998,
+   "saldo_total": 3766979725,
+   "registros": 5699
+  }
+ },
+ "2023|2023-10-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 17636020646,
+   "pagamentos": 13071982593,
+   "cancelamentos": 1870606968,
+   "liquidacoes": 12625169919,
+   "saldo_total": 2693431085,
+   "registros": 5699
+  }
+ },
+ "2023|2023-12-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 17636020646,
+   "pagamentos": 13442731777,
+   "cancelamentos": 2069332820,
+   "liquidacoes": 13058901043,
+   "saldo_total": 2123956049,
+   "registros": 5699
+  }
+ },
+ "2024|2024-02-29": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 16289858167,
+   "pagamentos": 6864566724,
+   "cancelamentos": 26976444,
+   "liquidacoes": 5812382572,
+   "saldo_total": 9398314999,
+   "registros": 6426
+  }
+ },
+ "2024|2024-04-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 16289858167,
+   "pagamentos": 9751956728,
+   "cancelamentos": 62248556,
+   "liquidacoes": 8576996979,
+   "saldo_total": 6475652883,
+   "registros": 6426
+  }
+ },
+ "2024|2024-06-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 16289858167,
+   "pagamentos": 11157983123,
+   "cancelamentos": 144851048,
+   "liquidacoes": 9947608713,
+   "saldo_total": 4987023996,
+   "registros": 6426
+  }
+ },
+ "2024|2024-08-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 16289858167,
+   "pagamentos": 12020796737,
+   "cancelamentos": 460337436,
+   "liquidacoes": 10801920627,
+   "saldo_total": 3808723994,
+   "registros": 6426
+  }
+ },
+ "2024|2024-10-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 16289858167,
+   "pagamentos": 12393035135,
+   "cancelamentos": 1118294170,
+   "liquidacoes": 10992812540,
+   "saldo_total": 2778528862,
+   "registros": 6426
+  }
+ },
+ "2024|2024-12-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 16289858167,
+   "pagamentos": 12519386373,
+   "cancelamentos": 1873813895,
+   "liquidacoes": 11048741567,
+   "saldo_total": 1896657899,
+   "registros": 6426
+  }
+ },
+ "2025|2025-02-28": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 24962535511,
+   "pagamentos": 8183665749,
+   "cancelamentos": 40980854,
+   "liquidacoes": 8037786217,
+   "saldo_total": 16737888908,
+   "registros": 5858
+  }
+ },
+ "2025|2025-04-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 24962535511,
+   "pagamentos": 13256561988,
+   "cancelamentos": 1050188934,
+   "liquidacoes": 13033928369,
+   "saldo_total": 10655784589,
+   "registros": 5858
+  }
+ },
+ "2025|2025-06-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 24962535511,
+   "pagamentos": 16285291996,
+   "cancelamentos": 1203963326,
+   "liquidacoes": 15533726223,
+   "saldo_total": 7473280189,
+   "registros": 5858
+  }
+ },
+ "2025|2025-08-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 24962535511,
+   "pagamentos": 17407120943,
+   "cancelamentos": 2266719673,
+   "liquidacoes": 16352867675,
+   "saldo_total": 5288694895,
+   "registros": 5858
+  }
+ },
+ "2025|2025-10-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 24962535511,
+   "pagamentos": 19363583959,
+   "cancelamentos": 2565284269,
+   "liquidacoes": 16801301108,
+   "saldo_total": 3033667283,
+   "registros": 5858
+  }
+ },
+ "2025|2025-12-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 24962535511,
+   "pagamentos": 19756547960,
+   "cancelamentos": 3171840385,
+   "liquidacoes": 17087388902,
+   "saldo_total": 2034147166,
+   "registros": 5858
+  }
+ },
+ "2026|2026-01-31": {
+  "disponivel": false,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": null,
+   "pagamentos": null,
+   "cancelamentos": null,
+   "liquidacoes": null,
+   "saldo_total": null,
+   "registros": null
+  }
+ },
+ "2026|2026-02-28": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 17352796904,
+   "pagamentos": 5809129370,
+   "cancelamentos": 301454788,
+   "liquidacoes": 5324601235,
+   "saldo_total": 11242212746,
+   "registros": 5029
+  }
+ },
+ "2026|2026-03-31": {
+  "disponivel": false,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": null,
+   "pagamentos": null,
+   "cancelamentos": null,
+   "liquidacoes": null,
+   "saldo_total": null,
+   "registros": null
+  }
+ },
+ "2026|2026-04-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 17352796904,
+   "pagamentos": 9766703837,
+   "cancelamentos": 481021972,
+   "liquidacoes": 7736377126,
+   "saldo_total": 7105071095,
+   "registros": 5029
+  }
+ },
+ "2026|2026-06-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 17352796904,
+   "pagamentos": 10872978765,
+   "cancelamentos": 559292003,
+   "liquidacoes": 8627603910,
+   "saldo_total": 5920526136,
+   "registros": 5029
+  }
+ },
+ "2026|2026-08-31": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": false,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 17352796904,
+   "pagamentos": 11588060270,
+   "cancelamentos": 955057661,
+   "liquidacoes": 9173316087,
+   "saldo_total": 4809678973,
+   "registros": 5029
+  }
+ },
+ "2026|2026-09-30": {
+  "disponivel": true,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": 17352796904,
+   "pagamentos": 11726792939,
+   "cancelamentos": 960312350,
+   "liquidacoes": 9365525601,
+   "saldo_total": 4665691615,
+   "registros": 5029
+  }
+ },
+ "2026|2026-12-31": {
+  "disponivel": false,
+  "escopo": "Município — Poder Executivo, fonte Elotech (entidades do catálogo oficial do exercício; entidade 7 nos períodos em que o demonstrativo oficial a inclui (ESCOPO-MUN v2); sem as cópias 24xxxxx antes de 2026 (COPIA-ORIGEM v1); pares 1↔15 contados uma vez (CONS-PAR v4))",
+  "com_ressalva": true,
+  "regras_de_escopo": [
+   "ESCOPO-MUN v2",
+   "COPIA-ORIGEM v1",
+   "CONS-PAR v4"
+  ],
+  "valores": {
+   "inscricao_total": null,
+   "pagamentos": null,
+   "cancelamentos": null,
+   "liquidacoes": null,
+   "saldo_total": null,
+   "registros": null
+  }
+ }
+}

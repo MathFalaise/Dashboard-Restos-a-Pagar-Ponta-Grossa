@@ -82,9 +82,13 @@ def _gravar(con, armazem, chave, **kw):
     return 1
 
 
-def importar_etapas_anteriores(con, armazem, raiz_projeto):
+def importar_etapas_anteriores(con, armazem, raiz_projeto, bruto=None):
+    """`raiz_projeto`: the repository (code of the stage collectors, hashed into coletor_versao). `bruto`: the folder
+    with stage01-samples/ and stage02-raw/ (private storage, cfg.etapas_anteriores; default <raiz>/data, the layout
+    before the corrective audit of 13/10/2026)."""
     raiz = Path(raiz_projeto)
-    e2 = raiz / "data" / "stage02-raw"
+    bruto = Path(bruto) if bruto is not None else raiz / "data"
+    e2 = bruto / "stage02-raw"
     novos = {}
 
     # 1) stage 02 listings (MANIFESTO.jsonl grouped by query)
@@ -172,7 +176,7 @@ def importar_etapas_anteriores(con, armazem, raiz_projeto):
 
     # 5) stage 01 catalogs
     col = _coletor("etapa01-curl-manual", None, "downloads com curl durante a Etapa 01")
-    e1 = raiz / "data" / "stage01-samples"
+    e1 = bruto / "stage01-samples"
     n = 0
     for tipo, arq, endpoint, q in (("entidades", "api_entidades_lista.json", "/api/entidades/lista", {}),
                                    ("exercicios", "api_exercicios_entidade_1.json", "/api/exercicios/entidade/1", {"entidade": 1})):

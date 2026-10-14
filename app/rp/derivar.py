@@ -570,7 +570,7 @@ def _conciliacao(con, did, nid, R, uid, conc, em=None):
     for (cid,) in con.execute("SELECT c.id FROM coleta c WHERE c.tipo='rreo_pdf' AND c.status='completa'" + filtro +
                               " AND NOT EXISTS (SELECT 1 FROM rreo_valor v WHERE v.normalizacao_id=? AND v.coleta_id=c.id) "
                               "ORDER BY " + vigencia.ordem(), (*p, nid)).fetchall():
-        _verif(con, did, regra, "RREO sem valores extraídos (ver problemas da normalização)", {"rreo_snapshot": uid[cid]}, 1, 1)
+        _verif(con, did, regra, RREO_SEM_VALORES, {"rreo_snapshot": uid[cid]}, 1, 1)
     docs = con.execute("SELECT DISTINCT v.coleta_id, v.escopo, v.exercicio, v.data_final FROM rreo_valor v "
                        "JOIN coleta c ON c.id = v.coleta_id WHERE v.normalizacao_id=? AND v.linha='TOTAL (III)'" + filtro +
                        " ORDER BY v.coleta_id", (nid, *p)).fetchall()
@@ -610,11 +610,39 @@ REGRAS_DE_20261009 = frozenset({"RREO-COL v3", "CANC v2", "ESCOPO-MUN v1", "COPI
 REGRAS_DE_20261010 = frozenset({"CONS-PAR v4"})
 
 
-def resultado_estavel(con, did, sem=None):
+RREO_SEM_VALORES = "RREO sem valores extraídos (ver problemas da normalização)"
+
+
+def pdfs_por_regras_de_layout(con, nid):
+    """Snapshot uids of the RREO PDFs that normalization `nid` transcribed with the layout rules of rp/rreo_layouts.py
+    (rp-normalizador/3): the ones an older normalizer refused."""
+    return frozenset(u for (u,) in con.execute(
+        "SELECT c.snapshot_uid FROM rreo_extracao x JOIN coleta c ON c.id = x.coleta_id WHERE x.normalizacao_id=? AND "
+        "x.valores > 0 AND x.extrator_versao IN ('rp-rreo-2016/1', 'rp-rreo-siconfi/1')", (nid,)))
+
+
+def _como_sem_pdfs(r, pdfs, regra_conc):
+    """The result as it was while the PDFs `pdfs` were refused (rp-normalizador/2): without their reconciliation rows
+    and checks, and with the refusal check each of them had. Only for the proof that the layout rules just ADD rows."""
+    r = dict(r)
+    pdfs = {x[0] for x in r["conciliacao_rreo"] if x[0] in pdfs}      # only the ones inside this run's validity
+    r["conciliacao_rreo"] = [x for x in r["conciliacao_rreo"] if x[0] not in pdfs]
+    verif = [x for x in r["verificacao"] if json.loads(x[2]).get("rreo_snapshot") not in pdfs]
+    verif += [(regra_conc, RREO_SEM_VALORES, json.dumps({"rreo_snapshot": u}, sort_keys=True, ensure_ascii=False), 1, 1)
+              for u in pdfs]
+    r["verificacao"] = sorted(verif)
+    return r
+
+
+def resultado_estavel(con, did, sem=None, pdfs_novos=None):
     """The whole derivation result with internal ids replaced by stable identifiers. `sem` = rule labels ("RREO-COL
     v3") whose rows are left out (views, reconciliation and checks of that rule, including the reconciliation checks of
-    that aggregation version) - used to prove that a new rule only ADDS rows."""
+    that aggregation version) - used to prove that a new rule only ADDS rows. `pdfs_novos` = snapshot uids of PDFs
+    transcribed only since rp-normalizador/3: the result is rebuilt as it was while they were refused (same proof for
+    the layout rules of 13/10/2026). Never recorded."""
     r = _resultado_estavel(con, did)
+    if pdfs_novos:
+        r = _como_sem_pdfs(r, frozenset(pdfs_novos), "CONC-RREO v1")
     if not sem:
         return r
     versoes = {int(x.split(" v")[1]) for x in sem if x.startswith("RREO-COL v")}
@@ -657,11 +685,12 @@ def _resultado_estavel(con, did):
     }
 
 
-def hash_resultado(con, did, sem=None):
+def hash_resultado(con, did, sem=None, pdfs_novos=None):
     """Hash of the complete RUN: values, relations and diagnostics (anomaly, check). It is the homologated hash.
-    `sem`: see resultado_estavel (never recorded; only for the proof that new rules just add rows)."""
+    `sem`, `pdfs_novos`: see resultado_estavel (never recorded; only for the proofs that new rules and the layout rules
+    just add rows)."""
     h = hashlib.sha256()
-    for tabela, linhas in resultado_estavel(con, did, sem).items():
+    for tabela, linhas in resultado_estavel(con, did, sem, pdfs_novos).items():
         h.update(tabela.encode())
         for linha in linhas:
             h.update(json.dumps(linha, ensure_ascii=False, default=str).encode())

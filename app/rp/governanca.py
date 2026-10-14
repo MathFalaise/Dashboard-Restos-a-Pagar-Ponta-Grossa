@@ -45,6 +45,8 @@ CONC = "docs/audits/rreo/CONCILIACAO_20261009.md secao 3"
 NOVA = "catalogo: versao nova criada pela conciliacao celula a celula (09/10/2026)"
 RP26 = "docs/audits/rreo/RP_2024_2026.md secao 8 (D1)"
 NOVA_RP26 = "catalogo: versao nova criada pela conferencia dos RP de 2024-2026 (10/10/2026)"
+ESC7 = "docs/audits/escopo/ESCOPO_ENTIDADE_7.md (escopo_entidade7.py)"
+NOVA_AUD = "catalogo: versao nova criada pela auditoria corretiva de 13/10/2026 (item 5.2)"
 
 # (codigo, versao, situacao, status_evidencia, compoe_indicador_publicado, supersedida_por, motivo, fonte, decidido_em, origem)
 EVENTOS = [
@@ -109,6 +111,10 @@ EVENTOS = [
     ("CONS-PAR", 4, "experimental", "FORTE EVIDÊNCIA", 0, None,
      "nova versao: no Municipio, o original sem execucao de um par com a mesma inscricao nao e somado (o RP fica na "
      "copia, onde e executado)", RP26, "2026-10-10", NOVA_RP26),
+    # ---- 13/10/2026: corrective audit - entity 7 period by period (same entry rule: experimental first)
+    ("ESCOPO-MUN", 2, "experimental", "FORTE EVIDÊNCIA", 0, None,
+     "nova versao: entidade 7 no Municipio por bimestre, conforme o escopo provado do demonstrativo oficial do periodo "
+     "(Siconfi; sem prova nele, o RREO do portal); sem prova, ressalva", ESC7, "2026-10-13", NOVA_AUD),
 ]
 
 
@@ -180,8 +186,33 @@ def registrar_decisao(con, codigo, versao, situacao, status_evidencia, compoe_in
                             str(ressalva).strip() if ressalva is not None else None)).lastrowid
 
 
-def situacao_atual(con):
-    """{(codigo, versao): most recent decision} with the full history of each rule."""
+def _momento(texto):
+    """Instant of a decision: 'YYYY-MM-DD' (the catalog's dated events) is the start of that day in Brasilia time."""
+    from datetime import datetime
+    from . import BRT
+    t = str(texto)
+    d = datetime.fromisoformat(t if "T" in t else f"{t}T00:00:00")
+    return d if d.tzinfo else d.replace(tzinfo=BRT)
+
+
+def primeira_decisao(con):
+    """Instant of the first recorded decision: before it there was no published indicator to reconstruct."""
+    datas = [_momento(q) for (q,) in con.execute("SELECT decidido_em FROM regra_situacao")]
+    return min(datas) if datas else None
+
+
+def situacao_em(con, em):
+    """Like situacao_atual, but with only the decisions recorded up to the instant `em` (ISO with time zone): the
+    methodology IN FORCE on that date (corrective audit of 13/10/2026, item 8). A decision after `em` is ignored; a rule
+    with no decision up to then is not in the published indicator."""
+    from datetime import datetime
+    limite = datetime.fromisoformat(str(em))
+    return situacao_atual(con, ate=limite)
+
+
+def situacao_atual(con, ate=None):
+    """{(codigo, versao): most recent decision} with the full history of each rule. `ate`: only decisions up to that
+    instant (see situacao_em)."""
     atual = {}
     for (codigo, versao, uso, status0, rid, sid, situacao, status, compoe, sup, motivo, fonte, evid, quando,
          origem, teste, ressalva) in con.execute(
@@ -192,7 +223,7 @@ def situacao_atual(con):
             "ORDER BY r.codigo, r.versao, s.decidido_em, s.id"):
         item = atual.setdefault((codigo, versao), {"codigo": codigo, "versao": versao, "uso_original": uso,
                                                    "status_evidencia_original": status0, "historico": []})
-        if sid is not None:
+        if sid is not None and (ate is None or _momento(quando) <= ate):
             decisao = {"situacao": situacao, "status_evidencia": status, "compoe_indicador_publicado": bool(compoe),
                        "supersedida_por": sup, "motivo": motivo, "fonte": fonte, "evidencia_externa_id": evid,
                        "decidido_em": quando, "origem_decisao": origem, "teste_regressao": teste, "ressalva": ressalva}

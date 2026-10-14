@@ -39,7 +39,7 @@ CABECALHOS = [
 ROTAS = {
     "/": paginas.visao, "/resumo": paginas.resumo, "/evolucao": paginas.evolucao, "/historico": paginas.historico, "/composicao": paginas.composicao, "/variacao": paginas.variacao, "/empenho/cortes": paginas.empenho_cortes, "/qualidade": paginas.qualidade, "/entidades": paginas.entidades, "/empenhos": paginas.empenhos, "/empenho": paginas.empenho,
     "/retratos": paginas.retratos, "/comparar": paginas.comparar, "/reconciliacao": paginas.reconciliacao,
-    "/pares": paginas.pares, "/metodologia": paginas.metodologia,
+    "/pares": paginas.pares, "/metodologia": paginas.metodologia, "/oficial": paginas.oficial,
 }
 _UID = re.compile(r"[0-9a-f]{32}")
 
@@ -130,6 +130,9 @@ class Aplicacao:
         try:
             q = Parametros(environ.get("QUERY_STRING", ""))
             with Painel.abrir(self.caminho) as p:
+                modo = q.texto("metodologia", 10) or "atual"
+                if modo != "atual":     # methodology in force on the 'como estava em' date (audit 13/10/2026, item 8)
+                    p.definir_metodologia(modo, q.data("em"))
                 titulo, corpo = rota(p, q)
                 html = paginas.documento(titulo, corpo, p.contexto(), caminho)
         except ParametroInvalido as e:

@@ -1,20 +1,20 @@
 {
  "gerado_com": "pdftotext version 4.06 [www.xpdfreader.com]",
  "banco": "restos_a_pagar.sqlite",
- "normalizacao": 15,
+ "normalizacao": 18,
  "resumo": {
   "esperados": 114,
-  "transcrito": 96,
-  "recusado_layout": 18,
+  "transcrito": 112,
+  "recusado_layout": 2,
   "coletado_sem_extracao": 0,
   "nao_coletado": 0,
-  "conferidos": 96,
+  "conferidos": 112,
   "divergentes": 0
  },
  "por_exercicio": {
   "2016": {
-   "transcrito": 0,
-   "recusado_layout": 6,
+   "transcrito": 6,
+   "recusado_layout": 0,
    "coletado_sem_extracao": 0,
    "nao_coletado": 0
   },
@@ -25,14 +25,14 @@
    "nao_coletado": 0
   },
   "2018": {
-   "transcrito": 0,
-   "recusado_layout": 6,
+   "transcrito": 6,
+   "recusado_layout": 0,
    "coletado_sem_extracao": 0,
    "nao_coletado": 0
   },
   "2019": {
-   "transcrito": 1,
-   "recusado_layout": 5,
+   "transcrito": 5,
+   "recusado_layout": 1,
    "coletado_sem_extracao": 0,
    "nao_coletado": 0
   },
@@ -89,8 +89,9 @@
    "id_arquivo": 2047,
    "data_arquivo": "2016-09-20",
    "snapshot": "31f6bf86f89b42ff8736e5e823810e94",
-   "motivo": "LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 24,
    "conferencia": {
     "pdf_sha256": "bc37796bf8a140c21f82d3fa14ed5b1577cb90ed92d4613f1b6478aeb46330de",
     "periodo_impresso": "FEVEREIRO 2016",
@@ -100,37 +101,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 655530639,
-      "b": 1273805066,
-      "c": 1122460584,
-      "d": 100564340,
-      "e": 706310781,
-      "f": 1922323471,
-      "g": 4103013319,
-      "h": 1597440236,
-      "i": 1350577266,
-      "j": 6240998,
-      "k": 4668518526,
-      "L": 5374829307
-     },
-     "TOTAL (III)": {
-      "a": 655530639,
-      "b": 1273805066,
-      "c": 1122460584,
-      "d": 100564340,
-      "e": 706310781,
-      "f": 1922323471,
-      "g": 4103013319,
-      "h": 1597440236,
-      "i": 1350577266,
-      "j": 6240998,
-      "k": 4668518526,
-      "L": 5374829307
-     }
-    }
+    "celulas_da_producao": 24,
+    "celulas_comparadas": 24,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -142,8 +117,9 @@
    "id_arquivo": 2048,
    "data_arquivo": "2016-09-20",
    "snapshot": "9d38c530dc1d47139f3cca2e392ae0d6",
-   "motivo": "LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 24,
    "conferencia": {
     "pdf_sha256": "73897fd4c5ef2693db07a4bc38e192168a03b6314af84be6c580d450b04d8990",
     "periodo_impresso": "ABRIL 2016",
@@ -153,37 +129,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 655530639,
-      "b": 1273805066,
-      "c": 1237348058,
-      "d": 103091055,
-      "e": 588896592,
-      "f": 1922323471,
-      "g": 4103013319,
-      "h": 2206222563,
-      "i": 2074692318,
-      "j": 163950883,
-      "k": 3786693589,
-      "L": 4375590181
-     },
-     "TOTAL (III)": {
-      "a": 655530639,
-      "b": 1273805066,
-      "c": 1237348058,
-      "d": 103091055,
-      "e": 588896592,
-      "f": 1922323471,
-      "g": 4103013319,
-      "h": 2206222563,
-      "i": 2074692318,
-      "j": 163950883,
-      "k": 3786693589,
-      "L": 4375590181
-     }
-    }
+    "celulas_da_producao": 24,
+    "celulas_comparadas": 24,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -195,8 +145,9 @@
    "id_arquivo": 2049,
    "data_arquivo": "2016-09-20",
    "snapshot": "ea623d3075384e67bec88d10c60ab3da",
-   "motivo": "LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 24,
    "conferencia": {
     "pdf_sha256": "aeebd25e9db6269279c3ecb129be7e09747d7643c4ee565325859d8a34ff53ef",
     "periodo_impresso": "JUNHO 2016",
@@ -206,37 +157,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 655530639,
-      "b": 1273805066,
-      "c": 1261908156,
-      "d": 103091055,
-      "e": 564336494,
-      "f": 1922323471,
-      "g": 4103013319,
-      "h": 2477820513,
-      "i": 2346275486,
-      "j": 322176182,
-      "k": 3356885122,
-      "L": 3921221616
-     },
-     "TOTAL (III)": {
-      "a": 655530639,
-      "b": 1273805066,
-      "c": 1261908156,
-      "d": 103091055,
-      "e": 564336494,
-      "f": 1922323471,
-      "g": 4103013319,
-      "h": 2477820513,
-      "i": 2346275486,
-      "j": 322176182,
-      "k": 3356885122,
-      "L": 3921221616
-     }
-    }
+    "celulas_da_producao": 24,
+    "celulas_comparadas": 24,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -248,8 +173,9 @@
    "id_arquivo": 2050,
    "data_arquivo": "2016-09-20",
    "snapshot": "b26842860df243dda90162e2a229e627",
-   "motivo": "LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 24,
    "conferencia": {
     "pdf_sha256": "934a769d0cddf6da98331f34521c1f1178262020ea6b879c29df2900e5152101",
     "periodo_impresso": "AGOSTO 2016",
@@ -259,37 +185,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 655530639,
-      "b": 1273805066,
-      "c": 1278177067,
-      "d": 103758637,
-      "e": 547400001,
-      "f": 1922323471,
-      "g": 4103013319,
-      "h": 2721399434,
-      "i": 2555780211,
-      "j": 336665926,
-      "k": 3132890653,
-      "L": 3680290654
-     },
-     "TOTAL (III)": {
-      "a": 655530639,
-      "b": 1273805066,
-      "c": 1278177067,
-      "d": 103758637,
-      "e": 547400001,
-      "f": 1922323471,
-      "g": 4103013319,
-      "h": 2721399434,
-      "i": 2555780211,
-      "j": 336665926,
-      "k": 3132890653,
-      "L": 3680290654
-     }
-    }
+    "celulas_da_producao": 24,
+    "celulas_comparadas": 24,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -301,8 +201,9 @@
    "id_arquivo": 2051,
    "data_arquivo": "2016-09-20",
    "snapshot": "a93119d19298410cbcce0568e271cfc2",
-   "motivo": "LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 24,
    "conferencia": {
     "pdf_sha256": "6b1c1d2024eff4d3b29a9311825919b86518065f41cd7e944e107b96d0fbfb9f",
     "periodo_impresso": "OUTUBRO 2016",
@@ -312,37 +213,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 655530639,
-      "b": 1273805066,
-      "c": 1278197832,
-      "d": 103758637,
-      "e": 547379236,
-      "f": 1922323471,
-      "g": 4103013319,
-      "h": 2759823696,
-      "i": 2584537992,
-      "j": 360826703,
-      "k": 3079972095,
-      "L": 3627351331
-     },
-     "TOTAL (III)": {
-      "a": 655530639,
-      "b": 1273805066,
-      "c": 1278197832,
-      "d": 103758637,
-      "e": 547379236,
-      "f": 1922323471,
-      "g": 4103013319,
-      "h": 2759823696,
-      "i": 2584537992,
-      "j": 360826703,
-      "k": 3079972095,
-      "L": 3627351331
-     }
-    }
+    "celulas_da_producao": 24,
+    "celulas_comparadas": 24,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -354,8 +229,9 @@
    "id_arquivo": 16394,
    "data_arquivo": "2018-12-17",
    "snapshot": "722468ea426746d19ff55275aa270fa1",
-   "motivo": "LayoutDesconhecido: colunas não encontradas no RREO: ['L', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 24,
    "conferencia": {
     "pdf_sha256": "cac84b635fd6110a02e380bed19d31c2e423d18bef74ff944ed33e70ea7495cb",
     "periodo_impresso": "DEZEMBRO 2016",
@@ -365,37 +241,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 655531389,
-      "b": 1273805066,
-      "c": 1307637163,
-      "d": 115180879,
-      "e": 506518413,
-      "f": 1922323471,
-      "g": 4103013319,
-      "h": 2881172312,
-      "i": 2900524754,
-      "j": 433128551,
-      "k": 2691683485,
-      "L": 3198201898
-     },
-     "TOTAL (III)": {
-      "a": 655531389,
-      "b": 1273805066,
-      "c": 1307637163,
-      "d": 115180879,
-      "e": 506518413,
-      "f": 1922323471,
-      "g": 4103013319,
-      "h": 2881172312,
-      "i": 2900524754,
-      "j": 433128551,
-      "k": 2691683485,
-      "L": 3198201898
-     }
-    }
+    "celulas_da_producao": 24,
+    "celulas_comparadas": 24,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -755,8 +605,9 @@
    "id_arquivo": 11942,
    "data_arquivo": "2018-03-29",
    "snapshot": "77fd0254dbc24190a22ab033d23e41f7",
-   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 548)",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 36,
    "conferencia": {
     "pdf_sha256": "c0e2875d594f6ec936af2459de7be5afa6cc03fa2fe78a70ba01b6074fd40e0a",
     "periodo_impresso": null,
@@ -767,37 +618,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 514597332,
-      "b": 1394430292,
-      "c": 1035883186,
-      "d": 11637197,
-      "e": 861507241,
-      "f": 2208931290,
-      "g": 5340259403,
-      "h": 2264579109,
-      "i": 2061527921,
-      "j": 31442573,
-      "k": 5456220199,
-      "L": 6317727440
-     },
-     "TOTAL (III)": {
-      "a": 514597332,
-      "b": 1394430292,
-      "c": 1035883186,
-      "d": 11637197,
-      "e": 861507241,
-      "f": 2208931290,
-      "g": 5340259403,
-      "h": 2264579109,
-      "i": 2061527921,
-      "j": 31442573,
-      "k": 5456220199,
-      "L": 6317727440
-     }
-    }
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -809,8 +634,9 @@
    "id_arquivo": 13172,
    "data_arquivo": "2018-05-25",
    "snapshot": "e37c512e09ea4299a993a238ffdb528b",
-   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 549)",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 36,
    "conferencia": {
     "pdf_sha256": "61864edbe5f415ac33f773e65d60f79100a4053e678f5d56765e43e2f19a3934",
     "periodo_impresso": null,
@@ -821,37 +647,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 456752771,
-      "b": 1275241670,
-      "c": 1218714251,
-      "d": 7148532,
-      "e": 506131658,
-      "f": 1283420454,
-      "g": 4907516057,
-      "h": 3145144837,
-      "i": 3008593657,
-      "j": 458138846,
-      "k": 2724204008,
-      "L": 3230335666
-     },
-     "TOTAL (III)": {
-      "a": 456752771,
-      "b": 1275241670,
-      "c": 1218714251,
-      "d": 7148532,
-      "e": 506131658,
-      "f": 1283420454,
-      "g": 4907516057,
-      "h": 3145144837,
-      "i": 3008593657,
-      "j": 458138846,
-      "k": 2724204008,
-      "L": 3230335666
-     }
-    }
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -863,8 +663,9 @@
    "id_arquivo": 14726,
    "data_arquivo": "2018-07-27",
    "snapshot": "086712247dc940c5871d09863f503851",
-   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 550)",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 36,
    "conferencia": {
     "pdf_sha256": "7c60d48c31351ece296382e1a516d5a3362dd9077ed8a3d1e49005940984d87d",
     "periodo_impresso": null,
@@ -875,37 +676,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 456752771,
-      "b": 1275241670,
-      "c": 1243824965,
-      "d": 3785668,
-      "e": 484383808,
-      "f": 1283420454,
-      "g": 4907516057,
-      "h": 3578597392,
-      "i": 3493766421,
-      "j": 510345131,
-      "k": 2186824959,
-      "L": 2671208767
-     },
-     "TOTAL (III)": {
-      "a": 456752771,
-      "b": 1275241670,
-      "c": 1243824965,
-      "d": 3785668,
-      "e": 484383808,
-      "f": 1283420454,
-      "g": 4907516057,
-      "h": 3578597392,
-      "i": 3493766421,
-      "j": 510345131,
-      "k": 2186824959,
-      "L": 2671208767
-     }
-    }
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -917,8 +692,9 @@
    "id_arquivo": 25075,
    "data_arquivo": "2018-09-27",
    "snapshot": "a353e1dd28964816886ffd21b1f37578",
-   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 551)",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 36,
    "conferencia": {
     "pdf_sha256": "c57e6a852019b3966d0d8b7f4e89fc018570cb0fa9e77fa5d0c8cd06ec95bd56",
     "periodo_impresso": null,
@@ -929,37 +705,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 456752771,
-      "b": 1275241670,
-      "c": 1252497169,
-      "d": 3785668,
-      "e": 475711604,
-      "f": 1283420454,
-      "g": 4907516057,
-      "h": 3835317766,
-      "i": 3756465116,
-      "j": 521904976,
-      "k": 1912566419,
-      "L": 2388278023
-     },
-     "TOTAL (III)": {
-      "a": 456752771,
-      "b": 1275241670,
-      "c": 1252497169,
-      "d": 3785668,
-      "e": 475711604,
-      "f": 1283420454,
-      "g": 4907516057,
-      "h": 3835317766,
-      "i": 3756465116,
-      "j": 521904976,
-      "k": 1912566419,
-      "L": 2388278023
-     }
-    }
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -971,8 +721,9 @@
    "id_arquivo": 27911,
    "data_arquivo": "2018-11-29",
    "snapshot": "104ce0dc3d6a4147b59b68c95bf4b1da",
-   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 552)",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 36,
    "conferencia": {
     "pdf_sha256": "8b08028629f743c0ed5f713cec1bcfd274b34f9244d98107b074094b65e4faa1",
     "periodo_impresso": null,
@@ -983,37 +734,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 456752771,
-      "b": 1275241670,
-      "c": 1252709503,
-      "d": 8411268,
-      "e": 470873670,
-      "f": 1283420454,
-      "g": 4907516057,
-      "h": 4003876945,
-      "i": 3921574053,
-      "j": 579647804,
-      "k": 1689714654,
-      "L": 2160588324
-     },
-     "TOTAL (III)": {
-      "a": 456752771,
-      "b": 1275241670,
-      "c": 1252709503,
-      "d": 8411268,
-      "e": 470873670,
-      "f": 1283420454,
-      "g": 4907516057,
-      "h": 4003876945,
-      "i": 3921574053,
-      "j": 579647804,
-      "k": 1689714654,
-      "L": 2160588324
-     }
-    }
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -1025,8 +750,9 @@
    "id_arquivo": 34898,
    "data_arquivo": "2019-04-12",
    "snapshot": "d369f5b945054a96ba9acd1966f659a1",
-   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 403)",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 36,
    "conferencia": {
     "pdf_sha256": "9b4c9f947df13ac1060d064cedf0f4a6fe2a87a8f511c412e5c00c6ccb083af8",
     "periodo_impresso": null,
@@ -1037,37 +763,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 456752771,
-      "b": 1275241670,
-      "c": 1266236538,
-      "d": 12976002,
-      "e": 452781901,
-      "f": 1283420454,
-      "g": 4907516057,
-      "h": 4061528409,
-      "i": 3993615214,
-      "j": 752649511,
-      "k": 1444671786,
-      "L": 1897453687
-     },
-     "TOTAL (III)": {
-      "a": 456752771,
-      "b": 1275241670,
-      "c": 1266236538,
-      "d": 12976002,
-      "e": 452781901,
-      "f": 1283420454,
-      "g": 4907516057,
-      "h": 4061528409,
-      "i": 3993615214,
-      "j": 752649511,
-      "k": 1444671786,
-      "L": 1897453687
-     }
-    }
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -1079,7 +779,7 @@
    "id_arquivo": 45068,
    "data_arquivo": "2019-08-21",
    "snapshot": "b218b702228a4398b1a21dc22d5f14f9",
-   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 554)",
+   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 554); regras de layout versionadas: período não encontrado na impressão do Siconfi",
    "situacao": "recusado_layout",
    "conferencia": {
     "pdf_sha256": "8077a733246d3260f3d9ceeb3a853dce5c50f4316f7ca0fb5aff4623fba24629",
@@ -1104,8 +804,9 @@
    "id_arquivo": 45082,
    "data_arquivo": "2019-08-21",
    "snapshot": "49cc40f61f59426fad94e9d5f0a2b2d1",
-   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 555)",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 36,
    "conferencia": {
     "pdf_sha256": "754083c12f5d44755289c3d506bea1f34ba9e49bb0fbc2ff46eb9d98b8a32e56",
     "periodo_impresso": null,
@@ -1116,37 +817,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 525068790,
-      "b": 2024831391,
-      "c": 1202371743,
-      "d": 548488598,
-      "e": 799039840,
-      "f": 1372690097,
-      "g": 8066255579,
-      "h": 5172854312,
-      "i": 4805766495,
-      "j": 760311233,
-      "k": 3872867948,
-      "L": 4671907788
-     },
-     "TOTAL (III)": {
-      "a": 525068790,
-      "b": 2024831391,
-      "c": 1202371743,
-      "d": 548488598,
-      "e": 799039840,
-      "f": 1372690097,
-      "g": 8066255579,
-      "h": 5172854312,
-      "i": 4805766495,
-      "j": 760311233,
-      "k": 3872867948,
-      "L": 4671907788
-     }
-    }
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -1187,8 +862,9 @@
    "id_arquivo": 49471,
    "data_arquivo": "2019-09-27",
    "snapshot": "ea117bf6a3084687a094d0a8d8b533ba",
-   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 557)",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 36,
    "conferencia": {
     "pdf_sha256": "54ca769594e754475e0a56bd814d6c937f3c9c84d01b7e5aa27d00d570b65a57",
     "periodo_impresso": null,
@@ -1199,37 +875,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 525068790,
-      "b": 2024831391,
-      "c": 1247663086,
-      "d": 553605171,
-      "e": 748631924,
-      "f": 1372690097,
-      "g": 8066255579,
-      "h": 6111999454,
-      "i": 5846210418,
-      "j": 972020112,
-      "k": 2620715146,
-      "L": 3369347070
-     },
-     "TOTAL (III)": {
-      "a": 525068790,
-      "b": 2024831391,
-      "c": 1247663086,
-      "d": 553605171,
-      "e": 748631924,
-      "f": 1372690097,
-      "g": 8066255579,
-      "h": 6111999454,
-      "i": 5846210418,
-      "j": 972020112,
-      "k": 2620715146,
-      "L": 3369347070
-     }
-    }
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -1241,8 +891,9 @@
    "id_arquivo": 57123,
    "data_arquivo": "2019-11-26",
    "snapshot": "35dae6074cd045d9bf72ee5cd6fd70df",
-   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 558)",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 36,
    "conferencia": {
     "pdf_sha256": "63d37776f7a8b6adfef9f4df97121289e84b070c5ce5e145b8c2bd2930e41ad2",
     "periodo_impresso": null,
@@ -1253,37 +904,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 525068790,
-      "b": 2024831391,
-      "c": 1249268755,
-      "d": 556056680,
-      "e": 744574746,
-      "f": 1372690097,
-      "g": 8062004461,
-      "h": 6168009760,
-      "i": 5997374822,
-      "j": 1205047114,
-      "k": 2232272622,
-      "L": 2976847368
-     },
-     "TOTAL (III)": {
-      "a": 525068790,
-      "b": 2024831391,
-      "c": 1249268755,
-      "d": 556056680,
-      "e": 744574746,
-      "f": 1372690097,
-      "g": 8062004461,
-      "h": 6168009760,
-      "i": 5997374822,
-      "j": 1205047114,
-      "k": 2232272622,
-      "L": 2976847368
-     }
-    }
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -1295,8 +920,9 @@
    "id_arquivo": 64176,
    "data_arquivo": "2020-02-20",
    "snapshot": "36f1ef8e4bbc480987a7c7a07c4c5260",
-   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 431)",
-   "situacao": "recusado_layout",
+   "motivo": null,
+   "situacao": "transcrito",
+   "valores": 36,
    "conferencia": {
     "pdf_sha256": "373aacea1b39de526883e6c5f3a423a47e73354a87e0ea9b2085dada69974635",
     "periodo_impresso": null,
@@ -1307,37 +933,11 @@
     ],
     "identidades_que_falham": [],
     "problemas_da_leitura": [],
-    "resultado": "lido_so_pela_conferencia",
-    "linhas": {
-     "RESTOS A PAGAR (EXCETO": {
-      "a": 525073739,
-      "b": 2024831391,
-      "c": 1261668478,
-      "d": 856486070,
-      "e": 431750582,
-      "f": 1372690097,
-      "g": 8062004461,
-      "h": 6203954837,
-      "i": 6080620734,
-      "j": 1645691847,
-      "k": 1708381977,
-      "L": 2140132559
-     },
-     "TOTAL (III)": {
-      "a": 525073739,
-      "b": 2024831391,
-      "c": 1261668478,
-      "d": 856486070,
-      "e": 431750582,
-      "f": 1372690097,
-      "g": 8062004461,
-      "h": 6203954837,
-      "i": 6080620734,
-      "j": 1645691847,
-      "k": 1708381977,
-      "L": 2140132559
-     }
-    }
+    "celulas_da_producao": 36,
+    "celulas_comparadas": 36,
+    "diferencas": [],
+    "so_na_producao": [],
+    "resultado": "conferido"
    }
   },
   {
@@ -1679,7 +1279,7 @@
    "id_arquivo": 81074,
    "data_arquivo": "2020-07-29",
    "snapshot": "c39d70b96e1145a9b4e416b7830202e4",
-   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 569)",
+   "motivo": "LayoutDesconhecido: período não encontrado no RREO (coleta 569); regras de layout versionadas: linha 'RESTOS A PAGAR (EXCETO' com 11 número(s); o layout conhecido tem 12 colunas: transcrição parcial recusada",
    "situacao": "recusado_layout",
    "conferencia": {
     "pdf_sha256": "231fa1ba7e2b0623abfb39879261fe821e3f1bd3bb49b89096969ec1a29dd4f9",

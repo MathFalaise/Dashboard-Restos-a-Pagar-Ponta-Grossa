@@ -92,6 +92,16 @@ REGRAS = [
      "Como B não tem execução, sair o registro é o mesmo que sair a inscrição (CONS-PAR v1). Par com execução em B não "
      "é consolidado (os dois lados ficam e a verificação registra). A visão de cada entidade não muda.",
      f"{RP26} §8 (D1)"),
+    # ---- 13/10/2026: corrective audit, item 5.2 - entity 7 period by period, following the official statements
+    ("ESCOPO-MUN", 2, "consolidacao", "experimental", "FORTE EVIDÊNCIA",
+     "Como a v1 (entidade 7, fora do catálogo do portal, conhecida pela base), mas a inclusão no Município segue, "
+     "bimestre a bimestre, o escopo do demonstrativo oficial do período, provado pelas colunas de inscrição "
+     "(a+b+f+g) ao centavo: declaração ao Siconfi (linha PODER EXECUTIVO); sem prova no Siconfi, o RREO do portal; "
+     "os dois provados e divergentes: Siconfi, marcado 'contraditorio'; nenhum provado: o tratamento de menor resíduo "
+     "('provavel', resíduo < 5% da inscrição da entidade) ou o da v1 ('inconclusivo'). Período sem demonstrativo "
+     "conferido: exclui ('sem_demonstrativo'). O corte entra no bimestre do seu mês. Fora de 'comprovado', o "
+     "Município é publicado com ressalva. A visão da própria entidade não muda.",
+     "docs/audits/escopo/ESCOPO_ENTIDADE_7.md (escopo_entidade7.py, derivação 35, Siconfi de 13/10/2026)"),
 ]
 
 ANOMALIAS = [
@@ -121,6 +131,32 @@ PARAMETROS = {
     ("ESCOPO-MUN", 1): {"entidade": 7, "ate_exercicio": 2020,
                         "nome_inferido": "Agência Reguladora de Águas e Saneamento Básico"},
     ("COPIA-ORIGEM", 1): {"entidade_copia": 1, "base_empenho_copia": 2400000, "primeiro_exercicio": 2026},
+    # transcription of docs/audits/escopo/ESCOPO_ENTIDADE_7.json: "<exercicio>-<bimestre>": [tratamento, situacao]
+    ("ESCOPO-MUN", 2): {"entidade": 7, "nome_inferido": "Agência Reguladora de Águas e Saneamento Básico",
+                        "sem_periodo": ["exclui", "sem_demonstrativo"],
+                        "periodos": {
+                                     "2016-1": ["inclui", "inconclusivo"], "2016-2": ["inclui", "inconclusivo"], "2016-3": ["inclui", "inconclusivo"],
+                                     "2016-4": ["inclui", "provavel"], "2016-5": ["inclui", "provavel"], "2016-6": ["inclui", "provavel"],
+                                     "2017-1": ["inclui", "comprovado_rreo_portal"], "2017-2": ["inclui", "comprovado"], "2017-3": ["inclui", "comprovado"],
+                                     "2017-4": ["inclui", "comprovado"], "2017-5": ["inclui", "comprovado"], "2017-6": ["inclui", "comprovado"],
+                                     "2018-1": ["inclui", "inconclusivo"], "2018-2": ["exclui", "comprovado"], "2018-3": ["exclui", "comprovado"],
+                                     "2018-4": ["exclui", "comprovado"], "2018-5": ["exclui", "comprovado"], "2018-6": ["exclui", "comprovado"],
+                                     "2019-1": ["exclui", "comprovado"], "2019-2": ["exclui", "comprovado"], "2019-3": ["exclui", "comprovado"],
+                                     "2019-4": ["exclui", "comprovado"], "2019-5": ["inclui", "inconclusivo"], "2019-6": ["inclui", "inconclusivo"],
+                                     "2020-1": ["inclui", "comprovado"], "2020-2": ["exclui", "contraditorio"], "2020-3": ["exclui", "contraditorio"],
+                                     "2020-4": ["exclui", "contraditorio"], "2020-5": ["exclui", "contraditorio"], "2020-6": ["exclui", "contraditorio"],
+                                     "2021-1": ["exclui", "comprovado"], "2021-2": ["exclui", "comprovado"], "2021-3": ["exclui", "comprovado"],
+                                     "2021-4": ["exclui", "comprovado"], "2021-5": ["exclui", "comprovado"], "2021-6": ["exclui", "comprovado"],
+                                     "2022-1": ["exclui", "comprovado"], "2022-2": ["exclui", "comprovado"], "2022-3": ["exclui", "comprovado"],
+                                     "2022-4": ["exclui", "comprovado"], "2022-5": ["exclui", "comprovado"], "2022-6": ["exclui", "comprovado"],
+                                     "2023-1": ["exclui", "comprovado"], "2023-2": ["exclui", "comprovado"], "2023-3": ["exclui", "comprovado"],
+                                     "2023-4": ["exclui", "comprovado"], "2023-5": ["exclui", "comprovado"], "2023-6": ["exclui", "comprovado"],
+                                     "2024-1": ["exclui", "comprovado"], "2024-2": ["exclui", "comprovado"], "2024-3": ["exclui", "comprovado"],
+                                     "2024-4": ["exclui", "comprovado"], "2024-5": ["exclui", "comprovado"], "2024-6": ["exclui", "comprovado"],
+                                     "2025-1": ["exclui", "comprovado"], "2025-2": ["exclui", "comprovado"], "2025-3": ["exclui", "comprovado"],
+                                     "2025-4": ["exclui", "comprovado"], "2025-5": ["exclui", "comprovado"], "2025-6": ["exclui", "comprovado_rreo_portal"],
+                                     "2026-1": ["exclui", "comprovado"], "2026-2": ["exclui", "comprovado"], "2026-3": ["exclui", "comprovado"],
+                                     "2026-4": ["exclui", "comprovado"]}},
 }
 
 

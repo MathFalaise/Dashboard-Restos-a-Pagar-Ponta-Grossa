@@ -340,7 +340,8 @@ def test_catalogo_de_verificacoes_cobre_as_descricoes_reais(real):
     descricoes = {d for (d,) in real["con"].execute("SELECT DISTINCT descricao FROM verificacao WHERE derivacao_id=?",
                                                     (real["did"],))}
     # + COPIA-ORIGEM v1 (promotion of 09/10/2026; the homologated base has 2024/2025 copies): 5; + CONS-PAR v4
-    # (10/10/2026; the homologated base has the 2026 pairs): 6
-    assert len(descricoes) == 6
+    # (10/10/2026; the homologated base has the 2026 pairs): 6; - 'RREO sem valores extraídos' (13/10/2026: the 3 PDFs
+    # of this base the extractor refused are read by the layout rules of rp-normalizador/3): 5
+    assert len(descricoes) == 5
     for d in descricoes:
         assert f"`{d}`" in texto, d

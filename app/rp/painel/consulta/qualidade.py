@@ -22,7 +22,7 @@ class Qualidade:
           same rows as the reconciliation); 'sem diferenca' is never counted as explained."""
         ctx = self.contexto()
         did = ctx["derivacao"]["id"]
-        governo = governanca.situacao_atual(self.con)
+        governo = self._governanca()
         vig = sorted(set(self._vigentes(ctx, None).values()))
         tipos = {c: {"descricao": d, "status_evidencia": s, "fonte": f} for c, d, s, f in self.con.execute(
             "SELECT codigo, descricao, status_evidencia, fonte FROM anomalia_tipo ORDER BY codigo")}

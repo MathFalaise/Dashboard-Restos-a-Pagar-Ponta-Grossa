@@ -13,7 +13,7 @@ class Reconciliacao:
     def _linhas_conciliacao(self, did, nid, filtros, params):
         """Reconciliation rows. The same PDF (same SHA-256) collected in more than one snapshot appears once, with the
         other snapshots listed in pdf.mesmo_pdf_coletado_tambem_em (the values are the same bytes)."""
-        governo = governanca.situacao_atual(self.con)
+        governo = self._governanca()
         pdfs, extracoes, vistos = {}, {}, {}
         saida = []
         for (rc, escopo, ent, ex, df, api_json, col, vr, va, dif, cod, ver) in self.con.execute(
@@ -216,7 +216,7 @@ class Reconciliacao:
         did, _ = self._derivacao_da_vigencia(ctx, em)
         if did is None:
             return {"valores": [], "nota": f"não há derivação 'como estava em' {em}"}
-        governo = governanca.situacao_atual(self.con)
+        governo = self._governanca()
         saida = []
         for visao, ga, va, gc, vc, comp, valor, snaps in self.con.execute(
                 "SELECT v.visao, a.codigo, a.versao, c.codigo, c.versao, v.componente, v.valor_c, v.coletas_json "

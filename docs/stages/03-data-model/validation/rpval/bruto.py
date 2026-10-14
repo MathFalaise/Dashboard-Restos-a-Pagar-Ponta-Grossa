@@ -95,10 +95,12 @@ def _params_rp(url):
     return p
 
 
-def carregar_etapas_anteriores(con, raiz):
-    """Imports the raw data of stages 01 and 02. Returns a summary."""
+def carregar_etapas_anteriores(con, raiz, bruto=None):
+    """Imports the raw data of stages 01 and 02. Returns a summary. `bruto`: folder with stage01-samples/ and
+    stage02-raw/ (default <raiz>/data, the layout before 13/10/2026)."""
     raiz = Path(raiz)
-    e2 = raiz / "data" / "stage02-raw"
+    bruto = Path(bruto) if bruto is not None else raiz / "data"
+    e2 = bruto / "stage02-raw"
     resumo = {}
 
     # 1) stage 02 RP listings, grouped by query (MANIFESTO)
@@ -192,7 +194,7 @@ def carregar_etapas_anteriores(con, raiz):
 
     # 5) catalogs downloaded in stage 01
     col_e1 = coletor(con, "etapa01-curl-manual", "1", None, "downloads com curl durante a Etapa 01")
-    e1 = raiz / "data" / "stage01-samples"
+    e1 = bruto / "stage01-samples"
     for tipo, arq, endpoint, q in (("entidades", "api_entidades_lista.json", "/api/entidades/lista", {}),
                                    ("exercicios", "api_exercicios_entidade_1.json", "/api/exercicios/entidade/1", {"entidade": 1})):
         a = e1 / arq

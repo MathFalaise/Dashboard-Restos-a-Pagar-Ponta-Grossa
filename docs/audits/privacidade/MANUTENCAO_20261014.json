@@ -1,0 +1,127 @@
+{
+ "plano": {
+  "manter": {
+   "normalizacoes": [
+    18
+   ],
+   "derivacoes": [
+    37,
+    38
+   ]
+  },
+  "apagar": {
+   "derivacoes": [
+    {
+     "id": 21,
+     "linhas": 289587
+    },
+    {
+     "id": 22,
+     "linhas": 106512
+    },
+    {
+     "id": 23,
+     "linhas": 289587
+    },
+    {
+     "id": 24,
+     "linhas": 106512
+    },
+    {
+     "id": 25,
+     "linhas": 334967
+    },
+    {
+     "id": 26,
+     "linhas": 714506
+    },
+    {
+     "id": 27,
+     "linhas": 106513
+    },
+    {
+     "id": 28,
+     "linhas": 845359
+    },
+    {
+     "id": 29,
+     "linhas": 108818
+    },
+    {
+     "id": 30,
+     "linhas": 845360
+    },
+    {
+     "id": 31,
+     "linhas": 108819
+    },
+    {
+     "id": 32,
+     "linhas": 877991
+    },
+    {
+     "id": 33,
+     "linhas": 926348
+    },
+    {
+     "id": 34,
+     "linhas": 109811
+    },
+    {
+     "id": 35,
+     "linhas": 926348
+    },
+    {
+     "id": 36,
+     "linhas": 109811
+    }
+   ],
+   "normalizacoes": [
+    {
+     "id": 12,
+     "linhas": 232956
+    },
+    {
+     "id": 13,
+     "linhas": 232992
+    },
+    {
+     "id": 14,
+     "linhas": 271015
+    },
+    {
+     "id": 15,
+     "linhas": 568635
+    },
+    {
+     "id": 16,
+     "linhas": 632444
+    },
+    {
+     "id": 17,
+     "linhas": 675024
+    }
+   ]
+  },
+  "preservadas_pela_lista": {
+   "normalizacao": [],
+   "derivacao": []
+  }
+ },
+ "executada": true,
+ "backup": {
+  "arquivo": "20261014-161405_antes-manutencao-retencao.sqlite",
+  "sha256": "d647f4b7e5586fd9744c85969e1fb9445a58fe928b629d603015fb5d42daf0b1",
+  "integrity_check": "ok",
+  "contagens_iguais": true
+ },
+ "bytes_antes": 1737969664,
+ "bytes_depois": 346234880,
+ "camada0_intacta": true,
+ "hash_das_derivacoes_mantidas": {
+  "37": "bcd01a4147b4d6478e88a30a37b04c887a97df340c5958989eb6e7ea32f26ffc",
+  "38": "4002ccc2634021abf2e3ace910b8d18dc3311f572405912ffe389728277ea791"
+ },
+ "integrity_check": "ok",
+ "foreign_key_check": []
+}

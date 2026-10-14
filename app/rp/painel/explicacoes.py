@@ -133,6 +133,14 @@ EXPLICACOES = [
                 "na entidade 1, com o mesmo credor, data e valor, e só as cópias são executadas. O RREO do portal soma "
                 "os dois lados; a declaração ao Siconfi conta uma vez, como o indicador."),
          fonte="docs/audits/rreo/RP_2024_2026.md seção 8 (D1)"),
+    dict(exercicios=[2020], datas_finais=["2020-04-30", "2020-06-30", "2020-08-31", "2020-10-31", "2020-12-31"],
+         escopo="consolidado", colunas=["L"], regra="S1 v1", classe="E", requer="ESCOPO-MUN v2",
+         situacao="explicada", status_evidencia="CONFIRMADO",
+         texto=("Com a regra ESCOPO-MUN v2 no indicador (desde 13/10/2026), a entidade 7 (Agência Reguladora de Águas e "
+                "Saneamento Básico, 180.334,82 de inscrição) fica fora do Município do 2º ao 6º bimestre de 2020, como na "
+                "declaração ao Siconfi; o RREO do portal desses bimestres a inclui. Os dois documentos oficiais são "
+                "contraditórios, e o indicador é publicado com ressalva."),
+         fonte="docs/audits/escopo/ESCOPO_ENTIDADE_7.md"),
     dict(exercicios=[2026], datas_finais=["2026-04-30", "2026-06-30", "2026-08-31"], escopo=None, colunas=["j"],
          regra=None, classe="T", situacao="explicada", status_evidencia="CONFIRMADO",
          texto=("(j) +1.270.679,25 / +1.251.860,27: cancelamentos com data retroativa lançados entre os retratos de "
@@ -171,13 +179,41 @@ EXPLICACOES = [
          texto=("Troca (d)/(j) de 757,56: excedente de cancelamento de 2019/1684 (entidade 6) sobre o aproc (CANC v2; "
                 "com a RREO-COL v3 a troca desaparece)."),
          fonte="docs/stages/04-pipeline/batches/LOTE_D.md; docs/stages/04-pipeline/batches/hipotese_canc_2020_2026.md"),
-    dict(exercicios=[2017, 2019, 2020], datas_finais=None, escopo="consolidado", colunas=["a", "b", "f", "g", "k", "L"],
+    # 13/10/2026: the entry below was written when no consolidated RREO of 2019 was transcribed; it is split so that
+    # it keeps applying to the same documents (2017, 2020 and the 3rd bimester of 2019) and never to the SICONFI prints
+    # of 2018-2019, which EXCLUDE entity 7 (entries after it)
+    dict(exercicios=[2017, 2020], datas_finais=None, escopo="consolidado", colunas=["a", "b", "f", "g", "k", "L"],
          regra=None, classe="E", situacao="explicada", status_evidencia="CONFIRMADO",
          texto=("Entidade 7 (Agência Reguladora de Águas e Saneamento Básico, fora do catálogo do portal): 4 empenhos "
                 "parados desde 2018 somam 180.334,82 (2011/163, 2014/174, 2016/41, 2016/166); em 2017 fecham b 84.524,52, "
                 "f 13.259,02 e g 178.633,74. O RREO consolidado os inclui em 2017, no 3º bim/2019 e em 2020. Com o escopo "
                 "ESCOPO-MUN v1 (RREO-COL v3) a diferença desaparece."),
          fonte=f"{CONC} seção 3; docs/stages/04-pipeline/batches/LOTE_D.md"),
+    dict(exercicios=[2019], datas_finais=["2019-06-30"], escopo="consolidado", colunas=["a", "b", "f", "g", "k", "L"],
+         regra=None, classe="E", situacao="explicada", status_evidencia="CONFIRMADO",
+         texto=("Entidade 7 (Agência Reguladora de Águas e Saneamento Básico, fora do catálogo do portal): 4 empenhos "
+                "parados desde 2018 somam 180.334,82 (2011/163, 2014/174, 2016/41, 2016/166); em 2017 fecham b 84.524,52, "
+                "f 13.259,02 e g 178.633,74. O RREO consolidado os inclui em 2017, no 3º bim/2019 e em 2020. Com o escopo "
+                "ESCOPO-MUN v1 (RREO-COL v3) a diferença desaparece."),
+         fonte=f"{CONC} seção 3; docs/stages/04-pipeline/batches/LOTE_D.md"),
+    dict(exercicios=[2018, 2019], datas_finais=["2018-04-30", "2018-06-30", "2018-08-31", "2018-10-31", "2018-12-31",
+                                                 "2019-04-30", "2019-08-31", "2019-10-31", "2019-12-31"],
+         escopo="consolidado", colunas=["f"], regra=None, classe="E", situacao="explicada", status_evidencia="CONFIRMADO",
+         texto=("180.334,82 = RP da entidade 7 (Agência Reguladora de Águas e Saneamento Básico) na coluna f: a impressão "
+                "da declaração ao Siconfi não inclui a entidade, e a conciliação da derivação usa o escopo da ESCOPO-MUN "
+                "v1 (entidade 7 até 2020, como os relatórios do sistema). Diferença igual ao centavo nos 9 documentos."),
+         fonte="docs/audits/rreo/VALIDACAO_LAYOUTS.md; docs/audits/escopo/ESCOPO_ENTIDADE_7.md"),
+    dict(exercicios=[2019], datas_finais=["2019-08-31"], escopo="consolidado", colunas=["k", "L"], regra=None,
+         classe="E", situacao="explicada", status_evidencia="CONFIRMADO",
+         texto="A diferença inteira (180.334,82) é a entidade 7, fora da impressão da declaração ao Siconfi.",
+         fonte="docs/audits/rreo/VALIDACAO_LAYOUTS.md"),
+    dict(exercicios=[2018, 2019], datas_finais=["2018-04-30", "2018-06-30", "2018-08-31", "2018-10-31", "2018-12-31",
+                                                 "2019-04-30", "2019-10-31", "2019-12-31"],
+         escopo="consolidado", colunas=["k", "L"], regra=None, classe="E", situacao="parcialmente explicada",
+         status_evidencia="CONFIRMADO",
+         texto=("180.334,82 da diferença são a entidade 7 (coluna f), fora da impressão da declaração ao Siconfi; o "
+                "restante não foi atribuído a registros."),
+         fonte="docs/audits/rreo/VALIDACAO_LAYOUTS.md"),
     dict(exercicios=[2017], datas_finais=None, escopo=None, colunas=["h"], regra=None, classe="R",
          situacao="hipótese", status_evidencia="FORTE EVIDÊNCIA",
          texto=("(h) do RREO menor que as liquidações: os RREOs de 2017 foram gerados entre agosto e dezembro de 2018 e, "
