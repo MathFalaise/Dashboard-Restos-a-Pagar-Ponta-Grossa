@@ -1,7 +1,7 @@
 {
  "gerado_com": "pdftotext version 4.06 [www.xpdfreader.com]",
  "banco": "restos_a_pagar.sqlite",
- "normalizacao": 15,
+ "normalizacao": 17,
  "resumo": {
   "esperados": 114,
   "transcrito": 96,

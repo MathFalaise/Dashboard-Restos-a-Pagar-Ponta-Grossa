@@ -1,6 +1,6 @@
 # Matriz de cobertura e conferência independente do RREO Anexo VII
 
-Gerada por `docs/audits/rreo/conferencia_independente.py` (segunda leitura: pdftotext version 4.06 [www.xpdfreader.com]; normalização 15).
+Gerada por `docs/audits/rreo/conferencia_independente.py` (segunda leitura: pdftotext version 4.06 [www.xpdfreader.com]; normalização 17).
 
 Esperados 114 · transcritos 96 (conferidos 96, divergentes 0) · recusados pelo extrator 18 · não coletados 0 · coletados sem extração 0
 
