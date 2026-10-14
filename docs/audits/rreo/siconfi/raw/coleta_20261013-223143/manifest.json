@@ -1,0 +1,624 @@
+{
+ "anexo": "RREO-Anexo 07",
+ "arquivos": {
+  "extrato_entregas_2016.json": {
+   "http_status": 200,
+   "itens": 13,
+   "obtido_em": "2026-10-13T22:31:44-03:00",
+   "sha256": "7d0ebe7fa1a51b52b1ab271b0c74f36f46aead190c39cb226a11b94025267a1c",
+   "tamanho": 4419,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/extrato_entregas?id_ente=4119905&an_referencia=2016"
+  },
+  "extrato_entregas_2017.json": {
+   "http_status": 200,
+   "itens": 13,
+   "obtido_em": "2026-10-13T22:31:58-03:00",
+   "sha256": "daa5b26e6c14959b7968950f6d280a0c5fe774a18039f82ad94418a94625c9ce",
+   "tamanho": 4419,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/extrato_entregas?id_ente=4119905&an_referencia=2017"
+  },
+  "extrato_entregas_2018.json": {
+   "http_status": 200,
+   "itens": 13,
+   "obtido_em": "2026-10-13T22:32:12-03:00",
+   "sha256": "78cf3c51b41bea02094d95fb777e0b371f722983fbbcc186c5dcc4ff8cc277c3",
+   "tamanho": 4419,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/extrato_entregas?id_ente=4119905&an_referencia=2018"
+  },
+  "extrato_entregas_2019.json": {
+   "http_status": 200,
+   "itens": 39,
+   "obtido_em": "2026-10-13T22:32:26-03:00",
+   "sha256": "6c4ba9617c42727a5464e55545f498d9602894e972eb7d2ff93bc4f26979dd2a",
+   "tamanho": 11674,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/extrato_entregas?id_ente=4119905&an_referencia=2019"
+  },
+  "extrato_entregas_2020.json": {
+   "http_status": 200,
+   "itens": 39,
+   "obtido_em": "2026-10-13T22:32:39-03:00",
+   "sha256": "b8e2e7cb421ca8821888dab5266d6f2bfcd10ba9da860c33881492a61c98ed86",
+   "tamanho": 11674,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/extrato_entregas?id_ente=4119905&an_referencia=2020"
+  },
+  "extrato_entregas_2021.json": {
+   "http_status": 200,
+   "itens": 39,
+   "obtido_em": "2026-10-13T22:32:53-03:00",
+   "sha256": "39d00d32a0925cbfd216c82861ab9449c2123aacbb036e07bf3bad7f08221199",
+   "tamanho": 11674,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/extrato_entregas?id_ente=4119905&an_referencia=2021"
+  },
+  "extrato_entregas_2022.json": {
+   "http_status": 200,
+   "itens": 39,
+   "obtido_em": "2026-10-13T22:33:07-03:00",
+   "sha256": "a42d93c43e3a70631bb383bc55bce48697477f624a54c85f325c2cd18021782e",
+   "tamanho": 11674,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/extrato_entregas?id_ente=4119905&an_referencia=2022"
+  },
+  "extrato_entregas_2023.json": {
+   "http_status": 200,
+   "itens": 39,
+   "obtido_em": "2026-10-13T22:33:21-03:00",
+   "sha256": "649f37a62857f1c25593a4240a4dd66ff2700e66330d449ba74140963c7e9b2f",
+   "tamanho": 11674,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/extrato_entregas?id_ente=4119905&an_referencia=2023"
+  },
+  "extrato_entregas_2024.json": {
+   "http_status": 200,
+   "itens": 39,
+   "obtido_em": "2026-10-13T22:33:34-03:00",
+   "sha256": "af2e53333a0092596fb97c2203403bdcb3ee71f3f360da6946a3bcecb319827b",
+   "tamanho": 11674,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/extrato_entregas?id_ente=4119905&an_referencia=2024"
+  },
+  "extrato_entregas_2025.json": {
+   "http_status": 200,
+   "itens": 39,
+   "obtido_em": "2026-10-13T22:33:48-03:00",
+   "sha256": "cc9db2ce7c84dcc58eef67c73f20002d17723c99753d09d548737b946e39d253",
+   "tamanho": 11674,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/extrato_entregas?id_ente=4119905&an_referencia=2025"
+  },
+  "extrato_entregas_2026.json": {
+   "http_status": 200,
+   "itens": 24,
+   "obtido_em": "2026-10-13T22:34:02-03:00",
+   "sha256": "64635d68e8b7a6105e471ef31b79f7ff450cc0ae1d741c7580946af54b5c9775",
+   "tamanho": 7387,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/extrato_entregas?id_ente=4119905&an_referencia=2026"
+  },
+  "rreo_anexo07_2016_1.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:31:46-03:00",
+   "sha256": "9aa16b6bf561a9db6610fad0526f6aa78d9219f5264e2cb69036fc9ca3abc177",
+   "tamanho": 15135,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2016&nr_periodo=1&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2016_2.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:31:48-03:00",
+   "sha256": "29a37884d590bd89699f7034b45aa6e3f40dc8c11f67cdac0d5ee94dacd2229e",
+   "tamanho": 15135,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2016&nr_periodo=2&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2016_3.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:31:50-03:00",
+   "sha256": "4c18745975f5660a9ce8248ad67556bec5d460a585f332f58cb0bae18ae0dc7d",
+   "tamanho": 15135,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2016&nr_periodo=3&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2016_4.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:31:52-03:00",
+   "sha256": "f5ab71abb329e5167987c871894e6a2ffa270c61e3583682bfab1384ef24011f",
+   "tamanho": 15138,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2016&nr_periodo=4&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2016_5.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:31:54-03:00",
+   "sha256": "53aa90d6d41cc65b1839ab0a607e411a11723fc90c54d70b25ddd535359c0fe0",
+   "tamanho": 15144,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2016&nr_periodo=5&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2016_6.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:31:56-03:00",
+   "sha256": "ba943f84552713262b62d9ee8d1464ffb2b2346800fda3ed18d09fffe6d15a81",
+   "tamanho": 15141,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2016&nr_periodo=6&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2017_1.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:00-03:00",
+   "sha256": "413e6e3ea0776848a6b04a2ec2514181e99352c13d9523c0a59c73d151843bed",
+   "tamanho": 14544,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2017&nr_periodo=1&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2017_2.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:02-03:00",
+   "sha256": "453cd14ea2a9683243862bbc8d6994ed267ba71ed8aadeb323fcffbadf960c63",
+   "tamanho": 14550,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2017&nr_periodo=2&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2017_3.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:04-03:00",
+   "sha256": "36ee750abedcc1c2d926a964b096595c6165320bc7d5f4542fbd090c40d9d701",
+   "tamanho": 14541,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2017&nr_periodo=3&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2017_4.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:06-03:00",
+   "sha256": "9f10709cec7862dde48a4ba66c0e4385e30c2b2478a8b5394bdc182c16ba1218",
+   "tamanho": 14550,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2017&nr_periodo=4&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2017_5.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:08-03:00",
+   "sha256": "689ae8249f3f6d06954737e04f6546b4213ebb2f9728d3f5f9b3ea820f60a254",
+   "tamanho": 14550,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2017&nr_periodo=5&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2017_6.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:10-03:00",
+   "sha256": "e4de7eb498a8755dff49c2c74db3a15125ed373f2b9422873bcb978d3a6c6c62",
+   "tamanho": 14730,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2017&nr_periodo=6&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2018_1.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:14-03:00",
+   "sha256": "5ce67cda20793e9407fd17010e7e1089cd1202edee6a0d5f4b442f8322b97fac",
+   "tamanho": 14721,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2018&nr_periodo=1&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2018_2.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:16-03:00",
+   "sha256": "bbe93ddc0feec1cf9d83e8c6991c5e58d98801bb9ae46674281117c57ea28f4f",
+   "tamanho": 14724,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2018&nr_periodo=2&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2018_3.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:18-03:00",
+   "sha256": "02018800e050795b3ceecfe2438e7437f13e70f95f53feaf24915b9a6323ef40",
+   "tamanho": 14724,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2018&nr_periodo=3&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2018_4.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:20-03:00",
+   "sha256": "9c24abbb5cbaad6f0fb6dd3401d0a2462ffb76be74cf2a0336ed958194c660ad",
+   "tamanho": 14724,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2018&nr_periodo=4&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2018_5.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:22-03:00",
+   "sha256": "d26dfa65e774c4d999b10a95d04a776ed2e5704370f1f8c2699615164061dfe4",
+   "tamanho": 14721,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2018&nr_periodo=5&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2018_6.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:24-03:00",
+   "sha256": "b9ff74d984e740cec1326f03506caf84f8f4a2c8decc815f446a61eca5ff0afc",
+   "tamanho": 14727,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2018&nr_periodo=6&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2019_1.json": {
+   "http_status": 200,
+   "itens": 33,
+   "obtido_em": "2026-10-13T22:32:28-03:00",
+   "sha256": "f968f618d41157fac14fec7921e0859c35abc0b726da87ae22487f04e37fb7d7",
+   "tamanho": 13549,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2019&nr_periodo=1&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2019_2.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:30-03:00",
+   "sha256": "aed84a0f8c73eeb911bd6acad7a52dc0ee1dd7402340718bfb164d1259eb7374",
+   "tamanho": 14727,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2019&nr_periodo=2&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2019_3.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:32-03:00",
+   "sha256": "83b65caec3c53143d6ccb0be989448447ac031882af55a0f27049143232cb979",
+   "tamanho": 14730,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2019&nr_periodo=3&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2019_4.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:34-03:00",
+   "sha256": "3703d332fc8cf9dc468c5b90d924022ca2e42a94df850a08fca93353eb37edb4",
+   "tamanho": 14727,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2019&nr_periodo=4&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2019_5.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:36-03:00",
+   "sha256": "ecdeeb1742fccbd27d8748edbf79f04249f38fdb110fe43207f1a1ad39e8509f",
+   "tamanho": 14727,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2019&nr_periodo=5&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2019_6.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:38-03:00",
+   "sha256": "579270e19eb12166eb754f04a5633efa78d6de8338125ade6cad8bdb4a12bb81",
+   "tamanho": 14733,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2019&nr_periodo=6&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2020_1.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:42-03:00",
+   "sha256": "7af9d2f77ae7f009d0177d79050d16dfd18467b515343c42ef8d5c2bf5fa6f58",
+   "tamanho": 14721,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2020&nr_periodo=1&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2020_2.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:44-03:00",
+   "sha256": "6b41f44ba47508f5ef2946a61a75a694d4d18e15638fe62a96173be7b2c2d5fc",
+   "tamanho": 14730,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2020&nr_periodo=2&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2020_3.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:46-03:00",
+   "sha256": "ac59c1e31917df1c1d6559b81efe6fe9413161678acad930ba0154d8c329981d",
+   "tamanho": 14733,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2020&nr_periodo=3&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2020_4.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:47-03:00",
+   "sha256": "b923fa242af6751dce7c6475e3f7d69049adcb115fa3bf40c271217ee9b3b583",
+   "tamanho": 14730,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2020&nr_periodo=4&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2020_5.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:49-03:00",
+   "sha256": "6b639262cf6da0e3e0549fe801c8a962a43169e6beeaa214a9cda3b9540b83a2",
+   "tamanho": 14727,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2020&nr_periodo=5&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2020_6.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:51-03:00",
+   "sha256": "813e7bc393e26f54cab7c6ad59fdfd51c8c0e596c5f3bf635c308851dcd2fd50",
+   "tamanho": 14730,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2020&nr_periodo=6&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2021_1.json": {
+   "http_status": 200,
+   "itens": 33,
+   "obtido_em": "2026-10-13T22:32:55-03:00",
+   "sha256": "7b632340aff12cdf46402d68c7346e1edc2af4dd10ae08ec182e3db1c96a587a",
+   "tamanho": 13546,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2021&nr_periodo=1&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2021_2.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:57-03:00",
+   "sha256": "ef6b15e3b92fc95d2ed6c1fb2540798f9311885f1ffc646e42c1bb284164bf67",
+   "tamanho": 14718,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2021&nr_periodo=2&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2021_3.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:32:59-03:00",
+   "sha256": "c3b983d4f2bd4812cee183a80402f61b4368ba14361c377dd95452ea8fe22abc",
+   "tamanho": 14721,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2021&nr_periodo=3&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2021_4.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:01-03:00",
+   "sha256": "a36c627de1668a509cb703caa08e2a9c24d2e288df3511f64b797a5a94ac18ab",
+   "tamanho": 14724,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2021&nr_periodo=4&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2021_5.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:03-03:00",
+   "sha256": "1cfa8080c259c1712608e14865923bc18b689aa3d4ee56f80b86e7b6d94296ad",
+   "tamanho": 14727,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2021&nr_periodo=5&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2021_6.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:05-03:00",
+   "sha256": "6373e00d524eb1c4374db71b7bd8f8896a4d0be833c9dc46da2421735ecf8279",
+   "tamanho": 14730,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2021&nr_periodo=6&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2022_1.json": {
+   "http_status": 200,
+   "itens": 33,
+   "obtido_em": "2026-10-13T22:33:09-03:00",
+   "sha256": "e18b54336c318975098227a8ccafce8bd36cefe3ec086790bea70da7c66b1257",
+   "tamanho": 13549,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2022&nr_periodo=1&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2022_2.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:11-03:00",
+   "sha256": "1f1192fdfe5ea969e3564d842414e0a8a1693540eb7827207da675f88aaab34a",
+   "tamanho": 14718,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2022&nr_periodo=2&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2022_3.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:13-03:00",
+   "sha256": "15af48acdeaafe0f8da9579fbe72513edd3f4fc89c9b16f5f656684596c84bff",
+   "tamanho": 14727,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2022&nr_periodo=3&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2022_4.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:15-03:00",
+   "sha256": "a8f57aae434b349316c9c66bbc80e137c772bec9fb65cca1832f490efb647712",
+   "tamanho": 14724,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2022&nr_periodo=4&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2022_5.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:17-03:00",
+   "sha256": "66936cbadd9256c649779459ef50a244745a181a113e5381ae4ff1b50efe3de9",
+   "tamanho": 14727,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2022&nr_periodo=5&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2022_6.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:19-03:00",
+   "sha256": "dc635559f51c46a68960f2b343060c8378ce640530f63125aa6456814e79b8bd",
+   "tamanho": 14727,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2022&nr_periodo=6&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2023_1.json": {
+   "http_status": 200,
+   "itens": 33,
+   "obtido_em": "2026-10-13T22:33:23-03:00",
+   "sha256": "81405d33c51c9ff82dce8812ef931634cc423e2d8301e5cbeaf44276294ba09d",
+   "tamanho": 13546,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2023&nr_periodo=1&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2023_2.json": {
+   "http_status": 200,
+   "itens": 33,
+   "obtido_em": "2026-10-13T22:33:25-03:00",
+   "sha256": "be9a7e47d9b68f71fd6a9ca61e06061fd4511d6d09ecf9c154035d8f5a41b09b",
+   "tamanho": 13546,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2023&nr_periodo=2&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2023_3.json": {
+   "http_status": 200,
+   "itens": 33,
+   "obtido_em": "2026-10-13T22:33:27-03:00",
+   "sha256": "455d379421b13acda522a117988417f388abfd16f9ea1aeeba8353db241a6e73",
+   "tamanho": 13555,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2023&nr_periodo=3&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2023_4.json": {
+   "http_status": 200,
+   "itens": 33,
+   "obtido_em": "2026-10-13T22:33:29-03:00",
+   "sha256": "5c826d4e50c87b59c64d8e9bb14364014b070210b77b92aa2fa6e49efc39f855",
+   "tamanho": 13558,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2023&nr_periodo=4&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2023_5.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:31-03:00",
+   "sha256": "6c9fd21fdebff9f2010ca58c7e769cfb29e662b185d35f9fd9c900fde19a41ed",
+   "tamanho": 14733,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2023&nr_periodo=5&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2023_6.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:33-03:00",
+   "sha256": "561aa2e0a106ab139bc58b3b7dbb0e123e080fbc0590f3be806b65054cd88326",
+   "tamanho": 14730,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2023&nr_periodo=6&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2024_1.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:36-03:00",
+   "sha256": "c52f18d47e83c37bb6ec7f945774f16b25b3829e3a4975d674bae1a0307cc0a2",
+   "tamanho": 14706,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2024&nr_periodo=1&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2024_2.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:38-03:00",
+   "sha256": "2cd8fcd4568c72224ae513fdf0961a0f03f31ba91ca7356c3833342c26b9f1e9",
+   "tamanho": 14709,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2024&nr_periodo=2&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2024_3.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:40-03:00",
+   "sha256": "c0bfceec5968e63425e04d3a62580c74cbce79326eb06c254b23a85f9456fc62",
+   "tamanho": 14712,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2024&nr_periodo=3&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2024_4.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:42-03:00",
+   "sha256": "12e5d7b6a1173af50cf4df0f05c3199bcb2e6384007787e4848e52a40d9d6448",
+   "tamanho": 14715,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2024&nr_periodo=4&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2024_5.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:44-03:00",
+   "sha256": "2cb58b92541c25881cc4db5ea2d98a2698699b2ca2df84bb5427a5c9b29bd9cc",
+   "tamanho": 14721,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2024&nr_periodo=5&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2024_6.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:33:46-03:00",
+   "sha256": "dc9e5636794244bbbf804a597e5eacb7e7268964987f98e6d6161113effb3f46",
+   "tamanho": 14742,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2024&nr_periodo=6&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2025_1.json": {
+   "http_status": 200,
+   "itens": 33,
+   "obtido_em": "2026-10-13T22:33:50-03:00",
+   "sha256": "17d124603cf590aaa400b0b2c6597dc26ffeb8ae4285adafd37f6d7903902b2d",
+   "tamanho": 13558,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2025&nr_periodo=1&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2025_2.json": {
+   "http_status": 200,
+   "itens": 39,
+   "obtido_em": "2026-10-13T22:33:52-03:00",
+   "sha256": "b09436238062d6c4279114b3814226ae197e172a012720e6df563dddc9ff9d66",
+   "tamanho": 15835,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2025&nr_periodo=2&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2025_3.json": {
+   "http_status": 200,
+   "itens": 37,
+   "obtido_em": "2026-10-13T22:33:54-03:00",
+   "sha256": "22ea78a564f7354d62d96c898e3775dd7a56bea776e2308f888baaa1924922f9",
+   "tamanho": 15114,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2025&nr_periodo=3&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2025_4.json": {
+   "http_status": 200,
+   "itens": 37,
+   "obtido_em": "2026-10-13T22:33:56-03:00",
+   "sha256": "de96075a141f074f53af995e6675204ed562314ae6f6d7d4171dfde9be5b71bb",
+   "tamanho": 15119,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2025&nr_periodo=4&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2025_5.json": {
+   "http_status": 200,
+   "itens": 37,
+   "obtido_em": "2026-10-13T22:33:58-03:00",
+   "sha256": "8ff85ffcc19ddbc49e65e8e8f8664ce64c9f3517539107158558e291c8ec8fe4",
+   "tamanho": 15120,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2025&nr_periodo=5&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2025_6.json": {
+   "http_status": 200,
+   "itens": 40,
+   "obtido_em": "2026-10-13T22:34:00-03:00",
+   "sha256": "a24af86dc4264efa853fccdc9bbcc919d2631716f2037c58003a3939a9ed5c28",
+   "tamanho": 16292,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2025&nr_periodo=6&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2026_1.json": {
+   "http_status": 200,
+   "itens": 33,
+   "obtido_em": "2026-10-13T22:34:03-03:00",
+   "sha256": "d60eefca58ade93c0cfc619f58c0d9b240aa84429188ecdd410403ac8037c7d3",
+   "tamanho": 13555,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2026&nr_periodo=1&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2026_2.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:34:05-03:00",
+   "sha256": "aace99adfbabe9e4c05dfa2bfa2567398d996abd73e78a38208ec2627d16bf34",
+   "tamanho": 14721,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2026&nr_periodo=2&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2026_3.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:34:07-03:00",
+   "sha256": "8fd0a1c4a3178425962001d0751c69e9ce7de5e0b5bc03013559d0a942da6796",
+   "tamanho": 14730,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2026&nr_periodo=3&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2026_4.json": {
+   "http_status": 200,
+   "itens": 36,
+   "obtido_em": "2026-10-13T22:34:09-03:00",
+   "sha256": "87153b0a8f18877113d1bb958f5c8de0fa3c37e872f704368900990cdd3da8e1",
+   "tamanho": 14724,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2026&nr_periodo=4&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2026_5.json": {
+   "http_status": 200,
+   "itens": 0,
+   "obtido_em": "2026-10-13T22:34:11-03:00",
+   "sha256": "95105edca8d563fc74eff5b926017aa6d778aded3b110bbe67b09f5292910fa3",
+   "tamanho": 645,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2026&nr_periodo=5&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  },
+  "rreo_anexo07_2026_6.json": {
+   "http_status": 200,
+   "itens": 0,
+   "obtido_em": "2026-10-13T22:34:13-03:00",
+   "sha256": "d63d04cf7b11a543f7bd8259e16e01140fed354518fc4fb4bd7a2339bbd3ea43",
+   "tamanho": 645,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo?an_exercicio=2026&nr_periodo=6&co_tipo_demonstrativo=RREO&no_anexo=RREO-Anexo+07&co_esfera=M&id_ente=4119905"
+  }
+ },
+ "ente_ibge": 4119905,
+ "fonte": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt",
+ "iniciada_em": "20261013-223143"
+}

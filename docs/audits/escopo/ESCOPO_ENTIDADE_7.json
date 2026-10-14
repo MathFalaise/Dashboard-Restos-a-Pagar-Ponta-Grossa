@@ -1,0 +1,1253 @@
+{
+ "derivacao": 35,
+ "normalizacao": 17,
+ "siconfi": "docs/audits/rreo/siconfi/raw/coleta_20261013-223143",
+ "periodos": [
+  {
+   "exercicio": 2016,
+   "bimestre": 1,
+   "data_final": "2016-02-29",
+   "inscricao_entidade_7_c": 1325902,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2016_1.json",
+    "residual_c": 6512546,
+    "classe": null
+   },
+   "rreo_portal": [],
+   "tratamento": "inclui",
+   "situacao": "inconclusivo",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 2,
+   "data_final": "2016-04-30",
+   "inscricao_entidade_7_c": 1325902,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2016_2.json",
+    "residual_c": -12857451,
+    "classe": null
+   },
+   "rreo_portal": [],
+   "tratamento": "inclui",
+   "situacao": "inconclusivo",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 3,
+   "data_final": "2016-06-30",
+   "inscricao_entidade_7_c": 1325902,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2016_3.json",
+    "residual_c": -12857451,
+    "classe": null
+   },
+   "rreo_portal": [],
+   "tratamento": "inclui",
+   "situacao": "inconclusivo",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 4,
+   "data_final": "2016-08-31",
+   "inscricao_entidade_7_c": 1325902,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2016_4.json",
+    "residual_c": 1325152,
+    "classe": null
+   },
+   "rreo_portal": [],
+   "tratamento": "inclui",
+   "situacao": "provavel",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 5,
+   "data_final": "2016-10-31",
+   "inscricao_entidade_7_c": 1325902,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2016_5.json",
+    "residual_c": 1325152,
+    "classe": null
+   },
+   "rreo_portal": [],
+   "tratamento": "inclui",
+   "situacao": "provavel",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2016,
+   "bimestre": 6,
+   "data_final": "2016-12-31",
+   "inscricao_entidade_7_c": 1325902,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2016_6.json",
+    "residual_c": 1325152,
+    "classe": null
+   },
+   "rreo_portal": [],
+   "tratamento": "inclui",
+   "situacao": "provavel",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2017,
+   "bimestre": 1,
+   "data_final": "2017-02-28",
+   "inscricao_entidade_7_c": 27641728,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2017_1.json",
+    "residual_c": 27649501,
+    "classe": null
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "90fe6408",
+     "residual_c": 27641728,
+     "classe": "inclui"
+    }
+   ],
+   "tratamento": "inclui",
+   "situacao": "comprovado pelo RREO do portal",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2017,
+   "bimestre": 2,
+   "data_final": "2017-04-30",
+   "inscricao_entidade_7_c": 27641728,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2017_2.json",
+    "residual_c": 27641728,
+    "classe": "inclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "27dbe144",
+     "residual_c": 27641728,
+     "classe": "inclui"
+    }
+   ],
+   "tratamento": "inclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2017,
+   "bimestre": 3,
+   "data_final": "2017-06-30",
+   "inscricao_entidade_7_c": 27641728,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2017_3.json",
+    "residual_c": 27641728,
+    "classe": "inclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "36cbf2bf",
+     "residual_c": 27641728,
+     "classe": "inclui"
+    }
+   ],
+   "tratamento": "inclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2017,
+   "bimestre": 4,
+   "data_final": "2017-08-31",
+   "inscricao_entidade_7_c": 27641728,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2017_4.json",
+    "residual_c": 27641728,
+    "classe": "inclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "d12789a0",
+     "residual_c": 27641728,
+     "classe": "inclui"
+    }
+   ],
+   "tratamento": "inclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2017,
+   "bimestre": 5,
+   "data_final": "2017-10-31",
+   "inscricao_entidade_7_c": 27641728,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2017_5.json",
+    "residual_c": 27641728,
+    "classe": "inclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "6d6b404a",
+     "residual_c": 27641728,
+     "classe": "inclui"
+    }
+   ],
+   "tratamento": "inclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2017,
+   "bimestre": 6,
+   "data_final": "2017-12-31",
+   "inscricao_entidade_7_c": 27641728,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2017_6.json",
+    "residual_c": 27641728,
+    "classe": "inclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "aa268a93",
+     "residual_c": 27641728,
+     "classe": "inclui"
+    }
+   ],
+   "tratamento": "inclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 1,
+   "data_final": "2018-02-28",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2018_1.json",
+    "residual_c": 1535287365,
+    "classe": null
+   },
+   "rreo_portal": [],
+   "tratamento": "inclui",
+   "situacao": "inconclusivo",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 2,
+   "data_final": "2018-04-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2018_2.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 3,
+   "data_final": "2018-06-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2018_3.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 4,
+   "data_final": "2018-08-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2018_4.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 5,
+   "data_final": "2018-10-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2018_5.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2018,
+   "bimestre": 6,
+   "data_final": "2018-12-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2018_6.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 1,
+   "data_final": "2019-02-28",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2019_1.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 2,
+   "data_final": "2019-04-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2019_2.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 3,
+   "data_final": "2019-06-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2019_3.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 4,
+   "data_final": "2019-08-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2019_4.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 5,
+   "data_final": "2019-10-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2019_5.json",
+    "residual_c": -4251118,
+    "classe": null
+   },
+   "rreo_portal": [],
+   "tratamento": "inclui",
+   "situacao": "inconclusivo",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2019,
+   "bimestre": 6,
+   "data_final": "2019-12-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2019_6.json",
+    "residual_c": -4246169,
+    "classe": null
+   },
+   "rreo_portal": [],
+   "tratamento": "inclui",
+   "situacao": "inconclusivo",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2020,
+   "bimestre": 1,
+   "data_final": "2020-02-29",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2020_1.json",
+    "residual_c": 18033482,
+    "classe": "inclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "2574133f",
+     "residual_c": 18033482,
+     "classe": "inclui"
+    }
+   ],
+   "tratamento": "inclui",
+   "situacao": "comprovado",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2020,
+   "bimestre": 2,
+   "data_final": "2020-04-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2020_2.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "a1dedcbf",
+     "residual_c": 18033482,
+     "classe": "inclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "contraditorio",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2020,
+   "bimestre": 3,
+   "data_final": "2020-06-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2020_3.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "a07e51bc",
+     "residual_c": 18033482,
+     "classe": "inclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "contraditorio",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2020,
+   "bimestre": 4,
+   "data_final": "2020-08-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2020_4.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "c62881a5",
+     "residual_c": 18033482,
+     "classe": "inclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "contraditorio",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2020,
+   "bimestre": 5,
+   "data_final": "2020-10-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2020_5.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "838ebf3d",
+     "residual_c": 18033482,
+     "classe": "inclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "contraditorio",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2020,
+   "bimestre": 6,
+   "data_final": "2020-12-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2020_6.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "4a2087a6",
+     "residual_c": 18033482,
+     "classe": "inclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "contraditorio",
+   "v1": "inclui"
+  },
+  {
+   "exercicio": 2021,
+   "bimestre": 1,
+   "data_final": "2021-02-28",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2021_1.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "3d622df9",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2021,
+   "bimestre": 2,
+   "data_final": "2021-04-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2021_2.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "e83ce029",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2021,
+   "bimestre": 3,
+   "data_final": "2021-06-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2021_3.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "8b6cb116",
+     "residual_c": 0,
+     "classe": "exclui"
+    },
+    {
+     "snapshot": "5a056a70",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2021,
+   "bimestre": 4,
+   "data_final": "2021-08-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2021_4.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "f8b16609",
+     "residual_c": 0,
+     "classe": "exclui"
+    },
+    {
+     "snapshot": "4a897197",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2021,
+   "bimestre": 5,
+   "data_final": "2021-10-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2021_5.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "04e5d65d",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2021,
+   "bimestre": 6,
+   "data_final": "2021-12-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2021_6.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "793319c5",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2022,
+   "bimestre": 1,
+   "data_final": "2022-02-28",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2022_1.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "5719b854",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2022,
+   "bimestre": 2,
+   "data_final": "2022-04-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2022_2.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "7592a2f5",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2022,
+   "bimestre": 3,
+   "data_final": "2022-06-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2022_3.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "5c01eace",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2022,
+   "bimestre": 4,
+   "data_final": "2022-08-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2022_4.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "fda26048",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2022,
+   "bimestre": 5,
+   "data_final": "2022-10-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2022_5.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "3778d097",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2022,
+   "bimestre": 6,
+   "data_final": "2022-12-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2022_6.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "9e38c42c",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2023,
+   "bimestre": 1,
+   "data_final": "2023-02-28",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2023_1.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "01ab23f6",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2023,
+   "bimestre": 2,
+   "data_final": "2023-04-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2023_2.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "cd91f99d",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2023,
+   "bimestre": 3,
+   "data_final": "2023-06-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2023_3.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "b70c626a",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2023,
+   "bimestre": 4,
+   "data_final": "2023-08-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2023_4.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "658b742d",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2023,
+   "bimestre": 5,
+   "data_final": "2023-10-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2023_5.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "871e83ba",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2023,
+   "bimestre": 6,
+   "data_final": "2023-12-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2023_6.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "e13b6a7d",
+     "residual_c": 295148,
+     "classe": null
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2024,
+   "bimestre": 1,
+   "data_final": "2024-02-29",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2024_1.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "55a3af5b",
+     "residual_c": 295148,
+     "classe": null
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2024,
+   "bimestre": 2,
+   "data_final": "2024-04-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2024_2.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "bf98fde5",
+     "residual_c": 295148,
+     "classe": null
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2024,
+   "bimestre": 3,
+   "data_final": "2024-06-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2024_3.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "51317c8d",
+     "residual_c": 295148,
+     "classe": null
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2024,
+   "bimestre": 4,
+   "data_final": "2024-08-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2024_4.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "b721f5df",
+     "residual_c": 295148,
+     "classe": null
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2024,
+   "bimestre": 5,
+   "data_final": "2024-10-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2024_5.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "b694b42a",
+     "residual_c": 295148,
+     "classe": null
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2024,
+   "bimestre": 6,
+   "data_final": "2024-12-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2024_6.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "7d7adc78",
+     "residual_c": 295148,
+     "classe": null
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2025,
+   "bimestre": 1,
+   "data_final": "2025-02-28",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2025_1.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "9b0c7d24",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2025,
+   "bimestre": 2,
+   "data_final": "2025-04-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2025_2.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "543e0e03",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2025,
+   "bimestre": 3,
+   "data_final": "2025-06-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2025_3.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "ac618fdc",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2025,
+   "bimestre": 4,
+   "data_final": "2025-08-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2025_4.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "bb4599f6",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2025,
+   "bimestre": 5,
+   "data_final": "2025-10-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2025_5.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "259d399c",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2025,
+   "bimestre": 6,
+   "data_final": "2025-12-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2025_6.json",
+    "residual_c": 163395891,
+    "classe": null
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "0d8e25c0",
+     "residual_c": 0,
+     "classe": "exclui"
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado pelo RREO do portal",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2026,
+   "bimestre": 1,
+   "data_final": "2026-02-28",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2026_1.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "2a2e913b",
+     "residual_c": 2394591915,
+     "classe": null
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2026,
+   "bimestre": 2,
+   "data_final": "2026-04-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2026_2.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "ed85bfaf",
+     "residual_c": 3181390547,
+     "classe": null
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2026,
+   "bimestre": 3,
+   "data_final": "2026-06-30",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2026_3.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "fd695fd0",
+     "residual_c": 3181390547,
+     "classe": null
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  },
+  {
+   "exercicio": 2026,
+   "bimestre": 4,
+   "data_final": "2026-08-31",
+   "inscricao_entidade_7_c": 18033482,
+   "siconfi": {
+    "arquivo": "rreo_anexo07_2026_4.json",
+    "residual_c": 0,
+    "classe": "exclui"
+   },
+   "rreo_portal": [
+    {
+     "snapshot": "4f6f8687",
+     "residual_c": 3181390547,
+     "classe": null
+    }
+   ],
+   "tratamento": "exclui",
+   "situacao": "comprovado",
+   "v1": "exclui"
+  }
+ ]
+}
