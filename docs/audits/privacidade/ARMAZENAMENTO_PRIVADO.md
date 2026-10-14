@@ -91,8 +91,43 @@ banco que estava em uso.
 
 A manutenção é recusada quando o backup não confere, quando a camada bruta muda ou quando alguma verificação falha.
 
+### 4.2 O que foi executado em 14/10/2026
+
+**Retenção no banco ativo** (`python -m rp manutencao --confirmar`, relatório em `MANUTENCAO_20261014.json`):
+- **Execuções removidas:** 6 normalizações (12 a 17) e 16 derivações (21 a 36), 9,4 milhões de linhas.
+- **Backup prévio:** `20261014-161405_antes-manutencao-retencao.sqlite`, conferido. Ele guarda byte a byte as
+  execuções removidas.
+- **Tamanho do banco ativo:** de 1.737.969.664 para 346.234.880 bytes (−80%).
+- **Execuções mantidas:** normalização 18, derivação 37 (atual, `bcd01a41…`) e derivação 38 (29/09, `4002ccc2…`).
+  Os hashes delas foram recalculados iguais.
+- **Verificações depois da remoção:** `verificar` sem problemas, todos os portões aptos, `integrity_check` ok,
+  `foreign_key_check` vazio.
+
+**Raízes de integridade:**
+- **Antes da manutenção:** a raiz de 10/10/2026 conferiu sem problemas.
+- **Depois:** a referência passa a ser `raiz_antes_manutencao_20261014.json`, com cópia pública em
+  `docs/audits/raiz/raiz_20261014.json` (só identificadores e hashes).
+- **Raízes anteriores:** citam derivações removidas e se conferem contra o backup prévio.
+
+**Backups estruturais:**
+- 12 comprimidos com gzip conferido byte a byte, de 7,7 GB para 4,1 GB no total. Os 2 mais recentes ficaram sem
+  compressão.
+- Restauração provada: o backup de 10/10, descomprimido, passa no `integrity_check` e tem a derivação 30
+  (`a839c708…`).
+
+**OneDrive:**
+- **Cópias movidas:** `data/backups` (11 bancos, 2,9 GB), `data/snapshots`, `data/stage01-samples` e
+  `data/stage02-raw` saíram da pasta do repositório no OneDrive. Antes, cada arquivo foi conferido igual à cópia
+  privada (inclusive os já comprimidos, pelo hash do conteúdo descomprimido).
+- **Destino:** foram movidas, não apagadas, para `~/RestosAPagar_local/quarentena_onedrive_20261014`, fora do
+  OneDrive.
+- **Ainda no OneDrive:** o `.git` da pasta de trabalho guarda os blobs brutos do histórico até a reescrita e um novo
+  clone (`HIGIENIZACAO_HISTORICO.md`).
+
 ## 5. Pendências que dependem do responsável
 
 - **Frase-senha da cópia cifrada:** guardar fora deste computador, por exemplo num gerenciador de senhas. Sem ela, a
   cópia cifrada não restaura. Ela está só em `~/RestosAPagar_local/segredos/`.
 - **Testes com dados reais:** rodam só neste ambiente privado. No CI público rodam só os testes sintéticos.
+- **Quarentena:** `~/RestosAPagar_local/quarentena_onedrive_20261014` é uma terceira cópia. Pode ser apagada pelo
+  responsável depois de guardar a frase-senha da cópia cifrada fora deste computador.

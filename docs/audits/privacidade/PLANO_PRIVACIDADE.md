@@ -1,5 +1,16 @@
 # Privacidade do repositório público: inventário e plano
 
+> **Execução (auditoria corretiva de 13–14/10/2026):**
+>
+> | Etapa | Situação | Onde está registrada |
+> |---|---|---|
+> | 1. Armazenamento privado | feita e conferida | `ARMAZENAMENTO_PRIVADO.md` |
+> | 2. Parar de publicar | feita no ramo `auditoria-corretiva-20261013` | commit `bcc4fcb` |
+> | 3. Retirar do histórico | preparada e validada, não publicada | `HIGIENIZACAO_HISTORICO.md` |
+> | 4. Conferir o resultado | depende do envio forçado, que exige autorização explícita, e do pedido ao suporte do GitHub | `HIGIENIZACAO_HISTORICO.md` |
+>
+> O texto abaixo é o plano original, de 09/10/2026.
+
 Pedido de correção de 09/10/2026, item 8. **Nada foi removido do histórico nem enviado ao GitHub.** Este documento
 registra o que está publicado hoje e propõe um plano em etapas. As etapas que mudam o que o GitHub serve (parar de
 publicar, reescrever o histórico, mudar a visibilidade) dependem de autorização explícita do responsável. Até lá,
