@@ -3,7 +3,8 @@
 Auditoria corretiva de 13/10/2026, item 11.
 
 **Enquanto não houver resposta:**
-- nenhuma pergunta da minuta (`ESIC_MINUTA_V4_20261013.md`) é dada como resolvida;
+- nenhuma pergunta da minuta (`ESIC_MINUTA_V4_20261013.md`, enviada como os três pedidos de
+  `ESIC_V5_PEDIDOS_20261015.md`) é dada como resolvida;
 - as regras que dependem dela continuam com ressalva.
 
 ## 1. Ao enviar
