@@ -309,6 +309,14 @@ def _migracao_v8():
 
 MIGRACOES[8] = ("relacoes por gatilho e tabela (camada 1 x coleta, regra declarada, JSON normalizado) e proveniencia "
                 "(hash do manifesto, do codigo e das regras de cada execucao)", _migracao_v8())
+# v9 (external review of 19/10/2026): a rule row is never deleted. Until v8 only UPDATE was refused by a trigger;
+# DELETE was refused only by the FOREIGN KEYs of regra_situacao/regra_parametro/derivacao_regra, which hold only on a
+# connection with PRAGMA foreign_keys = ON (a sqlite3 shell opened by hand does not turn it on). One trigger, no table
+# recreated, no row changed.
+MIGRACOES[9] = ("regra nao se apaga: gatilho regra_sem_delete (antes so as FOREIGN KEYs recusavam, e so com "
+                "PRAGMA foreign_keys = ON)",
+                ["CREATE TRIGGER regra_sem_delete BEFORE DELETE ON regra "
+                 "BEGIN SELECT RAISE(ABORT, 'regra nao se apaga: registre uma decisao nova em regra_situacao'); END"])
 VERSAO_ESQUEMA = max(MIGRACOES)
 # Structural fingerprint of each schema version (impressao_esquema). New version = new fingerprint here.
 IMPRESSAO_ESQUEMA = {
@@ -322,6 +330,9 @@ IMPRESSAO_ESQUEMA = {
     7: "3e47c42cfde8d126e6d2581c04b3b2f60eccbaa658a93a702fbecf0c5774e120",
     # v8: computed on 09/10/2026 on the one built by the code
     8: "c2ef5fdf631c985e8203fe99fe7e12a5e9d2a5ad806ef673ad6899aa3ec0cdc5",
+    # v9: computed on 19/10/2026 on the one built by the code; the same on a copy of the active database migrated
+    # from v8 (docs/audits/governanca/ESQUEMA_V9_20261019.md)
+    9: "4f15f9c562356b36a4d679db33272a80f2f6b19ff78e70960d32f43aac19e156",
 }
 
 # Per-connection page cache (KiB, negative value = size in KiB in SQLite). The derivation scans ~100 MB of

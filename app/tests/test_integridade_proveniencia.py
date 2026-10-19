@@ -200,6 +200,7 @@ def test_banco_v7_migra_para_v8_preenchendo_relacoes_e_hashes(tmp_path, monkeypa
              for t in ("normalizacao_execucao", "derivacao_execucao")}
     mundo.con.close()
     monkeypatch.undo()
+    monkeypatch.setattr(banco, "VERSAO_ESQUEMA", 8)        # the code of v8 (v9 exists since 19/10/2026)
     con = banco.abrir(mundo.cfg)
     assert banco.versao_esquema(con) == 8 and banco.impressao_esquema(con) == banco.IMPRESSAO_ESQUEMA[8]
     assert {t: con.execute(f"SELECT * FROM {t} ORDER BY 1").fetchall() for t in antes} == antes
