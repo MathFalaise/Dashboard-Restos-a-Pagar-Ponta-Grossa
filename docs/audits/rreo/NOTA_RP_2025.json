@@ -1,0 +1,398 @@
+{
+ "series": {
+  "2017": {
+   "inscricao": 9267859796,
+   "novos": 5897508405,
+   "novos_emitidos_mai_dez": 4805439880
+  },
+  "2018": {
+   "inscricao": 7922930952,
+   "novos": 6182757727,
+   "novos_emitidos_mai_dez": 5419807440
+  },
+  "2019": {
+   "inscricao": 11988845857,
+   "novos": 10091086970,
+   "novos_emitidos_mai_dez": 8699183588
+  },
+  "2020": {
+   "inscricao": 12207856336,
+   "novos": 10058313781,
+   "novos_emitidos_mai_dez": 8264452180
+  },
+  "2021": {
+   "inscricao": 12546842520,
+   "novos": 10698635287,
+   "novos_emitidos_mai_dez": 8984088587
+  },
+  "2022": {
+   "inscricao": 14480841773,
+   "novos": 9958166292,
+   "novos_emitidos_mai_dez": 9014072251
+  },
+  "2023": {
+   "inscricao": 17636020646,
+   "novos": 15245021722,
+   "novos_emitidos_mai_dez": 14399489606
+  },
+  "2024": {
+   "inscricao": 16289858167,
+   "novos": 14165902118,
+   "novos_emitidos_mai_dez": 11093261516
+  },
+  "2025": {
+   "inscricao": 24962535511,
+   "novos": 23065877612,
+   "novos_emitidos_mai_dez": 20818832928
+  }
+ },
+ "novos": {
+  "2024": {
+   "total": 14165902118,
+   "finisa_iv_fonte_632": 0,
+   "pessoal_31": 974150159,
+   "processados": 1361389674,
+   "nao_processados": 12804512444
+  },
+  "2025": {
+   "total": 23065877612,
+   "finisa_iv_fonte_632": 6360995906,
+   "pessoal_31": 3205697505,
+   "processados": 2547587359,
+   "nao_processados": 20518290253
+  }
+ },
+ "folha_fundeb_dez_2024": {
+  "inscricao": 1186470988,
+  "processados": 1185808593,
+  "pago_ate": {
+   "2025-02-28": 0,
+   "2025-08-31": 0,
+   "2025-10-31": 1185808593,
+   "2025-12-31": 1185808593
+  }
+ },
+ "finisa_iv_em_2025": {
+  "pago": 5500927060,
+  "cancelado": 857823242
+ },
+ "rgf": {
+  "2020": {
+   "TOTAL DOS RECURSOS NÃO VINCULADOS (I)": {
+    "caixa_bruta": 4393195298,
+    "processados_do_exercicio": 733812440,
+    "rpnp_do_exercicio": 1339793591,
+    "liquida_apos_rpnp": 1476752646
+   },
+   "Recursos Ordinários": {
+    "caixa_bruta": 4393195298,
+    "processados_do_exercicio": 733812440,
+    "rpnp_do_exercicio": 1339793591,
+    "liquida_apos_rpnp": 1476752646
+   },
+   "TOTAL DOS RECURSOS VINCULADOS (II)": {
+    "caixa_bruta": 7541674118,
+    "processados_do_exercicio": 195075237,
+    "rpnp_do_exercicio": 8391397989,
+    "liquida_apos_rpnp": -2444783082
+   },
+   "Receitas de Impostos e de Transferência de Impostos - Educação": {
+    "caixa_bruta": -24682129,
+    "processados_do_exercicio": 11127202,
+    "rpnp_do_exercicio": 396547998,
+    "liquida_apos_rpnp": -694744065
+   },
+   "Transferências do FUNDEB": {
+    "caixa_bruta": 210943123,
+    "processados_do_exercicio": 930520,
+    "rpnp_do_exercicio": 25646,
+    "liquida_apos_rpnp": 208052588
+   },
+   "Outros Recursos Vinculados à Educação": {
+    "caixa_bruta": 415403448,
+    "processados_do_exercicio": 18242304,
+    "rpnp_do_exercicio": 420388953,
+    "liquida_apos_rpnp": -77787554
+   },
+   "Receitas de Impostos e de Transferência de Impostos - Saúde": {
+    "caixa_bruta": -72440122,
+    "processados_do_exercicio": 12598193,
+    "rpnp_do_exercicio": 3230203341,
+    "liquida_apos_rpnp": -3580934603
+   },
+   "Outros Recursos Vinculados à Saúde": {
+    "caixa_bruta": 3130116314,
+    "rpnp_do_exercicio": 3970811865,
+    "liquida_apos_rpnp": -1104684622
+   },
+   "Recursos Vinculados à Assistência Social": {
+    "caixa_bruta": 870577017,
+    "rpnp_do_exercicio": 301858458,
+    "liquida_apos_rpnp": 525039989
+   },
+   "Recursos de Alienação de Bens/Ativos": {
+    "caixa_bruta": 125645267,
+    "processados_do_exercicio": 4514181,
+    "rpnp_do_exercicio": 30594578,
+    "liquida_apos_rpnp": 41820693
+   },
+   "Outros Recursos Vinculados": {
+    "caixa_bruta": 2886111200,
+    "processados_do_exercicio": 147662837,
+    "rpnp_do_exercicio": 40967150,
+    "liquida_apos_rpnp": 2238454492
+   },
+   "TOTAL (III) = (I + II)": {
+    "caixa_bruta": 11934869416,
+    "processados_do_exercicio": 928887677,
+    "rpnp_do_exercicio": 9731191580,
+    "liquida_apos_rpnp": -968030436
+   }
+  },
+  "2023": {
+   "TOTAL DOS RECURSOS NÃO VINCULADOS (I)": {
+    "caixa_bruta": 14510679862,
+    "processados_do_exercicio": 969501382,
+    "rpnp_do_exercicio": 5476028785,
+    "liquida_apos_rpnp": 6274665475
+   },
+   "Recursos Não Vinculados de Impostos": {
+    "caixa_bruta": 12168029456,
+    "processados_do_exercicio": 950647898,
+    "rpnp_do_exercicio": 4725589734,
+    "liquida_apos_rpnp": 4734282784
+   },
+   "Outros Recursos não Vinculados": {
+    "caixa_bruta": 2342650406,
+    "processados_do_exercicio": 18853484,
+    "rpnp_do_exercicio": 750439051,
+    "liquida_apos_rpnp": 1540382691
+   },
+   "TOTAL DOS RECURSOS VINCULADOS (EXCETO AO RPPS) (II)": {
+    "caixa_bruta": 18309447013,
+    "processados_do_exercicio": 391888292,
+    "rpnp_do_exercicio": 7328483659,
+    "liquida_apos_rpnp": 9502504551
+   },
+   "Recursos Vinculados à Educação": {
+    "caixa_bruta": 1735683238,
+    "processados_do_exercicio": 59043984,
+    "rpnp_do_exercicio": 976219615,
+    "liquida_apos_rpnp": 566400282
+   },
+   "Transferências do FUNDEB": {
+    "caixa_bruta": 648829608,
+    "processados_do_exercicio": 5143113,
+    "rpnp_do_exercicio": 583154655,
+    "liquida_apos_rpnp": 9960247
+   },
+   "Outros Recursos Vinculados à Educação": {
+    "caixa_bruta": 1086853630,
+    "processados_do_exercicio": 53900871,
+    "rpnp_do_exercicio": 393064960,
+    "liquida_apos_rpnp": 556440035
+   },
+   "Recursos Vinculados à Saúde": {
+    "caixa_bruta": 4119673953,
+    "processados_do_exercicio": 17036481,
+    "rpnp_do_exercicio": 1162578497,
+    "liquida_apos_rpnp": 2940058975
+   },
+   "Transferências Fundo a Fundo de Recursos do SUS": {
+    "caixa_bruta": 4073377321,
+    "processados_do_exercicio": 17036481,
+    "rpnp_do_exercicio": 1129363076,
+    "liquida_apos_rpnp": 2926977764
+   },
+   "Outros Recursos Vinculados à Saúde": {
+    "caixa_bruta": 46296632,
+    "rpnp_do_exercicio": 33215421,
+    "liquida_apos_rpnp": 13081211
+   },
+   "Recursos Vinculados à Assistência Social": {
+    "caixa_bruta": 507164742,
+    "processados_do_exercicio": 75285620,
+    "rpnp_do_exercicio": 5536267,
+    "liquida_apos_rpnp": 426342655
+   },
+   "Demais Vinculações Decorrentes de Transferências": {
+    "caixa_bruta": 2191487487,
+    "processados_do_exercicio": 42082387,
+    "rpnp_do_exercicio": 965054461,
+    "liquida_apos_rpnp": 1175870055
+   },
+   "Transferências de Convênios e Instrumentos Congêneres (exceto Educação, Saúde e Assistência)": {
+    "caixa_bruta": 813745107,
+    "processados_do_exercicio": 19899373,
+    "rpnp_do_exercicio": 789048258
+   },
+   "Outras Vinculações Decorrentes de Transferências": {
+    "caixa_bruta": 1377742380,
+    "processados_do_exercicio": 22183014,
+    "rpnp_do_exercicio": 176006203,
+    "liquida_apos_rpnp": 1175870055
+   },
+   "Demais Vinculações Legais": {
+    "caixa_bruta": 8876067703,
+    "processados_do_exercicio": 198439820,
+    "rpnp_do_exercicio": 4219094819,
+    "liquida_apos_rpnp": 4267480734
+   },
+   "Recursos de Operações de Crédito (exceto vinculados à Educação e à Saúde)": {
+    "caixa_bruta": 1892381075,
+    "processados_do_exercicio": 101848040,
+    "rpnp_do_exercicio": 1587697303,
+    "liquida_apos_rpnp": 193094831
+   },
+   "Recursos de Alienação de Bens/Ativos": {
+    "caixa_bruta": 128169356,
+    "liquida_apos_rpnp": 123655105
+   },
+   "Recursos Vinculados a Fundos (exceto Educação, Saúde, Assistência e Previdência)": {
+    "caixa_bruta": 38527716,
+    "liquida_apos_rpnp": 38527716
+   },
+   "Outras Vinculações Legais": {
+    "caixa_bruta": 6816989556,
+    "processados_do_exercicio": 96591780,
+    "rpnp_do_exercicio": 2631397516,
+    "liquida_apos_rpnp": 3912203082
+   },
+   "Recursos Extraorçamentários": {
+    "caixa_bruta": 753018040
+   },
+   "Outras Vinculações": {
+    "caixa_bruta": 126351850,
+    "liquida_apos_rpnp": 126351850
+   },
+   "TOTAL (IV) = (I + II + III)": {
+    "caixa_bruta": 32820126875,
+    "processados_do_exercicio": 1361389674,
+    "rpnp_do_exercicio": 12804512444,
+    "liquida_apos_rpnp": 15777170026
+   }
+  },
+  "2024": {
+   "TOTAL DOS RECURSOS NÃO VINCULADOS (I)": {
+    "caixa_bruta": 13322298300,
+    "processados_do_exercicio": 96468658,
+    "rpnp_do_exercicio": 9014217684,
+    "liquida_apos_rpnp": 3000485099
+   },
+   "Recursos Não Vinculados de Impostos": {
+    "caixa_bruta": 12423799545,
+    "processados_do_exercicio": 92450928,
+    "rpnp_do_exercicio": 8549400391,
+    "liquida_apos_rpnp": 2588387692
+   },
+   "Outros Recursos não Vinculados": {
+    "caixa_bruta": 898498755,
+    "processados_do_exercicio": 4017730,
+    "rpnp_do_exercicio": 464817293,
+    "liquida_apos_rpnp": 412097407
+   },
+   "TOTAL DOS RECURSOS VINCULADOS (EXCETO AO RPPS) (II)": {
+    "caixa_bruta": 15233980439,
+    "processados_do_exercicio": 2451188392,
+    "rpnp_do_exercicio": 11504072569,
+    "liquida_apos_rpnp": -391591923
+   },
+   "Recursos Vinculados à Educação": {
+    "caixa_bruta": 1153802799,
+    "processados_do_exercicio": 1651013214,
+    "rpnp_do_exercicio": 534126516,
+    "liquida_apos_rpnp": -1142583397
+   },
+   "Transferências do FUNDEB": {
+    "caixa_bruta": 283174178,
+    "processados_do_exercicio": 1649107804,
+    "rpnp_do_exercicio": 213920597,
+    "liquida_apos_rpnp": -1625251948
+   },
+   "Outros Recursos Vinculados à Educação": {
+    "caixa_bruta": 870628621,
+    "processados_do_exercicio": 1905410,
+    "rpnp_do_exercicio": 320205919,
+    "liquida_apos_rpnp": 482668551
+   },
+   "Recursos Vinculados à Saúde": {
+    "caixa_bruta": 3780655059,
+    "processados_do_exercicio": 2565167,
+    "rpnp_do_exercicio": 1422451612,
+    "liquida_apos_rpnp": 2355101674
+   },
+   "Transferências Fundo a Fundo de Recursos do SUS": {
+    "caixa_bruta": 3769159670,
+    "processados_do_exercicio": 2565167,
+    "rpnp_do_exercicio": 1419210692,
+    "liquida_apos_rpnp": 2346847205
+   },
+   "Outros Recursos Vinculados à Saúde": {
+    "caixa_bruta": 11495389,
+    "rpnp_do_exercicio": 3240920,
+    "liquida_apos_rpnp": 8254469
+   },
+   "Recursos Vinculados à Assistência Social": {
+    "caixa_bruta": 893703726,
+    "processados_do_exercicio": 10669259,
+    "rpnp_do_exercicio": 16659690,
+    "liquida_apos_rpnp": 866374777
+   },
+   "Demais Vinculações Decorrentes de Transferências": {
+    "caixa_bruta": 2359946530,
+    "processados_do_exercicio": 38049642,
+    "rpnp_do_exercicio": 1551781888,
+    "liquida_apos_rpnp": 446567664
+   },
+   "Transferências de Convênios e Instrumentos Congêneres (exceto Educação, Saúde e Assistência)": {
+    "caixa_bruta": 958230939,
+    "processados_do_exercicio": 4843239,
+    "rpnp_do_exercicio": 1293066104,
+    "liquida_apos_rpnp": -659978591
+   },
+   "Outras Vinculações Decorrentes de Transferências": {
+    "caixa_bruta": 1401715591,
+    "processados_do_exercicio": 33206403,
+    "rpnp_do_exercicio": 258715784,
+    "liquida_apos_rpnp": 1106546255
+   },
+   "Demais Vinculações Legais": {
+    "caixa_bruta": 6061107506,
+    "processados_do_exercicio": 748891110,
+    "rpnp_do_exercicio": 7979052863,
+    "liquida_apos_rpnp": -2917052641
+   },
+   "Recursos de Operações de Crédito (exceto vinculados à Educação e à Saúde)": {
+    "caixa_bruta": 604083353,
+    "processados_do_exercicio": 117750858,
+    "rpnp_do_exercicio": 6497342029,
+    "liquida_apos_rpnp": -6075329370
+   },
+   "Recursos de Alienação de Bens/Ativos": {
+    "caixa_bruta": 14795529,
+    "processados_do_exercicio": 164326836,
+    "liquida_apos_rpnp": -285906507
+   },
+   "Recursos Vinculados a Fundos (exceto Educação, Saúde, Assistência e Previdência)": {
+    "caixa_bruta": 2491357,
+    "rpnp_do_exercicio": 311989,
+    "liquida_apos_rpnp": 2179368
+   },
+   "Outras Vinculações Legais": {
+    "caixa_bruta": 5439737267,
+    "processados_do_exercicio": 466813416,
+    "rpnp_do_exercicio": 1481398845,
+    "liquida_apos_rpnp": 3442003868
+   },
+   "Recursos Extraorçamentários": {
+    "caixa_bruta": 984764819
+   },
+   "TOTAL (IV) = (I + II + III)": {
+    "caixa_bruta": 28556278739,
+    "processados_do_exercicio": 2547657050,
+    "rpnp_do_exercicio": 20518290253,
+    "liquida_apos_rpnp": 2608893176
+   }
+  }
+ }
+}

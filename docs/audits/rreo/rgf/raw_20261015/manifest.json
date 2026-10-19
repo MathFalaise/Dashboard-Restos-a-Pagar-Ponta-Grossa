@@ -1,0 +1,25 @@
+{
+ "anexo": "RGF-Anexo 05",
+ "arquivos": {
+  "rgf05_2020_Q3.json": {
+   "sha256": "ea305e1d7c8ed9b7beac1e8d508b52c03f8331c598a3db050abd112e537cf24c",
+   "tamanho": 36597,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf?an_exercicio=2020&in_periodicidade=Q&nr_periodo=3&co_tipo_demonstrativo=RGF&no_anexo=RGF-Anexo%2005&co_esfera=M&co_poder=E&id_ente=4119905"
+  },
+  "rgf05_2023_Q3.json": {
+   "sha256": "8d6a412cf2f88c76f348739f720587232e5118ad874fc8fa6f5108889a3da9fd",
+   "tamanho": 58562,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf?an_exercicio=2023&in_periodicidade=Q&nr_periodo=3&co_tipo_demonstrativo=RGF&no_anexo=RGF-Anexo%2005&co_esfera=M&co_poder=E&id_ente=4119905"
+  },
+  "rgf05_2024_Q3.json": {
+   "sha256": "3938ac646ebbe633cc419e75d9375bdd4e01a07bae3e6cf218c0c5f60beda284",
+   "tamanho": 59297,
+   "url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf?an_exercicio=2024&in_periodicidade=Q&nr_periodo=3&co_tipo_demonstrativo=RGF&no_anexo=RGF-Anexo%2005&co_esfera=M&co_poder=E&id_ente=4119905"
+  }
+ },
+ "ente": 4119905,
+ "fonte": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf",
+ "observacao": "Dados fiscais publicos agregados (sem dados pessoais). Baixados em 15/10/2026 para a nota NOTA_RP_2025.md.",
+ "obtido_em": "2026-10-15",
+ "poder": "E"
+}
