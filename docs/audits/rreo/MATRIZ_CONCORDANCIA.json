@@ -7893,10 +7893,8 @@
    "esperado": 2724204008,
    "observado": 2672308113,
    "diferenca": -51895895,
-   "classe": "diferenca_de_escopo",
-   "evidencia": [
-    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
-   ]
+   "classe": "causa_nao_determinada",
+   "evidencia": "PDF igual ao Siconfi; a explicação do catálogo é do escopo da derivação (ESCOPO-MUN v1), diferente do escopo publicado neste período"
   },
   {
    "exercicio": 2018,
@@ -7907,10 +7905,8 @@
    "esperado": 3230335666,
    "observado": 3167183340,
    "diferenca": -63152326,
-   "classe": "diferenca_de_escopo",
-   "evidencia": [
-    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
-   ]
+   "classe": "causa_nao_determinada",
+   "evidencia": "PDF igual ao Siconfi; a explicação do catálogo é do escopo da derivação (ESCOPO-MUN v1), diferente do escopo publicado neste período"
   },
   {
    "exercicio": 2018,
@@ -7969,7 +7965,7 @@
    "esperado": 3230335666,
    "observado": 3167183340,
    "diferenca": -63152326,
-   "classe": "diferenca_de_escopo",
+   "classe": "causa_nao_determinada",
    "com_ressalva": false
   },
   {
@@ -8455,10 +8451,8 @@
    "esperado": 2186824959,
    "observado": 2208846433,
    "diferenca": 22021474,
-   "classe": "diferenca_de_escopo",
-   "evidencia": [
-    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
-   ]
+   "classe": "causa_nao_determinada",
+   "evidencia": "PDF igual ao Siconfi; a explicação do catálogo é do escopo da derivação (ESCOPO-MUN v1), diferente do escopo publicado neste período"
   },
   {
    "exercicio": 2018,
@@ -8469,10 +8463,8 @@
    "esperado": 2671208767,
    "observado": 2695765126,
    "diferenca": 24556359,
-   "classe": "diferenca_de_escopo",
-   "evidencia": [
-    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
-   ]
+   "classe": "causa_nao_determinada",
+   "evidencia": "PDF igual ao Siconfi; a explicação do catálogo é do escopo da derivação (ESCOPO-MUN v1), diferente do escopo publicado neste período"
   },
   {
    "exercicio": 2018,
@@ -8531,7 +8523,7 @@
    "esperado": 2671208767,
    "observado": 2695765126,
    "diferenca": 24556359,
-   "classe": "diferenca_de_escopo",
+   "classe": "causa_nao_determinada",
    "com_ressalva": false
   },
   {
@@ -9017,10 +9009,8 @@
    "esperado": 1912566419,
    "observado": 1884442200,
    "diferenca": -28124219,
-   "classe": "diferenca_de_escopo",
-   "evidencia": [
-    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
-   ]
+   "classe": "causa_nao_determinada",
+   "evidencia": "PDF igual ao Siconfi; a explicação do catálogo é do escopo da derivação (ESCOPO-MUN v1), diferente do escopo publicado neste período"
   },
   {
    "exercicio": 2018,
@@ -9031,10 +9021,8 @@
    "esperado": 2388278023,
    "observado": 2362751733,
    "diferenca": -25526290,
-   "classe": "diferenca_de_escopo",
-   "evidencia": [
-    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
-   ]
+   "classe": "causa_nao_determinada",
+   "evidencia": "PDF igual ao Siconfi; a explicação do catálogo é do escopo da derivação (ESCOPO-MUN v1), diferente do escopo publicado neste período"
   },
   {
    "exercicio": 2018,
@@ -9093,7 +9081,7 @@
    "esperado": 2388278023,
    "observado": 2362751733,
    "diferenca": -25526290,
-   "classe": "diferenca_de_escopo",
+   "classe": "causa_nao_determinada",
    "com_ressalva": false
   },
   {
@@ -9579,10 +9567,8 @@
    "esperado": 1689714654,
    "observado": 1685431136,
    "diferenca": -4283518,
-   "classe": "diferenca_de_escopo",
-   "evidencia": [
-    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
-   ]
+   "classe": "causa_nao_determinada",
+   "evidencia": "PDF igual ao Siconfi; a explicação do catálogo é do escopo da derivação (ESCOPO-MUN v1), diferente do escopo publicado neste período"
   },
   {
    "exercicio": 2018,
@@ -9593,10 +9579,8 @@
    "esperado": 2160588324,
    "observado": 2159207945,
    "diferenca": -1380379,
-   "classe": "diferenca_de_escopo",
-   "evidencia": [
-    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
-   ]
+   "classe": "causa_nao_determinada",
+   "evidencia": "PDF igual ao Siconfi; a explicação do catálogo é do escopo da derivação (ESCOPO-MUN v1), diferente do escopo publicado neste período"
   },
   {
    "exercicio": 2018,
@@ -9655,7 +9639,7 @@
    "esperado": 2160588324,
    "observado": 2159207945,
    "diferenca": -1380379,
-   "classe": "diferenca_de_escopo",
+   "classe": "causa_nao_determinada",
    "com_ressalva": false
   },
   {
@@ -10145,10 +10129,8 @@
    "esperado": 1444671786,
    "observado": 1439873578,
    "diferenca": -4798208,
-   "classe": "diferenca_de_escopo",
-   "evidencia": [
-    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
-   ]
+   "classe": "causa_nao_determinada",
+   "evidencia": "PDF igual ao Siconfi; a explicação do catálogo é do escopo da derivação (ESCOPO-MUN v1), diferente do escopo publicado neste período"
   },
   {
    "exercicio": 2018,
@@ -10159,10 +10141,8 @@
    "esperado": 1897453687,
    "observado": 1897758887,
    "diferenca": 305200,
-   "classe": "diferenca_de_escopo",
-   "evidencia": [
-    "docs/audits/rreo/VALIDACAO_LAYOUTS.md"
-   ]
+   "classe": "causa_nao_determinada",
+   "evidencia": "PDF igual ao Siconfi; a explicação do catálogo é do escopo da derivação (ESCOPO-MUN v1), diferente do escopo publicado neste período"
   },
   {
    "exercicio": 2018,
@@ -10221,7 +10201,7 @@
    "esperado": 1897453687,
    "observado": 1897758887,
    "diferenca": 305200,
-   "classe": "diferenca_de_escopo",
+   "classe": "causa_nao_determinada",
    "com_ressalva": false
   },
   {
@@ -44160,9 +44140,9 @@
    "exercicio": 2018,
    "celulas": 72,
    "concordam": 25,
-   "explicadas": 11,
-   "nao_determinadas": 36,
-   "valor_nao_determinado_c": 6310875655
+   "explicadas": 1,
+   "nao_determinadas": 46,
+   "valor_nao_determinado_c": 6536919523
   },
   {
    "comparacao": "elotech_x_siconfi",
@@ -44349,9 +44329,9 @@
    "exercicio": 2018,
    "celulas": 30,
    "concordam": 6,
-   "explicadas": 5,
-   "nao_determinadas": 19,
-   "valor_nao_determinado_c": 4263925266
+   "explicadas": 0,
+   "nao_determinadas": 24,
+   "valor_nao_determinado_c": 4378845820
   },
   {
    "comparacao": "painel_x_siconfi",
@@ -44872,12 +44852,12 @@
      "valor_c": 197779420
     },
     "k": {
-     "celulas": 1,
-     "valor_c": 1646414865
+     "celulas": 6,
+     "valor_c": 1757538179
     },
     "L": {
-     "celulas": 1,
-     "valor_c": 2006137640
+     "celulas": 6,
+     "valor_c": 2121058194
     }
    }
   },
@@ -45584,8 +45564,8 @@
      "valor_c": 116099928
     },
     "saldo": {
-     "celulas": 1,
-     "valor_c": 2006137640
+     "celulas": 6,
+     "valor_c": 2121058194
     }
    }
   },
