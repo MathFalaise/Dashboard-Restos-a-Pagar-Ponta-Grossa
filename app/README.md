@@ -74,13 +74,18 @@ Opcional: `python -m pip install -e .` (dentro de `app/`, sempre em modo editáv
 
 Sempre COLETAR → VALIDAR → PROCESSAR → TESTAR → VERIFICAR → DISPONIBILIZAR. Nunca coletar por cima do banco e publicar: a coleta nova vira um snapshot a mais, e o retrato anterior continua no armazém e no banco.
 
-1. **Referência do bruto**, antes de coletar (o arquivo nunca é sobrescrito): `python -m rp portoes --gravar-referencia ../docs/stages/04-pipeline/results/referencia_AAAAMMDD.json`
+1. **Referência do bruto e manifesto-raiz**, antes de coletar (os dois arquivos são novos e nunca são sobrescritos):
+   - `python -m rp portoes --gravar-referencia ../docs/stages/04-pipeline/results/referencia_AAAAMMDD.json`
+   - `python -m rp raiz --gravar $HOME/RestosAPagar_local/referencias/raiz_antes_carga_AAAAMMDD.json` (guardar fora do banco e do armazém; `$HOME` vale no PowerShell e no bash, `~` não é expandido pelo comando)
 2. **Backup:** `python -m rp backup --motivo antes-carga-AAAAMMDD`
 3. **Coletar:** `coletar-catalogos`, `coletar-listagem` de cada entidade e corte, `coletar-rreo` (e `coletar-movimentacao` quando necessário). Coleta que termina `incompleta` ou `falhou` fica registrada, mas não vira retrato válido.
 4. **Validar:** `python -m rp verificar`, e `comparar-snapshots` / `comparar` para ver o que mudou em relação ao retrato anterior.
 5. **Processar:** `python -m rp processar` (e `--em` para as datas históricas que se queira reconciliar).
 6. **Conferir os portões (passo intermediário):** `python -m rp portoes --referencia ../docs/stages/04-pipeline/results/referencia_AAAAMMDD.json`. Serve para achar cedo o que reprovaria a homologação; **não substitui o passo 7**. `"apto"` considera só os portões verificáveis; a lista do que não foi verificado sai em `"nao_verificados"`. O portão `testes` sempre sai como não verificado neste comando, então `"apto_sem_ressalvas"` nunca é `true` aqui.
-7. **Homologar (obrigatório):** `python -m rp homologar --referencia ../docs/stages/04-pipeline/results/referencia_AAAAMMDD.json --raiz <manifesto-raiz guardado fora do banco> --saida <relatorio.json>`. Roda os portões, a referência do bruto, a reprodução a partir do armazém comparada camada por camada, as suítes de produção e de investigação e lista as pendências contábeis.
+7. **Homologar (obrigatório):** `python -m rp homologar --referencia ../docs/stages/04-pipeline/results/referencia_AAAAMMDD.json --raiz $HOME/RestosAPagar_local/referencias/raiz_antes_carga_AAAAMMDD.json --saida $HOME/RestosAPagar_local/referencias/homologacao_AAAAMMDD.json`.
+   - `--referencia` e `--raiz` apontam para os arquivos **já existentes** gravados no passo 1, antes da carga. Eles são a evidência do estado anterior: nunca grave um deles só para conseguir rodar a homologação. Pelo menos um dos dois é obrigatório.
+   - `--saida` é um arquivo **novo**: o relatório nunca sobrescreve outro.
+   - O comando roda os portões, a referência do bruto, a reprodução a partir do armazém comparada camada por camada, as suítes de produção e de investigação e lista as pendências contábeis.
    - **Só pode disponibilizar** com `aprovada_sem_ressalvas` (saída 0) ou `aprovada_com_ressalvas` (saída 3). No segundo caso, as pendências contábeis do relatório (`pendencias_contabeis`, `dimensoes`) são apresentadas junto com a carga: por exemplo, diferenças com o RREO, RREO ilegível, natureza dos pares não determinada.
    - **Nunca disponibiliza** com `reprovada` (saída 1: alguma verificação técnica falhou) nem com `incompleta` (saída 2: alguma verificação obrigatória não foi executada, por exemplo com `--sem-testes` ou `--sem-reproducao`). `incompleta` não é aprovação.
    - Uma diferença com o RREO pode ficar como ressalva; uma falha técnica ou uma verificação obrigatória não executada, não.
