@@ -214,6 +214,10 @@ def main():
             # C. Elotech (published scope) x SICONFI
             elo = f.elotech_publicado(ano, bim, df)
             cons = next((p for p in pdfs if p["escopo"] == "consolidado"), None)
+            # the catalog explains Elotech in the DERIVATION's scope (ESCOPO-MUN v1) x the PDF; its explanation is
+            # inherited only where the published scope gives the same Elotech value (not where ESCOPO-MUN v2 removed
+            # entity 7, nor in the CONS-PAR v4 view)
+            api_cons = f.elotech_doc(cons["coleta_id"]) if cons else {}
             trocas = trocas_de_soma_zero({c: elo[c] - sic[c] for c in COLUNAS if elo and sic and elo.get(c) is not None
                                           and sic.get(c) is not None})
             for c in COLUNAS:
@@ -223,8 +227,12 @@ def main():
                 exe_pdf = (cons or {"linhas": {}})["linhas"].get("PODER EXECUTIVO", {}).get(c)
                 if dif == 0:
                     classe, ev = "concorda", None
-                elif cons and exe_pdf == sic[c]:
+                elif cons and exe_pdf == sic[c] and api_cons.get(c) == elo[c]:
                     classe, sit, ev = classificar_catalogo(ano, df, "consolidado", c, f)   # PDF == SICONFI: inherit
+                elif cons and exe_pdf == sic[c]:
+                    classe, ev = ("causa_nao_determinada",
+                                  "PDF igual ao Siconfi; a explicação do catálogo é do escopo da derivação "
+                                  "(ESCOPO-MUN v1), diferente do escopo publicado neste período")
                 elif cons and exe_pdf == elo[c]:
                     classe, ev = ("divergencia_entre_documentos_oficiais",
                                   "a fonte Elotech reproduz o RREO do portal; a declaração ao Siconfi diverge (ver A)")

@@ -39,7 +39,7 @@ Gerada por `docs/audits/rreo/matriz_concordancia.py`: derivação 37 (normaliza�
 |---|---:|---:|---:|---:|---:|
 | 2016 | 72 | 15 | 10 | 47 | 54.967.975,28 |
 | 2017 | 72 | 16 | 30 | 26 | 25.068.783,73 |
-| 2018 | 72 | 25 | 11 | 36 | 63.108.756,55 |
+| 2018 | 72 | 25 | 1 | 46 | 65.369.195,23 |
 | 2019 | 72 | 49 | 8 | 15 | 1.498.108,39 |
 | 2020 | 72 | 30 | 30 | 12 | 5.289.808,29 |
 | 2021 | 72 | 19 | 53 | 0 | 0,00 |
@@ -55,7 +55,7 @@ Gerada por `docs/audits/rreo/matriz_concordancia.py`: derivação 37 (normaliza�
 |---|---:|---:|---:|---:|---:|
 | 2016 | 30 | 6 | 0 | 24 | 40.231.104,15 |
 | 2017 | 30 | 8 | 8 | 14 | 24.177.431,24 |
-| 2018 | 30 | 6 | 5 | 19 | 42.639.252,66 |
+| 2018 | 30 | 6 | 0 | 24 | 43.788.458,20 |
 | 2019 | 30 | 18 | 0 | 12 | 31.549.854,00 |
 | 2020 | 30 | 16 | 9 | 5 | 3.478.266,23 |
 | 2021 | 30 | 24 | 3 | 3 | 26.388,56 |
@@ -151,7 +151,7 @@ Gerada por `docs/audits/rreo/matriz_concordancia.py`: derivação 37 (normaliza�
 | Elotech (escopo publicado) × Siconfi (Executivo) | 2017 | h | 3 | 784.211,65 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | 2017 | i | 4 | 1.579.190,43 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | 2017 | k | 6 | 11.269.023,46 |
-| Elotech (escopo publicado) × Siconfi (Executivo) | 2018 | L | 1 | 20.061.376,40 |
+| Elotech (escopo publicado) × Siconfi (Executivo) | 2018 | L | 6 | 21.210.581,94 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | 2018 | a | 1 | 578.445,61 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | 2018 | b | 1 | 1.191.886,22 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | 2018 | c | 6 | 2.179.680,43 |
@@ -162,7 +162,7 @@ Gerada por `docs/audits/rreo/matriz_concordancia.py`: derivação 37 (normaliza�
 | Elotech (escopo publicado) × Siconfi (Executivo) | 2018 | h | 6 | 1.122.062,47 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | 2018 | i | 6 | 2.168.935,31 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | 2018 | j | 2 | 1.977.794,20 |
-| Elotech (escopo publicado) × Siconfi (Executivo) | 2018 | k | 1 | 16.464.148,65 |
+| Elotech (escopo publicado) × Siconfi (Executivo) | 2018 | k | 6 | 17.575.381,79 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | 2019 | L | 3 | 499.336,47 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | 2019 | a | 1 | 49,49 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | 2019 | d | 1 | 51.638,27 |
@@ -309,7 +309,7 @@ Gerada por `docs/audits/rreo/matriz_concordancia.py`: derivação 37 (normaliza�
 | Painel publicado × Siconfi (Executivo), por grupo | 2018 | inscricao | 1 | 15.172.538,83 |
 | Painel publicado × Siconfi (Executivo), por grupo | 2018 | liquidados | 6 | 1.160.999,28 |
 | Painel publicado × Siconfi (Executivo), por grupo | 2018 | pagos | 6 | 4.244.698,38 |
-| Painel publicado × Siconfi (Executivo), por grupo | 2018 | saldo | 1 | 20.061.376,40 |
+| Painel publicado × Siconfi (Executivo), por grupo | 2018 | saldo | 6 | 21.210.581,94 |
 | Painel publicado × Siconfi (Executivo), por grupo | 2019 | cancelados | 1 | 51.638,27 |
 | Painel publicado × Siconfi (Executivo), por grupo | 2019 | inscricao | 2 | 445.642,51 |
 | Painel publicado × Siconfi (Executivo), por grupo | 2019 | liquidados | 5 | 30.551.181,06 |
@@ -358,10 +358,9 @@ Gerada por `docs/audits/rreo/matriz_concordancia.py`: derivação 37 (normaliza�
 | Elotech (RREO-COL v3) × PDF | regra_de_classificacao | 210 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | alteracao_retroativa_na_fonte | 3 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | alteracao_retroativa_na_fonte (causa_comprovada_por_empenho) | 1 |
-| Elotech (escopo publicado) × Siconfi (Executivo) | causa_nao_determinada | 222 |
+| Elotech (escopo publicado) × Siconfi (Executivo) | causa_nao_determinada | 232 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | causa_nao_determinada+regra_de_classificacao | 1 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | concorda | 269 |
-| Elotech (escopo publicado) × Siconfi (Executivo) | diferenca_de_escopo | 10 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | divergencia_entre_documentos_oficiais | 171 |
 | Elotech (escopo publicado) × Siconfi (Executivo) | regra_de_classificacao | 91 |
 | PDF do portal × Siconfi (Executivo) | concorda | 229 |
@@ -370,8 +369,7 @@ Gerada por `docs/audits/rreo/matriz_concordancia.py`: derivação 37 (normaliza�
 | PDF do portal × Siconfi (Executivo) | divergencia_entre_documentos_oficiais_sem_causa | 264 |
 | PDF do portal × Siconfi (Executivo) | regra_de_classificacao | 172 |
 | Painel publicado × Siconfi (Executivo), por grupo | alteracao_retroativa_na_fonte | 2 |
-| Painel publicado × Siconfi (Executivo), por grupo | causa_nao_determinada | 117 |
+| Painel publicado × Siconfi (Executivo), por grupo | causa_nao_determinada | 122 |
 | Painel publicado × Siconfi (Executivo), por grupo | concorda | 161 |
-| Painel publicado × Siconfi (Executivo), por grupo | diferenca_de_escopo | 5 |
 | Painel publicado × Siconfi (Executivo), por grupo | divergencia_entre_documentos_oficiais | 34 |
 | Painel publicado × Siconfi (Executivo), por grupo | regra_de_classificacao | 1 |

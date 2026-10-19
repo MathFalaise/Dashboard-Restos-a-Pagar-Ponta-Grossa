@@ -100,6 +100,24 @@ def test_escopo_mun_v2_parametros_transcrevem_a_evidencia():
     assert regras.PARAMETROS[("ESCOPO-MUN", 2)]["periodos"] == esperado
 
 
+def test_matriz_nao_herda_escopo_onde_a_escopo_mun_v2_difere_da_v1():
+    """Elotech (published scope) x SICONFI never inherits a 'diferenca_de_escopo' from the catalog (which explains the
+    derivation's ESCOPO-MUN v1 scope) in a bimester where ESCOPO-MUN v2 already removed entity 7 (bug of 13/10/2026:
+    2018 b2-b6 columns k and L were labelled scope differences)."""
+    import json
+    from conftest import RAIZ_PROJETO
+    ev = json.loads((RAIZ_PROJETO / "docs/audits/escopo/ESCOPO_ENTIDADE_7.json").read_text(encoding="utf-8"))
+    muda = {(p["exercicio"], p["bimestre"]) for p in ev["periodos"] if p["v1"] != p["tratamento"]}
+    matriz = json.loads((RAIZ_PROJETO / "docs/audits/rreo/MATRIZ_CONCORDANCIA.json").read_text(encoding="utf-8"))
+    herdadas = [(x["exercicio"], x["bimestre"], x.get("coluna") or x.get("grupo")) for x in matriz["celulas"]
+                if x["comparacao"] in ("elotech_x_siconfi", "painel_x_siconfi")
+                and "diferenca_de_escopo" in x["classe"] and (x["exercicio"], x["bimestre"]) in muda]
+    assert muda and herdadas == []
+    c = next(x for x in matriz["celulas"] if x["comparacao"] == "elotech_x_siconfi"
+             and (x["exercicio"], x["bimestre"], x.get("coluna")) == (2018, 6, "L"))
+    assert (c["diferenca"], c["classe"]) == (305200, "causa_nao_determinada")
+
+
 # ================================================================== CONS-PAR v4: the eight scenarios of item 5.3
 CORTE = (2026, "2026-02-28")
 
