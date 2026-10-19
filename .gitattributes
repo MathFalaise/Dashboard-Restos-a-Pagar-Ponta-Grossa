@@ -8,3 +8,4 @@ data/stage02-raw/** -text
 *.zlib binary
 *.pdf binary
 docs/audits/rreo/siconfi/raw/** -text
+docs/audits/rreo/rgf/raw_*/** -text
