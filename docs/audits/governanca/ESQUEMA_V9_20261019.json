@@ -1,0 +1,94 @@
+{
+  "data": "2026-10-19",
+  "banco_ativo": "aberto so para leitura (mode=ro); nao foi migrado",
+  "copia": {
+    "sha256_antes_da_migracao": "eb1291fb576a1d41d0ae10eb288a2599e1b6561ac104c8e6a07e179eb006f8c3"
+  },
+  "antes": {
+    "versao": 8,
+    "impressao": "c2ef5fdf631c985e8203fe99fe7e12a5e9d2a5ad806ef673ad6899aa3ec0cdc5",
+    "impressao_confere_v8": true
+  },
+  "depois": {
+    "versao": 9,
+    "impressao": "4f15f9c562356b36a4d679db33272a80f2f6b19ff78e70960d32f43aac19e156",
+    "impressao_confere_v9": true,
+    "backup_registrado_em_esquema_versao": "20261019-124919_antes-migracao-v8-v9.sqlite"
+  },
+  "tabelas_com_conteudo_diferente": [
+    "esquema_versao"
+  ],
+  "esquema_versao": {
+    "antes": 7,
+    "depois": 8
+  },
+  "gatilhos_novos": [
+    "regra_sem_delete"
+  ],
+  "gatilhos_removidos": [],
+  "derivacoes": {
+    "37": {
+      "gravado": "bcd01a4147b4d6478e88a30a37b04c887a97df340c5958989eb6e7ea32f26ffc",
+      "antes_confere": true,
+      "depois_confere": true
+    },
+    "38": {
+      "gravado": "4002ccc2634021abf2e3ace910b8d18dc3311f572405912ffe389728277ea791",
+      "antes_confere": true,
+      "depois_confere": true
+    }
+  },
+  "backup": {
+    "arquivo": "20261019-124919_antes-migracao-v8-v9.sqlite",
+    "sha256": "eb1291fb576a1d41d0ae10eb288a2599e1b6561ac104c8e6a07e179eb006f8c3",
+    "restaurado_sha256_igual": true,
+    "integridade": "ok",
+    "versao": 8,
+    "impressao_confere_v8": true,
+    "conteudo_igual_ao_da_copia_antes": true
+  },
+  "apagar_regra_sem_foreign_keys": {
+    "v8_restaurado": {
+      "aceito": true,
+      "linhas": 23
+    },
+    "v9_migrado": {
+      "aceito": false,
+      "erro": "regra nao se apaga: registre uma decisao nova em regra_situacao"
+    }
+  },
+  "linhas_por_tabela": {
+    "anomalia": 45529,
+    "anomalia_tipo": 13,
+    "coleta": 4864,
+    "coleta_manifesto": 4864,
+    "coleta_tempo": 4864,
+    "coletor_versao": 12,
+    "conciliacao_rreo": 4428,
+    "conciliacao_rreo_coleta": 24132,
+    "derivacao_execucao": 2,
+    "derivacao_regra": 46,
+    "entidade_ref": 60,
+    "espelhamento_par": 4532,
+    "esquema_versao": 8,
+    "evidencia_externa": 2,
+    "exercicio_ref": 360,
+    "movimentacao_interpretada": 67866,
+    "movimentacao_lancamento": 65847,
+    "normalizacao_execucao": 1,
+    "objeto_bruto": 4581,
+    "regra": 23,
+    "regra_parametro": 15,
+    "regra_situacao": 42,
+    "resposta_bruta": 5076,
+    "rp_derivado": 691687,
+    "rp_registro": 604142,
+    "rreo_extracao": 115,
+    "rreo_valor": 5004,
+    "valor_recusado": 0,
+    "verificacao": 615,
+    "visao_valor": 45765,
+    "visao_valor_coleta": 156105
+  },
+  "conclusao_ok": true
+}
